@@ -1,0 +1,253 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[margin=1.5in]{geometry}
+
+\hypersetup{pdftex,colorlinks=true,allcolors=blue}
+\usepackage{hypcap}
+
+\begin{document}
+
+\title{Logic, Decidability and EPR}
+\author{William Schultz}
+\date{\today}
+
+\maketitle
+
+\newcommand{\propvars}{{\mathcal{P}}}
+\newcommand{\A}{\forall}
+\newcommand{\E}{\exists}
+
+\section{Propositional Logic}
+
+We define classic propositional logic \cite{2021benari} as a formal system consisting of: 
+\begin{itemize}
+    \item $\propvars$: a countably infinite set of elements called \textit{propositional symbols}. These are alternately referred to as \textit{propositional variables}, \textit{atomic propositions} or just \textit{atoms}.
+    \item $\Omega$: set of logical \textit{operators} or \textit{connectives}.
+\end{itemize}
+For example, we traditionally have $\Omega=\{\wedge, \vee, \neg\}$. A \textit{formula} is defined as a sentence over propositional variables conjoined via the operators of $\Omega$. We can define the the set of syntactically valid formulas via a formal grammar. We let $\mathcal{F}$ be the set of all such formulas. 
+
+\newcommand{\interp}{\mathcal{I}}
+
+For a formula $A \in \mathcal{F}$, where $\propvars_A$ is the set of atoms that appear in $A$,  an \textit{interpretation} for $A$ is a total function
+\begin{align*}
+    \mathcal{I}_A : \propvars_A \rightarrow \{True,False\}
+\end{align*}
+that assigns one of the \textit{truth values}, \textit{True} or \textit{False}, to every atom in $\propvars_A$. In other words, it's just an assignment of boolean values to propositional variables.  The truth value of a formula $A$ \textit{under} an interpretation $\mathcal{I}_A$, denoted $v_{\mathcal{I}_{A}}(A)$, is defined in the standard way. That is, just plug in the values for each propositional variable as given by the interpretation function $\mathcal{I}_A$ and then evaluate the formula according to the semantics of the standard logical connectives. Note that although this is the ``classical'' notion of intepretation for propositional logic, we could have a more general notion of intepretation that allows for an intepretation function $\mathcal{I} : \mathcal{P}_A \rightarrow D$ that maps propositional symbols to some arbitrary domain of values. The logical connectives contained in $\Omega$ must then also be given appropriate semantics in accordance. For example, three-valued, many-valued logic systems. 
+
+For a formula $A \in \mathcal{F}$ we have the following definitions:
+\begin{itemize}
+    \item $A$ is \textit{satisfiable} iff $v_{\interp_{A}}(A) = True$ for \textit{some} intepretation $\interp$. A satisfying intepretation is called a \textit{model} for $A$.
+    \item $A$ is \textit{valid} iff $v_\interp(A)=True$ for \textit{all} intepretations $\interp$.
+    \item $A$ is \textit{unsatisfiable} iff it is not satisfiable i.e. if $v_\interp(A)=False$ for \textit{all} interpretations $\interp$.
+    % \item $A$ is \textit{falsifiable} iff it is not valid i.e. if $v_\interp(A)=False$ for \textit{some} interpretation. 
+\end{itemize}
+
+\subsection{Decidability and Complexity}
+
+Determining any of the above properties for a propositional formula is a decidable problem, since we can easily enumerate the finite (exponentially many) number of possible intepretations for a formula to determine whether it is satisfiable/valid/unsatisfiable. The satisfiability problem for propositional formulas is known as the SAT problem, and is NP-complete. In some special cases satisfiability can be solved in polynomial time e.g. 2-SAT (where CNF clauses contain 2 variables) is in P. The 3-SAT problem is NP-complete. 
+
+Determining the validity of a propositional formula $\phi \in \mathcal{F}$ can be determined by checking the unsatisfiability of $\neg \phi$. That is, we check if there are any interpretations that violate $\phi$. If there are none, then $\phi$ must be true under all interpretations i.e. $\phi$ is a tautology. The problem of checking validity/tautology of propositional formulas is co-NP-complete.
+
+\subsection{Logical Consequence and Theories}
+
+For a set of formulas $U=\{A_1,\dots\}$, a \textit{model} of $U$ is an interpretation $\interp$ such that $v_\interp(A_i)=True$ for all $A_i \in U$. For a given formula $A$, we say that $A$ is a \textit{logical consequence of U}, denoted $U \vDash A$, iff every model of $U$ is a model of $A$. That is, for any interpretation that is a model of $U$, it is also a model of $A$.
+
+Let $U$ be a set of formulas. We say that $U$ is \textit{closed under logical consequence} iff for all formulas $A$, if $U \vDash A$, then $A \in U$. A set of formulas that is closed under logical consequence is called a \textit{theory}. The elements of $U$ are \textit{theorems}. Theories are typically constructed by selecting a set of formulas called \textit{axioms} and deducing their logical consequences. For a given set of formulas $U$, we say that $U$ is \textit{axiomatizable} iff there exists a set of formulas $X$ such that $U = \{A \mid X \vDash A\}$. That is, there exists a set of formulas $X$ such that every formula in $U$ can be deduced as a logical consequence of the formulas in $X$. The set of formulas $X$ are the \textit{axioms} of $U$. If $X$ is finite, then $U$ is said to be \textit{finitely axiomatizable}. 
+
+\section{First Order Logic}
+
+\textit{First order logic} extends propositional logic to include quantification over some specified domain, in addition to a more general notion of \textit{interpretation} for a given formula.
+
+In order to define the structure of first order formulas, we first define the following:
+\begin{itemize}
+    \item $\mathcal{P}$: a countable set of \textit{predicate symbols} (alternately \textit{relation symbols})
+    \item  $\mathcal{A}$: a countable set of \textit{constant symbols}.
+    \item $\mathcal{V}$: a countable set of \textit{variables}.
+\end{itemize}
+The sets of predicate and constant symbols, $(\mathcal{P}, \mathcal{A})$, are also collectively referred to as the \textit{signature} of a first order logic. Each predicate symbol $p^n \in \mathcal{P}$ has an arity, which is the number $n \geq 1$ of \textit{arguments} that it takes. Note that these predicate symbols are merely syntactic objects i.e. they are \textit{not} relations, semantically. Rather, they are given semantics under an \textit{interpretation} (described below), which assigns a relation of the proper arity to each predicate symbol. Note that we can optionally augment the above list to include \textit{function symbols}, which also have a specified arity similar to \textit{predicate symbols}, but it is not necessary to give a basic definition of first order logic. This extension to function symbols is also discussed below.
+
+An \textit{atomic formula} of first order logic is an $n$-ary predicate followed by a list of $n$ arguments $p(t_1,\dots,t_n)$, where each argument $t_i$ is either a variable or a constant. A \textit{formula} of first order logic is defined as strings generated by the following grammar:
+\begin{align*}
+    &argument& &::= x \qquad &\text{for any } x\in \mathcal{V}\\
+    &argument& &::= a \qquad &\text{for any } a\in \mathcal{A}\\
+    &argument\_list& &::= argument\\
+    &argument\_list& &::= argument,argument\_list\\
+    &atomic\_formula& &::= p(argument\_list) \qquad &\text{for any $n$-ary } p\in \mathcal{P}\\
+    \\
+    &formula& &::= atomic\_formula\\
+    &formula& &::= \neg \, formula\\
+    &formula& &::= formula \vee formula\\
+    &formula& &::= \exists x \, formula \qquad &\text{for any } x \in \mathcal{V}\\
+    &formula& &::= \forall x \, formula \qquad &\text{for any } x \in \mathcal{V}
+\end{align*}
+Note that for a formula $A$, an occurrence of a variable $x$ in $A$ is a \textit{free variable} of $A$ iff $x$ is not within the scope of a quantified variable. A variable which is not free is \textit{bound}. If a formula has no free variables, it is \textit{closed}.
+
+\subsection{Interpretations}
+
+In propositional logic, an interpretation is a mapping from atomic propositions (i.e. propositional variables) to truth values (i.e. $\{True, False\}$). In first order logic, the analogous concept is a mapping from atomic formulas to truth values. The atomic formulas of first order logic, however, contain variables and constants that must be assigned elements of some domain. In propositional logic, each atomic proposition is assumed to be boolean-valued, so this is not a concern. That is, the ``domain'' of each propositional variable is implicitly assumed to be the truth values $\{True,False\}$. In first order logic, this is generalized by allowing variables to range over specified domains.
+
+Let $A$ be a formula of first order logic where $\{p_1,\dots,p_m\}$ are all the predicates appearing in $A$ and $\{a_1,\dots,a_k\}$ are all the constants appearing in $A$. An \textit{interpretation} $\mathcal{I}_A$ for a formula $A$ is a triple consisting of the following: 
+\begin{itemize}
+    \item $D$: a \textit{non-empty} set called the \textit{domain}
+    \item $\{R_1,\dots, R_m\}$: a set of relations on $D$, where $R_i \subseteq D^{m}$ is assigned to the $n_i$-ary predicate symbol $p_i$.
+    \item $\{d_1,\dots,d_k\}$: a set of constant values, where $d_i \in D$ is assigned to the constant $a_i$.
+\end{itemize}
+% \begin{align*}
+%     (D, \{R_1,\dots, R_m), \{d_1,\dots,d_k\})
+% \end{align*}
+% where $D$ is a \textit{non-empty} set called the \textit{domain}, $R_i$ is an $n_i$-ary relation on $D$ that is assigned to the $n_i$-ary predicate $p_i$ and $d_i \in D$ is assigned to the constant $a_i$. 
+In other words, an interpretation defines a ``domain of discourse'' $D$, along with a concrete assignment of relations to each predicate symbol $p \in \mathcal{P}$ and values from the domain to each constant $a \in \mathcal{A}$. 
+
+For example, if we have
+\begin{align*}
+    \mathcal{P} &= \{p\}\\
+    \mathcal{A} &= \{a\}\\
+    \mathcal{V} &= \{x\}
+\end{align*}
+then a first order formula may look like:
+\begin{align*}
+    \A x p(a,x)
+\end{align*}
+which might contain the following various interpretations:
+\begin{align*}
+    \mathcal{I}_1 = (\mathbb{N},\{\leq\},\{0\})\qquad 
+    \mathcal{I}_2 = (\mathbb{N},\{\leq\},\{1\})\qquad
+    \mathcal{I}_3 = (\mathbb{Z},\{\leq\},\{0\})
+\end{align*}
+where the domain is either the natural numbers, $\mathbb{N}$, or the integers, $\mathbb{Z}$, and the binary relation $\leq$ is assigned to the binary predicate symbol $p$, and either 0 or 1 assigned to the constant $a$. We could also have an interpretation over strings e.g.
+\begin{align*}
+    \mathcal{I}_4 = (Str, \{isPrefix\}, \{``s"\})
+\end{align*}
+where $Str$ represents the set of all strings, $isPrefix$ is the binary relation determining if one string is a prefix of another, and ``s'' is a single character string. This illustrates that the same first order logic formulas can be ``imbued'' (i.e. \textit{interpreted}) with various semantics. Furthermore, for an interpretation $\interp_A$ and formula $A$, an \textit{assignment} $\sigma_{\interp_A} : \mathcal{V} \rightarrow D$ is a function that maps every free variable $v \in \mathcal{V}$ to an element $d \in D$, the domain of $\interp_A$.
+
+For a closed formula $A$ (no free variables), the \textit{truth value} of $A$ under $\mathcal{I}_A$, denoted $v_{\interp_A}(A)$, is given by ``evaluating'' the formula in the standard way. That is, evaluating the inner, unquantified formula over each element in the domain, for each quantified variable, plugging into the predicates of the formula and evaluating. We can define these evaluation semantics formally but it is mostly straightforward. For example, the truth value of the closed formula
+\begin{align*}
+    \A x \, p(a,x)
+\end{align*}
+under the interpretation 
+\begin{align*}
+    \mathcal{I}_1 = (\{0,1\},\{\leq\},\{0\})\qquad 
+\end{align*} 
+evaluates to $True$ iff $0 \leq x$ for all $x \in \{0,1\}$.
+
+Now we define the following for a closed formula $A$ of first order logic:
+\begin{itemize}
+    \item $A$ is \textit{true} in $\interp$ (alternately, $\interp$ is a \textit{model} for $A$) iff $v_\interp(A)=True$. We denote this as $\interp \vDash A$.
+    \item $A$ is \textit{valid} if for all interpretations $\mathcal{I}$, $\mathcal{I} \vDash A$
+    \item $A$ is \textit{satisfiable} if for some interpretation $\mathcal{I}$, $\mathcal{I} \vDash A$
+    \item $A$ is \textit{unsatisfiable} if it is not satisfiable.
+\end{itemize}
+Note that these definitions of validity/satisfiability are a bit more involved than in the case of propositional logic. We must consider a formula under \textit{all possible interpretations} in order to consider validity. For satisfiability, we may only need to find one adequate interpretation, though we may need to consider/search through many possible interpretations.
+
+\subsection{Functions}
+\label{sec:fol-with-functions}
+
+Our definition above for defining the structure of first order formulas did not allow for the inclusion of functions i.e. we only allowed predicate symbols. We can generalize this to allow for functions in our first order formulas. Adding functions basically augments the set $(\mathcal{P}, \mathcal{A}, \mathcal{V})$ of \textit{predicate symbols}, \textit{constant symbols}, and \textit{variables}, with a set $\mathcal{F}$ of \textit{function symbols}, each with a specified arity, as with predicate symbols. The notion of an \textit{interpretation} of a formula is thus also augmented, to become a 4-tuple
+\begin{align*}
+    \mathcal{I} = (D, \{R_1,\dots, R_k\},  \{F_1^{n_1},\dots, F_l^{n_l}\}, \{d_1,\dots,d_k\})
+\end{align*}
+where each $F_j^{n_j}$ is an $n_j$-ary function on $D$ that is assigned to the function symbol $f_j^{n_j}$, with the rest of the semantics essentially unchanged. The grammar of formulas is also updated to account for functions, which produce a value in the domain $D$, rather than a truth value, as predicates do. Note that if we allow for function symbols, then we can simply view constants as functions of arity 0.
+
+\subsection{Many Sorted First Order Logic}
+
+In standard first order logic, interpretations are over a single domain $D$. Many-sorted logic generalizes this to allow for multiple domains, referred to as \textit{sorts} \cite{2014manysortedlogic}. That is, a signature is augmented to include a set of \textit{sorts}, where the arity of each predicate, constant, and/or function symbol now also includes the sort of each of its arguments. An interpretation consists of a triple
+\begin{align*}
+    (\{D_1,\dots,D_n\}, \{R_1,\dots, R_m\},\{d_1,\dots,d_k\})
+\end{align*}  
+where $\{D_1,\dots,D_n\}$ are domains assigned to each \textit{sort}.
+
+There is also a notion of \textit{stratification} 
+of sorts i.e. a total order on all sorts. This is made use of in Ivy \cite{2020ivymultimodal} and also discussed in prior work \cite{2007decidablefragmentsmanysorted, 2009completeinstant}. Sorted first order logic is the basic formalism used, for example, in the original Ivy paper \cite{padon2016ivy} that described their modeling language. It is also used as the encoding for TLA+ in TLAPS \cite{2016merzmanysorted}.
+
+\subsection{PCNF and Clausal Form}
+
+In propositional logic, a formula is in conjunctive normal form (CNF) if it is a conjunct of clauses (where a clause is a disjunction of literals). A notational variant of CNF is \textit{clausal form} i.e. a formula is represented as a set of clauses, where each clause is a set of literals.
+
+We generalize CNF to first order logic by defining a normal form that accounts for quantifiers. We say that a formula is in \textit{PCNF} (\textit{prenex conjunctive normal form}) iff it is of the form:
+\begin{align*}
+    Q_1 x_1 \dots Q_n x_n \, M
+\end{align*}
+where $Q_i$ are quantifiers and $M$ is a quantifier-free formula in CNF (conjunctive normal form). The sequence $Q_1 x_1\dots Q_n x_n$ is the \textit{prefix} and $M$ is the \textit{matrix}. Also, let $A$ be a closed formula in PCNF whose prefix consists only of universal quantifiers. The \textit{clausal form} of $A$ consists of the matrix of $A$ written as a set of clauses.
+
+\subsubsection{Skolemization}
+
+In propositional logic, every formula can be translated to an equivalent one in CNF, but this is not the case in first order logic. We can, however, transform a formula in first order logic into one in clausal form (i.e. one with only universal quantifiers) without modifying its satisfiability. That is, formally, if $A$ is a closed formula, then there exists a formula $A'$ in clausal form such that $A \approx A'$, where $\approx$ denotes the equisatisfiability relation. That is, $A$ is satisfiable iff $A'$ is. Note that this does not mean that $A$ and $A'$ are logically equivalent. The process of transforming $A$ into such a form $A'$ is referred to as \textit{Skolemization}. That is, a formula is in \textit{Skolem normal form} if it is in prenex normal form with only universal quantifiers.
+
+It is straightforward to first transform $A$ into a logically equivalent formula in PCNF. The removal of existential quantifiers is the main challenge. The basic idea of Skolemization can be illustrated in an example formula 
+\begin{align*}
+    \A x \E y p(x,y)
+\end{align*}
+Intuitively, we think of reading the quantifiers as ``for all $x$, find a $y$ associated with $x$ such that the predicate $p$ is true''. This basically matches the intuitive concept of a function. That is, we want a function $f$ such that $y=f(x)$. So, the existential quantifier can be removed giving $A' = \A x p(x,f(x))$.
+
+\subsection{Finite and Infinite Models}
+
+We say that a set of formulas $U=\{A_1,\dots\}$ is \textit{satisfiable} iff there exists an interpretation $\interp_U$ such that $v_{\interp_U}(A_i)=True$ for all $i$. The satisfying interpreation is a \textit{model} for $U$. 
+
+A set of formulas $U$ has the \textit{finite model property} iff: $U$ is satisfiable iff it is satisfiable in an interpretation whose domain is a finite set. As one example, let $U$ be the set of pure formulas of the form 
+\begin{align*}
+    \E x_1 \dots \E x_k \A y_1 \dots \A y_l \, A(x_1,\dots,x_k,y_1,\dots,y_l)
+\end{align*}
+where $A$ is quantifier free. Then $U$ has the finite model property.
+
+\subsection{Decidability}
+
+Checking satisfiability or validity of a formula in first order logic is undecidable. Even under particular, fixed interpretations, checking validity may be undecidable. For example, Peano arithmetic, which consists of a single constant symbol $0$, a function symbol $s$ representing the successor function, and two binary function symbols, $+$ and $*$, is undecidable. 
+
+There are, however, interpretations under which first order logic is decidable. The theory of Presburger arithmetic, which includes addition but omits multiplication, is decidable. In addition, checking validity of formulas in \textit{monadic predicate calculus} are also decidable \cite{lewis1980complexity}. This is a fragment of first order logic in which all relation symbols are \textit{monadic} i.e. they take only one argument, and there are no function symbols. That is, all atomic formulas are of the form $P(x)$, where $P$ is a relation symbol and $x$ is a variable.
+
+% \subsection{Decidable Cases of First Order Logic}
+Other decidable cases of first order logic can be defined by the structure of quantifier prefix. We define a formula of first order logic as \textit{pure} if it contains no function symbols (including constants which are 0-ary function symbols). There are decision procedures for the validity of pure PCNF formulas whose quantifier prefixes are of one of the following forms:
+\begin{align}
+    &\A x_1\dots\A x_n \,\E x_1\dots\E x_n \\
+    &\A x_1\dots\A x_n \, \E y \, \A z_1\dots\A z_m \\
+    &\A x_1\dots\A x_n \, \E y_1 \E y_2 \, \A z_1\dots\A z_m 
+\end{align}  
+which are abbreviated as $\A^*\E^*$, $\A^*\E\A^*$, $\A^*\E\E\A^*$ \cite{Dreben1979TheDP}. 
+
+\subsubsection*{EPR}
+
+The so-called \textit{Bernays-Sch\"{o}nfinkel class}, consisting of pure formulas (no function symbols) with prefixes of the form $\E^*\A^*$, is also decidable \cite{lewis1980complexity}. That is, validity and satisfiability are both decidable for this class of formulas. This class is alternately referred to as \textit{EPR} (\textbf{e}ffectively \textbf{pr}opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original \cite{demoura2008deciding}.
+
+% The problem of checking validity of an arbitrary first order logic formula is undecidable. Validity, however, 
+
+% Note also that first order logic can be seen as a generalization of propositional logic if we, for example, throw away predicate and constant symbols and consider the interpretation
+% \begin{align*}
+%     \mathcal{I} = (\{True,False\},\{\},\{\})\qquad 
+% \end{align*}
+% In this case we set as our domain the boolean values $\{True,False\}$, and don't include any predicate symbols
+
+
+% For example, the formula
+% \begin{align*}
+%     \A x p(x) \Rightarrow p(a)
+% \end{align*}
+% is valid. 
+
+% That is, it is true under all possible interpretations. This must be true, since, for any domain $D$, if $p(x)=True$ for $x \in D$ and $
+
+
+% An interpretation for $\phi_1$ may be $(\{0,1\},\{x > y,x > 0\},\{\})$, which allows us to provide a concrete semantics to formula $\phi_1$, as:
+% \begin{align*}
+    % \A x \A y x > y \vee x > 0
+% \end{align*}
+
+% it assigns values from this domain to the relations and constant symbols of a formula. For example, consider the interpretation
+% \begin{align*}
+%     \interp_1 = (\mathbb{N}, \{\leq\}, \{0\})
+% \end{align*}
+% which sets the natural numbers $\mathbb{N}$ as the domain of discourse, and the binary relation $\leq$ is assigned to the first binary predicate..., and $0$ is assigned to the constant symbols. TODO.
+% % The satisfiability problem for propositional logic (i.e. boolean domain) is decidable.
+
+% \subsubsection*{Questions/Notes}
+% \begin{itemize}
+%     \item Is propositional logic (i.e. no quantifiers) with the theory of natural numbers decidable?
+%     \item Some first order theories, even over infinite domains, are decidable. For example, Presburger arithmetic, which is a first order theory over the natural numbers with addition.
+% \end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{../../references/references.bib}
+
+\end{document}

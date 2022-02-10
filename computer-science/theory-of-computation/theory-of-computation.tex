@@ -22,9 +22,11 @@
 \author{William Schultz}
 \maketitle
 
+In standard computation/complexity theory, we study \textit{decision problems}. That is, computational problems that have a \textit{yes/no} answer. These types of problems can be formulated in terms of a corresponding \textit{language}, which is a set of strings $w \in \Sigma^*$, where $\Sigma$ is some finite alphabet i.e. some finite set of symbols.
+
 \section{Decidability}
 
-A language $L$ is a set of strings $w \in \Sigma^*$, where $\Sigma$ is some finite alphabet i.e. some finite set of symbols. We say that a language is \textit{decidable} if there exists a Turing machine $M$ such that $M$ accepts every input $w \in L$ and always halts. We say that a language is \textit{recognizable} if there is a Turing machine $M$ that accepts every input $w \in L$ but it may reject or loop forever on inputs $w \notin L$. Note that for any Turing machine on a given input, there are three possible outcomes: accept, reject, or loop forever. A basic undecidable problem is the $A_{TM}$ problem, which asks, given a Turing machine $M$ and input $w$, does machine $M$ accept on $w$? Note that the class of recognizable languages is more general than the class of undecidable languages. That is, any language that is decidable is recognizable, but the converse is not necessarily true.
+We say that a language is \textit{decidable} if there exists a Turing machine $M$ such that $M$ accepts every input $w \in L$ and always halts. We say that a language is \textit{recognizable} if there is a Turing machine $M$ that accepts every input $w \in L$ but it may reject or loop forever on inputs $w \notin L$. Note that for any Turing machine on a given input, there are three possible outcomes: (1) \textit{accept}, (2)  \textit{reject}, or (3) \textit{loop forever}. A basic undecidable problem is the $A_{TM}$ problem, which asks, given a Turing machine $M$ and input $w$, does machine $M$ accept on $w$? Note that the class of recognizable languages is more general than the class of undecidable languages. That is, any language that is decidable is recognizable, but the converse is not necessarily true. Decidability is in some sense the coarsest possible notion of complexity i.e. it is only concerned with whether there exists any general algorithm for solving a problem, regardless of how fast/slow it is. Undeciable problems are, in some sense, outside the realm of what can be computed by a single, generic algorithm i.e. one that successfully terminates on all possible inputs.
 
 \section{P and NP}
 

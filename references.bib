@@ -1,0 +1,159 @@
+@techreport{lamport1974on,
+author = {Lamport, Leslie},
+title = {On Self-stabilizing Systems},
+year = {1974},
+month = {December},
+abstract = {This note was written upon reading Dijkstra's classic paper "Self-stabilizing Systems in Spite of Distributed Control" that appeared in the November 1974 issue of CACM (see [58]). It generalizes one of the algorithms in Dijkstra's paper from a line of processes to an arbitrary tree of processes. It also discusses the self-stabilizing properties of the bakery algorithm. I never tried to publish this note--probably because I regarded it as too small a piece of work to be worth a paper by itself.
+The note contains the intriguing sentence: "There is a complicated modified version of the bakery algorithm in which the values of all variables are bounded." I never wrote down that version, and I'm not sure what I had in mind. But I think I was thinking of roughly the following modification. As a process waits to enter its critical section, it keeps reducing its number, not entering the critical section until its number equals one. A process p can reduce its number by at most one, and only when the next lower-numbered process's number is at least two less than p's number, and the next higher-numbered process is within one of p's number. I think I intended to use the techniques of [25] to allow reading and writing of numbers to remain non-atomic while maintaining the order of waiting processes. (If eventually all processes stop changing their numbers, then all processes will eventually read the correct numbers, allowing some process to progress.) At one time, I convinced myself that this algorithm is correct. But I never wrote a rigorous proof, so I don't know if it really works. Filling in the details and proving correctness should be a nice exercise.},
+url = {https://www.microsoft.com/en-us/research/publication/self-stabilizing-systems/},
+number = {CA 7412-0511},
+}
+@inproceedings{hance2021finding,
+  title={Finding Invariants of Distributed Systems: It's a Small (Enough) World After All.},
+  author={Hance, Travis and Heule, Marijn and Martins, Ruben and Parno, Bryan},
+  booktitle={NSDI},
+  pages={115--131},
+  year={2021}
+}
+@inproceedings{goel2021symmetry,
+  title={On Symmetry and Quantification: A New Approach to Verify Distributed Protocols},
+  author={Goel, Aman and Sakallah, Karem},
+  booktitle={NASA Formal Methods Symposium},
+  pages={131--150},
+  year={2021},
+  organization={Springer}
+}
+@inproceedings{yao2021distai,
+  title={DistAI: Data-Driven Automated Invariant Learning for Distributed Protocols},
+  author={Yao, Jianan and Tao, Runzhou and Gu, Ronghui and Nieh, Jason and Jana, Suman and Ryan, Gabriel},
+  booktitle={15th $\{$USENIX$\}$ Symposium on Operating Systems Design and Implementation ($\{$OSDI$\}$ 21)},
+  pages={405--421},
+  year={2021}
+}
+@article{goel2021towards,
+  title={Towards an Automatic Proof of Lamport's Paxos},
+  author={Goel, Aman and Sakallah, Karem A},
+  journal={arXiv preprint arXiv:2108.08796},
+  year={2021}
+}
+@article{mirzaie2020parameterized,
+  title={Parameterized synthesis of self-stabilizing protocols in symmetric networks},
+  author={Mirzaie, Nahal and Faghih, Fathiyeh and Jacobs, Swen and Bonakdarpour, Borzoo},
+  journal={Acta Informatica},
+  volume={57},
+  number={1},
+  pages={271--304},
+  year={2020},
+  publisher={Springer}
+}
+@inproceedings{lamport2005real,
+  title={Real-time model checking is really simple},
+  author={Lamport, Leslie},
+  booktitle={Advanced Research Working Conference on Correct Hardware Design and Verification Methods},
+  pages={162--175},
+  year={2005},
+  organization={Springer}
+}
+@misc{paxosuniqueproposalSOquestion,
+  title={why does paxos proposalId need to be unique},
+  publisher={StackOverflow},
+  howpublished={https://stackoverflow.com/questions/45610160/why-does-paxos-proposalid-need-to-be-unique}
+}
+@inproceedings{padon2016ivy,
+  title={Ivy: safety verification by interactive generalization},
+  author={Padon, Oded and McMillan, Kenneth L and Panda, Aurojit and Sagiv, Mooly and Shoham, Sharon},
+  booktitle={Proceedings of the 37th ACM SIGPLAN Conference on Programming Language Design and Implementation},
+  pages={614--630},
+  year={2016}
+}
+@article{albarghouthi2016maximal,
+  title={Maximal specification synthesis},
+  author={Albarghouthi, Aws and Dillig, Isil and Gurfinkel, Arie},
+  journal={ACM SIGPLAN Notices},
+  volume={51},
+  number={1},
+  pages={789--801},
+  year={2016},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{zhang2020behavioral,
+  title={A behavioral notion of robustness for software systems},
+  author={Zhang, Changjian and Garlan, David and Kang, Eunsuk},
+  booktitle={Proceedings of the 28th ACM Joint Meeting on European Software Engineering Conference and Symposium on the Foundations of Software Engineering},
+  pages={1--12},
+  year={2020}
+}
+@InProceedings{howard_flex_paxos,
+  author =	{Heidi Howard and Dahlia Malkhi and Alexander Spiegelman},
+  title =	{{Flexible Paxos: Quorum Intersection Revisited}},
+  booktitle =	{20th International Conference on Principles of Distributed Systems (OPODIS 2016)},
+  pages =	{25:1--25:14},
+  series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+  ISBN =	{978-3-95977-031-6},
+  ISSN =	{1868-8969},
+  year =	{2017},
+  volume =	{70},
+  editor =	{Panagiota Fatourou and Ernesto Jim{\'e}nez and Fernando Pedone},
+  publisher =	{Schloss Dagstuhl--Leibniz-Zentrum fuer Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{http://drops.dagstuhl.de/opus/volltexte/2017/7094},
+  URN =		{urn:nbn:de:0030-drops-70947},
+  doi =		{10.4230/LIPIcs.OPODIS.2016.25},
+  annote =	{Keywords: Paxos, Distributed Consensus, Quorums}
+}
+@inproceedings{lopes2014weakest,
+  title={Weakest precondition synthesis for compiler optimizations},
+  author={Lopes, Nuno P and Monteiro, Jos{\'e}},
+  booktitle={International Conference on Verification, Model Checking, and Abstract Interpretation},
+  pages={203--221},
+  year={2014},
+  organization={Springer}
+}
+@inproceedings{black2000mutation,
+  title={Mutation operators for specifications},
+  author={Black, Paul E and Okun, Vadim and Yesha, Yaacov},
+  booktitle={Proceedings ASE 2000. Fifteenth IEEE International Conference on Automated Software Engineering},
+  pages={81--88},
+  year={2000},
+  organization={IEEE}
+}
+@article{bonakdarpour2012automated,
+  title={Automated model repair for distributed programs},
+  author={Bonakdarpour, Borzoo and Kulkarni, Sandeep S},
+  journal={ACM SIGACT News},
+  volume={43},
+  number={2},
+  pages={85--107},
+  year={2012},
+  publisher={ACM New York, NY, USA}
+}
+@inproceedings{chaouch2009reduction,
+  title={A reduction theorem for the verification of round-based distributed algorithms},
+  author={Chaouch-Saad, Mouna and Charron-Bost, Bernadette and Merz, Stephan},
+  booktitle={International Workshop on Reachability Problems},
+  pages={93--106},
+  year={2009},
+  organization={Springer}
+}
+@inproceedings{2019fasterkSAT,
+author = {Hansen, Thomas Dueholm and Kaplan, Haim and Zamir, Or and Zwick, Uri},
+title = {{Faster k-SAT Algorithms Using Biased-PPSZ}},
+year = {2019},
+isbn = {9781450367059},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3313276.3316359},
+doi = {10.1145/3313276.3316359},
+abstract = {The PPSZ algorithm, due to Paturi, Pudlak, Saks and Zane, is currently the fastest known algorithm for the k-SAT problem, for every k&gt;3. For 3-SAT, a tiny improvement over PPSZ was obtained by Hertli. We introduce a biased version of the PPSZ algorithm using which we obtain an improvement over PPSZ for every k≥ 3. For k=3 we also improve on Herli’s result and get a much more noticeable improvement over PPSZ, though still relatively small. In particular, for Unique 3-SAT, we improve the current bound from 1.308n to 1.307n.},
+booktitle = {Proceedings of the 51st Annual ACM SIGACT Symposium on Theory of Computing},
+pages = {578–589},
+numpages = {12},
+keywords = {randomized algorithm, satisfiability},
+location = {Phoenix, AZ, USA},
+series = {STOC 2019}
+}
+@misc{SE3satlowerbounds,
+title={{What are the best current lower bounds on 3SAT?}},
+url={https://cstheory.stackexchange.com/questions/93/what-are-the-best-current-lower-bounds-on-3sat},
+howpublished = "\url{https://cstheory.stackexchange.com/questions/93/what-are-the-best-current-lower-bounds-on-3sat}",
+}

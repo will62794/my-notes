@@ -1,0 +1,15 @@
+*.DS_Store
+*.aux
+*.log
+# *.pdf
+*.out
+*.bbl
+*.gz
+*.blg
+*.fdb_latexmk
+*.fls
+*.vtc
+*.dvi
+*.DS_Store
+states/
+.obsidian/workspace

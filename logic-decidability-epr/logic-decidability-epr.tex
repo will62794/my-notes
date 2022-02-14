@@ -57,6 +57,19 @@ For a set of formulas $U=\{A_1,\dots\}$, a \textit{model} of $U$ is an interpret
 
 Let $U$ be a set of formulas. We say that $U$ is \textit{closed under logical consequence} iff for all formulas $A$, if $U \vDash A$, then $A \in U$. A set of formulas that is closed under logical consequence is called a \textit{theory}. The elements of $U$ are \textit{theorems}. Theories are typically constructed by selecting a set of formulas called \textit{axioms} and deducing their logical consequences. For a given set of formulas $U$, we say that $U$ is \textit{axiomatizable} iff there exists a set of formulas $X$ such that $U = \{A \mid X \vDash A\}$. That is, there exists a set of formulas $X$ such that every formula in $U$ can be deduced as a logical consequence of the formulas in $X$. The set of formulas $X$ are the \textit{axioms} of $U$. If $X$ is finite, then $U$ is said to be \textit{finitely axiomatizable}. 
 
+\subsection{Deductive Systems and Proofs}
+
+Using a purely semantical approach to determining the validity of formulas in propositional logic can have various drawbacks. For example, not all logics have decision procedures like propositional logic. Thus, we can use an alternate, deductive approach. 
+
+A \textit{deductive system} is a set of formulas called \textit{axioms} and a set of \textit{rules of inference}. A \textit{proof} in a deductive system is a sequence of formulas $S = \{A_1,\dots,A_n\}$ such that each formula $A_i$ is either an axiom or it can be inferred from previous formulas of the sequence $A_{j_1},\dots,A_{j_k}$, using a rule of inference. For $A_n$, the last formula in the sequence,we say that $A_n$ is a \textit{theorem}, the sequence $S$ is a \textit{proof} of $A_n$, and $A_n$ is \textit{provable}, denoted $\vdash A_n$. Note that even if there is no decision procedure to discover a proof, it can be mechanically \textit{checked} i.e. using a syntax based approach to check that each applied inference rule is valid.
+
+Proving soundness and completeness of a deductive system $\mathcal{D}$ means showing that for any formula $A$, 
+\begin{align*}
+    \vDash A \iff \vdash A  
+\end{align*}
+for $\mathcal{D}$. That is, if $A$ is valid (in a semantical sense), then $A$ is provable in $\mathcal{D}$, and vice versa. A deductive system $\mathcal{D}$ is sound if any provable statement in $\mathcal{D}$ is a true statement i.e. if $\vdash A$ then  $\vDash A$.
+
+
 \section{First Order Logic}
 
 \textit{First order logic} extends propositional logic to include quantification over some specified domain, in addition to a more general notion of \textit{interpretation} for a given formula.

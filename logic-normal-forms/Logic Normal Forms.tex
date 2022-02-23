@@ -1,0 +1,38 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{Logic Normal Forms}
+\author{William Schultz}
+\maketitle
+
+\begin{itemize}
+    \item \textbf{Conjunctive normal form (CNF)}: a conjunction of disjunctions. More precisely, a conjunction of \textit{clauses}, where a clause is a disjunction of literals e.g.
+    \begin{align*}
+        (a \vee b) \wedge (b \vee \neg c) \wedge (a \vee d)
+    \end{align*}
+    Also called \textit{product of sums} form.
+    \item \textbf{Disjunctive normal form (DNF)}: a disjunction of conjunctions. Also described as a disjunction of \textit{cubes}, where a cube is a conjunction of literals. e.g.
+    \begin{align*}
+        (a \wedge b) \vee (b \wedge \neg c) \vee (a \wedge d)
+    \end{align*}
+    Also called \textit{sum of products} form.
+\end{itemize}
+
+
+\end{document}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>MinuteClock</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>toolbox.builder.TLAParserBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>toolbox.natures.TLANature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>HourClock.tla</name>
+			<type>1</type>
+			<location>/Users/williamschultz/Dropbox/Notes/Formal Methods/Refinement/HourClock.tla</location>
+		</link>
+		<link>
+			<name>MinuteClock.tla</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/MinuteClock.tla</locationURI>
+		</link>
+		<link>
+			<name>Refinement.tla</name>
+			<type>1</type>
+			<location>/Users/williamschultz/Dropbox/Notes/Formal Methods/Refinement/Refinement.tla</location>
+		</link>
+	</linkedResources>
+</projectDescription>

@@ -8,5 +8,5 @@
 \contentsline {subsection}{\numberline {2.3}Many Sorted First Order Logic}{6}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}PCNF and Clausal Form}{6}{subsection.2.4}%
 \contentsline {subsubsection}{\numberline {2.4.1}Skolemization}{7}{subsubsection.2.4.1}%
-\contentsline {subsection}{\numberline {2.5}Finite and Infinite Models}{7}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.5}Finite Models}{7}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Decidability}{7}{subsection.2.6}%

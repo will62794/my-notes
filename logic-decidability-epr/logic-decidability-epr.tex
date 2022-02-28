@@ -15,6 +15,7 @@
 \date{\today}
 
 \maketitle
+\tableofcontents
 
 \newcommand{\propvars}{{\mathcal{P}}}
 \newcommand{\A}{\forall}
@@ -22,7 +23,7 @@
 
 \section{Propositional Logic}
 
-We define classic propositional logic \cite{2021benari} as a formal system consisting of: 
+We define classic propositional logic \cite{2012benari} as a formal system consisting of: 
 \begin{itemize}
     \item $\propvars$: a countably infinite set of elements called \textit{propositional symbols}. These are alternately referred to as \textit{propositional variables}, \textit{atomic propositions} or just \textit{atoms}.
     \item $\Omega$: set of logical \textit{operators} or \textit{connectives}.
@@ -197,13 +198,15 @@ Intuitively, we think of reading the quantifiers as ``for all $x$, find a $y$ as
 
 \subsection{Finite and Infinite Models}
 
-We say that a set of formulas $U=\{A_1,\dots\}$ is \textit{satisfiable} iff there exists an interpretation $\interp_U$ such that $v_{\interp_U}(A_i)=True$ for all $i$. The satisfying interpreation is a \textit{model} for $U$. 
+We say that a set of formulas $U=\{A_1,\dots\}$ is \textit{satisfiable} iff there exists an interpretation $\interp_U$ such that $v_{\interp_U}(A_i)=True$ for all $i$. The satisfying interpretation is a \textit{model} for $U$. 
 
 A set of formulas $U$ has the \textit{finite model property} iff: $U$ is satisfiable iff it is satisfiable in an interpretation whose domain is a finite set. As one example, let $U$ be the set of pure formulas of the form 
 \begin{align*}
     \E x_1 \dots \E x_k \A y_1 \dots \A y_l \, A(x_1,\dots,x_k,y_1,\dots,y_l)
 \end{align*}
 where $A$ is quantifier free. Then $U$ has the finite model property.
+
+Another interesting fact is one due to L\"{o}wenheim-Skolem, which says that if a formula of first order logic is satisfiable, then it is satisfiable in a countable domain (Theorem 12.10 in \cite{2012benari}). Thus, countable domains (e.g. the natural numbers) are sufficient for interpretation of first order logic.
 
 \subsection{Decidability}
 

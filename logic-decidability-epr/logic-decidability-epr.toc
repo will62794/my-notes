@@ -10,3 +10,5 @@
 \contentsline {subsubsection}{\numberline {2.4.1}Skolemization}{7}{subsubsection.2.4.1}%
 \contentsline {subsection}{\numberline {2.5}Finite Models}{7}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Decidability}{7}{subsection.2.6}%
+\contentsline {subsubsection}{\numberline {2.6.1}Decidable Classes}{8}{subsubsection.2.6.1}%
+\contentsline {paragraph}{EPR}{8}{section*.2}%

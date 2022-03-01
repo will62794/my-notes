@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{hyperref}
+\usepackage{todonotes}
 \usepackage[margin=1.5in]{geometry}
 
 \hypersetup{pdftex,colorlinks=true,allcolors=blue}
@@ -211,11 +212,13 @@ Another interesting fact is one due to L\"{o}wenheim-Skolem, which says that if 
 
 \subsection{Decidability}
 
-Checking satisfiability or validity of a formula in first order logic is undecidable. Even under particular, fixed interpretations, checking validity may be undecidable. For example, Peano arithmetic, which consists of a single constant symbol $0$, a function symbol $s$ representing the successor function, and two binary function symbols, $+$ and $*$, is undecidable. In addition, a theorem of Trakhtenbrot gives a further refinement. It states that even if we consider first order logic over only the class of finite models, then validity is still undecidable \cite{libkin2004elements}. 
+Checking validity of a formula in first order logic is undecidable. Even under particular, fixed interpretations, checking validity may be undecidable. For example, Peano arithmetic, which consists of a single constant symbol $0$, a function symbol $s$ representing the successor function, and two binary function symbols, $+$ and $*$, is undecidable. In addition, a theorem of Trakhtenbrot gives a further refinement. It states that even if we consider first order logic over only the class of finite models, then validity and satisfiability are both still undecidable \cite{libkin2004elements}. 
 
 Note that Lowenheim's theorem (Section \ref{sec:finite-models}) establishes that any satisfiable formula in first order logic is satisfiable in an interpretation with a countable domain. Trakhtenbrot's theorem is in some sense complementary to this result, since it states that even if we consider only interpretations with finite domains, the validity problem in first order logic is still fundamentally hard i.e. undecidable.
 
-There are, however, interpretations under which first order logic is decidable. The theory of Presburger arithmetic, which includes addition but omits multiplication, is decidable. In addition, checking validity of formulas in \textit{monadic predicate calculus} are also decidable \cite{lewis1980complexity}. This is a fragment of first order logic in which all relation symbols are \textit{monadic} i.e. they take only one argument, and there are no function symbols. That is, all atomic formulas are of the form $P(x)$, where $P$ is a relation symbol and $x$ is a variable.
+\subsubsection{Decidable Classes}
+
+There are, however, interpretations under which validity in first order logic is decidable. The theory of Presburger arithmetic, which includes addition but omits multiplication, is decidable. In addition, checking validity of formulas in \textit{monadic predicate calculus} are also decidable \cite{lewis1980complexity}. This is a fragment of first order logic in which all relation symbols are \textit{monadic} i.e. they take only one argument, and there are no function symbols. That is, all atomic formulas are of the form $P(x)$, where $P$ is a relation symbol and $x$ is a variable.
 
 % \subsection{Decidable Cases of First Order Logic}
 Other decidable cases of first order logic can be defined by the structure of quantifier prefix. We define a formula of first order logic as \textit{pure} if it contains no function symbols (including constants which are 0-ary function symbols). There are decision procedures for the validity of pure PCNF formulas whose quantifier prefixes are of one of the following forms:
@@ -226,9 +229,20 @@ Other decidable cases of first order logic can be defined by the structure of qu
 \end{align}  
 which are abbreviated as $\A^*\E^*$, $\A^*\E\A^*$, $\A^*\E\E\A^*$ \cite{Dreben1979TheDP}. 
 
-\subsubsection*{EPR}
+Note that if validity is decidable for a class of formulas, then we can always check if a formula $\phi$ in this class is satisfiable by checking if $\neg \phi$ is valid, and applying the following simple rule:
+\begin{align*}
+    &\neg \phi \text{ is valid} \Rightarrow \phi \text{ is not satisfiable}\\
+    &\neg \phi \text{ is not valid} \Rightarrow \phi \text{ is satisfiable}
+\end{align*}
+Recall that if $\neg \phi$ is valid this means that there are \textit{no} satisfying interpretations for $\phi$. Thus, $\phi$ is unsatisfiable. If $\neg \phi$ is not valid, then this means there must be some interpretations that do not satisfy $\neg \phi$, meaning $\phi$ must be satisfiable.
 
-The so-called \textit{Bernays-Sch\"{o}nfinkel class}, consisting of pure formulas (no function symbols) with prefixes of the form $\E^*\A^*$, is also decidable \cite{lewis1980complexity}. That is, validity and satisfiability are both decidable for this class of formulas. This class is alternately referred to as \textit{EPR} (\textbf{e}ffectively \textbf{pr}opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original \cite{demoura2008deciding}.
+% TODO (Question):
+% Thus, if validity for a class of formulas with quantifier prefixes $\forall^* \exists^*$ is decidable, this should imply that satisfiability for the class of formulas with prefixes $\neg (\forall^* \exists^*) \equiv \exists^* \forall^*$ is decidable.
+
+
+\paragraph{EPR}
+
+For the so-called \textit{Bernays-Sch\"{o}nfinkel class}, consisting of pure formulas (no function symbols) with prefixes of the form $\E^*\A^*$, satisfiability is decidable \cite{lewis1980complexity}. This class is alternately referred to as \textit{EPR} (\textbf{e}ffectively \textbf{pr}opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original \cite{demoura2008deciding}.
 
 % The problem of checking validity of an arbitrary first order logic formula is undecidable. Validity, however, 
 

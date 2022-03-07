@@ -236,6 +236,8 @@ Note that if validity is decidable for a class of formulas, then we can always c
 \end{align*}
 Recall that if $\neg \phi$ is valid this means that there are \textit{no} satisfying interpretations for $\phi$. Thus, $\phi$ is unsatisfiable. If $\neg \phi$ is not valid, then this means there must be some interpretations that do not satisfy $\neg \phi$, meaning $\phi$ must be satisfiable.
 
+Note that if \textit{satisfiability} is decidable for a class of formulas $F$, then validity should be decidable for the \textit{negation} of formulas in that class. That is, for any $\phi \in F$, if  checking $SAT(\phi)$ is decidable, then we can check validity of $\phi$ by checking $UNSAT(\neg \phi)$, but $\neg \phi$ may no longer fall into the decidable class $F$. So, if SAT is decidable for a formula class $F$, then for any $\phi \in F$, we know validity is decidable for $\neg \phi$, since we can check validity as $UNSAT(\neg (\neg \phi))=UNSAT(\phi)$, which is decidable since SAT for $\phi$ is decidable.
+
 % TODO (Question):
 % Thus, if validity for a class of formulas with quantifier prefixes $\forall^* \exists^*$ is decidable, this should imply that satisfiability for the class of formulas with prefixes $\neg (\forall^* \exists^*) \equiv \exists^* \forall^*$ is decidable.
 

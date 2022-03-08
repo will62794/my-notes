@@ -71,6 +71,51 @@ Proving soundness and completeness of a deductive system $\mathcal{D}$ means sho
 \end{align*}
 for $\mathcal{D}$. That is, if $A$ is valid (in a semantical sense), then $A$ is provable in $\mathcal{D}$, and vice versa. A deductive system $\mathcal{D}$ is sound if any provable statement in $\mathcal{D}$ is a true statement i.e. if $\vdash A$ then  $\vDash A$.
 
+\subsection{Resolution}
+
+The method of \textit{resolution} is an efficient method for searching for a proof. More precisely, it is a decision procedure for unsatisfiability in propositional logic. 
+
+Assume we have a propositional formula given in \textit{clausal form}, which is basically just conjunctive normal form (CNF) where each clause is viewed as a set of literals. This representation doesn't discard any essential information from the CNF representation, since a CNF formula is a conjunction of clauses, and the order doesn't matter for either the overall conjunction or the disjunctions within each clause. For example, the following formula in CNF
+\begin{align*}
+    (a \vee b) \wedge (b \vee \neg c \vee b)
+\end{align*}
+is written in clausal form as
+\begin{align*}
+    \{\{a,b\},\{b,\neg c\}\}
+\end{align*}
+A clause is \textit{trivial} if it contains a pair of clashing literals i.e. if it contains both a literal and its negation. That is, $(x \vee \neg x) \iff True$, so $\{x, \neg x\}$ can always be removed from a clause without changing the truth value of the clause. We consider the empty clause to be unsatisfiable, and denote it as $\square$. We consider the empty set of clauses, $\emptyset$. to be valid.
+
+Now, we say that two clauses $C_1,C_2$ are \textit{clashing} if there are literals $l \in C_1$ and $l^c \in C_2$, where $l^c$ is the complement of the literal $l$ (i.e. if $l=p$, then $l^c=\bar{p}$). We say that $C_1,C_2$ \textit{clash on} the pair of literals $l,l^c$. We define the \textit{resolvent} of $C_1$ and $C_2$ as the clause 
+\begin{align*}
+Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    
+\end{align*}
+and $C_1$ and $C_2$ are the \textit{parent clauses} of $C$. That is, the resolvent $C$ is produced by removing $l$ and $l^c$ from their respective clauses $C_1,C_2$, and then taking the union of the two resulting clauses. 
+
+For example, the clauses $C_1=ab\bar{c}$ and $C_2=bc\bar{e}$ clash on the pair of literals $c$ and $\bar{c}$. The resolvent is
+\begin{align*}
+    Res(C_1,C_2) &= (ab\bar{c} - \{\bar{c}\}) \cup (bc\bar{e} - \{c\})\\
+    &=ab \cup b\bar{e}\\
+    &=ab\bar{e}\\
+    &=\{a,b,\bar{e}\}
+\end{align*}
+
+Note that resolution is only performed if the pair of clauses clash on \textit{exactly} one pair of complementary literals. The important thing to note is that the resolvent $C$ is satisfiable iff the parent clauses $C_1$ and $C_2$ are both satisfiable. Thus, the resolution procedure then basically proceeds by taking in a set of clauses $S$ and repeatedly applying this resolution rule. That is
+\begin{itemize}
+    \item Choose a pair of clashing clauses $\{C_1,C_2\} \subseteq S_i$ that has not been chosen before.
+    \item Compute $Res(C_1,C_2)$.
+    \item If $C$ is not a trivial clause, let $S_{i+1}=S_i \cup \{C\}$. Otherwise $S_{i+1}=S_i$.
+    \item Terminate the procedure if either:
+    \begin{itemize}
+        \item $C=\square$
+        \item All pairs of clashing clauses have been resolved.
+    \end{itemize}
+\end{itemize}
+See Figure \ref{fig:resolution-refutation-tree} for an example of a resolution proof for the clause set $S=\{p,\bar{p}q, \bar{r}, \bar{p} \bar{q}r\}$ where the rule applications are represented as a tree, leading to the unsatisfiable clause.
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{figures/refutation-example.png}
+    \label{fig:resolution-refutation-tree}
+\end{figure}
 
 \section{First Order Logic}
 

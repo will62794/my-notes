@@ -1,0 +1,1 @@
+pandoc theory-of-computation.tex --css ../pandoc.css -f latex -t html5 -s -o test.html

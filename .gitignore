@@ -13,3 +13,5 @@
 *.DS_Store
 states/
 .obsidian/workspace
+*.run.xml
+*.bcf

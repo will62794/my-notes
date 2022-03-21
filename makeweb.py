@@ -15,8 +15,13 @@ def pandoc_cmd(notename):
         "--number-sections",
         f"--{math_engine}",
         f"--css {css_file}",
-        "-f latex -t html5 -s -o",
-        f"notes/{notename}/{notename}.html"
+        f"-f latex -t html5 -s -o notes/{notename}/{notename}.html",
+        "--bibliography=references.bib",
+        "--metadata=link-citations:true",
+        "--metadata=reference-section-title:References",
+        "--section-divs",
+        "--toc",
+        "--citeproc"
     ]
     argstr = " ".join(pdoc_args)
     cmd = f"pandoc {argstr}"

@@ -25,14 +25,25 @@
 <h1 class="title">Liveness and Fairness in TLA+</h1>
 <p class="author">William Schultz</p>
 </header>
-<h1 class="unnumbered" id="temporal-formulas">Temporal Formulas</h1>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#temporal-formulas">Temporal Formulas</a></li>
+<li><a href="#stuttering-and-weak-fairness">Stuttering and Weak Fairness</a></li>
+<li><a href="#strong-fairness">Strong Fairness</a></li>
+<li><a href="#machine-closure">Machine Closure</a></li>
+</ul>
+</nav>
+<section id="temporal-formulas" class="level1 unnumbered">
+<h1 class="unnumbered">Temporal Formulas</h1>
 <p>Let <span class="math inline">\(\sigma\)</span> be a behavior and <span class="math inline">\(F\)</span> be a temporal formula <span class="math inline">\(F\)</span>. We say that <span class="math inline">\(\sigma\)</span> satisfies <span class="math inline">\(F\)</span>, written <span class="math inline">\(\sigma \vDash F\)</span>, if <span class="math inline">\(F\)</span> is true on every suffix of <span class="math inline">\(\sigma\)</span>. Note that when <span class="math inline">\(F\)</span> is a state predicate, it is true if and only if it is true in the first state of a behavior. So <span class="math inline">\(\square F\)</span> means that <span class="math inline">\(F\)</span> is true in every state of the behavior, since it means that <span class="math inline">\(F\)</span> is true in the first state of every suffix, which covers all states in the behavior. This point is key for deconstructing more involved temporal formulas like <span class="math inline">\(F \leadsto G\)</span> (“F leads to G"). The definition of <span class="math inline">\(F \leadsto G\)</span> is defined in terms of the box operator ("always") and the diamond operator ("eventually"): <span class="math display">\[\begin{aligned}
 F \leadsto G &amp;\equiv \square(F \Rightarrow \lozenge G) \\\end{aligned}\]</span> and the diamond operator is itself defined in terms of the box operator: <span class="math display">\[\begin{aligned}
 \lozenge F \equiv \neg(\square \neg F)\end{aligned}\]</span> This is just saying that “eventually F is true" is equivalent to saying “it is not true that F is always false". So we can understand the “leads to" operator in its most primitive form: <span class="math display">\[\begin{aligned}
 F \leadsto G &amp;\equiv \square(F \Rightarrow \lozenge G) \\
 &amp; \equiv \square(F \Rightarrow (\neg(\square \neg G)))\end{aligned}\]</span> which is a bit hard to parse all at once but we can break it down. The outer box operator means that the inner expression <span class="math display">\[\begin{aligned}
 (F \Rightarrow (\neg(\square \neg G)))\end{aligned}\]</span> holds true on all suffixes of the behavior. So, for all suffixes of the behavior, if <span class="math inline">\(F\)</span> is true on that suffix, then it must be true that <span class="math inline">\(G\)</span> is not always false on that suffix. In other words, <span class="math inline">\(G\)</span> must eventually be true on that suffix. So, the overall expression i.e. “leads to" just says that if <span class="math inline">\(F\)</span> holds true at any point in the behavior, then eventually <span class="math inline">\(G\)</span> must hold true after that point.</p>
-<h1 class="unnumbered" id="stuttering-and-weak-fairness">Stuttering and Weak Fairness</h1>
+</section>
+<section id="stuttering-and-weak-fairness" class="level1 unnumbered">
+<h1 class="unnumbered">Stuttering and Weak Fairness</h1>
 <p>The naive definition of a TLA+ spec by default allows for <em>stuttering</em> steps i.e. steps that don’t change any variables. Of course, a spec that takes an infinite amount of stuttering steps (never changes any variables), will always trivially satisfy any safety properties. It just never makes any meaningful progress. Consider the simple toy spec:</p>
 <p><span class="math display">\[\begin{aligned}
 Init \triangleq 
@@ -64,7 +75,9 @@ WF_v(A) \equiv \square (\square \textsc{enabled} \langle A \rangle _v \Rightarro
 <p>This formula says that, if a non-stuttering <span class="math inline">\(A\)</span> step ever becomes forever enabled, then eventually a non-stuttering <span class="math inline">\(A\)</span> step must be taken. The weak fairness formula can be written equivalently as <span class="math display">\[\begin{aligned}
 WF_v(A) \equiv 
 \Diamond \square (\textsc{enabled} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v\end{aligned}\]</span></p>
-<h1 class="unnumbered" id="strong-fairness">Strong Fairness</h1>
+</section>
+<section id="strong-fairness" class="level1 unnumbered">
+<h1 class="unnumbered">Strong Fairness</h1>
 <p>Weak fairness says that an action <span class="math inline">\(A\)</span> must be eventually be taken if it is enabled <em>continuously</em> i.e. forever, after some point. Strong fairness, however, only asserts that an action is eventually taken if <span class="math inline">\(A\)</span> is enabled <em>infinitely often</em>. This does not mean it must be enabled continuously, though. It is formally defined as</p>
 <p><span class="math display">\[\begin{aligned}
 SF_v(A) \equiv \square \lozenge \textsc{enabled} \langle A \rangle _v \Rightarrow \square \Diamond \langle A \rangle _v\end{aligned}\]</span> which is stating that if action <span class="math inline">\(A\)</span> occurs infinitely often, then eventually A will be taken. we can compare the strong and weak fairness definitions <span class="math display">\[\begin{aligned}
@@ -72,12 +85,15 @@ WF_v(A) &amp;\equiv
 \Diamond \square (\textsc{enabled} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v \\
 SF_v(A) &amp;\equiv \square \lozenge (\textsc{enabled} \langle A \rangle _v ) \Rightarrow \square \Diamond \langle A \rangle _v\end{aligned}\]</span> and see that they are equivalent except for their left hand side. Strong fairness requires a step to be taken only if it is always possible for an <span class="math inline">\(A\)</span> step to be <em>eventually</em> taken, whereas weak fairness requires a step to be taken only if <span class="math inline">\(A\)</span> is enabled continuously. Note that Lamport argues that a strong fairness condition should only be used in a specification if it is needed.</p>
 <p>One concrete example illustrating the difference between weak and strong fairness is that of messages being sent between some sender and receiver. Let’s say that the sender sends a message by placing it in the inbox of the receiver. If there is currently a message in the inbox, then the “receive" action is enabled. If the channel is reliable, then once a message is sent, we can be sure that it will stay in the inbox until the receiver processes it. In other words, the receipt action will be continuously enabled. So, in this case, weak fairness on the actions of the receiver would be enough to ensure progress. The channel between sender and receiver, however, may be lossy. In this case, every time a message gets placed into the inbox it may subsequently get lost. So, it means that after sending, a message may not exist continuously in the inbox of the receiver. If the sender continuously resends a failed message, though, then the inbox of the receiver should be filled infinitely often, even though it is not filled continuously. In this case, we would need strong fairness on the actions of the receiver to guarantee progress.</p>
-<h1 class="unnumbered" id="machine-closure">Machine Closure</h1>
+</section>
+<section id="machine-closure" class="level1 unnumbered">
+<h1 class="unnumbered">Machine Closure</h1>
 <p>The canonical way to specify a system in TLA+ is to state is as a conjunction of an initial state predicate and next state relation i.e.</p>
 <p><span class="math display">\[\begin{aligned}
 Spec \triangleq  Init \wedge \square[Next]_{vars} \end{aligned}\]</span> This only specifies what the system <em>may</em> do, but not what it <em>must</em> do. In order to specify the latter, we also need to specify a liveness condition:</p>
 <p><span class="math display">\[\begin{aligned}
 Spec \triangleq  Init \wedge \square[Next]_{vars} \wedge Liveness\end{aligned}\]</span> Remember that in TLA+, though, there is no fundamental difference between a specification and a property. They are both defined as temporal logic formulas. In the case of a specification, we pick a “standard" model for describing the system that is convenient and, presumably, implementable to some extent. We could, however, simply describe our system in terms of the abstract properties it satisfies, without giving any kind of realistic, concrete specification. For example, we could say that our system consists of the set of all behaviors that satisfy some set of invariants. This can act as a specification, it is just a very abstract one. That is why we have to be careful with how we specify the <span class="math inline">\(Liveness\)</span> condition. If we allowed <span class="math inline">\(Liveness\)</span> to be an arbitrary temporal logic formula, the liveness condition would have too much potential specification power. For example, it could itself be a separate next-state relation that imposes extra conditions on how variables may transition. So, we have to impose some constraints on the types of formulas that can be used as a liveness condition. A spec of the form <span class="math display">\[\begin{aligned}
 Init \wedge \square[Next]_{vars} \wedge Liveness\end{aligned}\]</span> is called <em>machine closed</em> if the conjunct <span class="math inline">\(Liveness\)</span> constrains neither the initial state nor what steps may occur.</p>
+</section>
 </body>
 </html>

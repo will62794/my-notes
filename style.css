@@ -1,5 +1,7 @@
 /*
- * I add this to html files generated with pandoc.
+ * Style for HTML note pages generated with pandoc.
+ * 
+ * Modified from original source at https://gist.github.com/killercup/5917178.
  */
 
 html {
@@ -11,7 +13,9 @@ html {
 
 body {
   color: #444;
-  font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif;
+  /* font-family: Georgia, Palatino, 'Palatino Linotype', Times, 'Times New Roman', serif; */
+  font-family: Times, 'Times New Roman', serif;
+  /* font-family: sans-serif; */
   font-size: 12px;
   line-height: 1.7;
   padding: 1em;

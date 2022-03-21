@@ -1,6 +1,8 @@
 import os
 import subprocess
 import sys
+from datetime import datetime
+
 
 #
 # Generate HTML pages and index for all LaTeX notes.
@@ -29,6 +31,12 @@ def pandoc_cmd(notename):
 
 def make_note_pages(notes):
     for note in notes:
+        print(f"Building note: '{note}'")
+        modified_time = os.path.getmtime(f"notes/{note}/{note}.tex")
+        ts = int(modified_time)
+        mod_str = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
+        print("last modified:", mod_str)
+        # TODO: Include last modified date in HTML output of note.
         cmd = pandoc_cmd(note)
         print(cmd)
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)

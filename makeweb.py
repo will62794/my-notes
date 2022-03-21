@@ -6,19 +6,15 @@ import sys
 # Generate HTML pages and index for all LaTeX notes.
 #
 
-
 def pandoc_cmd(notename):
     # Specify the CSS file relative to the note location.
     css_file = "../../style.css"
-    cmd = f"pandoc notes/{notename}/{notename}.tex --katex --css {css_file} -f latex -t html5 -s -o notes/{notename}/{notename}.html"
+    math_engine = "mathjax"
+    cmd = f"pandoc notes/{notename}/{notename}.tex --{math_engine} --css {css_file} -f latex -t html5 -s -o notes/{notename}/{notename}.html"
     return cmd
-
-# pandoc $d/$d.tex --css pandoc.css -f latex -t html5 -s -o $d/$d.html
 
 def make_note_pages(notes):
     for note in notes:
-        # print(d)
-        # os.system(pandoc_cmd)
         cmd = pandoc_cmd(note)
         print(cmd)
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)

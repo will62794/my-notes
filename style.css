@@ -24,6 +24,13 @@ body {
   background: #fefefe;
 }
 
+.title{
+    font-size: 2.2em;
+    /* font-weight: bold; */
+    border-bottom: solid 1px;
+    border-bottom-color: lightgray;
+}
+
 a {
   color: #0645ad;
   text-decoration: none;
@@ -46,23 +53,23 @@ a:focus {
 }
 
 *::-moz-selection {
-  background: rgba(255, 255, 0, 0.3);
-  color: #000;
+  /* background: rgba(255, 255, 0, 0.3); */
+  /* color: #000; */
 }
 
 *::selection {
-  background: rgba(255, 255, 0, 0.3);
-  color: #000;
+  /* background: rgba(255, 255, 0, 0.3); */
+  /* color: #000; */
 }
 
 a::-moz-selection {
-  background: rgba(255, 255, 0, 0.3);
-  color: #0645ad;
+  /* background: rgba(255, 255, 0, 0.3); */
+  /* color: #0645ad; */
 }
 
 a::selection {
-  background: rgba(255, 255, 0, 0.3);
-  color: #0645ad;
+  /* background: rgba(255, 255, 0, 0.3); */
+  /* color: #0645ad; */
 }
 
 p {
@@ -85,11 +92,11 @@ h4, h5, h6 {
 }
 
 h1 {
-  font-size: 2.5em;
+  font-size: 1.9em;
 }
 
 h2 {
-  font-size: 2em;
+  font-size: 1.8em;
 }
 
 h3 {

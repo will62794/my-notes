@@ -14,9 +14,24 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -27,7 +42,7 @@
 <p class="author">William Schultz</p>
 <p class="author">William Schultz</p>
 </header>
-<p>In a <em>directed graph</em> <span class="math inline"><em>G</em> = (<em>V</em>,<em>E</em>)</span>, we say that two nodes, <span class="math inline"><em>u</em></span> and <span class="math inline"><em>v</em></span>, are <em>connected</em> if there is a path from <span class="math inline"><em>u</em></span> to <span class="math inline"><em>v</em></span> and a path from <span class="math inline"><em>v</em></span> to <span class="math inline"><em>u</em></span>. This relation is reflexive, symmetric, and transitive, so it is an equivalence relation on nodes. Thus, it partitions <span class="math inline"><em>V</em></span> into disjoint sets, which are called the <em>strongly connected components</em> of the graph. That is, a strongly connected component is a subset of nodes in <span class="math inline"><em>V</em></span> such that every node in the component can reach every other node in the component.</p>
-<p>If we shrink down each strongly connected component into a single node, and draw an edge between two of them if there is an edge from some node in the first to some node in the second, the resulting graph has to be a <em>directed acyclic graph (dag)</em>. That is, it has no cycles. This holds since if there was a cycle containing several strongly connected components, then this would merge them all into a single strongly connected component. In other words, <em>every directed graph is a dag of its strongly connected components.</em> Tarjan’s algorithm can be used to compute the strongly connected components of a directed graph in time linear in the number of nodes and edges i.e. in <span class="math inline"><em>O</em>(|<em>V</em>|+|<em>E</em>|)</span>.</p>
+<p>In a <em>directed graph</em> <span class="math inline">G=(V,E)</span>, we say that two nodes, <span class="math inline">u</span> and <span class="math inline">v</span>, are <em>connected</em> if there is a path from <span class="math inline">u</span> to <span class="math inline">v</span> and a path from <span class="math inline">v</span> to <span class="math inline">u</span>. This relation is reflexive, symmetric, and transitive, so it is an equivalence relation on nodes. Thus, it partitions <span class="math inline">V</span> into disjoint sets, which are called the <em>strongly connected components</em> of the graph. That is, a strongly connected component is a subset of nodes in <span class="math inline">V</span> such that every node in the component can reach every other node in the component.</p>
+<p>If we shrink down each strongly connected component into a single node, and draw an edge between two of them if there is an edge from some node in the first to some node in the second, the resulting graph has to be a <em>directed acyclic graph (dag)</em>. That is, it has no cycles. This holds since if there was a cycle containing several strongly connected components, then this would merge them all into a single strongly connected component. In other words, <em>every directed graph is a dag of its strongly connected components.</em> Tarjan’s algorithm can be used to compute the strongly connected components of a directed graph in time linear in the number of nodes and edges i.e. in <span class="math inline">O(|V| + |E|)</span>.</p>
 </body>
 </html>

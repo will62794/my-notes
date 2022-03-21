@@ -10,7 +10,8 @@ import sys
 def pandoc_cmd(notename):
     # Specify the CSS file relative to the note location.
     css_file = "../../style.css"
-    return f"pandoc notes/{notename}/{notename}.tex --css {css_file} -f latex -t html5 -s -o notes/{notename}/{notename}.html"
+    cmd = f"pandoc notes/{notename}/{notename}.tex --katex --css {css_file} -f latex -t html5 -s -o notes/{notename}/{notename}.html"
+    return cmd
 
 # pandoc $d/$d.tex --css pandoc.css -f latex -t html5 -s -o $d/$d.html
 
@@ -37,7 +38,7 @@ def make_index_page_html(notes):
 
 
 notes_dir = "notes"
-notes = os.listdir(notes_dir)
+notes = sorted(os.listdir(notes_dir))
 make_note_pages(notes)
 index_page_html = make_index_page_html(notes)
 f = open("index.html", 'w')

@@ -14,9 +14,24 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -27,7 +42,7 @@
 <p class="author">William Schultz</p>
 <p class="author">William Schultz</p>
 </header>
-<p>Formally, a <em>language</em> is a set of strings <span class="math inline"><em>w</em> ∈ <em>Σ</em><sup>*</sup></span>, where <span class="math inline"><em>Σ</em></span> is some finite alphabet i.e. some finite set of atomic symbols. A language <span class="math inline"><em>L</em></span> is <em>regular</em> if it can be accepted by some deterministic finite automaton (DFA). That is, there is some DFA that can determine, for any string <span class="math inline"><em>w</em> ∈ <em>Σ</em><sup>*</sup></span>, whether <span class="math inline"><em>w</em> ∈ <em>L</em></span> or <span class="math inline"><em>w</em> ∉ <em>L</em></span>. A <em>regular expression</em> is one way to represent a regular language. It provides a concise form for expressing regular languages i.e. it defines a language as the set of strings accepted by that regular expression.</p>
+<p>Formally, a <em>language</em> is a set of strings <span class="math inline">w \in \Sigma^*</span>, where <span class="math inline">\Sigma</span> is some finite alphabet i.e. some finite set of atomic symbols. A language <span class="math inline">L</span> is <em>regular</em> if it can be accepted by some deterministic finite automaton (DFA). That is, there is some DFA that can determine, for any string <span class="math inline">w \in \Sigma^*</span>, whether <span class="math inline">w \in L</span> or <span class="math inline">w \notin L</span>. A <em>regular expression</em> is one way to represent a regular language. It provides a concise form for expressing regular languages i.e. it defines a language as the set of strings accepted by that regular expression.</p>
 <p>Any regular expression can be converted into an equivalent nondeterministic finite automaton (NFA), or an equivalent DFA. Recall that the translation from an NFA to DFA may, in the worst case, lead to an exponential blow up in the number of states. See Thompson’s Construction algorithm for transforming a regular expression into an equivalent NFA, which can then be converted to a DFA e.g. via the <em>powerset construction</em>.</p>
 </body>
 </html>

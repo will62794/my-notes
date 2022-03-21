@@ -14,9 +14,24 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+   var mathElements = document.getElementsByClassName("math");
+   var macros = [];
+   for (var i = 0; i < mathElements.length; i++) {
+    var texText = mathElements[i].firstChild;
+    if (mathElements[i].tagName == "SPAN") {
+     katex.render(texText.data, mathElements[i], {
+      displayMode: mathElements[i].classList.contains('display'),
+      throwOnError: false,
+      macros: macros,
+      fleqn: false
+     });
+  }}});
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.11.1/katex.min.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -27,8 +42,8 @@
 <p class="author">William Schultz</p>
 <p class="author">William Schultz</p>
 </header>
-<p>For any decision problem, we can establish both <em>upper bounds</em> and <em>lower bounds</em> on its complexity. Recall that a decision problem is formulated in terms of a language <span class="math inline"><em>L</em></span>, consisting of a set of strings. The decision problem for a given language <span class="math inline"><em>L</em></span> is to determine whether <span class="math inline"><em>w</em> ∈ <em>L</em></span> for some given string <span class="math inline"><em>w</em></span>.</p>
+<p>For any decision problem, we can establish both <em>upper bounds</em> and <em>lower bounds</em> on its complexity. Recall that a decision problem is formulated in terms of a language <span class="math inline">L</span>, consisting of a set of strings. The decision problem for a given language <span class="math inline">L</span> is to determine whether <span class="math inline">w \in L</span> for some given string <span class="math inline">w</span>.</p>
 <p>An upper bound makes a statement about the maximum hardness/complexity of the problem, and a lower bound makes a statement about the minimum easiness of the problem. Establishing an upper bound is typically much easier, since you only need to provide a concrete algorithm that solves the problem in some worst case running time (i.e. show there exists an algorithm). Establishing a lower bound is generally much harder, since you need to show that there exists no algorithm that can solve the problem more efficiently than a certain complexity class (i.e. show no algorithm exists).</p>
-<p>For example, one of the best known algorithms for 3-SAT as of 2019 has a numerical upper bound of something around <span class="math inline"><em>O</em>(1.307<sup><em>n</em></sup>)</span> <span class="citation" data-cites="2019fasterkSAT"></span>. There exists no known, general algorithm that can solve 3-SAT in polynomial time. But, it has also not been proven that such an algorithm doesn’t exist. It seems that the best known lower bounds for SAT sit somewhere in the polynomial range of <span class="math inline"><em>n</em><sup>1.801</sup></span>, though this has some other caveats about “time-space tradeoffs” which I don’t fully understand <span class="citation" data-cites="SE3satlowerbounds"></span>. Proving that SAT, for example, had an exponential (or even super polynomial) lower bound would, of course, establish that <span class="math inline"><em>P</em> ≠ <em>N</em><em>P</em></span>, since SAT is NP-complete, and this would serve to separate <span class="math inline"><em>P</em></span> from <span class="math inline"><em>N</em><em>P</em></span>. Of course, one could also prove <span class="math inline"><em>P</em> = <em>N</em><em>P</em></span> by simply giving a polynomial time algorithm for SAT i.e. by dropping the upper bound from exponential to polynomial. This might be “easier”, in the sense that you would only have to find a single algorithm, but it may be “harder" in the sense that P=NP may not actually be true!</p>
+<p>For example, one of the best known algorithms for 3-SAT as of 2019 has a numerical upper bound of something around <span class="math inline">O(1.307^n)</span> <span class="citation" data-cites="2019fasterkSAT"></span>. There exists no known, general algorithm that can solve 3-SAT in polynomial time. But, it has also not been proven that such an algorithm doesn’t exist. It seems that the best known lower bounds for SAT sit somewhere in the polynomial range of <span class="math inline">n^{1.801}</span>, though this has some other caveats about “time-space tradeoffs” which I don’t fully understand <span class="citation" data-cites="SE3satlowerbounds"></span>. Proving that SAT, for example, had an exponential (or even super polynomial) lower bound would, of course, establish that <span class="math inline">P \neq NP</span>, since SAT is NP-complete, and this would serve to separate <span class="math inline">P</span> from <span class="math inline">NP</span>. Of course, one could also prove <span class="math inline">P=NP</span> by simply giving a polynomial time algorithm for SAT i.e. by dropping the upper bound from exponential to polynomial. This might be “easier”, in the sense that you would only have to find a single algorithm, but it may be “harder" in the sense that P=NP may not actually be true!</p>
 </body>
 </html>

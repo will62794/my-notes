@@ -81,7 +81,9 @@ img {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #111;
+  /* color: #111; */
+  color: #3E4349;
+  /* color:gray; */
   line-height: 125%;
   margin-top: 0.5em;
   font-weight: normal;
@@ -113,6 +115,14 @@ h5 {
 
 h6 {
   font-size: 0.9em;
+}
+
+.header-section-number{
+    /* color:gray; */
+}
+
+.header-section-number:after{
+    content: ".";
 }
 
 blockquote {

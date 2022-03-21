@@ -10,7 +10,7 @@ def pandoc_cmd(notename):
     # Specify the CSS file relative to the note location.
     css_file = "../../style.css"
     math_engine = "mathjax"
-    cmd = f"pandoc notes/{notename}/{notename}.tex --{math_engine} --css {css_file} -f latex -t html5 -s -o notes/{notename}/{notename}.html"
+    cmd = f"pandoc notes/{notename}/{notename}.tex --number-sections --{math_engine} --css {css_file} -f latex -t html5 -s -o notes/{notename}/{notename}.html"
     return cmd
 
 def make_note_pages(notes):

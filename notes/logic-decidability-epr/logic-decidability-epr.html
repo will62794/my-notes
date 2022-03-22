@@ -66,6 +66,7 @@
 <li><a href="#decidability"><span class="toc-section-number">2.6</span> Decidability</a>
 <ul>
 <li><a href="#decidable-classes"><span class="toc-section-number">2.6.1</span> Decidable Classes</a></li>
+<li><a href="#epr"><span class="toc-section-number">2.6.2</span> EPR</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#bibliography">References</a></li>
@@ -212,8 +213,8 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
 <section id="sec:finite-models" class="level2" data-number="2.5">
 <h2 data-number="2.5"><span class="header-section-number">2.5</span> Finite Models</h2>
 <p>We say that a set of formulas <span class="math inline">\(U=\{A_1,\dots\}\)</span> is <em>satisfiable</em> iff there exists an interpretation <span class="math inline">\(\mathcal{I}_U\)</span> such that <span class="math inline">\(v_{\mathcal{I}_U}(A_i)=True\)</span> for all <span class="math inline">\(i\)</span>. The satisfying interpretation is a <em>model</em> for <span class="math inline">\(U\)</span>.</p>
-<p>A set of formulas <span class="math inline">\(U\)</span> has the <em>finite model property</em> iff: <span class="math inline">\(U\)</span> is satisfiable iff it is satisfiable in an interpretation whose domain is a finite set. As one example, let <span class="math inline">\(U\)</span> be the set of pure formulas of the form <span class="math display">\[\begin{aligned}
-    \exists x_1 \dots \exists x_k \forall y_1 \dots \forall y_l \, A(x_1,\dots,x_k,y_1,\dots,y_l)\end{aligned}\]</span> where <span class="math inline">\(A\)</span> is quantifier free. Then <span class="math inline">\(U\)</span> has the finite model property.</p>
+<p>A set of formulas <span class="math inline">\(U\)</span> has the <em>finite model property</em> iff: <span class="math inline">\(U\)</span> is satisfiable iff it is satisfiable in an interpretation whose domain is a finite set. As one example, let <span class="math inline">\(U\)</span> be the set of pure formulas (no function symbols) of the form <span class="math display">\[\begin{aligned}
+    \exists x_1 \dots \exists x_m \forall y_1 \dots \forall y_n \, A(x_1,\dots,x_m,y_1,\dots,y_n)\end{aligned}\]</span> where <span class="math inline">\(A\)</span> is quantifier free. Then <span class="math inline">\(U\)</span> has the finite model property.</p>
 <p>Another interesting fact is one due to Löwenheim-Skolem, which says that if a formula of first order logic is satisfiable, then it is satisfiable in a countable domain (Theorem 12.10 in <span class="citation" data-cites="2012benari">(<a href="#ref-2012benari" role="doc-biblioref">Ben-Ari 2012</a>)</span>). Thus, countable domains (e.g. the natural numbers) are sufficient for interpretation of first order logic.</p>
 </section>
 <section id="decidability" class="level2" data-number="2.6">
@@ -230,11 +231,32 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
 <p>Note that if validity is decidable for a class of formulas, then we can always check if a formula <span class="math inline">\(\phi\)</span> in this class is satisfiable by checking if <span class="math inline">\(\neg \phi\)</span> is valid, and applying the following simple rule: <span class="math display">\[\begin{aligned}
     &amp;\neg \phi \text{ is valid} \Rightarrow \phi \text{ is not satisfiable}\\
     &amp;\neg \phi \text{ is not valid} \Rightarrow \phi \text{ is satisfiable}\end{aligned}\]</span> Recall that if <span class="math inline">\(\neg \phi\)</span> is valid this means that there are <em>no</em> satisfying interpretations for <span class="math inline">\(\phi\)</span>. Thus, <span class="math inline">\(\phi\)</span> is unsatisfiable. If <span class="math inline">\(\neg \phi\)</span> is not valid, then this means there must be some interpretations that do not satisfy <span class="math inline">\(\neg \phi\)</span>, meaning <span class="math inline">\(\phi\)</span> must be satisfiable.</p>
-<p>Note that if <em>satisfiability</em> is decidable for a class of formulas <span class="math inline">\(F\)</span>, then validity should be decidable for the <em>negation</em> of formulas in that class. That is, for any <span class="math inline">\(\phi \in F\)</span>, if checking <span class="math inline">\(SAT(\phi)\)</span> is decidable, then we can check validity of <span class="math inline">\(\phi\)</span> by checking <span class="math inline">\(UNSAT(\neg \phi)\)</span>, but <span class="math inline">\(\neg \phi\)</span> may no longer fall into the decidable class <span class="math inline">\(F\)</span>. So, if SAT is decidable for a formula class <span class="math inline">\(F\)</span>, then for any <span class="math inline">\(\phi \in F\)</span>, we know validity is decidable for <span class="math inline">\(\neg \phi\)</span>, since we can check validity as <span class="math inline">\(UNSAT(\neg (\neg \phi))=UNSAT(\phi)\)</span>, which is decidable since SAT for <span class="math inline">\(\phi\)</span> is decidable.</p>
-<section id="epr" class="level4" data-number="2.6.1.1">
-<h4 data-number="2.6.1.1"><span class="header-section-number">2.6.1.1</span> EPR</h4>
-<p>For the so-called <em>Bernays-Schönfinkel class</em>, consisting of pure formulas (no function symbols) with prefixes of the form <span class="math inline">\(\exists^*\forall^*\)</span>, satisfiability is decidable <span class="citation" data-cites="lewis1980complexity">(<a href="#ref-lewis1980complexity" role="doc-biblioref">Lewis 1980</a>)</span>. This class is alternately referred to as <em>EPR</em> (<strong>e</strong>ffectively <strong>pr</strong>opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original <span class="citation" data-cites="demoura2008deciding">(<a href="#ref-demoura2008deciding" role="doc-biblioref">Moura, Piskac, and Bjørner 2008</a>)</span>.</p>
+<p>Similarly, if satisfiability is decidable for a class of formulas <span class="math inline">\(F\)</span>, then validity should be decidable for the <em>negation</em> of formulas in that class. That is, for any <span class="math inline">\(\phi \in F\)</span>, if checking <span class="math inline">\(SAT(\phi)\)</span> is decidable, then we can check validity of <span class="math inline">\(\phi\)</span> by checking <span class="math inline">\(UNSAT(\neg \phi)\)</span>, but <span class="math inline">\(\neg \phi\)</span> may no longer fall into the decidable class <span class="math inline">\(F\)</span>. So, if SAT is decidable for a formula class <span class="math inline">\(F\)</span>, then for any <span class="math inline">\(\phi \in F\)</span>, we know validity is decidable for <span class="math inline">\(\neg \phi\)</span>, since we can check validity as <span class="math inline">\(UNSAT(\neg (\neg \phi))=UNSAT(\phi)\)</span>, which is decidable since SAT for <span class="math inline">\(\phi\)</span> is decidable.</p>
 </section>
+<section id="epr" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2"><span class="header-section-number">2.6.2</span> EPR</h3>
+<p>For the so-called <em>Bernays-Schönfinkel class</em>, consisting of pure formulas (no function symbols) with prefixes of the form <span class="math inline">\(\exists^*\forall^*\)</span>, satisfiability is decidable <span class="citation" data-cites="lewis1980complexity">(<a href="#ref-lewis1980complexity" role="doc-biblioref">Lewis 1980</a>)</span>. This class is alternately referred to as <em>EPR</em> (<strong>e</strong>ffectively <strong>pr</strong>opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original <span class="citation" data-cites="demoura2008deciding">(<a href="#ref-demoura2008deciding" role="doc-biblioref">Moura, Piskac, and Bjørner 2008</a>)</span>.</p>
+<p>More precisely, we can decide satisfiability for EPR as follows <span class="citation" data-cites="Kroening2016">(<a href="#ref-Kroening2016" role="doc-biblioref">Kroening and Strichman 2016</a>)</span>, if we consider an example formula like: <span class="math display">\[\begin{aligned}
+    \exists e_1 \exists e_2 \forall a_1 \forall a_2 : p(e_1,a_1) \vee q(e_2,a_2)\end{aligned}\]</span></p>
+<ol>
+<li><p>First, remove the outer existential quantifiers, which we can do since it doesn’t affect satisfiability of the remaining formula, giving <span class="math display">\[\begin{aligned}
+        \forall a_1 \forall a_2 : p(e_1,a_1) \vee q(e_2,a_2)
+    \end{aligned}\]</span></p></li>
+<li><p>Then, we do a process called <em>grounding</em>, by eliminating each universal quantifier by forming a conjunction of instantiations of the suffix with every possible variable that was originally existentially quantified. Given <span class="math inline">\(n\)</span> existentially and <span class="math inline">\(m\)</span> universally quantified variables, this steps results in a formula with <span class="math inline">\(n^m\)</span> conjuncts. <span class="math display">\[\begin{aligned}
+        &amp;(p(e_1,e_1) \vee q(e_2,e_1)) \wedge \\
+        &amp;(p(e_1,e_1) \vee q(e_2,e_2)) \wedge \\
+        &amp;(p(e_1,e_2) \vee q(e_2,e_1)) \wedge \\
+        &amp;(p(e_1,e_2) \vee q(e_2,e_2))
+    \end{aligned}\]</span></p></li>
+<li><p>Now, we are simply left with a boolean combination of uninterpreted predicates. So, all that’s left is to check whether we can assing a boolean value to each such predicate under the constraint that two instances of the same predicate invoked with the same arguments are assigned the same value. So, we can simply encode this as a plain SAT problem where each predicate is encoded with a propositional variable that corresponds to the signature of its parameters e.g. the predicate <span class="math inline">\(p(e_1,e_2)\)</span> is encoded with a propositional variable <span class="math inline">\(p_{12}\)</span>. This gives us the propositional formula: <span class="math display">\[\begin{aligned}
+        &amp;(p_{11} \vee q_{21}) \wedge \\
+        &amp;(p_{11} \vee q_{22}) \wedge \\
+        &amp;(p_{12} \vee q_{21}) \wedge \\
+        &amp;(p_{12} \vee q_{22})  
+    \end{aligned}\]</span></p></li>
+<li><p>Then, we just hand this problem to a SAT solver. The formula obtained is equisatisfiable with the original formula. That is, we are simply asking the SAT solver whether there exists a set of value assignments for each predicate that makes the overall statement true. We e</p></li>
+</ol>
+<p>Since the size of the finite satifying model for formulas in this class have a computable bound determined by the quantifier prefix, this means we should also be able to check validity of the negation of formulas in this class i.e. those with prefix <span class="math inline">\(\forall^*\exists^*\)</span>.</p>
 </section>
 </section>
 </section>
@@ -252,6 +274,9 @@ Dreben, Burton, and Warren D. Goldfarb. 1979. <span>“The Decision Problem: Sol
 </div>
 <div id="ref-2009completeinstant" class="csl-entry" role="doc-biblioentry">
 Ge, Yeting, and Leonardo de Moura. 2009. <span>“Complete Instantiation for Quantified Formulas in Satisfiabiliby Modulo Theories.”</span> In <em>Computer Aided Verification</em>, edited by Ahmed Bouajjani and Oded Maler, 306–20. Berlin, Heidelberg: Springer Berlin Heidelberg.
+</div>
+<div id="ref-Kroening2016" class="csl-entry" role="doc-biblioentry">
+Kroening, Daniel, and Ofer Strichman. 2016. <span>“Quantified Formulas.”</span> In <em>Decision Procedures: An Algorithmic Point of View</em>, 199–227. Berlin, Heidelberg: Springer Berlin Heidelberg. <a href="https://doi.org/10.1007/978-3-662-50497-0_9">https://doi.org/10.1007/978-3-662-50497-0_9</a>.
 </div>
 <div id="ref-lewis1980complexity" class="csl-entry" role="doc-biblioentry">
 Lewis, Harry R. 1980. <span>“<span class="nocase">Complexity results for classes of quantificational formulas</span>.”</span> <em>Journal of Computer and System Sciences</em> 21 (3): 317–53.

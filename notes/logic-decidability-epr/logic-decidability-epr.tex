@@ -252,9 +252,9 @@ Intuitively, we think of reading the quantifiers as ``for all $x$, find a $y$ as
 
 We say that a set of formulas $U=\{A_1,\dots\}$ is \textit{satisfiable} iff there exists an interpretation $\interp_U$ such that $v_{\interp_U}(A_i)=True$ for all $i$. The satisfying interpretation is a \textit{model} for $U$. 
 
-A set of formulas $U$ has the \textit{finite model property} iff: $U$ is satisfiable iff it is satisfiable in an interpretation whose domain is a finite set. As one example, let $U$ be the set of pure formulas of the form 
+A set of formulas $U$ has the \textit{finite model property} iff: $U$ is satisfiable iff it is satisfiable in an interpretation whose domain is a finite set. As one example, let $U$ be the set of pure formulas (no function symbols) of the form 
 \begin{align*}
-    \E x_1 \dots \E x_k \A y_1 \dots \A y_l \, A(x_1,\dots,x_k,y_1,\dots,y_l)
+    \E x_1 \dots \E x_m \A y_1 \dots \A y_n \, A(x_1,\dots,x_m,y_1,\dots,y_n)
 \end{align*}
 where $A$ is quantifier free. Then $U$ has the finite model property.
 
@@ -286,7 +286,7 @@ Note that if validity is decidable for a class of formulas, then we can always c
 \end{align*}
 Recall that if $\neg \phi$ is valid this means that there are \textit{no} satisfying interpretations for $\phi$. Thus, $\phi$ is unsatisfiable. If $\neg \phi$ is not valid, then this means there must be some interpretations that do not satisfy $\neg \phi$, meaning $\phi$ must be satisfiable.
 
-Note that if \textit{satisfiability} is decidable for a class of formulas $F$, then validity should be decidable for the \textit{negation} of formulas in that class. That is, for any $\phi \in F$, if  checking $SAT(\phi)$ is decidable, then we can check validity of $\phi$ by checking $UNSAT(\neg \phi)$, but $\neg \phi$ may no longer fall into the decidable class $F$. So, if SAT is decidable for a formula class $F$, then for any $\phi \in F$, we know validity is decidable for $\neg \phi$, since we can check validity as $UNSAT(\neg (\neg \phi))=UNSAT(\phi)$, which is decidable since SAT for $\phi$ is decidable.
+Similarly, if satisfiability is decidable for a class of formulas $F$, then validity should be decidable for the \textit{negation} of formulas in that class. That is, for any $\phi \in F$, if  checking $SAT(\phi)$ is decidable, then we can check validity of $\phi$ by checking $UNSAT(\neg \phi)$, but $\neg \phi$ may no longer fall into the decidable class $F$. So, if SAT is decidable for a formula class $F$, then for any $\phi \in F$, we know validity is decidable for $\neg \phi$, since we can check validity as $UNSAT(\neg (\neg \phi))=UNSAT(\phi)$, which is decidable since SAT for $\phi$ is decidable.
 
 % TODO (Question):
 % Thus, if validity for a class of formulas with quantifier prefixes $\forall^* \exists^*$ is decidable, this should imply that satisfiability for the class of formulas with prefixes $\neg (\forall^* \exists^*) \equiv \exists^* \forall^*$ is decidable.
@@ -295,9 +295,40 @@ Note that if \textit{satisfiability} is decidable for a class of formulas $F$, t
 
 % TODO: Clean up the justification above.
 
-\paragraph{EPR}
+\subsubsection{EPR}
 
-For the so-called \textit{Bernays-Sch\"{o}nfinkel class}, consisting of pure formulas (no function symbols) with prefixes of the form $\E^*\A^*$, satisfiability is decidable \cite{lewis1980complexity}. This class is alternately referred to as \textit{EPR} (\textbf{e}ffectively \textbf{pr}opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original \cite{demoura2008deciding}.
+For the so-called \textit{Bernays-Sch\"{o}nfinkel class}, consisting of pure formulas (no function symbols) with prefixes of the form $\E^*\A^*$, satisfiability is decidable \cite{lewis1980complexity}. This class is alternately referred to as \textit{EPR} (\textbf{e}ffectively \textbf{pr}opositional), since it can be effectively translated into propositional logic formulas by a process of grounding or instantiation. That is, satisfiability for EPR formulas can be reduced to SAT by first replacing all existential variables by Skolem constants, and then grounding the universally quantified variables by all combinations of constants. This process produces a propositional formula that is exponentially larger than the original \cite{demoura2008deciding}. 
+
+More precisely, we can decide satisfiability for EPR as follows \cite{Kroening2016}, if we consider an example formula like:
+\begin{align*}
+    \exists e_1 \exists e_2 \forall a_1 \forall a_2 : p(e_1,a_1) \vee q(e_2,a_2)
+\end{align*}
+\begin{enumerate}
+    \item First, remove the outer existential quantifiers, which we can do since it doesn't affect satisfiability of the remaining formula, giving
+    \begin{align*}
+        \forall a_1 \forall a_2 : p(e_1,a_1) \vee q(e_2,a_2)
+    \end{align*}
+    \item Then, we do a process called \textit{grounding}, by eliminating each universal quantifier by forming a conjunction of instantiations of the suffix with every possible variable that was originally existentially quantified. Given $n$ existentially and $m$ universally quantified variables, this steps results in a formula with $n^m$ conjuncts.
+    \begin{align*}
+        &(p(e_1,e_1) \vee q(e_2,e_1)) \wedge \\
+        &(p(e_1,e_1) \vee q(e_2,e_2)) \wedge \\
+        &(p(e_1,e_2) \vee q(e_2,e_1)) \wedge \\
+        &(p(e_1,e_2) \vee q(e_2,e_2))
+    \end{align*}
+    \item Now, we are simply left with a boolean combination of uninterpreted predicates. So, all that's left is to check whether we can assing a boolean value to each such predicate under the constraint that two instances of the same predicate invoked with the same arguments are assigned the same value. So, we can simply encode this as a plain SAT problem where each predicate is encoded with a propositional variable that corresponds to the signature of its parameters e.g. the predicate $p(e_1,e_2)$ is encoded with a propositional variable $p_{12}$. This gives us the propositional formula:
+    \begin{align*}
+        &(p_{11} \vee q_{21}) \wedge \\
+        &(p_{11} \vee q_{22}) \wedge \\
+        &(p_{12} \vee q_{21}) \wedge \\
+        &(p_{12} \vee q_{22})  
+    \end{align*}
+    \item Then, we just hand this problem to a SAT solver. The formula obtained is equisatisfiable with the original formula. That is, we are simply asking the SAT solver whether there exists a set of value assignments for each predicate that makes the overall statement true. We e
+\end{enumerate}
+
+
+
+
+Since the size of the finite satifying model for formulas in this class have a computable bound determined by the quantifier prefix, this means we should also be able to check validity of the negation of formulas in this class i.e. those with prefix $\forall^*\exists^*$.
 
 % The problem of checking validity of an arbitrary first order logic formula is undecidable. Validity, however, 
 

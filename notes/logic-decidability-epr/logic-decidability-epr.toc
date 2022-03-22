@@ -12,4 +12,4 @@
 \contentsline {subsection}{\numberline {2.5}Finite Models}{8}{subsection.2.5}%
 \contentsline {subsection}{\numberline {2.6}Decidability}{8}{subsection.2.6}%
 \contentsline {subsubsection}{\numberline {2.6.1}Decidable Classes}{9}{subsubsection.2.6.1}%
-\contentsline {paragraph}{EPR}{9}{section*.2}%
+\contentsline {subsubsection}{\numberline {2.6.2}EPR}{9}{subsubsection.2.6.2}%

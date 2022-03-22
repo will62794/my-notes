@@ -248,7 +248,7 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
         &amp;(p(e_1,e_2) \vee q(e_2,e_1)) \wedge \\
         &amp;(p(e_1,e_2) \vee q(e_2,e_2))
     \end{aligned}\]</span></p></li>
-<li><p>Now, we are simply left with a boolean combination of uninterpreted predicates. So, all that’s left is to check whether we can assing a boolean value to each such predicate under the constraint that two instances of the same predicate invoked with the same arguments are assigned the same value. So, we can simply encode this as a plain SAT problem where each predicate is encoded with a propositional variable that corresponds to the signature of its parameters e.g. the predicate <span class="math inline">\(p(e_1,e_2)\)</span> is encoded with a propositional variable <span class="math inline">\(p_{12}\)</span>. This gives us the propositional formula: <span class="math display">\[\begin{aligned}
+<li><p>Now, we are simply left with a boolean combination of uninterpreted predicates. So, all that’s left is to check whether we can assign a boolean value to each such predicate under the constraint that two instances of the same predicate invoked with the same arguments are assigned the same value. So, we can simply encode this as a plain SAT problem where each predicate is encoded with a propositional variable that corresponds to the signature of its parameters e.g. the predicate <span class="math inline">\(p(e_1,e_2)\)</span> is encoded with a propositional variable <span class="math inline">\(p_{12}\)</span>. This gives us the propositional formula: <span class="math display">\[\begin{aligned}
         &amp;(p_{11} \vee q_{21}) \wedge \\
         &amp;(p_{11} \vee q_{22}) \wedge \\
         &amp;(p_{12} \vee q_{21}) \wedge \\

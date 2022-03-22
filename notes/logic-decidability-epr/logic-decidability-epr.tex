@@ -315,7 +315,7 @@ More precisely, we can decide satisfiability for EPR as follows \cite{Kroening20
         &(p(e_1,e_2) \vee q(e_2,e_1)) \wedge \\
         &(p(e_1,e_2) \vee q(e_2,e_2))
     \end{align*}
-    \item Now, we are simply left with a boolean combination of uninterpreted predicates. So, all that's left is to check whether we can assing a boolean value to each such predicate under the constraint that two instances of the same predicate invoked with the same arguments are assigned the same value. So, we can simply encode this as a plain SAT problem where each predicate is encoded with a propositional variable that corresponds to the signature of its parameters e.g. the predicate $p(e_1,e_2)$ is encoded with a propositional variable $p_{12}$. This gives us the propositional formula:
+    \item Now, we are simply left with a boolean combination of uninterpreted predicates. So, all that's left is to check whether we can assign a boolean value to each such predicate under the constraint that two instances of the same predicate invoked with the same arguments are assigned the same value. So, we can simply encode this as a plain SAT problem where each predicate is encoded with a propositional variable that corresponds to the signature of its parameters e.g. the predicate $p(e_1,e_2)$ is encoded with a propositional variable $p_{12}$. This gives us the propositional formula:
     \begin{align*}
         &(p_{11} \vee q_{21}) \wedge \\
         &(p_{11} \vee q_{22}) \wedge \\

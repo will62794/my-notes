@@ -73,7 +73,7 @@
 </nav>
 <section id="propositional-logic" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Propositional Logic</h1>
-<p>We define classic propositional logic <span class="citation" data-cites="2012benari">(<a href="#ref-2012benari" role="doc-biblioref">Ben-Ari 2012</a>)</span> as a formal system consisting of:</p>
+<p>We define <em>propositional logic</em> <span class="citation" data-cites="2012benari">(<a href="#ref-2012benari" role="doc-biblioref">Ben-Ari 2012</a>)</span> as a formal system consisting of:</p>
 <ul>
 <li><p><span class="math inline">\({\mathcal{P}}\)</span>: a countably infinite set of elements called <em>propositional symbols</em>. These are alternately referred to as <em>propositional variables</em>, <em>atomic propositions</em> or just <em>atoms</em>.</p></li>
 <li><p><span class="math inline">\(\Omega\)</span>: set of logical <em>operators</em> or <em>connectives</em>.</p></li>
@@ -89,8 +89,8 @@
 </ul>
 <section id="decidability-and-complexity" class="level2" data-number="1.1">
 <h2 data-number="1.1"><span class="header-section-number">1.1</span> Decidability and Complexity</h2>
-<p>Determining any of the above properties for a propositional formula is a decidable problem, since we can easily enumerate the finite (exponentially many) number of possible intepretations for a formula to determine whether it is satisfiable/valid/unsatisfiable. The satisfiability problem for propositional formulas is known as the SAT problem, and is NP-complete. In some special cases satisfiability can be solved in polynomial time e.g. 2-SAT (where CNF clauses contain 2 variables) is in P. The 3-SAT problem is NP-complete.</p>
-<p>Determining the validity of a propositional formula <span class="math inline">\(\phi \in \mathcal{F}\)</span> can be determined by checking the unsatisfiability of <span class="math inline">\(\neg \phi\)</span>. That is, we check if there are any interpretations that violate <span class="math inline">\(\phi\)</span>. If there are none, then <span class="math inline">\(\phi\)</span> must be true under all interpretations i.e. <span class="math inline">\(\phi\)</span> is a tautology. The problem of checking validity/tautology of propositional formulas is co-NP-complete.</p>
+<p>Determining any of the above properties for a propositional formula is a decidable problem, since we can easily enumerate the finite (exponentially many) number of possible intepretations for a formula to determine whether it is satisfiable/valid/unsatisfiable. The satisfiability problem for propositional formulas is known as the SAT problem, and is NP-complete. In some special cases satisfiability can be solved in polynomial time e.g. 2-SAT (where CNF clauses contain 2 variables) is in P, as is HORNSAT (where clauses have at most one non-negated literal). The 3-SAT problem, however, is NP-complete.</p>
+<p>Determining the validity of a propositional formula <span class="math inline">\(\phi \in \mathcal{F}\)</span> (i.e. checking if it is a tautology) can be determined by checking the unsatisfiability of <span class="math inline">\(\neg \phi\)</span>. That is, we check if there are any interpretations that violate <span class="math inline">\(\phi\)</span>. If there are none, then <span class="math inline">\(\phi\)</span> must be true under all interpretations i.e. <span class="math inline">\(\phi\)</span> is a tautology. The problem of checking validity/tautology of propositional formulas is co-NP-complete.</p>
 </section>
 <section id="logical-consequence-and-theories" class="level2" data-number="1.2">
 <h2 data-number="1.2"><span class="header-section-number">1.2</span> Logical Consequence and Theories</h2>

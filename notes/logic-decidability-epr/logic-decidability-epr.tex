@@ -25,7 +25,7 @@
 
 \section{Propositional Logic}
 
-We define classic propositional logic \cite{2012benari} as a formal system consisting of: 
+We define \textit{propositional logic} \cite{2012benari} as a formal system consisting of: 
 \begin{itemize}
     \item $\propvars$: a countably infinite set of elements called \textit{propositional symbols}. These are alternately referred to as \textit{propositional variables}, \textit{atomic propositions} or just \textit{atoms}.
     \item $\Omega$: set of logical \textit{operators} or \textit{connectives}.
@@ -50,9 +50,9 @@ For a formula $A \in \mathcal{F}$ we have the following definitions:
 
 \subsection{Decidability and Complexity}
 
-Determining any of the above properties for a propositional formula is a decidable problem, since we can easily enumerate the finite (exponentially many) number of possible intepretations for a formula to determine whether it is satisfiable/valid/unsatisfiable. The satisfiability problem for propositional formulas is known as the SAT problem, and is NP-complete. In some special cases satisfiability can be solved in polynomial time e.g. 2-SAT (where CNF clauses contain 2 variables) is in P. The 3-SAT problem is NP-complete. 
+Determining any of the above properties for a propositional formula is a decidable problem, since we can easily enumerate the finite (exponentially many) number of possible intepretations for a formula to determine whether it is satisfiable/valid/unsatisfiable. The satisfiability problem for propositional formulas is known as the SAT problem, and is NP-complete. In some special cases satisfiability can be solved in polynomial time e.g. 2-SAT (where CNF clauses contain 2 variables) is in P, as is HORNSAT (where clauses have at most one non-negated literal). The 3-SAT problem, however, is NP-complete. 
 
-Determining the validity of a propositional formula $\phi \in \mathcal{F}$ can be determined by checking the unsatisfiability of $\neg \phi$. That is, we check if there are any interpretations that violate $\phi$. If there are none, then $\phi$ must be true under all interpretations i.e. $\phi$ is a tautology. The problem of checking validity/tautology of propositional formulas is co-NP-complete.
+Determining the validity of a propositional formula $\phi \in \mathcal{F}$ (i.e. checking if it is a tautology) can be determined by checking the unsatisfiability of $\neg \phi$. That is, we check if there are any interpretations that violate $\phi$. If there are none, then $\phi$ must be true under all interpretations i.e. $\phi$ is a tautology. The problem of checking validity/tautology of propositional formulas is co-NP-complete.
 
 \subsection{Logical Consequence and Theories}
 

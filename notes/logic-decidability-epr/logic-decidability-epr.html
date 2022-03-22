@@ -254,9 +254,9 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
         &amp;(p_{12} \vee q_{21}) \wedge \\
         &amp;(p_{12} \vee q_{22})  
     \end{aligned}\]</span></p></li>
-<li><p>Then, we just hand this problem to a SAT solver. The formula obtained is equisatisfiable with the original formula. That is, we are simply asking the SAT solver whether there exists a set of value assignments for each predicate that makes the overall statement true. We e</p></li>
+<li><p>Then, we just hand this problem to a SAT solver. The formula obtained is equisatisfiable with the original formula. That is, we are simply asking the SAT solver whether there exists a set of value assignments for each predicate that makes the overall statement true.</p></li>
 </ol>
-<p>Since the size of the finite satifying model for formulas in this class have a computable bound determined by the quantifier prefix, this means we should also be able to check validity of the negation of formulas in this class i.e. those with prefix <span class="math inline">\(\forall^*\exists^*\)</span>.</p>
+<p>Since the size of the finite satifying model for formulas in this class have a computable bound determined by the quantifier prefix, this means we should also be able to check validity of the negation of formulas in this class i.e. those with prefix <span class="math inline">\(\forall^*\exists^*\)</span>, by simply checking satisfiability for all models up to the required bound. If all cases are unsatisfiable, then this should be sufficient to establish validity.</p>
 </section>
 </section>
 </section>

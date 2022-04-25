@@ -104,8 +104,31 @@ For example, the clauses $C_1=ab\bar{c}$ and $C_2=bc\bar{e}$ clash on the pair o
     &=\{a,b,\bar{e}\}
 \end{align*}
 
+% 
+% TODO: Tenative notes on alternate statement of resolution rule.
+%
+% We can also state the resolution in the following, equivalent terms. If we have two clauses:
+% \begin{align*}
+%     &a_1 \vee a_2 \vee \dots \vee c \\ 
+%     &b_1 \vee b_2 \vee \dots \vee \neg c \\ 
+% \end{align*}
+% we can rewrite these as
+% \begin{align*}
+%     &\neg (a_1 \vee a_2 \vee \dots) \rightarrow c \\ 
+%     &c \rightarrow (b_1 \vee b_2 \vee \dots \vee \dots)  \\ 
+% \end{align*}
+% and from this we can see it clearly follows that
+% \begin{align*}
+%     \neg (a_1 \vee \neg a_2 \vee \dots) \rightarrow  (b_1 \vee b_2 \vee \dots \vee \dots) 
+% \end{align*}
+% or, equivalently:
+% \begin{align*}
+%     ( a_1 \wedge a_2 \wedge \dots) \rightarrow  (b_1 \vee b_2 \vee \dots \vee \dots) 
+% \end{align*}
+
+
 Note that resolution is only performed if the pair of clauses clash on \textit{exactly} one pair of complementary literals. The important thing to note is that the resolvent $C$ is satisfiable iff the parent clauses $C_1$ and $C_2$ are both satisfiable. Thus, the resolution procedure then basically proceeds by taking in a set of clauses $S$ and repeatedly applying this resolution rule. That is
-\begin{itemize}
+\begin{enumerate}
     \item Choose a pair of clashing clauses $\{C_1,C_2\} \subseteq S_i$ that has not been chosen before.
     \item Compute $Res(C_1,C_2)$.
     \item If $C$ is not a trivial clause, let $S_{i+1}=S_i \cup \{C\}$. Otherwise $S_{i+1}=S_i$.
@@ -114,7 +137,7 @@ Note that resolution is only performed if the pair of clauses clash on \textit{e
         \item $C=\square$
         \item All pairs of clashing clauses have been resolved.
     \end{itemize}
-\end{itemize}
+\end{enumerate}
 See Figure \ref{fig:resolution-refutation-tree} for an example of a resolution proof for the clause set $S=\{p,\bar{p}q, \bar{r}, \bar{p} \bar{q}r\}$ where the rule applications are represented as a tree, leading to the unsatisfiable clause.
 \begin{figure}
     \centering

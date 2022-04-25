@@ -120,7 +120,7 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
     &amp;=ab\bar{e}\\
     &amp;=\{a,b,\bar{e}\}\end{aligned}\]</span></p>
 <p>Note that resolution is only performed if the pair of clauses clash on <em>exactly</em> one pair of complementary literals. The important thing to note is that the resolvent <span class="math inline">\(C\)</span> is satisfiable iff the parent clauses <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span> are both satisfiable. Thus, the resolution procedure then basically proceeds by taking in a set of clauses <span class="math inline">\(S\)</span> and repeatedly applying this resolution rule. That is</p>
-<ul>
+<ol>
 <li><p>Choose a pair of clashing clauses <span class="math inline">\(\{C_1,C_2\} \subseteq S_i\)</span> that has not been chosen before.</p></li>
 <li><p>Compute <span class="math inline">\(Res(C_1,C_2)\)</span>.</p></li>
 <li><p>If <span class="math inline">\(C\)</span> is not a trivial clause, let <span class="math inline">\(S_{i+1}=S_i \cup \{C\}\)</span>. Otherwise <span class="math inline">\(S_{i+1}=S_i\)</span>.</p></li>
@@ -129,7 +129,7 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
 <li><p><span class="math inline">\(C=\square\)</span></p></li>
 <li><p>All pairs of clashing clauses have been resolved.</p></li>
 </ul></li>
-</ul>
+</ol>
 <p>See Figure <a href="#fig:resolution-refutation-tree" data-reference-type="ref" data-reference="fig:resolution-refutation-tree">1</a> for an example of a resolution proof for the clause set <span class="math inline">\(S=\{p,\bar{p}q, \bar{r}, \bar{p} \bar{q}r\}\)</span> where the rule applications are represented as a tree, leading to the unsatisfiable clause.</p>
 <p><img src="figures/refutation-example.png" id="fig:resolution-refutation-tree" alt="image" /> <span id="fig:resolution-refutation-tree" label="fig:resolution-refutation-tree">[fig:resolution-refutation-tree]</span></p>
 </section>

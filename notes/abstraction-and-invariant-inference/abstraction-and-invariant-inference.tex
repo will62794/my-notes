@@ -6,6 +6,7 @@
 \usepackage{todonotes}
 % \usepackage{biblatex}
 \usepackage[margin=1.5in]{geometry}
+\usepackage{tikz}
 
 \hypersetup{pdftex,colorlinks=true,allcolors=blue}
 \usepackage{hypcap}
@@ -34,35 +35,72 @@
 % \subsection*{Abstraction and Safety Verification}
 
 
-For the safety verification of transition systems, we typically must perform some kind of \textit{abstraction}, for any systems of non-trivial size. For finite transition systems, verification is theoretically decidable, but practically it suffers from state space explosion, and so exhaustive verification may be exponential in the size of the transition system. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. Furthermore, we presumably want this abstraction to be of size polynomial in the size of our transition system i.e. we want a ``concise'' abstraction, to make verification tractable.
+For the safety verification of transition systems, we typically must perform some kind of \textit{abstraction}. For finite transition systems, verification is theoretically decidable, but practically it suffers from the state space explosion problem, and so exhaustive verification may be hard (e.g. exponential) in general. So, for verifying any systems of non-trivial size, abstraction is typically necessary. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. Furthermore, we presumably want this abstraction to be ``concise" i.e. it doesn't scale in proportion to the size of the transition system (e.g. the number of states).
 
-In order to discover an inductive invariant we must work over some \textit{abstraction domain}. Given a state space $S$, we can view an \textit{abstraction domain} $D \subseteq 2^S$ as a set of subsets of $S$. For example, given the state space defined by a a single real valued variable $x \in \mathbb{R}$, a possible abstraction domain is
+\subsection*{Abstraction Domains}
+
+In general, in order to discover a ``concise" inductive invariant we must work over some \textit{abstraction domain}. Given a state space $S$, we can define an abstraction domain $D \subseteq 2^S$ as simply a set of subsets of $S$. For example, given the state space defined by a single real valued variable $x \in \mathbb{R}$, a possible abstraction domain is
 \begin{align*}
     D_1 = \{x > 2, x < - 2\}
 \end{align*} 
-where each element of $D_1$ is a subset of $\mathbb{R}$, defined symbolically as a predicate over $x$.
+where each element of $D_1$ is a subset of $\mathbb{R}$, defined as a symbolic predicate over $x$.
 
-One way to define an abstraction domain is to explicitly provide a set of predicates over a state space. More practically, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Then, the abstraction domain is defined as the space that arises from all possible combinations of atomic predicates. For example, for a state $S$ we can define an \textit{grammar} as a pair $(P,\{\neg, \vee\})$ where $P \subseteq 2^S$ is a set of predicates, and $\{\neg, \vee\}$ are the operations for combining atomic predicates. So, abstraction domain defined by this grammar consists of all possible ways of combining atomic predicates via union and complement.
+One way to define an abstraction domain for a state space $S$ is to explicitly define the set $D \subseteq 2^S$. Alternatively, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Our abstraction domain is then defined as the space of all possible composite predicates that can be formed as combinations of atomic predicates, perhaps up to some bounded size. We can call this the \textit{grammar-based} approach.
 
-Further question is, given a particular abstraction domain, is it possible to learn an inductive invariant?
+For example, for a state space $S$ we can define a \textit{grammar} $G$ as a pair $(P,O)$ where $P \subseteq 2^S$ is a set of predicates on $S$, and $O$ is a set of operators for combining elements of $P$ to form new predicates on $S$. These operators may be unary, binary, etc. For example, we may have a grammar $G_1 = (\{x>2, x < 3\}, \{\neg, \vee\})$. In symbolic terms, the set $O$ could be composed of logical operators, but in general we can view $O$ as any set-based operators i.e. operators that take in some set of predicates of $P$ and produce new predicates in $2^S$.
 
-If we have a transition system with a set of reachable states $Reach$ and an inductive invariant $Ind$ that is a strict superset of $Reach$, one approach to searching for an inductive invariant is to define as our abstraction domain a set of invariants of this transition system. These invariants themselves could be defined in terms of some grammar, via atomic predicates and boolean connectives, but overall we just care about the set of invariants we can work with. If we search for an inductive invariant by picking new invariants one at a time, are we guaranteed to converge to an inductive invariant if one exists? 
+% We can refer to the abstraction domain defined by a grammar $G$ as $\mathcal{D}(G)$.
 
-Consider the simple case below, where there are two inductive invariants ($Ind$ and $Reach$) that exist, and $Ind$ is expressible as a conjunctino of invariants in our abstraction domain. 
+For transition systems with a state space $S$, we can also always work over a ``trivial'' abstraction domain. That is, the domain $D_{\bot} = \{\{s\} \mid s \in S\}$ that consists of all ``singleton" predicates i.e. those that contain a single concrete state. We can view this domain as ``minimally abstract'', since the predicates don't cover multiple states, and so don't really perform any ``true" abstraction.
 
+\subsection*{Learning Inductive Invariants}
+
+If we are given a transition system $M$ with reachable states $Reach$ and we want to prove that some invariant $Safe$ holds on $M$, we must find an inductive invariant sufficient to establish $Safe$. Typically, we search for an inductive invariant by iteratively strengthening $Safe$, by conjoining a series of lemmas invariants:
+\begin{align*}
+    &\wedge Safe \\
+    &\wedge L_1 \\
+    &\phantom{\wedge}\vdots \\
+    &\wedge L_n
+\end{align*}
+
+
+One question, then, is how do we find suitable lemma invariants? One approach is to simply define an abstraction domain $D$ that consists of some large set of candidate invariants, and try to form an inductive invariant as the conjunction of these invariants. In practice, we may define $D$ using a grammar, but ultimately we are concerned with whether the abstraction domain generated by such a grammar is sufficient for learning an inductive invariant.
+
+Following this approach to defining our abstraction domain, we now need a strategy for how to form an inductive invariant from the predicates in $D$ (which are simply ``plain'' invariants of our system $M$). We also want to consider whether this strategy is guaranteed to converge to an inductive invariant, if one exists. By definition, we know that $Reach$ is always a valid inductive invariant, but for sake of a simple illustration, let's also assume that there also exists one additional inductive invariant of our system, $Ind$ that is a strict superset of $Reach$ e.g. consider the following example:
+
+% Now, if we are given an abstraction domain $D$, we may want to ask whether is it possible to learn an inductive invariant over that domain. If we have a transition system with a set of reachable states $Reach$ and an inductive invariant $Ind$ that is a strict superset of $Reach$, one approach to searching for an inductive invariant is to define as our abstraction domain a set of invariants of this transition system. These invariants themselves could be defined in terms of some grammar, via atomic predicates and boolean connectives, but overall we just care about the set of invariants we can work with. If we search for an inductive invariant by picking new invariants one at a time, are we guaranteed to converge to an inductive invariant if one exists? 
+
+% Consider the simple case below, where there are two inductive invariants ($Ind$ and $Reach$) that exist, and $Ind$ is expressible as a conjunctino of invariants in our abstraction domain. 
 
 \begin{center}
     \includegraphics[width=70mm]{invs1.png}  
 \end{center}
 
-There are 3 invariants in our domain, $L_1,L_2,L_3$. If we select invariants in some order, are we guaranteed to converge to an inductive invariant? If we select $L_1$ and then $L_2$, then we will converge to $Ind$. But, if we select $L_1$ and then $L_3$, we will end up with a resulting predicate $L_1 \wedge L_3$ that is stronger than $Ind$, and we end up stuck, since there are no inductive ivnariants stronger than $Ind$ that are expressible in our abstraction domain. So, if we follow a strategy of strict refinement (always combining via conjunction), then we are inevitably stuck in this case. We could potentially undo a past choice, however, and try a different invariant selection strategy, in the style of standard backtracking search. But, a question is how to detect when we end up in this "dead end" refinement scenario.
+% \begin{tikzpicture}
+%     \rectangle
+% \end{tikzpicture}
 
-If an inductive invariant exists that is representable in a given abstraction domain, will counterexample guided invariant search always find it?
+There are 3 invariants in our abstraction domain, $D=\{L_1, L_2, L_3\}$, and two valid inductive invariants, $Reach$ and $Ind$. If our strategy is to just select invariants from $D$ in some arbitrary order, are we guaranteed to converge to some inductive invariant? If we select $L_1$ and then $L_2$, then we will converge to $Ind$. But, if we select $L_1$ and then $L_3$, we will end up with a resulting predicate $L_1 \wedge L_3$ that ``overshoots" (i.e. is stronger than) $Ind$, and we end up stuck, since there are no inductive invariants stronger than $Ind$ that are expressible in our abstraction domain. So, if we follow a strategy of strict refinement (always combining via conjunction), then we are inevitably stuck in this case. We could potentially undo a past choice, however, and try a different invariant selection strategy, in the style of a standard backtracking search. But, a question is how to detect when we end up in this "dead end" refinement scenario.
 
-We can say that our abstraction domain consists of the set of all invariants expressible by some given grammar. Then, we want to ask whether by selecting invariants in some manner, is it always possible we will learn
+\subsection*{Other Techniques}
+
+Note that, at least in its initial versions, my understanding is that algorithms like IC3 were complete in the above sense (i.e. could always converge to an inductive invariant) because they essentially have the ability to always refine their abstraction to an arbitrarily fine-grained level i.e. they can just explicitly eliminate concrete states one by one (in the finite state case). This doesn't really solve the problem, it just kind of works around it by degrading to explicit state enumeration if you can't converge to a ``concise" abstraction. When using the approach described above (i.e. our FMCAD approach), we fix the abstraction domain and if it is too coarse we don't adjust it dynamically. IC3 originally worked in a somewhat differnet manner i.e. look at concrete counterexamples and then abstract based on them. I think they initially did this abstraction based on a ``ternary simulation'' approach i.e. given a concrete boolean state 
+\begin{align*}
+    &\wedge x = 0 \\ 
+    &\wedge y = 0 \\ 
+    &\wedge z = 0
+\end{align*}
+look at all possible $2^3$ abstractions of this state that can be formed by dropping some subset of literals.
+
+% If an inductive invariant exists that is representable in a given abstraction domain, will counterexample guided invariant search always find it?
+
+% We can say that our abstraction domain consists of the set of all invariants expressible by some given grammar. Then, we want to ask whether by selecting invariants in some manner, is it always possible we will learn
+
+\subsection*{Open Questions}
 
 \begin{itemize}
-    \item If you start off with a fixed abstraction domain, is there a way to dynamically adjust the domain if you realize that it cannot express the concepts (e.g. invariants) you want to express?
+    \item If you start off with a fixed abstraction domain, is there a way to dynamically adjust the domain if you realize that it cannot express the concepts (e.g. inductive invariants) you want to express? Is this basically similar to what CEGAR, abstraction refinement does? Also ``widening''/``narrowing'' in abstract interpretation?
+    \item If, in practical cases there are many inductive invariants in between the strongest and the weakest, does this make it much more unlikely that you will ``overshoot'' all of them and end up in a dead end? Even with a naive lemma selection approach, is it somehow quite likely you will converge on \textit{one} of these inductive invariants?
 \end{itemize}
 
 

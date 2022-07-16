@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <title>Abstraction and Invariant Inference</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Abstraction and Invariant Inference</h1>
+<p class="author">William Schultz</p>
+</header>
+<p>For the safety verification of transition systems, we typically must perform some kind of <em>abstraction</em>, for any systems of non-trivial size. For finite transition systems, verification is theoretically decidable, but practically it suffers from state space explosion, and so exhaustive verification may be exponential in the size of the transition system. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. Furthermore, we presumably want this abstraction to be of size polynomial in the size of our transition system i.e. we want a “concise” abstraction, to make verification tractable.</p>
+<p>In order to discover an inductive invariant we must work over some <em>abstraction domain</em>. Given a state space <span class="math inline">\(S\)</span>, we can view an <em>abstraction domain</em> <span class="math inline">\(D \subseteq 2^S\)</span> as a set of subsets of <span class="math inline">\(S\)</span>. For example, given the state space defined by a a single real valued variable <span class="math inline">\(x \in \mathbb{R}\)</span>, a possible abstraction domain is <span class="math display">\[\begin{aligned}
+    D_1 = \{x &gt; 2, x &lt; - 2\}\end{aligned}\]</span> where each element of <span class="math inline">\(D_1\)</span> is a subset of <span class="math inline">\(\mathbb{R}\)</span>, defined symbolically as a predicate over <span class="math inline">\(x\)</span>.</p>
+<p>One way to define an abstraction domain is to explicitly provide a set of predicates over a state space. More practically, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Then, the abstraction domain is defined as the space that arises from all possible combinations of atomic predicates. For example, for a state <span class="math inline">\(S\)</span> we can define an <em>grammar</em> as a pair <span class="math inline">\((P,\{\neg, \vee\})\)</span> where <span class="math inline">\(P \subseteq 2^S\)</span> is a set of predicates, and <span class="math inline">\(\{\neg, \vee\}\)</span> are the operations for combining atomic predicates. So, abstraction domain defined by this grammar consists of all possible ways of combining atomic predicates via union and complement.</p>
+<p>Further question is, given a particular abstraction domain, is it possible to learn an inductive invariant?</p>
+<p>If we have a transition system with a set of reachable states <span class="math inline">\(Reach\)</span> and an inductive invariant <span class="math inline">\(Ind\)</span> that is a strict superset of <span class="math inline">\(Reach\)</span>, one approach to searching for an inductive invariant is to define as our abstraction domain a set of invariants of this transition system. These invariants themselves could be defined in terms of some grammar, via atomic predicates and boolean connectives, but overall we just care about the set of invariants we can work with. If we search for an inductive invariant by picking new invariants one at a time, are we guaranteed to converge to an inductive invariant if one exists?</p>
+<p>Consider the simple case below, where there are two inductive invariants (<span class="math inline">\(Ind\)</span> and <span class="math inline">\(Reach\)</span>) that exist, and <span class="math inline">\(Ind\)</span> is expressible as a conjunctino of invariants in our abstraction domain.</p>
+<div class="center">
+<p><img src="invs1.png" style="width:70mm" alt="image" /></p>
+</div>
+<p>There are 3 invariants in our domain, <span class="math inline">\(L_1,L_2,L_3\)</span>. If we select invariants in some order, are we guaranteed to converge to an inductive invariant? If we select <span class="math inline">\(L_1\)</span> and then <span class="math inline">\(L_2\)</span>, then we will converge to <span class="math inline">\(Ind\)</span>. But, if we select <span class="math inline">\(L_1\)</span> and then <span class="math inline">\(L_3\)</span>, we will end up with a resulting predicate <span class="math inline">\(L_1 \wedge L_3\)</span> that is stronger than <span class="math inline">\(Ind\)</span>, and we end up stuck, since there are no inductive ivnariants stronger than <span class="math inline">\(Ind\)</span> that are expressible in our abstraction domain. So, if we follow a strategy of strict refinement (always combining via conjunction), then we are inevitably stuck in this case. We could potentially undo a past choice, however, and try a different invariant selection strategy, in the style of standard backtracking search. But, a question is how to detect when we end up in this "dead end" refinement scenario.</p>
+<p>If an inductive invariant exists that is representable in a given abstraction domain, will counterexample guided invariant search always find it?</p>
+<p>We can say that our abstraction domain consists of the set of all invariants expressible by some given grammar. Then, we want to ask whether by selecting invariants in some manner, is it always possible we will learn</p>
+<ul>
+<li><p>If you start off with a fixed abstraction domain, is there a way to dynamically adjust the domain if you realize that it cannot express the concepts (e.g. invariants) you want to express?</p></li>
+</ul>
+</body>
+</html>

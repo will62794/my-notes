@@ -57,6 +57,10 @@ def make_index_page_html(notes):
 
 notes_dir = "notes"
 notes = sorted(os.listdir(notes_dir))
+# Notes patterns to ignore.
+notes = [n for n in notes if ".DS_Store" not in n]
+notes = [n for n in notes if "zzz-note-test" not in n]
+
 make_note_pages(notes)
 index_page_html = make_index_page_html(notes)
 f = open("index.html", 'w')

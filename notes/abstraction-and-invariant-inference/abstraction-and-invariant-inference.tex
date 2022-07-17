@@ -35,19 +35,19 @@
 % \subsection*{Abstraction and Safety Verification}
 
 
-For the safety verification of transition systems, we typically must perform some kind of \textit{abstraction}. For finite transition systems, verification is theoretically decidable, but practically it suffers from the state space explosion problem, and so exhaustive verification may be hard (e.g. exponential) in general. So, for verifying any systems of non-trivial size, abstraction is typically necessary. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. Furthermore, we presumably want this abstraction to be ``concise" i.e. it doesn't scale in proportion to the size of the transition system (e.g. the number of states).
+For the safety verification of transition systems, we typically must perform some kind of \textit{abstraction}. For finite transition systems, verification is theoretically decidable, but practically it suffers from the state space explosion problem, and so exhaustive verification may be hard (e.g. exponential) in general. So, for any systems of non-trivial size, abstraction is typically necessary. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. We presumably want this abstraction to be ``concise" i.e. it is expressible in a form (exponentially?) more compact than the set of reachable states.
 
 \subsection*{Abstraction Domains}
 
-In general, in order to discover a ``concise" inductive invariant we must work over some \textit{abstraction domain}. Given a state space $S$, we can define an abstraction domain $D \subseteq 2^S$ as simply a set of subsets of $S$. For example, given the state space defined by a single real valued variable $x \in \mathbb{R}$, a possible abstraction domain is
+In general, in order to  discover a ``concise" inductive invariant we work over some \textit{abstraction domain}. Given a state space $S$, we define an abstraction domain $D \subseteq 2^S$ as simply a set of subsets of $S$. For example, given the state space defined by a single real valued variable $x \in \mathbb{R}$, a possible abstraction domain is
 \begin{align*}
     D_1 = \{x > 2, x < - 2\}
 \end{align*} 
 where each element of $D_1$ is a subset of $\mathbb{R}$, defined as a symbolic predicate over $x$.
 
-One way to define an abstraction domain for a state space $S$ is to explicitly define the set $D \subseteq 2^S$. Alternatively, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Our abstraction domain is then defined as the space of all possible composite predicates that can be formed as combinations of atomic predicates, perhaps up to some bounded size. We can call this the \textit{grammar-based} approach.
+One way to define an abstraction domain for a state space $S$ is to explicitly define the set $D \subseteq 2^S$. Alternatively, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Our abstraction domain is then defined as the space of all possible composite predicates that can be formed as combinations of atomic predicates using these operators (perhaps up to some bounded size). We can consider this the \textit{grammar-based} approach.
 
-For example, for a state space $S$ we can define a \textit{grammar} $G$ as a pair $(P,O)$ where $P \subseteq 2^S$ is a set of predicates on $S$, and $O$ is a set of operators for combining elements of $P$ to form new predicates on $S$. These operators may be unary, binary, etc. For example, we may have a grammar $G_1 = (\{x>2, x < 3\}, \{\neg, \vee\})$. In symbolic terms, the set $O$ could be composed of logical operators, but in general we can view $O$ as any set-based operators i.e. operators that take in some set of predicates of $P$ and produce new predicates in $2^S$.
+For example, for a state space $S$ we can define a \textit{grammar} $G$ as a pair $(P,O)$ where $P \subseteq 2^S$ is a set of predicates on $S$, and $O$ is a set of operators for combining elements of $P$ to form new predicates on $S$. These operators may be unary, binary, etc. For example, we may have a grammar $G_1 = (\{x>2, x < 3\}, \{\neg, \vee\})$. The set $O$ might be composed of symbolic/logical operators, but in general $O$ may contain any set-based operators i.e. operators that take in some set of predicates of $P$ and produce new predicates in $2^S$.
 
 % We can refer to the abstraction domain defined by a grammar $G$ as $\mathcal{D}(G)$.
 
@@ -55,7 +55,7 @@ For transition systems with a state space $S$, we can also always work over a ``
 
 \subsection*{Learning Inductive Invariants}
 
-If we are given a transition system $M$ with reachable states $Reach$ and we want to prove that some invariant $Safe$ holds on $M$, we must find an inductive invariant sufficient to establish $Safe$. Typically, we search for an inductive invariant by iteratively strengthening $Safe$, by conjoining a series of lemma invariants:
+If we are given a transition system $M$ with reachable states $Reach$ and we want to prove that some invariant $Safe$ holds on $M$, we must find an inductive invariant sufficient to establish $Safe$. We can search for an inductive invariant by iteratively strengthening $Safe$ by conjoining a series of lemma invariants:
 \begin{align*}
     &\wedge Safe \\
     &\wedge L_1 \\
@@ -63,8 +63,7 @@ If we are given a transition system $M$ with reachable states $Reach$ and we wan
     &\wedge L_n
 \end{align*}
 
-
-One question, then, is how do we find suitable lemma invariants? One approach is to define an abstraction domain $D$ that consists of some large set of candidate invariants, and try to form an inductive invariant as the conjunction of these invariants. In practice, we may define $D$ using a grammar, but ultimately we are concerned with whether the abstraction domain generated by such a grammar is sufficient for learning an inductive invariant.
+How do we find suitable lemma invariants? One approach is to define an abstraction domain $D$ that consists of some large set of candidate invariants, and try to form an inductive invariant as the conjunction of some subset of these invariants. In practice, we may define $D$ using a grammar, but ultimately we are concerned with whether the abstraction domain generated by such a grammar is sufficient for learning an inductive invariant.
 
 Following this approach to defining our abstraction domain, we then need a strategy for how to form an inductive invariant using the predicates in $D$ (which are simply ``plain'' invariants of our system $M$). We also want to consider whether this strategy is guaranteed to converge to an inductive invariant, if one exists. By definition, we know that $Reach$ is always a valid inductive invariant, but for sake of a simple illustration, let's also assume that there also exists one additional inductive invariant of our system, $Ind$, that is a strict superset of $Reach$ e.g. consider the following example:
 % Now, if we are given an abstraction domain $D$, we may want to ask whether is it possible to learn an inductive invariant over that domain. If we have a transition system with a set of reachable states $Reach$ and an inductive invariant $Ind$ that is a strict superset of $Reach$, one approach to searching for an inductive invariant is to define as our abstraction domain a set of invariants of this transition system. These invariants themselves could be defined in terms of some grammar, via atomic predicates and boolean connectives, but overall we just care about the set of invariants we can work with. If we search for an inductive invariant by picking new invariants one at a time, are we guaranteed to converge to an inductive invariant if one exists? 

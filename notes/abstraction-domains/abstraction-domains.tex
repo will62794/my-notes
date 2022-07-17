@@ -1,0 +1,56 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{todonotes}
+% \usepackage{biblatex}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{tikz}
+
+\hypersetup{pdftex,colorlinks=true,allcolors=blue}
+\usepackage{hypcap}
+
+\begin{document}
+
+\title{Abstraction Domains}
+\author{William Schultz}
+\date{\today}
+
+\maketitle
+
+
+% Say we have a transition system and a safety property we want to prove. To search for an inductive invariant, we start with a set of \textit{predicates}, which essentially define our abstract domain. If the state space of our transition system is $S$, then a \textit{predicate} can be viewed as simply a subset of states in $S$. Now, if we have some inductive invariant infernece algorithm that works by generating normal (potentially non-inductive) invariants, can we say anything about the soundness/completeness of this method? 
+
+% Let's assume that some inductive invariant $Ind$ does exist. In general, we know that the set of reachable states is always an inductive invariant. For simplicity, let's also assume that there is a single existing inductive invariant stronger than $Safe$.
+
+% We can view the search for an inductive invariant as a geometric problem. We have our property $Safe$, and we must remove  portions of it until we end up with $Ind$. So, 
+
+% There exists 
+
+% If an inductive invariant exists that is expressible over the abstraction domain defined by our predicates, then is an approach guaranteed to find it?
+
+% But what about the cases where an inductive invariant is not expressible in terms of the given predicate domain?
+
+% \subsection*{Abstraction and Safety Verification}
+
+
+For the safety verification of transition systems, we typically must perform some kind of \textit{abstraction}. For finite transition systems, verification is theoretically decidable, but practically it suffers from the state space explosion problem, and so exhaustive verification may be hard (e.g. exponential) in general. So, for any systems of non-trivial size, abstraction is typically necessary. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. We presumably want this abstraction to be ``concise" i.e. it is expressible in a form (exponentially?) more compact than the set of reachable states.
+
+% \subsection*{Abstraction Domains}
+
+In general, in order to  discover a ``concise" inductive invariant we work over some \textit{abstraction domain}. Given a state space $S$, we define an abstraction domain $D \subseteq 2^S$ as simply a set of subsets of $S$. For example, given the state space defined by a single real valued variable $x \in \mathbb{R}$, a possible abstraction domain is
+\begin{align*}
+    D_1 = \{x > 2, x < - 2\}
+\end{align*} 
+where each element of $D_1$ is a subset of $\mathbb{R}$, defined as a symbolic predicate over $x$.
+
+One way to define an abstraction domain for a state space $S$ is to explicitly define the set $D \subseteq 2^S$. Alternatively, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Our abstraction domain is then defined as the space of all possible composite predicates that can be formed as combinations of atomic predicates using these operators (perhaps up to some bounded size). We can consider this the \textit{grammar-based} approach.
+
+For example, for a state space $S$ we can define a \textit{grammar} $G$ as a pair $(P,O)$ where $P \subseteq 2^S$ is a set of predicates on $S$, and $O$ is a set of operators for combining elements of $P$ to form new predicates on $S$. These operators may be unary, binary, etc. For example, we may have a grammar $G_1 = (\{x>2, x < 3\}, \{\neg, \vee\})$. The set $O$ might be composed of symbolic/logical operators, but in general $O$ may contain any set-based operators i.e. operators that take in some set of predicates of $P$ and produce new predicates in $2^S$.
+
+% We can refer to the abstraction domain defined by a grammar $G$ as $\mathcal{D}(G)$.
+
+For transition systems with a state space $S$, we can also always work over a ``trivial'' abstraction domain. That is, the domain $D_{\bot} = \{\{s\} \mid s \in S\}$ that consists of all ``singleton" predicates i.e. those that contain a single concrete state. We can view this domain as ``minimally abstract'', since the predicates don't cover multiple states, and so don't really perform any ``true" abstraction.
+
+\end{document}

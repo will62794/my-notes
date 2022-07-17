@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <title>Abstraction Domains</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Abstraction Domains</h1>
+<p class="author">William Schultz</p>
+</header>
+<p>For the safety verification of transition systems, we typically must perform some kind of <em>abstraction</em>. For finite transition systems, verification is theoretically decidable, but practically it suffers from the state space explosion problem, and so exhaustive verification may be hard (e.g. exponential) in general. So, for any systems of non-trivial size, abstraction is typically necessary. Finding an inductive invariant to prove safety is, essentially, about finding a suitable abstraction that overapproximates the set of reachable system states. We presumably want this abstraction to be “concise" i.e. it is expressible in a form (exponentially?) more compact than the set of reachable states.</p>
+<p>In general, in order to discover a “concise" inductive invariant we work over some <em>abstraction domain</em>. Given a state space <span class="math inline">\(S\)</span>, we define an abstraction domain <span class="math inline">\(D \subseteq 2^S\)</span> as simply a set of subsets of <span class="math inline">\(S\)</span>. For example, given the state space defined by a single real valued variable <span class="math inline">\(x \in \mathbb{R}\)</span>, a possible abstraction domain is <span class="math display">\[\begin{aligned}
+    D_1 = \{x &gt; 2, x &lt; - 2\}\end{aligned}\]</span> where each element of <span class="math inline">\(D_1\)</span> is a subset of <span class="math inline">\(\mathbb{R}\)</span>, defined as a symbolic predicate over <span class="math inline">\(x\)</span>.</p>
+<p>One way to define an abstraction domain for a state space <span class="math inline">\(S\)</span> is to explicitly define the set <span class="math inline">\(D \subseteq 2^S\)</span>. Alternatively, we can provide a set of atomic predicates and rules for for how these predicates can be combined to form additional predicates. Our abstraction domain is then defined as the space of all possible composite predicates that can be formed as combinations of atomic predicates using these operators (perhaps up to some bounded size). We can consider this the <em>grammar-based</em> approach.</p>
+<p>For example, for a state space <span class="math inline">\(S\)</span> we can define a <em>grammar</em> <span class="math inline">\(G\)</span> as a pair <span class="math inline">\((P,O)\)</span> where <span class="math inline">\(P \subseteq 2^S\)</span> is a set of predicates on <span class="math inline">\(S\)</span>, and <span class="math inline">\(O\)</span> is a set of operators for combining elements of <span class="math inline">\(P\)</span> to form new predicates on <span class="math inline">\(S\)</span>. These operators may be unary, binary, etc. For example, we may have a grammar <span class="math inline">\(G_1 = (\{x&gt;2, x &lt; 3\}, \{\neg, \vee\})\)</span>. The set <span class="math inline">\(O\)</span> might be composed of symbolic/logical operators, but in general <span class="math inline">\(O\)</span> may contain any set-based operators i.e. operators that take in some set of predicates of <span class="math inline">\(P\)</span> and produce new predicates in <span class="math inline">\(2^S\)</span>.</p>
+<p>For transition systems with a state space <span class="math inline">\(S\)</span>, we can also always work over a “trivial” abstraction domain. That is, the domain <span class="math inline">\(D_{\bot} = \{\{s\} \mid s \in S\}\)</span> that consists of all “singleton" predicates i.e. those that contain a single concrete state. We can view this domain as “minimally abstract”, since the predicates don’t cover multiple states, and so don’t really perform any “true" abstraction.</p>
+</body>
+</html>

@@ -1,0 +1,43 @@
+\documentclass[10pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{todonotes}
+% \usepackage{biblatex}
+\usepackage[margin=1.5in]{geometry}
+\usepackage{tikz}
+
+\hypersetup{pdftex,colorlinks=true,allcolors=blue}
+\usepackage{hypcap}
+
+\begin{document}
+
+\title{Abstract Interpretation}
+\author{William Schultz}
+\date{\today}
+
+\maketitle
+
+
+If we want to analyze the behavior of a program, we typically perform some kind of \textit{abstraction}. That is, we approximate the concrete semantics of the program in some way that is sufficient for analysis. \textit{Abstract interpretation} provides a formal framework for defining and performing these types of program abstractions.
+
+\subsection*{Background}
+
+A \textit{lattice} $L=(S,\sqsubseteq)$ is a partially ordered set where each pair of elements has a least upper bound (i.e. \textit{join} $\sqcup$) and a greatest lower bound (i.e. \textit{meet}, $\sqcap$).
+
+\subsection*{Abstraction Domains}
+
+An \textit{abstraction domain} is defined as follows, where $D$ is the \textit{concrete domain} and $\hat{D}$ is the \textit{abstract domain}, and elements of $\hat{D}$ form a lattice.
+\begin{itemize}
+    \item $\gamma : \hat{D} \rightarrow D$: \textbf{Concretization function} that maps abstract values to sets of concrete elements
+    \item $\alpha : D \rightarrow \hat{D}$: \textbf{Abstraction function} that maps sets of concrete elements to the most precise value in the abstract domain. 
+\end{itemize}
+where $\alpha$ and $\gamma$ must form a \textit{Galois connection} i.e.
+\begin{align*}
+    \forall x \in D, \forall \hat{x} \in \hat{D} : \alpha(x) \sqsubseteq \hat{x} \Leftrightarrow x \sqsubseteq \gamma(\hat{x}) 
+\end{align*}    
+Intuitively, this means that the abstraction and concretization functions respect the orderings of $D$ and $\hat{D}$. That is, if $\alpha(x)$, the abstraction of $x$, is ordered before some other $\hat{x} \in \hat{D}$, then $x$ should be ordered before $\gamma(\hat{x})$, the concretization of $\hat{x}$.
+
+
+\end{document}

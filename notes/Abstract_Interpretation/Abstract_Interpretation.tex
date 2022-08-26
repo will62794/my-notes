@@ -28,15 +28,15 @@ A \textit{lattice} $L=(S,\sqsubseteq)$ is a partially ordered set where each pai
 
 \subsection*{Abstraction Domains}
 
-An \textit{abstraction domain} is defined as follows, where $D$ is the \textit{concrete domain} and $\hat{D}$ is the \textit{abstract domain}, and elements of $\hat{D}$ form a lattice.
+An \textit{abstraction domain} is defined as follows, where $D$ is a \textit{concrete domain} and $\hat{D}$ is an \textit{abstract domain}, and elements of $\hat{D}$ form a lattice:
 \begin{itemize}
-    \item $\gamma : \hat{D} \rightarrow D$: \textbf{Concretization function} that maps abstract values to sets of concrete elements
+    \item $\gamma : \hat{D} \rightarrow D$: \textbf{Concretization function} that maps abstract values to sets of concrete elements.
     \item $\alpha : D \rightarrow \hat{D}$: \textbf{Abstraction function} that maps sets of concrete elements to the most precise value in the abstract domain. 
 \end{itemize}
-where $\alpha$ and $\gamma$ must form a \textit{Galois connection} i.e.
+where $\alpha$ and $\gamma$ must form a \textit{Galois connection}. That is, they satisfy the following condition
 \begin{align*}
     \forall x \in D, \forall \hat{x} \in \hat{D} : \alpha(x) \sqsubseteq \hat{x} \Leftrightarrow x \sqsubseteq \gamma(\hat{x}) 
-\end{align*}    
+\end{align*} 
 Intuitively, this means that the abstraction and concretization functions respect the orderings of $D$ and $\hat{D}$. That is, if $\alpha(x)$, the abstraction of $x$, is ordered before some other $\hat{x} \in \hat{D}$, then $x$ should be ordered before $\gamma(\hat{x})$, the concretization of $\hat{x}$.
 
 

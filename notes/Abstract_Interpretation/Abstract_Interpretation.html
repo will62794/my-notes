@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <title>Abstract Interpretation</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Abstract Interpretation</h1>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#background">Background</a></li>
+<li><a href="#abstraction-domains">Abstraction Domains</a></li>
+</ul>
+</nav>
+<p>If we want to analyze the behavior of a program, we typically perform some kind of <em>abstraction</em>. That is, we approximate the concrete semantics of the program in some way that is sufficient for analysis. <em>Abstract interpretation</em> provides a formal framework for defining and performing these types of program abstractions.</p>
+<section id="background" class="level2 unnumbered">
+<h2 class="unnumbered">Background</h2>
+<p>A <em>lattice</em> <span class="math inline">\(L=(S,\sqsubseteq)\)</span> is a partially ordered set where each pair of elements has a least upper bound (i.e. <em>join</em> <span class="math inline">\(\sqcup\)</span>) and a greatest lower bound (i.e. <em>meet</em>, <span class="math inline">\(\sqcap\)</span>).</p>
+</section>
+<section id="abstraction-domains" class="level2 unnumbered">
+<h2 class="unnumbered">Abstraction Domains</h2>
+<p>An <em>abstraction domain</em> is defined as follows, where <span class="math inline">\(D\)</span> is a <em>concrete domain</em> and <span class="math inline">\(\hat{D}\)</span> is an <em>abstract domain</em>, and elements of <span class="math inline">\(\hat{D}\)</span> form a lattice:</p>
+<ul>
+<li><p><span class="math inline">\(\gamma : \hat{D} \rightarrow D\)</span>: <strong>Concretization function</strong> that maps abstract values to sets of concrete elements.</p></li>
+<li><p><span class="math inline">\(\alpha : D \rightarrow \hat{D}\)</span>: <strong>Abstraction function</strong> that maps sets of concrete elements to the most precise value in the abstract domain.</p></li>
+</ul>
+<p>where <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\gamma\)</span> must form a <em>Galois connection</em>. That is, they satisfy the following condition <span class="math display">\[\begin{aligned}
+    \forall x \in D, \forall \hat{x} \in \hat{D} : \alpha(x) \sqsubseteq \hat{x} \Leftrightarrow x \sqsubseteq \gamma(\hat{x}) \end{aligned}\]</span> Intuitively, this means that the abstraction and concretization functions respect the orderings of <span class="math inline">\(D\)</span> and <span class="math inline">\(\hat{D}\)</span>. That is, if <span class="math inline">\(\alpha(x)\)</span>, the abstraction of <span class="math inline">\(x\)</span>, is ordered before some other <span class="math inline">\(\hat{x} \in \hat{D}\)</span>, then <span class="math inline">\(x\)</span> should be ordered before <span class="math inline">\(\gamma(\hat{x})\)</span>, the concretization of <span class="math inline">\(\hat{x}\)</span>.</p>
+</section>
+</body>
+</html>

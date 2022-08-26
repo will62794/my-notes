@@ -48,7 +48,8 @@ def make_index_page_html(notes):
     out_html += "<link rel='stylesheet' href='style.css' />"
     out_html += "<h1>Notes</h1>\n"
     for note in notes:
-        out_html += f"<div><a href='notes/{note}/{note}.html'>{note}</a></div>"
+        note_display_name = note.replace("_", " ")
+        out_html += f"<div><a href='notes/{note}/{note}.html'>{note_display_name}</a></div>"
         out_html += "\n"
     out_html += "</body>"
     out_html += "</html>"

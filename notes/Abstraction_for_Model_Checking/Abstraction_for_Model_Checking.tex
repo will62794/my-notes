@@ -1,0 +1,65 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{Abstraction for Model Checking}
+\author{William Schultz}
+\maketitle
+
+Abstraction, in the context of model checking, is generally aimed at reducing the size of the state space in an attempt to remove details that are irrelevant to the property being verified \cite{Dams2018}. That is, broadly, abstraction is a fundamental tool in tackling the ``state explosion'' problem.
+
+
+\section*{Abstraction for Kripke Structures}
+
+In general, an abstraction framework defines a set of concrete objects and abstract objects and a definition of how to map between them. For model checking, we typically use Kripke structures as our concrete objects. Recall that a \textit{Kripe structure} $M=(AP,S,I,R,L)$ is defined as
+\begin{itemize}
+    \item a set $AP$ of atomic propositions
+    \item a set of states $S$
+    \item a set of initial states $I \subseteq S$
+    \item a transition relation $R \subseteq S \times S$
+    \item a labeling function $L : S \rightarrow 2^{AP}$
+\end{itemize}
+
+\subsection*{Simulation}
+To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures $M_1$ and $M_2$. \textit{Simulation} is a preorder (reflexive and transitive) in which the larger structure may have more behaviors, but possibly fewer states and transitions.
+
+Let $M_1=(AP_1,S_1,I_1,R_1,L_1)$ and $M_2=(AP_2,S_2,I_2,R_2,L_2)$ be Kripke structures such that $AP_2 \subseteq AP_1$. A relation $H$ is a \textit{simulation relation from $M_1$ to $M_2$} if for every $s_1 \in S_1$ and $s_2 \in S_2$ such that $H(s_1,s_2)$, both of the following conditions hold:
+\begin{itemize}
+    \item For all $p \in AP_2$, $s_1 \in L(s_1) \iff s_2 \in L(s_2)$
+    \item $\forall t_1 : ( R_1(s_1,t_1) \Rightarrow \exists R_2(s_2,t_2) \wedge H(t_1,t_2))$
+\end{itemize}
+We say that $M_1$ \textit{is simulated by} $M_2$ (or $M_2$ \textit{simulates} $M_1$) if there exists a simulation relation $H$ from $M_1$ to $M_2$ such that 
+\begin{align*}
+    \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))
+\end{align*}
+
+\subsection*{Bisimulation}
+
+\section*{Counterexample-Guided Abstraction Refinement (CEGAR)}
+
+If we start with some abstraction of our Kripke strucutre and try to model check it, we may encounter spurious errors. So, we use such a counterexample to refine our abstraction, and then repreat this process.
+
+\section*{SAT-based Abstraction}
+
+See \cite{2003abswithoutcex}.
+
+
+\bibliographystyle{plain}
+\bibliography{../../references.bib}
+
+\end{document}

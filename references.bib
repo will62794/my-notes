@@ -356,3 +356,36 @@ location = {Los Angeles, California},
 series = {POPL '77}
 }
 
+@Inbook{Dams2018,
+author="Dams, Dennis
+and Grumberg, Orna",
+editor="Clarke, Edmund M.
+and Henzinger, Thomas A.
+and Veith, Helmut
+and Bloem, Roderick",
+title="Abstraction and Abstraction Refinement",
+bookTitle="Handbook of Model Checking",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="385--419",
+abstract="Abstraction, in the context of model checking, is aimed at reducing the state space of the system by omitting details that are irrelevant to the property being verified. Many successful approaches to the ``state explosion problem,'' some of them described in other chapters, can be seen as abstractions. In this chapter, several notions of abstraction are considered in a uniform setting. Different such notions lead to a variety of preservation results that establish which kind of temporal properties may be verified via an abstracted system. We first define the needed background on simulation and bisimulation relations and their logic preservation. We then present the abstraction that is currently most widely used in practice: existential abstraction, which preserves universal fragments of branching-time logics. We give examples of such abstractions: localization reduction for hardware and predicate abstraction for software. We then proceed to stronger abstractions which preserve full branching-time logics. We introduce Kripke Modal Transition Systems and modal simulation, and show logic preservation. We close the chapter with a review of the presented results in the light of the notion of completeness.",
+isbn="978-3-319-10575-8",
+doi="10.1007/978-3-319-10575-8_13",
+url="https://doi.org/10.1007/978-3-319-10575-8_13"
+}
+@inproceedings{2003abswithoutcex,
+author = {McMillan, Kenneth L. and Amla, Nina},
+title = {Automatic Abstraction without Counterexamples},
+year = {2003},
+isbn = {3540008985},
+publisher = {Springer-Verlag},
+address = {Berlin, Heidelberg},
+abstract = {A method of automatic abstraction is presented that uses proofs of unsatisfiability derived from SAT-based bounded model checking as a guide to choosing an abstraction for unbounded model checking. Unlike earlier methods, this approach is not based on analysis of abstract counterexamples. The performance of this approach on benchmarks derived from microprocessor verification indicates that SAT solvers are quite effective in eliminating logic that is not relevant to a given property. Moreover, benchmark results suggest that when bounded model checking successfully terminates, and the problem is unsatisfiable, the number of state variables in the proof of unsatisfiability tends to be small. In almost all cases tested, when bounded model checking succeeded, unbounded model checking of the resulting abstraction also succeeded.},
+booktitle = {Proceedings of the 9th International Conference on Tools and Algorithms for the Construction and Analysis of Systems},
+pages = {2–17},
+numpages = {16},
+location = {Warsaw, Poland},
+series = {TACAS'03}
+}
+

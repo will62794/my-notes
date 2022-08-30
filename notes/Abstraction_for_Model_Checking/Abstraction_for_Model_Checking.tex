@@ -36,27 +36,96 @@ In general, an abstraction framework defines a set of concrete objects and abstr
 \end{itemize}
 
 \subsection*{Simulation}
-To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures $M_1$ and $M_2$. \textit{Simulation} is a preorder (reflexive and transitive) in which the larger structure may have more behaviors, but possibly fewer states and transitions.
+To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures $M_1$ and $M_2$. \textit{Simulation} is a preorder (a reflexive and transitive partial order) in which the larger structure may have more behaviors, but possibly fewer states and transitions.
 
 Let $M_1=(AP_1,S_1,I_1,R_1,L_1)$ and $M_2=(AP_2,S_2,I_2,R_2,L_2)$ be Kripke structures such that $AP_2 \subseteq AP_1$. A relation $H$ is a \textit{simulation relation from $M_1$ to $M_2$} if for every $s_1 \in S_1$ and $s_2 \in S_2$ such that $H(s_1,s_2)$, both of the following conditions hold:
 \begin{itemize}
-    \item For all $p \in AP_2$, $s_1 \in L(s_1) \iff s_2 \in L(s_2)$
-    \item $\forall t_1 : ( R_1(s_1,t_1) \Rightarrow \exists R_2(s_2,t_2) \wedge H(t_1,t_2))$
+    \item For all $p \in AP_2$, $p \in L_1(s_1) \iff p \in L_2(s_2)$
+    \item $\forall t_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))$
 \end{itemize}
-We say that $M_1$ \textit{is simulated by} $M_2$ (or $M_2$ \textit{simulates} $M_1$) if there exists a simulation relation $H$ from $M_1$ to $M_2$ such that 
+The second condition states that for every transition of the ``smaller'' (i.e. more concrete) system $M_1$, there must exist a corresponding transition in the larger system $M_2$. We say that $M_1$ \textit{is simulated by} $M_2$ (or $M_2$ \textit{simulates} $M_1$) (denoted $M_1 \leq M_2$) if there exists a simulation relation $H$ from $M_1$ to $M_2$ such that 
 \begin{align*}
     \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))
+\end{align*}
+For example, consider the concrete Kripke structure $M$, modeling a mutual exclusion program where its atomic propositions $AP=\{N_1,T_1,C_1,N_2,T_2,C_2,F_0\}$:
+\begin{center}
+    \includegraphics[scale=0.35]{images/concrete-mutex.png}
+\end{center}
+and then an abstraction of this structure, $M_1$, with atomic propositions $AP_1=\{C_1,C_2,F_0\}$:
+\begin{center}
+    \includegraphics[scale=0.35]{images/abstract-mutex.png}
+\end{center}
+This abstraction basically only tracks whether a particular process is in the critical section or not, but ignores all other information. Note that $AP_1 \subseteq AP$. A simulation relation $H \subseteq S \times S_1$ from $M$ to $M_1$ can then be defined as 
+\begin{align*}
+    H = \left\lbrace (s_1, a_1), (s_2, a_1), (s_3, a_1), (s_4, a_2), (s_5, a_1), (s_6, a_3), (s_7, a_2), (s_8, a_3) \right\rbrace
 \end{align*}
 
 \subsection*{Bisimulation}
 
+One state is related to another by the bisimulation relation of they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and \textit{vice versa}.
+
+\subsection*{Existential Abstraction}
+
+One way to define an abstract model (Kripke structure) from a concrete one is via a concretization function $\gamma$. We can define abstract Kripke structures by means of \textit{existential abstraction} \cite{94mcabs}. Given a set $\widehat{S}$ of abstract states, the \textit{concretization function} $\gamma : \widehat{S} \rightarrow 2^S$ indicates, for each abstract state $\widehat{s}$, what set of concrete states are represented by $\widehat{s}$. Similarly, there is a transition from abstract state $\widehat{s}$ to another abstract state $\widehat{s}'$ if there is a transition from a state represented by $\widehat{s}$ to a state represented by $\widehat{s}'$. Essentially, we just take every transition between concrete states and add it into our abstract transition system, based on the abstract states that represent those concrete state transitions.
+
 \section*{Counterexample-Guided Abstraction Refinement (CEGAR)}
 
-If we start with some abstraction of our Kripke strucutre and try to model check it, we may encounter spurious errors. So, we use such a counterexample to refine our abstraction, and then repreat this process.
+
+Regardless of how we choose our abstraction, our abstract model $\widehat{M}$ generally contains less information than the concrete model $M$, and so model checking $\widehat{M}$ may produce incorrect results. If a universal property is true in $\widehat{M}$ then it is also true in $M$, but if the abstract model produces an error, the concrete model may still be correct.
+
+For example consider the following ``traffic light'' model and a simple abstraction of it
+\begin{center}
+    \includegraphics[scale=0.35]{images/cegar1.png}
+\end{center}
+If we wanted to check the universal CTL property $\textbf{AGAF}(IsRed)$ (i.e. along all paths, $IsRed$ holds infinitely often), this clearly holds in the concrete traffic light model, but fails in the abstract model. When an abstract counterexample does not correspond to any concrete counterexample, we call it \textit{spurious}.
+
+Consider another example of a spurious counterexample, shown as follows:
+\begin{center}
+    \includegraphics[scale=0.40]{images/cegar2.png}
+\end{center}
+in this case, reachability of state 11 is not preserved by the abstraction. That is, it is not reachable in the lower level system, but it is reachable in the abstract system (consisting of abstract states $\{a,b,c,d\}$).
+
+The framework of \textit{counterexample-guided abstraction refinement (CEGAR)} deals with this issue. The main steps of CEGAR are as follows:
+\begin{enumerate}
+    \item Given a concrete model $M$ and some universal temporal formula to check, $\psi$, generate an initial abstract model $\widehat{M}$.
+    \item Model check $\widehat{M}$ with respect to $\psi$. If $\widehat{M}$ satisfies $\psi$, then conclude that the concrete model satisfies $\psi$ and terminate. If a counterexample $\widehat{T}$ is found, check whether it is also a counterexample in the concrete model. 
+    
+    \begin{itemize}
+        \item If it is, conclude that the concrete model does not satisfy the formula and stop.
+        \item Otherwise, the counterexample is spurious, and proceed to step 3.
+    \end{itemize}
+    \item Refine the abstract model, $\widehat{M}$, so that $\widehat{T}$ will not be included in the new, refined abstract model. Go back to step 2.
+\end{enumerate}
+
+Note that refinement is typically done by \textit{partitioning} an abstract state. That is, the set of concrete states represented by the abstract state is partitioned
+
+\subsection*{Identifying Spurious Counterexamples}
+
+If we discover an abstract counterexample $\widehat{T}$, we need some way to check if this is a real counterexample in the concrete model. Assume that $\widehat{T}$ is a path $\widehat{s_1},\dots, \widehat{s_n}$ starting at the initial abstract state $\widehat{s_1}$. We can extend the concretization function $\gamma$ to sequences of abstract states as follows: $\gamma(\widehat{T})$ is the set of concrete paths defined as:
+\begin{align*}
+    \gamma(\widehat{T}) = \left\lbrace \langle s_1,\dots,s_n \rangle \mid 
+    \bigwedge_{i=1}^n s_i \in \gamma(\widehat{s_i}) \wedge I(s_1) \wedge 
+    \bigwedge_{i=1}^n R(s_i,s_{i+1})
+    \right\rbrace
+\end{align*}
+Then, we need an algorithm to compute a sequence of sets of states that correspond to $\gamma{\widehat{T}}$. We let $S_1 = \gamma(\widehat{s_1}) \cap I$, and then define 
+\begin{align*}
+    S_i := Image(S_{i-1}, R) \cap \gamma(\widehat{s_i})
+\end{align*}
+where $Image(S_{i-1}, R)$ is the set of successors, in $M$, of the states in $S_{i-1}$. Basically, we just want to symbolically execute concrete model, starting from the concretized version of the initial abstract counterexample state, and, at each step, check whether there is some concrete state in this image set that corresponds to the set of states from the abstract counterexample. We can formalize this into the following lemma. Specifically, the following are equivalent:
+\begin{enumerate}
+    \item The path $\widehat{T}$ corresponds to a concrete counterexample.
+    \item The set $\gamma(\widehat{T})$ of concrete paths is non-empty.
+    \item For all $1 \leq i \leq n, S_i \neq \emptyset$.
+\end{enumerate}
+
+Note that checking whether a counterexample is spurious involves computations on the concrete model.
+
+% If we start with some abstraction of our Kripke strucutre and try to model check it, we may encounter spurious errors. So, we use such a counterexample to refine our abstraction, and then repreat this process.
 
 \section*{SAT-based Abstraction}
 
-See \cite{2003abswithoutcex}.
+Main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an \textit{explanation} of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called \textit{proof-based abstraction}\cite{2003abswithoutcex}.
 
 
 \bibliographystyle{plain}

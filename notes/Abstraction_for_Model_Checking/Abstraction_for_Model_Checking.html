@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <meta name="author" content="William Schultz" />
+  <title>Abstraction for Model Checking</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Abstraction for Model Checking</h1>
+<p class="author">William Schultz</p>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#abstraction-for-kripke-structures">Abstraction for Kripke Structures</a>
+<ul>
+<li><a href="#simulation">Simulation</a></li>
+<li><a href="#bisimulation">Bisimulation</a></li>
+<li><a href="#existential-abstraction">Existential Abstraction</a></li>
+</ul></li>
+<li><a href="#counterexample-guided-abstraction-refinement-cegar">Counterexample-Guided Abstraction Refinement (CEGAR)</a>
+<ul>
+<li><a href="#identifying-spurious-counterexamples">Identifying Spurious Counterexamples</a></li>
+</ul></li>
+<li><a href="#sat-based-abstraction">SAT-based Abstraction</a></li>
+<li><a href="#bibliography">References</a></li>
+</ul>
+</nav>
+<p>Abstraction, in the context of model checking, is generally aimed at reducing the size of the state space in an attempt to remove details that are irrelevant to the property being verified <span class="citation" data-cites="Dams2018">(<a href="#ref-Dams2018" role="doc-biblioref">Dams and Grumberg 2018</a>)</span>. That is, broadly, abstraction is a fundamental tool in tackling the “state explosion” problem.</p>
+<section id="abstraction-for-kripke-structures" class="level1 unnumbered">
+<h1 class="unnumbered">Abstraction for Kripke Structures</h1>
+<p>In general, an abstraction framework defines a set of concrete objects and abstract objects and a definition of how to map between them. For model checking, we typically use Kripke structures as our concrete objects. Recall that a <em>Kripe structure</em> <span class="math inline">\(M=(AP,S,I,R,L)\)</span> is defined as</p>
+<ul>
+<li><p>a set <span class="math inline">\(AP\)</span> of atomic propositions</p></li>
+<li><p>a set of states <span class="math inline">\(S\)</span></p></li>
+<li><p>a set of initial states <span class="math inline">\(I \subseteq S\)</span></p></li>
+<li><p>a transition relation <span class="math inline">\(R \subseteq S \times S\)</span></p></li>
+<li><p>a labeling function <span class="math inline">\(L : S \rightarrow 2^{AP}\)</span></p></li>
+</ul>
+<section id="simulation" class="level2 unnumbered">
+<h2 class="unnumbered">Simulation</h2>
+<p>To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_2\)</span>. <em>Simulation</em> is a preorder (a reflexive and transitive partial order) in which the larger structure may have more behaviors, but possibly fewer states and transitions.</p>
+<p>Let <span class="math inline">\(M_1=(AP_1,S_1,I_1,R_1,L_1)\)</span> and <span class="math inline">\(M_2=(AP_2,S_2,I_2,R_2,L_2)\)</span> be Kripke structures such that <span class="math inline">\(AP_2 \subseteq AP_1\)</span>. A relation <span class="math inline">\(H\)</span> is a <em>simulation relation from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span></em> if for every <span class="math inline">\(s_1 \in S_1\)</span> and <span class="math inline">\(s_2 \in S_2\)</span> such that <span class="math inline">\(H(s_1,s_2)\)</span>, both of the following conditions hold:</p>
+<ul>
+<li><p>For all <span class="math inline">\(p \in AP_2\)</span>, <span class="math inline">\(p \in L_1(s_1) \iff p \in L_2(s_2)\)</span></p></li>
+<li><p><span class="math inline">\(\forall t_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))\)</span></p></li>
+</ul>
+<p>The second condition states that for every transition of the “smaller” (i.e. more concrete) system <span class="math inline">\(M_1\)</span>, there must exist a corresponding transition in the larger system <span class="math inline">\(M_2\)</span>. We say that <span class="math inline">\(M_1\)</span> <em>is simulated by</em> <span class="math inline">\(M_2\)</span> (or <span class="math inline">\(M_2\)</span> <em>simulates</em> <span class="math inline">\(M_1\)</span>) (denoted <span class="math inline">\(M_1 \leq M_2\)</span>) if there exists a simulation relation <span class="math inline">\(H\)</span> from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span> such that <span class="math display">\[\begin{aligned}
+    \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))\end{aligned}\]</span> For example, consider the concrete Kripke structure <span class="math inline">\(M\)</span>, modeling a mutual exclusion program where its atomic propositions <span class="math inline">\(AP=\{N_1,T_1,C_1,N_2,T_2,C_2,F_0\}\)</span>:</p>
+<div class="center">
+<p><img src="images/concrete-mutex.png" alt="image" /></p>
+</div>
+<p>and then an abstraction of this structure, <span class="math inline">\(M_1\)</span>, with atomic propositions <span class="math inline">\(AP_1=\{C_1,C_2,F_0\}\)</span>:</p>
+<div class="center">
+<p><img src="images/abstract-mutex.png" alt="image" /></p>
+</div>
+<p>This abstraction basically only tracks whether a particular process is in the critical section or not, but ignores all other information. Note that <span class="math inline">\(AP_1 \subseteq AP\)</span>. A simulation relation <span class="math inline">\(H \subseteq S \times S_1\)</span> from <span class="math inline">\(M\)</span> to <span class="math inline">\(M_1\)</span> can then be defined as <span class="math display">\[\begin{aligned}
+    H = \left\lbrace (s_1, a_1), (s_2, a_1), (s_3, a_1), (s_4, a_2), (s_5, a_1), (s_6, a_3), (s_7, a_2), (s_8, a_3) \right\rbrace\end{aligned}\]</span></p>
+</section>
+<section id="bisimulation" class="level2 unnumbered">
+<h2 class="unnumbered">Bisimulation</h2>
+<p>One state is related to another by the bisimulation relation of they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and <em>vice versa</em>.</p>
+</section>
+<section id="existential-abstraction" class="level2 unnumbered">
+<h2 class="unnumbered">Existential Abstraction</h2>
+<p>One way to define an abstract model (Kripke structure) from a concrete one is via a concretization function <span class="math inline">\(\gamma\)</span>. We can define abstract Kripke structures by means of <em>existential abstraction</em> <span class="citation" data-cites="94mcabs">(<a href="#ref-94mcabs" role="doc-biblioref">Clarke, Grumberg, and Long 1994</a>)</span>. Given a set <span class="math inline">\(\widehat{S}\)</span> of abstract states, the <em>concretization function</em> <span class="math inline">\(\gamma : \widehat{S} \rightarrow 2^S\)</span> indicates, for each abstract state <span class="math inline">\(\widehat{s}\)</span>, what set of concrete states are represented by <span class="math inline">\(\widehat{s}\)</span>. Similarly, there is a transition from abstract state <span class="math inline">\(\widehat{s}\)</span> to another abstract state <span class="math inline">\(\widehat{s}&#39;\)</span> if there is a transition from a state represented by <span class="math inline">\(\widehat{s}\)</span> to a state represented by <span class="math inline">\(\widehat{s}&#39;\)</span>. Essentially, we just take every transition between concrete states and add it into our abstract transition system, based on the abstract states that represent those concrete state transitions.</p>
+</section>
+</section>
+<section id="counterexample-guided-abstraction-refinement-cegar" class="level1 unnumbered">
+<h1 class="unnumbered">Counterexample-Guided Abstraction Refinement (CEGAR)</h1>
+<p>Regardless of how we choose our abstraction, our abstract model <span class="math inline">\(\widehat{M}\)</span> generally contains less information than the concrete model <span class="math inline">\(M\)</span>, and so model checking <span class="math inline">\(\widehat{M}\)</span> may produce incorrect results. If a universal property is true in <span class="math inline">\(\widehat{M}\)</span> then it is also true in <span class="math inline">\(M\)</span>, but if the abstract model produces an error, the concrete model may still be correct.</p>
+<p>For example consider the following “traffic light” model and a simple abstraction of it</p>
+<div class="center">
+<p><img src="images/cegar1.png" alt="image" /></p>
+</div>
+<p>If we wanted to check the universal CTL property <span class="math inline">\(\textbf{AGAF}(IsRed)\)</span> (i.e. along all paths, <span class="math inline">\(IsRed\)</span> holds infinitely often), this clearly holds in the concrete traffic light model, but fails in the abstract model. When an abstract counterexample does not correspond to any concrete counterexample, we call it <em>spurious</em>.</p>
+<p>Consider another example of a spurious counterexample, shown as follows:</p>
+<div class="center">
+<p><img src="images/cegar2.png" alt="image" /></p>
+</div>
+<p>in this case, reachability of state 11 is not preserved by the abstraction. That is, it is not reachable in the lower level system, but it is reachable in the abstract system (consisting of abstract states <span class="math inline">\(\{a,b,c,d\}\)</span>).</p>
+<p>The framework of <em>counterexample-guided abstraction refinement (CEGAR)</em> deals with this issue. The main steps of CEGAR are as follows:</p>
+<ol>
+<li><p>Given a concrete model <span class="math inline">\(M\)</span> and some universal temporal formula to check, <span class="math inline">\(\psi\)</span>, generate an initial abstract model <span class="math inline">\(\widehat{M}\)</span>.</p></li>
+<li><p>Model check <span class="math inline">\(\widehat{M}\)</span> with respect to <span class="math inline">\(\psi\)</span>. If <span class="math inline">\(\widehat{M}\)</span> satisfies <span class="math inline">\(\psi\)</span>, then conclude that the concrete model satisfies <span class="math inline">\(\psi\)</span> and terminate. If a counterexample <span class="math inline">\(\widehat{T}\)</span> is found, check whether it is also a counterexample in the concrete model.</p>
+<ul>
+<li><p>If it is, conclude that the concrete model does not satisfy the formula and stop.</p></li>
+<li><p>Otherwise, the counterexample is spurious, and proceed to step 3.</p></li>
+</ul></li>
+<li><p>Refine the abstract model, <span class="math inline">\(\widehat{M}\)</span>, so that <span class="math inline">\(\widehat{T}\)</span> will not be included in the new, refined abstract model. Go back to step 2.</p></li>
+</ol>
+<p>Note that refinement is typically done by <em>partitioning</em> an abstract state. That is, the set of concrete states represented by the abstract state is partitioned</p>
+<section id="identifying-spurious-counterexamples" class="level2 unnumbered">
+<h2 class="unnumbered">Identifying Spurious Counterexamples</h2>
+<p>If we discover an abstract counterexample <span class="math inline">\(\widehat{T}\)</span>, we need some way to check if this is a real counterexample in the concrete model. Assume that <span class="math inline">\(\widehat{T}\)</span> is a path <span class="math inline">\(\widehat{s_1},\dots, \widehat{s_n}\)</span> starting at the initial abstract state <span class="math inline">\(\widehat{s_1}\)</span>. We can extend the concretization function <span class="math inline">\(\gamma\)</span> to sequences of abstract states as follows: <span class="math inline">\(\gamma(\widehat{T})\)</span> is the set of concrete paths defined as: <span class="math display">\[\begin{aligned}
+    \gamma(\widehat{T}) = \left\lbrace \langle s_1,\dots,s_n \rangle \mid 
+    \bigwedge_{i=1}^n s_i \in \gamma(\widehat{s_i}) \wedge I(s_1) \wedge 
+    \bigwedge_{i=1}^n R(s_i,s_{i+1})
+    \right\rbrace\end{aligned}\]</span> Then, we need an algorithm to compute a sequence of sets of states that correspond to <span class="math inline">\(\gamma{\widehat{T}}\)</span>. We let <span class="math inline">\(S_1 = \gamma(\widehat{s_1}) \cap I\)</span>, and then define <span class="math display">\[\begin{aligned}
+    S_i := Image(S_{i-1}, R) \cap \gamma(\widehat{s_i})\end{aligned}\]</span> where <span class="math inline">\(Image(S_{i-1}, R)\)</span> is the set of successors, in <span class="math inline">\(M\)</span>, of the states in <span class="math inline">\(S_{i-1}\)</span>. Basically, we just want to symbolically execute concrete model, starting from the concretized version of the initial abstract counterexample state, and, at each step, check whether there is some concrete state in this image set that corresponds to the set of states from the abstract counterexample. We can formalize this into the following lemma. Specifically, the following are equivalent:</p>
+<ol>
+<li><p>The path <span class="math inline">\(\widehat{T}\)</span> corresponds to a concrete counterexample.</p></li>
+<li><p>The set <span class="math inline">\(\gamma(\widehat{T})\)</span> of concrete paths is non-empty.</p></li>
+<li><p>For all <span class="math inline">\(1 \leq i \leq n, S_i \neq \emptyset\)</span>.</p></li>
+</ol>
+<p>Note that checking whether a counterexample is spurious involves computations on the concrete model.</p>
+</section>
+</section>
+<section id="sat-based-abstraction" class="level1 unnumbered">
+<h1 class="unnumbered">SAT-based Abstraction</h1>
+<p>Main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an <em>explanation</em> of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called <em>proof-based abstraction</em><span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">McMillan and Amla 2003</a>)</span>.</p>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-94mcabs" class="csl-entry" role="doc-biblioentry">
+Clarke, Edmund M., Orna Grumberg, and David E. Long. 1994. <span>“Model Checking and Abstraction.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 16 (5): 1512–42. <a href="https://doi.org/10.1145/186025.186051">https://doi.org/10.1145/186025.186051</a>.
+</div>
+<div id="ref-Dams2018" class="csl-entry" role="doc-biblioentry">
+Dams, Dennis, and Orna Grumberg. 2018. <span>“Abstraction and Abstraction Refinement.”</span> In <em>Handbook of Model Checking</em>, edited by Edmund M. Clarke, Thomas A. Henzinger, Helmut Veith, and Roderick Bloem, 385–419. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-10575-8_13">https://doi.org/10.1007/978-3-319-10575-8_13</a>.
+</div>
+<div id="ref-2003abswithoutcex" class="csl-entry" role="doc-biblioentry">
+McMillan, Kenneth L., and Nina Amla. 2003. <span>“Automatic Abstraction Without Counterexamples.”</span> In <em>Proceedings of the 9th International Conference on Tools and Algorithms for the Construction and Analysis of Systems</em>, 2–17. TACAS’03. Berlin, Heidelberg: Springer-Verlag.
+</div>
+</div>
+</section>
+</body>
+</html>

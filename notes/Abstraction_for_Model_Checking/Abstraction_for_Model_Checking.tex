@@ -24,7 +24,7 @@
 Abstraction, in the context of model checking, is generally aimed at reducing the size of the state space in an attempt to remove details that are irrelevant to the property being verified \cite{Dams2018}. That is, broadly, abstraction is a fundamental tool in tackling the ``state explosion'' problem.
 
 
-\section*{Abstraction for Kripke Structures}
+\section*{Abstraction of Kripke Structures}
 
 In general, an abstraction framework defines a set of concrete objects and abstract objects and a definition of how to map between them. For model checking, we typically use Kripke structures as our concrete objects. Recall that a \textit{Kripe structure} $M=(AP,S,I,R,L)$ is defined as
 \begin{itemize}
@@ -108,7 +108,7 @@ If we discover an abstract counterexample $\widehat{T}$, we need some way to che
     \bigwedge_{i=1}^n R(s_i,s_{i+1})
     \right\rbrace
 \end{align*}
-Then, we need an algorithm to compute a sequence of sets of states that correspond to $\gamma{\widehat{T}}$. We let $S_1 = \gamma(\widehat{s_1}) \cap I$, and then define 
+Then, we need an algorithm to compute a sequence of sets of states that correspond to $\gamma({\widehat{T}})$. We let $S_1 = \gamma(\widehat{s_1}) \cap I$, and then define 
 \begin{align*}
     S_i := Image(S_{i-1}, R) \cap \gamma(\widehat{s_i})
 \end{align*}

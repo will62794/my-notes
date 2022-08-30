@@ -48,7 +48,7 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#abstraction-for-kripke-structures">Abstraction for Kripke Structures</a>
+<li><a href="#abstraction-of-kripke-structures">Abstraction of Kripke Structures</a>
 <ul>
 <li><a href="#simulation">Simulation</a></li>
 <li><a href="#bisimulation">Bisimulation</a></li>
@@ -63,8 +63,8 @@
 </ul>
 </nav>
 <p>Abstraction, in the context of model checking, is generally aimed at reducing the size of the state space in an attempt to remove details that are irrelevant to the property being verified <span class="citation" data-cites="Dams2018">(<a href="#ref-Dams2018" role="doc-biblioref">Dams and Grumberg 2018</a>)</span>. That is, broadly, abstraction is a fundamental tool in tackling the “state explosion” problem.</p>
-<section id="abstraction-for-kripke-structures" class="level1 unnumbered">
-<h1 class="unnumbered">Abstraction for Kripke Structures</h1>
+<section id="abstraction-of-kripke-structures" class="level1 unnumbered">
+<h1 class="unnumbered">Abstraction of Kripke Structures</h1>
 <p>In general, an abstraction framework defines a set of concrete objects and abstract objects and a definition of how to map between them. For model checking, we typically use Kripke structures as our concrete objects. Recall that a <em>Kripe structure</em> <span class="math inline">\(M=(AP,S,I,R,L)\)</span> is defined as</p>
 <ul>
 <li><p>a set <span class="math inline">\(AP\)</span> of atomic propositions</p></li>
@@ -132,7 +132,7 @@
     \gamma(\widehat{T}) = \left\lbrace \langle s_1,\dots,s_n \rangle \mid 
     \bigwedge_{i=1}^n s_i \in \gamma(\widehat{s_i}) \wedge I(s_1) \wedge 
     \bigwedge_{i=1}^n R(s_i,s_{i+1})
-    \right\rbrace\end{aligned}\]</span> Then, we need an algorithm to compute a sequence of sets of states that correspond to <span class="math inline">\(\gamma{\widehat{T}}\)</span>. We let <span class="math inline">\(S_1 = \gamma(\widehat{s_1}) \cap I\)</span>, and then define <span class="math display">\[\begin{aligned}
+    \right\rbrace\end{aligned}\]</span> Then, we need an algorithm to compute a sequence of sets of states that correspond to <span class="math inline">\(\gamma({\widehat{T}})\)</span>. We let <span class="math inline">\(S_1 = \gamma(\widehat{s_1}) \cap I\)</span>, and then define <span class="math display">\[\begin{aligned}
     S_i := Image(S_{i-1}, R) \cap \gamma(\widehat{s_i})\end{aligned}\]</span> where <span class="math inline">\(Image(S_{i-1}, R)\)</span> is the set of successors, in <span class="math inline">\(M\)</span>, of the states in <span class="math inline">\(S_{i-1}\)</span>. Basically, we just want to symbolically execute concrete model, starting from the concretized version of the initial abstract counterexample state, and, at each step, check whether there is some concrete state in this image set that corresponds to the set of states from the abstract counterexample. We can formalize this into the following lemma. Specifically, the following are equivalent:</p>
 <ol>
 <li><p>The path <span class="math inline">\(\widehat{T}\)</span> corresponds to a concrete counterexample.</p></li>

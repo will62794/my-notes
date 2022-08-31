@@ -58,7 +58,10 @@
 <ul>
 <li><a href="#identifying-spurious-counterexamples">Identifying Spurious Counterexamples</a></li>
 </ul></li>
-<li><a href="#sat-based-abstraction">SAT-based Abstraction</a></li>
+<li><a href="#sat-based-abstraction">SAT-based Abstraction</a>
+<ul>
+<li><a href="#interpolation">Interpolation</a></li>
+</ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
@@ -144,7 +147,27 @@
 </section>
 <section id="sat-based-abstraction" class="level1 unnumbered">
 <h1 class="unnumbered">SAT-based Abstraction</h1>
-<p>Main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an <em>explanation</em> of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called <em>proof-based abstraction</em><span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">McMillan and Amla 2003</a>)</span>.</p>
+<p>An alternative to the CEGAR based approach (introduced shortly after the initial CEGAR publication) is to rely more directly on a SAT solver for performing abstraciton. A main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an <em>explanation</em> of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called <em>proof-based abstraction</em><span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">Kenneth L. McMillan and Amla 2003</a>)</span>.</p>
+<p>In the initial work of <span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">Kenneth L. McMillan and Amla 2003</a>)</span> (appeared in <em>TACAS 2003</em>, April), verification of a system <span class="math inline">\(M\)</span> is done by performing bounded model checking of <span class="math inline">\(M\)</span> for a fixed bound <span class="math inline">\(k\)</span>. If an error is found for this bound, then we’re done, since a counterexample has been found. Otherwise, the SAT solver can return a (resolution) proof of unsatisfiability. This proof is used to generate an abstraction, <span class="math inline">\(M&#39;\)</span>, of <span class="math inline">\(M\)</span> by seeing what clauses of the encoding of <span class="math inline">\(M\)</span> are actually used in the proof (see <span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">Kenneth L. McMillan and Amla 2003</a>)</span> for more detail on this). Then, <em>unbounded</em> model checking is performed on the abstract model <span class="math inline">\(M&#39;\)</span>, which should in theory now be much cheaper since <span class="math inline">\(M&#39;\)</span> has been abstracted from <span class="math inline">\(M\)</span>.If model checking determines that there are no error traces in <span class="math inline">\(M&#39;\)</span>, then we are done. Otherwise, if model checking determines that <span class="math inline">\(M&#39;\)</span> does have an error run, then we know its length <span class="math inline">\(k&#39;\)</span> is greater than <span class="math inline">\(k\)</span>. Thus, we then restart the procedure with <span class="math inline">\(k&#39;\)</span> (or, generally, any value larger than <span class="math inline">\(k&#39;\)</span>)</p>
+<section id="interpolation" class="level2 unnumbered">
+<h2 class="unnumbered">Interpolation</h2>
+<p>Slghtly subsequent work by McMillan <span class="citation" data-cites="2003satinterp">(<a href="#ref-2003satinterp" role="doc-biblioref">K. L. McMillan 2003</a>)</span> (appeared in <em>CAV 2003</em>, July) presented an extension of this approach that makes use of <em>interpolation</em> for doing abstraction with a SAT solver. Essentially this uses a similar bounded model checking approach and then extracts an <em>interpolant</em> from a bounded unsatisfiability proof to compute an abstraction.</p>
+<p>The standard bounded model checking unrolling is a constraint of the following basic form:</p>
+<div class="center">
+<p><img src="images/bmc.png" alt="image" /></p>
+</div>
+<p>The idea of the interpolation based approach is to partition the path constraint into two sets <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
+<div class="center">
+<p><img src="images/bmc-interpolant.png" alt="image" /></p>
+</div>
+<p>Then, if we produce a proof of unsatisfiability of the whole unrolling constraint, we derive an interpolant <span class="math inline">\(P\)</span> of the pair <span class="math inline">\((A,B)\)</span>, where the common variables of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are exactly those variables representing state <span class="math inline">\(s_1\)</span>, in the sample diagram above. Note that an interpolant <span class="math inline">\(P\)</span> for two formulas <span class="math inline">\(A,B\)</span> is one such that</p>
+<ul>
+<li><p><span class="math inline">\(A \Rightarrow P\)</span></p></li>
+<li><p><span class="math inline">\(P\)</span> refers only to the common variables of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span></p></li>
+<li><p><span class="math inline">\(P \wedge B\)</span> is unsatisfiable</p></li>
+</ul>
+<p>By this, we can know that <span class="math inline">\(P\)</span> is implied by the initial condition and by the first transition constraint, so it represents some approximation of all 1-step reachable states (i.e. it is an over-approximation of the forward image of <span class="math inline">\(I\)</span>). Moreover, <span class="math inline">\(P\)</span> and <span class="math inline">\(B\)</span> are unsatisfiable, meaning that no state satisfying <span class="math inline">\(P\)</span> can reach a final state in <span class="math inline">\(k-1\)</span> steps. This over-approximate image operation can then be iterated to compute an over-approximation of the reachable states.</p>
+</section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
@@ -154,6 +177,9 @@ Clarke, Edmund M., Orna Grumberg, and David E. Long. 1994. <span>“Model Checki
 </div>
 <div id="ref-Dams2018" class="csl-entry" role="doc-biblioentry">
 Dams, Dennis, and Orna Grumberg. 2018. <span>“Abstraction and Abstraction Refinement.”</span> In <em>Handbook of Model Checking</em>, edited by Edmund M. Clarke, Thomas A. Henzinger, Helmut Veith, and Roderick Bloem, 385–419. Cham: Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-10575-8_13">https://doi.org/10.1007/978-3-319-10575-8_13</a>.
+</div>
+<div id="ref-2003satinterp" class="csl-entry" role="doc-biblioentry">
+McMillan, K. L. 2003. <span>“Interpolation and SAT-Based Model Checking.”</span> In <em>Computer Aided Verification</em>, edited by Warren A. Hunt and Fabio Somenzi, 1–13. Berlin, Heidelberg: Springer Berlin Heidelberg.
 </div>
 <div id="ref-2003abswithoutcex" class="csl-entry" role="doc-biblioentry">
 McMillan, Kenneth L., and Nina Amla. 2003. <span>“Automatic Abstraction Without Counterexamples.”</span> In <em>Proceedings of the 9th International Conference on Tools and Algorithms for the Construction and Analysis of Systems</em>, 2–17. TACAS’03. Berlin, Heidelberg: Springer-Verlag.

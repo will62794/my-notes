@@ -125,8 +125,30 @@ Note that checking whether a counterexample is spurious involves computations on
 
 \section*{SAT-based Abstraction}
 
-Main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an \textit{explanation} of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called \textit{proof-based abstraction}\cite{2003abswithoutcex}.
+An alternative to the CEGAR based approach (introduced shortly after the initial CEGAR publication) is to rely more directly on a SAT solver for performing abstraciton. A main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an \textit{explanation} of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called \textit{proof-based abstraction}\cite{2003abswithoutcex}. 
 
+In the initial work of \cite{2003abswithoutcex} (appeared in \textit{TACAS 2003}, April), verification of a system $M$ is done by performing bounded model checking of $M$ for  a fixed bound $k$. If an error is found for this bound, then we're done, since a counterexample has been found. Otherwise, the SAT solver can return a (resolution) proof of unsatisfiability. This proof is used to generate an abstraction, $M'$, of $M$ by seeing what clauses of the encoding of $M$ are actually used in the proof (see \cite{2003abswithoutcex} for more detail on this). Then, \textit{unbounded} model checking is performed on the abstract model $M'$, which should in theory now be much cheaper since $M'$ has been abstracted from $M$.If model checking determines that there are no error traces in $M'$, then we are done. Otherwise, if model checking determines that $M'$ does have an error run, then we know its length $k'$ is greater than $k$. Thus, we then restart the procedure with $k'$ (or, generally, any value larger than $k'$)
+
+\subsection*{Interpolation}
+
+Slghtly subsequent work by McMillan \cite{2003satinterp} (appeared in \textit{CAV 2003}, July) presented an extension of this approach that makes use of \textit{interpolation} for doing abstraction with a SAT solver. Essentially this uses a similar bounded model checking approach and then extracts an \textit{interpolant} from a bounded unsatisfiability proof to compute an abstraction.
+
+The standard bounded model checking unrolling is a constraint of the following basic form:
+\begin{center}
+    \includegraphics[scale=0.38]{images/bmc.png}
+\end{center}
+The idea of the interpolation based approach is to partition the path constraint into two sets $A$ and $B$:
+\begin{center}
+    \includegraphics[scale=0.38]{images/bmc-interpolant.png}   
+\end{center}
+Then, if we produce a proof of unsatisfiability of the whole unrolling constraint, we derive an interpolant $P$ of the pair $(A,B)$, where the common variables of $A$ and $B$ are exactly those variables representing state $s_1$, in the sample diagram above. Note that an interpolant $P$ for two formulas $A,B$ is one such that 
+\begin{itemize}
+    \item $A \Rightarrow P$
+    \item $P$ refers only to the common variables of $A$ and $B$
+    \item $P \wedge B$ is unsatisfiable
+\end{itemize}
+
+By this, we can know that $P$ is implied by the initial condition and by the first transition constraint, so it represents some approximation of all 1-step reachable states (i.e. it is an over-approximation of the forward image of $I$). Moreover, $P$ and $B$ are unsatisfiable, meaning that no state satisfying $P$ can reach a final state in $k-1$ steps. This over-approximate image operation can then be iterated to compute an over-approximation of the reachable states. 
 
 \bibliographystyle{plain}
 \bibliography{../../references.bib}

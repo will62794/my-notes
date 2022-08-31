@@ -81,13 +81,13 @@ which simply states that eventually $x=2$ or $y=2$. If we did not specify weak f
 
 Weak fairness $WF_v(A)$ is formally defined as 
 \begin{align*}
-WF_v(A) \equiv \square (\square \textsc{enabled} \langle A \rangle _v \Rightarrow \square \langle A \rangle _v)
+WF_v(A) \equiv \square (\square \text{\scriptsize ENABLED} \langle A \rangle _v \Rightarrow \square \langle A \rangle _v)
 \end{align*}
 
 This formula says that, if a non-stuttering $A$ step ever becomes forever enabled, then eventually a non-stuttering $A$ step must be taken. The weak fairness formula can be written equivalently as
 \begin{align*}
 WF_v(A) \equiv 
-\Diamond \square (\textsc{enabled} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v
+\Diamond \square (\text{\scriptsize ENABLED} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v
 \end{align*}
 
 \section*{Strong Fairness}
@@ -95,13 +95,13 @@ WF_v(A) \equiv
 Weak fairness says that an action $A$ must be eventually be taken if it is enabled \textit{continuously} i.e. forever, after some point. Strong fairness, however, only asserts that an action is eventually taken if $A$ is enabled \textit{infinitely often}. This does not mean it must be enabled continuously, though. It is formally defined as
 
 \begin{align*}
-SF_v(A) \equiv \square \lozenge \textsc{enabled} \langle A \rangle _v \Rightarrow \square \Diamond \langle A \rangle _v
+SF_v(A) \equiv \square \lozenge \text{\scriptsize ENABLED} \langle A \rangle _v \Rightarrow \square \Diamond \langle A \rangle _v
 \end{align*}
 which is stating that if action $A$ occurs infinitely often, then eventually A will be taken. we can compare the strong and weak fairness definitions
 \begin{align*}
 WF_v(A) &\equiv 
-\Diamond \square (\textsc{enabled} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v \\
-SF_v(A) &\equiv \square \lozenge (\textsc{enabled} \langle A \rangle _v ) \Rightarrow \square \Diamond \langle A \rangle _v
+\Diamond \square (\text{\scriptsize ENABLED} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v \\
+SF_v(A) &\equiv \square \lozenge (\text{\scriptsize ENABLED} \langle A \rangle _v ) \Rightarrow \square \Diamond \langle A \rangle _v
 \end{align*}
 and see that they are equivalent except for their left hand side. Strong fairness requires a step to be taken only if it is always possible for an $A$ step to be \textit{eventually} taken, whereas weak fairness requires a step to be taken only if $A$ is enabled continuously. Note that Lamport argues that a strong fairness condition should only be used in a specification if it is needed.
 

@@ -264,11 +264,11 @@ where $Q_i$ are quantifiers and $M$ is a quantifier-free formula in CNF (conjunc
 
 In propositional logic, every formula can be translated to an equivalent one in CNF, but this is not the case in first order logic. We can, however, transform a formula in first order logic into one in clausal form (i.e. one with only universal quantifiers) without modifying its satisfiability. That is, formally, if $A$ is a closed formula, then there exists a formula $A'$ in clausal form such that $A \approx A'$, where $\approx$ denotes the equisatisfiability relation. That is, $A$ is satisfiable iff $A'$ is. Note that this does not mean that $A$ and $A'$ are logically equivalent. The process of transforming $A$ into such a form $A'$ is referred to as \textit{Skolemization}. That is, a formula is in \textit{Skolem normal form} if it is in prenex normal form with only universal quantifiers.
 
-It is straightforward to first transform $A$ into a logically equivalent formula in PCNF. The removal of existential quantifiers is the main challenge. The basic idea of Skolemization can be illustrated in an example formula 
+It is straightforward to first transform $A$ into a logically equivalent formula in PCNF. The removal of existential quantifiers is the main challenge. The basic idea of Skolemization can be illustrated with a sample formula:
 \begin{align*}
-    \A x \E y p(x,y)
+    \A x \E y : p(x,y)
 \end{align*}
-Intuitively, we think of reading the quantifiers as ``for all $x$, find a $y$ associated with $x$ such that the predicate $p$ is true''. This basically matches the intuitive concept of a function. That is, we want a function $f$ such that $y=f(x)$. So, the existential quantifier can be removed giving $A' = \A x p(x,f(x))$.
+Intuitively, we think of reading the quantifiers as ``for all $x$, find a $y$ associated with $x$ such that the predicate $p$ is true''. This basically matches the intuitive concept of a function. That is, we want a function $f$ such that $y=f(x)$. So, the existential quantifier can be removed, giving $A' = \A x : p(x,f(x))$.
 
 \subsection{Finite Models}
 \label{sec:finite-models}

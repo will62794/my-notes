@@ -132,6 +132,49 @@ Res(C_1,C_2) = (C_1 - \{l\}) \cup (C_2 - \{l^c\})    \end{aligned}\]</span> and 
 </ol>
 <p>See Figure <a href="#fig:resolution-refutation-tree" data-reference-type="ref" data-reference="fig:resolution-refutation-tree">1</a> for an example of a resolution proof for the clause set <span class="math inline">\(S=\{p,\bar{p}q, \bar{r}, \bar{p} \bar{q}r\}\)</span> where the rule applications are represented as a tree, leading to the unsatisfiable clause.</p>
 <p><img src="figures/refutation-example.png" id="fig:resolution-refutation-tree" alt="image" /> <span id="fig:resolution-refutation-tree" label="fig:resolution-refutation-tree">[fig:resolution-refutation-tree]</span></p>
+<p>Note that an alternative way to state the resolution inference rule is in terms of implication, where <span class="math inline">\(c\)</span> is a literal. Note that the following variants of the resolution rule are all equivalent, some of which make the intuition behind the rule a bit clearer (where the upper formulas represent the premises and lower represents the conclusion):</p>
+<div class="center">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(A \vee c\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(B \vee \neg c\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;" colspan="2"><span class="math inline">\(A \vee B\)</span></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(\neg A \Rightarrow c\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(c \Rightarrow B\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;" colspan="2"><span class="math inline">\(\neg A \Rightarrow B\)</span></td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;"><span class="math inline">\(\neg c \Rightarrow A\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(c \Rightarrow B\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;" colspan="2"><span class="math inline">\(A \vee B\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For example, in the second variant, the conclusion <span class="math inline">\(\neg A \Rightarrow B\)</span> is equivalent to <span class="math inline">\(A \vee B\)</span>, and also note the “case-splitting” aspect of the third statement i.e. we know that either <span class="math inline">\(c\)</span> or <span class="math inline">\(\neg c\)</span> must hold, and so if we know that <span class="math inline">\(\neg c \Rightarrow A\)</span> and <span class="math inline">\(c \Rightarrow B\)</span>, then <span class="math inline">\(A\)</span> or <span class="math inline">\(B\)</span> must be true.</p>
 </section>
 </section>
 <section id="first-order-logic" class="level1" data-number="2">

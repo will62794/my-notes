@@ -24,6 +24,12 @@ body {
   background: #fefefe;
 }
 
+.center{
+    width:100%;
+    text-align: center;
+    margin:0 auto;
+}
+
 /* Optionally enable for sidebar TOC */
 /* #TOC { 
     float: left; 
@@ -91,7 +97,12 @@ p {
 }
 
 img {
-  max-width: 100%;
+  /* Try to center images and limit their size. */
+  max-width: 75%;
+  text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {

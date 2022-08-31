@@ -4,6 +4,9 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{todonotes}
+\usepackage{proof}
+\usepackage{multirow}
+
 % \usepackage{biblatex}
 \usepackage[margin=1.5in]{geometry}
 
@@ -144,6 +147,25 @@ See Figure \ref{fig:resolution-refutation-tree} for an example of a resolution p
     \includegraphics[scale=0.25]{figures/refutation-example.png}
     \label{fig:resolution-refutation-tree}
 \end{figure}
+
+Note that an alternative way to state the resolution inference rule is in terms of implication, where $c$ is a literal. Note that the following variants of the resolution rule are all equivalent, some of which make the intuition behind the rule a bit clearer (where the upper formulas represent the premises and lower represents the conclusion):
+
+\begin{center}
+    \begin{tabular}{ c c }
+     $A \vee c$ & $B \vee \neg c$ \\ \hline
+     \multicolumn{2}{c}{$A \vee B$}
+    \end{tabular}\;\;\;
+    \begin{tabular}{ c c }
+        $\neg A \Rightarrow c$ & $c \Rightarrow B$ \\ \hline
+        \multicolumn{2}{c}{$\neg A \Rightarrow B$}
+    \end{tabular} \;\;\;
+    \begin{tabular}{ c c }
+        $\neg c \Rightarrow A$ & $c \Rightarrow B$ \\ \hline
+        \multicolumn{2}{c}{$A \vee B$}
+    \end{tabular}
+\end{center}
+
+For example, in the second variant, the conclusion $\neg A \Rightarrow B$ is equivalent to $A \vee B$, and also note the ``case-splitting'' aspect of the third statement i.e. we know that either $c$ or $\neg c$ must hold, and so if we know that $\neg c \Rightarrow A$ and $c \Rightarrow B$, then $A$ or $B$ must be true.
 
 \section{First Order Logic}
 

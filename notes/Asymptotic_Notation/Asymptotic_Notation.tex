@@ -26,25 +26,38 @@ If we want to describe the runtime of a Turing machine (i.e. a program), we desc
 Note that for the classes below, like $O(g(n))$, the $\in$ and $=$ symbols are, in practice, often used interchangeably, even though the former is technically correct. For example, $O(g(n))$ describes an entire family of functions (i.e. all functions asymptotically bounded above by $g$), so saying $f = O(g(n))$ is really an abuse of notation. Writing $f \in O(g(n))$ is more precise.
 
 \begin{itemize}
-    \item \textbf{Big O (Upper Bound)}: $f(n) \in O(g(n))$
-    
-    Establishes an upper bound i.e. worst case complexity. Formally, $\exists c > 0$ such that as $n$ approaches $\infty$, $f(n) \leq c*g(n)$. That is, $f$ is bounded above by $g$, within some constant factor, as $n$ approaches infinity.
+    \item \textbf{($O$) Big O (Upper Bound, analogous to $\leq$)} 
+    \begin{align*}
+        f(n) &= O(g(n)) \\
+        f(n) &= \mathcal{O}(g(n)) \, \, \quad (\textit{alternate notation})
+    \end{align*}   
+    Establishes an upper bound. Formally, $\exists c > 0$ such that as $n$ approaches $\infty$, $f(n) \leq c*g(n)$. That is, $f$ is bounded above by $g$, within some constant factor, as $n$ approaches infinity.
 
-    \item \textbf{Big Omega (Lower Bound)}: $f(n) \in \Omega(g(n))$
-    
+    \item \textbf{($\Omega$) Big Omega (Lower Bound, analogous to $\geq$)}
+    \begin{align*}
+        f(n) = \Omega(g(n))
+    \end{align*}
     Establishes a lower bound i.e. best case complexity. More formally, $\exists c > 0$ such that as $n$ approaches $\infty$, $f(n) \geq c*g(n)$. That is, $f$ is bounded below by $g$, within some constant factor, as $n$ approaches infinity.
 
-    \item \textbf{Big Theta}: $f(n) \in \Theta(g(n))$
+    \item \textbf{($\Theta$) Big Theta (analogous to $\approx$)} 
+    \begin{align*}
+        f(n) = \Theta(g(n))
+    \end{align*}
 
-    $f$ is bounded asymptotically both above and below by $g(n)$. That is, $f \in O(g(n))$ and $f \in \Omega(g(n))$.
+    $f$ is bounded asymptotically both above and below by $g(n)$. That is, $f = O(g(n))$ and $f = \Omega(g(n))$.
 
-    \item \textbf{Small O}: $f(n) \in o(g(n))$
+    \item \textbf{($o$) Small O (analogous to $<$)}
+    \begin{align*}
+        f(n) = o(g(n))
+    \end{align*}
     
-    $f$ is dominated by $g$ asymptotically. Can think of this as a variant of Big O notation but saying something stronger i.e. $f \in o(g(n))$ implies $f \in O(g(n))$. The function $f$ is not only bounded above by $g$ but is dominated by $g$. In other words, $f$'s asymptotic growth is strictly less than $g$'s growth. Formally, we can state this by saying that $\forall c > 0$, as $n$ goes to infinity, $f(n) \leq c*g(n)$. As a concrete example, $x^2 \in o(x^3)$.
+    $f$ is dominated by $g$ asymptotically. Can think of this as a variant of Big O notation but saying something stronger i.e. $f = o(g(n))$ implies $f = O(g(n))$. The function $f$ is not only bounded above by $g$ but is dominated by $g$. In other words, $f$'s asymptotic growth is strictly less than $g$'s growth. Formally, we can state this by saying that $\forall c > 0$, as $n$ goes to infinity, $f(n) \leq c*g(n)$. As a concrete example, $x^2 \in o(x^3)$.
 
-    \item \textbf{Small Omega}: $f(n) \in \omega(g(n))$
-    
-    $f$ dominates $g$ asymptotically. Similar to $o(g(n))$ but establishes a strict lower bound. It is a stronger statement than $f \in \Omega(g(n))$, saying that $f$'s asymptotic growth is strictly greater than $g$'s.
+    \item \textbf{($\omega$) Small Omega (analogous to $>$)} 
+    \begin{align*}
+        f(n) \in \omega(g(n))
+    \end{align*}
+    $f$ dominates $g$ asymptotically. Similar to $o(g(n))$ but establishes a strict lower bound. It is a stronger statement than $f = \Omega(g(n))$, saying that $f$'s asymptotic growth is strictly greater than $g$'s.
 \end{itemize}
 
 \end{document}

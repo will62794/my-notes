@@ -21,11 +21,11 @@
 \author{William Schultz}
 \maketitle
  
-If we want to describe the runtime of a Turing machine (i.e. a program), we describe it based on the size of the input. That is, how does the runtime scale as the input size scales. If we were to look at the performance on a single input, it would be difficult to compare one Turing machine against another since its specific runtime could be affected by many other factors e.g. speed of the machine running the program, etc. So, we look at the \textit{asymptotic} behavior of the machine as input sizes go to infinity. There are a variety of notations for describing the worst case runtime, best case runtime, etc. The notations below describes the asymptotic behavior of a function $f(n)$ in terms of a function $g(n)$. In the Turing machine case, $f$ represents the runtime (i.e. the number of steps taken) of a machine as a function of the input size, $n$.
+If we want to describe the runtime of a Turing machine (i.e. a program), we describe it based on the size of the input. That is, how does the runtime scale as the input size scales. If we were to look at the performance on a single input, it would be difficult to compare one Turing machine against another since its specific runtime could be affected by many other factors e.g. speed of the machine running the program, etc. So, we look at the \textit{asymptotic} behavior of the machine. That is, how does its performance scale as input sizes get very large. The notations below describes the asymptotic behavior of a function $f(n)$ in terms of a function $g(n)$. In the case of describing the runtime of a Turing machine, $f$ typically represents the runtime (i.e. the number of steps taken) of a machine as a function of the input size, $n$.
 
 \section*{Basic Asymptotic Notation}
 
-Note that for the classes below, like $O(g(n))$, the $\in$ and $=$ symbols are, in practice, often used interchangeably, even though the former is technically correct. For example, $O(g(n))$ describes an entire family of functions (i.e. all functions asymptotically bounded above by $g$), so saying $f = O(g(n))$ is really an abuse of notation. Writing $f \in O(g(n))$ is more precise.
+For the notations listed below, the $\in$ and $=$ symbols are, in practice, often used interchangeably, even though the former is technically correct. For example, $O(g(n))$ describes an entire family of functions (i.e. all functions asymptotically bounded above by $g$), so saying $f = O(g(n))$ is really an abuse of notation. Writing $f \in O(g(n))$ is more precise. See \cite{graham1989concrete} for a good treatment of asymptotic notation.
 
 \begin{itemize}
     \item \textbf{($O$) Big O (Upper Bound, analogous to $\leq$)} 
@@ -84,5 +84,8 @@ In addition to the above standard notations, there are some additional common as
     which is basically just like saying that $f$ is nearly the same as $g$ but with some extra factor that is logarithmic in $g$.
 
 \end{itemize}
+
+\bibliographystyle{plain}
+\bibliography{../../references.bib}
 
 \end{document}

@@ -46,6 +46,16 @@ I believe that one straightforward way to characterize the difference between ``
 Note that we can also use the nondeterministic Turing machine perspective as an alternate way to view the difference between classes like $NP$ and $coNP$. $NP$ consists of problems that have some accepting path out of all branches on the nondeterministic computation, whereas problems in $coNP$ are those for which all paths must accept. For example, satisfiability vs. unsatisfiability.
 
 
+\section{Upper and Lower Bounds}
+
+
+For any decision problem, we can establish both \textit{upper bounds} and \textit{lower bounds} on its complexity. Recall that a decision problem is formulated in terms of a language $L$, consisting of a set of strings. The decision problem for a given language $L$ is to determine whether $w \in L$ for some given string $w$.
+
+An upper bound makes a statement about the maximum hardness/complexity of the problem, and a lower bound makes a statement about the minimum easiness of the problem. Establishing an upper bound is typically much easier, since you only need to provide a concrete algorithm that solves the problem in some worst case running time (i.e. show there exists an algorithm). Establishing a lower bound is generally much harder, since you need to show that there exists no algorithm that can solve the problem more efficiently than a certain complexity class (i.e. show no algorithm exists). 
+
+For example, one of the best known algorithms for 3-SAT as of 2019 has a numerical upper bound of something around $O(1.307^n)$ \cite{2019fasterkSAT}. There exists no known, general algorithm that can solve 3-SAT in polynomial time. But, it has also not been proven that such an algorithm doesn't exist. It seems that the best known lower bounds for SAT sit somewhere in the polynomial range of $n^{1.801}$, though this has some other caveats about ``time-space tradeoffs'' which I don't fully understand \cite{SE3satlowerbounds}. Proving that SAT, for example, had an exponential (or even super polynomial) lower bound would, of course, establish that $P \neq NP$, since SAT is NP-complete, and this would serve to separate $P$ from $NP$. Of course, one could also prove $P=NP$ by simply giving a polynomial time algorithm for SAT i.e. by dropping the upper bound from exponential to polynomial. This might be ``easier'', in the sense that you would only have to find a single algorithm, but it may be ``harder" in the sense that P=NP may not actually be true!
+
+
 % Proving 
 % That is, there is no lower bound on 3-SAT that is 
 %  lower bound on 3-SAT is not polynomial. If this were proven, it would resolve the P=NP question i.e. it would establish that SAT, which is NP-complete, is indeed not in P.
@@ -59,7 +69,7 @@ Note that we can also use the nondeterministic Turing machine perspective as an 
 
 % [1] https://cstheory.stackexchange.com/questions/1060/best-upper-bounds-on-sat#:~:text=9%20Answers&text=The%20best%20algorithm%20for%203,have%20not%20been%20analyzed%20yet.
 
-% \bibliographystyle{plain}
-% \bibliography{../references.bib}
+\bibliographystyle{plain}
+\bibliography{../../references.bib}
 
 \end{document}

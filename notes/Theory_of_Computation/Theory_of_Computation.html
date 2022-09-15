@@ -14,6 +14,25 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
   </style>
   <link rel="stylesheet" href="../../style.css" />
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -35,6 +54,8 @@
 <li><a href="#np-completeness"><span class="toc-section-number">2.1</span> NP-Completeness</a></li>
 <li><a href="#np-vs.-nexp"><span class="toc-section-number">2.2</span> NP vs. NEXP</a></li>
 </ul></li>
+<li><a href="#upper-and-lower-bounds"><span class="toc-section-number">3</span> Upper and Lower Bounds</a></li>
+<li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
 <p>In standard computation/complexity theory, we study <em>decision problems</em>. That is, computational problems that have a <em>yes/no</em> answer. These types of problems can be formulated in terms of a corresponding <em>language</em>, which is a set of strings <span class="math inline">\(w \in \Sigma^*\)</span>, where <span class="math inline">\(\Sigma\)</span> is some finite alphabet i.e. some finite set of symbols.</p>
@@ -55,6 +76,23 @@
 <p>I believe that one straightforward way to characterize the difference between “polynomial" non-deterministic Turing machines (NP) and “exponential" non-deterministic Turing machines (NEXP) is to consider the maximum depth of the computation tree branches. In NP, we are allowed to use non-deterministic machines with paths of polynomial length, whereas in NEXP, we are allowed to use non-deterministic machines with exponentially long paths.</p>
 <p>Note that we can also use the nondeterministic Turing machine perspective as an alternate way to view the difference between classes like <span class="math inline">\(NP\)</span> and <span class="math inline">\(coNP\)</span>. <span class="math inline">\(NP\)</span> consists of problems that have some accepting path out of all branches on the nondeterministic computation, whereas problems in <span class="math inline">\(coNP\)</span> are those for which all paths must accept. For example, satisfiability vs. unsatisfiability.</p>
 </section>
+</section>
+<section id="upper-and-lower-bounds" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Upper and Lower Bounds</h1>
+<p>For any decision problem, we can establish both <em>upper bounds</em> and <em>lower bounds</em> on its complexity. Recall that a decision problem is formulated in terms of a language <span class="math inline">\(L\)</span>, consisting of a set of strings. The decision problem for a given language <span class="math inline">\(L\)</span> is to determine whether <span class="math inline">\(w \in L\)</span> for some given string <span class="math inline">\(w\)</span>.</p>
+<p>An upper bound makes a statement about the maximum hardness/complexity of the problem, and a lower bound makes a statement about the minimum easiness of the problem. Establishing an upper bound is typically much easier, since you only need to provide a concrete algorithm that solves the problem in some worst case running time (i.e. show there exists an algorithm). Establishing a lower bound is generally much harder, since you need to show that there exists no algorithm that can solve the problem more efficiently than a certain complexity class (i.e. show no algorithm exists).</p>
+<p>For example, one of the best known algorithms for 3-SAT as of 2019 has a numerical upper bound of something around <span class="math inline">\(O(1.307^n)\)</span> <span class="citation" data-cites="2019fasterkSAT">(<a href="#ref-2019fasterkSAT" role="doc-biblioref">Hansen et al. 2019</a>)</span>. There exists no known, general algorithm that can solve 3-SAT in polynomial time. But, it has also not been proven that such an algorithm doesn’t exist. It seems that the best known lower bounds for SAT sit somewhere in the polynomial range of <span class="math inline">\(n^{1.801}\)</span>, though this has some other caveats about “time-space tradeoffs” which I don’t fully understand <span class="citation" data-cites="SE3satlowerbounds">(<a href="#ref-SE3satlowerbounds" role="doc-biblioref"><span>“<span class="nocase">What are the best current lower bounds on 3SAT?</span>”</span> n.d.</a>)</span>. Proving that SAT, for example, had an exponential (or even super polynomial) lower bound would, of course, establish that <span class="math inline">\(P \neq NP\)</span>, since SAT is NP-complete, and this would serve to separate <span class="math inline">\(P\)</span> from <span class="math inline">\(NP\)</span>. Of course, one could also prove <span class="math inline">\(P=NP\)</span> by simply giving a polynomial time algorithm for SAT i.e. by dropping the upper bound from exponential to polynomial. This might be “easier”, in the sense that you would only have to find a single algorithm, but it may be “harder" in the sense that P=NP may not actually be true!</p>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-2019fasterkSAT" class="csl-entry" role="doc-biblioentry">
+Hansen, Thomas Dueholm, Haim Kaplan, Or Zamir, and Uri Zwick. 2019. <span>“<span class="nocase">Faster k-SAT Algorithms Using Biased-PPSZ</span>.”</span> In <em>Proceedings of the 51st Annual ACM SIGACT Symposium on Theory of Computing</em>, 578–89. STOC 2019. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/3313276.3316359">https://doi.org/10.1145/3313276.3316359</a>.
+</div>
+<div id="ref-SE3satlowerbounds" class="csl-entry" role="doc-biblioentry">
+<span>“<span class="nocase">What are the best current lower bounds on 3SAT?</span>”</span> n.d. <a href="https://cstheory.stackexchange.com/questions/93/what-are-the-best-current-lower-bounds-on-3sat">https://cstheory.stackexchange.com/questions/93/what-are-the-best-current-lower-bounds-on-3sat</a>. <a href="https://cstheory.stackexchange.com/questions/93/what-are-the-best-current-lower-bounds-on-3sat">https://cstheory.stackexchange.com/questions/93/what-are-the-best-current-lower-bounds-on-3sat</a>.
+</div>
+</div>
 </section>
 </body>
 </html>

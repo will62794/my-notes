@@ -1,0 +1,71 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{Probabilistic Tools}
+\author{William Schultz}
+\maketitle
+
+\newcommand{\expect}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\var}[1]{\text{Var}(#1)}
+
+See \cite{Doerr_2019} for a reference on some probabilistic tools.
+
+\subsection*{Union Bound}
+
+Let $E_1,\dots,E_n$ be arbitrary events in some probability space. Then,
+\begin{align*}
+    Pr \left[ \bigcup_{i=1}^n E_i \right] \leq \sum_{i=1}^n Pr[E_i]
+\end{align*}
+That is, for a set of events $E_1,\dots,E_n$, the probability of at least one event occurring is less than or equal to the sum of the probabilities of the individual events.
+
+\subsection*{Expectation and Variance}
+
+For a discrete random variable $X$ taking values in some set $\Omega \subseteq \mathbb{R}$, its \textit{expectation} is defined as
+\begin{align*}
+    \expect{X} = \sum_{\omega \in \Omega} \omega \cdot Pr\left[X=\omega\right]
+\end{align*}
+and its \textit{variance} is defined as 
+\begin{align*}
+    \var{X} = \expect{(X - \expect{X})^2}
+\end{align*}
+That is, expectation is essentially a weighted sum of the values that the random variable can take on, where each value is weighted by the probability of that event occurring, and variance is essentially a measure of the average deviation of the variable from its expectation/mean.
+
+\subsection*{Markov's Inequality}
+
+\textit{Markov's inequality} is an elementary large deviation bound valid for \textit{all} non-negative random variables. Let $X$ be a non-negative random variable with $\expect{X} > 0$. Then, for all $\lambda > 0$
+\begin{align*}
+    Pr(X \geq \lambda) \leq \dfrac{\expect{X}}{\lambda}
+\end{align*}
+
+\subsection*{Chebyshev's Inequality}
+
+Let $X$ be a random variable with $\var{X} > 0$. Then, for all $\lambda > 0$
+\begin{align*}
+    Pr \left[ |X - \expect{X}| \geq \lambda \right] \leq \dfrac{\var{X}}{\lambda^2}
+\end{align*}
+
+\subsection*{Chernoff Bound}
+
+TODO.
+
+\bibliographystyle{plain}
+\bibliography{../../references.bib}
+
+\end{document}

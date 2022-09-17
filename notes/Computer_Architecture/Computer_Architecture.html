@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <meta name="author" content="William Schultz" />
+  <title>Computer Architecture</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Computer Architecture</h1>
+<p class="author">William Schultz</p>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#instructions-language-of-the-computer"><span class="toc-section-number">1</span> Instructions: Language of the Computer</a>
+<ul>
+<li><a href="#instructions-for-making-decisions"><span class="toc-section-number">1.1</span> Instructions for Making Decisions</a></li>
+</ul></li>
+<li><a href="#arithmetic-for-computers"><span class="toc-section-number">2</span> Arithmetic for Computers</a></li>
+<li><a href="#the-processor"><span class="toc-section-number">3</span> The Processor</a>
+<ul>
+<li><a href="#logic-design-conventions"><span class="toc-section-number">3.1</span> Logic Design Conventions</a></li>
+<li><a href="#pipelining"><span class="toc-section-number">3.2</span> Pipelining</a></li>
+</ul></li>
+<li><a href="#the-memory-hierarchy"><span class="toc-section-number">4</span> The Memory Hierarchy</a></li>
+<li><a href="#bibliography">References</a></li>
+</ul>
+</nav>
+<p>At a high level, any computer can be viewed as consisting of the following abstract components:</p>
+<ol>
+<li><p><strong>Input</strong></p></li>
+<li><p><strong>Output</strong></p></li>
+<li><p><strong>Memory</strong></p></li>
+<li><p><strong>Processor</strong> = (Datapath + Control)</p></li>
+</ol>
+<p>where the processor can be viewed as consisting of two distinct sub-components. <em>Datapath</em> is the hardware responsible for performing all required operations (e.g. ALU, registers, internal buses), and <em>Control</em> is the hardware that tells the datapath what to do e.g. in terms of switching, operation selection, data movement between ALU components, etc. <span class="citation" data-cites="2011fourthcomporgdesign">(<a href="#ref-2011fourthcomporgdesign" role="doc-biblioref">Patterson and Hennessy 2011</a>)</span>.</p>
+<p>For example, below is a photograph of the quad-core AMD Barcelona processor chip, originally shipped in 2007, with overlaid diagram describing the various subcomponents.</p>
+<div class="center">
+<p><img src="images/amd_barcelona_die.png" alt="image" /></p>
+</div>
+<section id="instructions-language-of-the-computer" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Instructions: Language of the Computer</h1>
+<p>To command a computer you must speak its language. The words of a computer language are called <em>instructions</em>, and its vocabulary called an <em>instruction set</em>. The <em>stored-program concept</em> is the idea that instructions and data of many types can be stored in a computer’s memory as numbers.</p>
+<section id="instructions-for-making-decisions" class="level2" data-number="1.1">
+<h2 data-number="1.1"><span class="header-section-number">1.1</span> Instructions for Making Decisions</h2>
+<p><em>Conditional branch</em> instructions are analogous to <code>if</code> and <code>goto</code> statements in a programming language e.g. the following “branch if equal” instruction</p>
+<div class="center">
+<p><code>beq register1, register2, L1</code></p>
+</div>
+<p>goes to the statement labeled <code>L1</code> if the value in <code>register1</code> and <code>register2</code> are equal.</p>
+</section>
+</section>
+<section id="arithmetic-for-computers" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Arithmetic for Computers</h1>
+<p>Addition, substraction, multiplication, division, floating point, ALU, etc.</p>
+</section>
+<section id="the-processor" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> The Processor</h1>
+<p>To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the MIPS instruction set. This includes a subset of the core MIPS instruction set:</p>
+<ul>
+<li><p>The memory reference instructions load word (<code>lw</code>) and store word (<code>sw</code>)</p></li>
+<li><p>The arithmetic-logical instructions <code>add</code>,<code>sub</code>,<code>AND</code>,<code>OR</code>, and <code>slt</code></p></li>
+<li><p>The instructions branch equal (<code>beq</code>) and jump(<code>j</code>)</p></li>
+</ul>
+<p>Overall, much of what needs to be done to implement these instructions is the same regardless of the exact class of instruction. For every instruction, the first two steps are identical:</p>
+<ol>
+<li><p>Send the program counter (PC) to the memory that contains the code and fetch the instruction from that memory.</p></li>
+<li><p>Read one or two registers, using fields of the instruction to select the registers to read.</p></li>
+</ol>
+<p>For example, the diagram below shows a high level, abstract outline of a MIPS processor implementation.</p>
+<div class="center">
+<p><img src="images/mips_processor_high_level.png" alt="image" /></p>
+</div>
+<section id="logic-design-conventions" class="level2" data-number="3.1">
+<h2 data-number="3.1"><span class="header-section-number">3.1</span> Logic Design Conventions</h2>
+<p>Note that the datapath elements of a MIPS implementation consists of two different type of logic elements:</p>
+<ul>
+<li><p><strong>Combinational</strong>: elements that operate on data values, where their outputs always depend only on the current inputs (i.e. think of them as implementing pure functions)</p></li>
+<li><p><strong>Sequential</strong>: elements that contain some internal <em>state</em>. These elements have at least two inputs and one output, where the inputs are:</p>
+<ol>
+<li><p>The data value to be written.</p></li>
+<li><p>The clock.</p></li>
+</ol>
+<p>The output from a sequential logic component provides the value that was written in an earlier clock cycle.</p></li>
+</ul>
+<p>A <em>clocking methodology</em> defines when signals can be read and when they can be written. We can assume an <em>edge-triggered clocking</em> methodology, which means that any values stored in a sequential logic element are updated only on a clock edge.</p>
+<p>Since state (i.e. sequential) elements are the only ones that can store values, any collection of combinational logic must have its inputs come from a set of state elements and its outputs written into a set of state elements The inputs are values that were written in a previous clock cycle, while the outputs are values that can be used in a following clock cycle.</p>
+</section>
+<section id="pipelining" class="level2" data-number="3.2">
+<h2 data-number="3.2"><span class="header-section-number">3.2</span> Pipelining</h2>
+<p>TODO.</p>
+</section>
+</section>
+<section id="the-memory-hierarchy" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> The Memory Hierarchy</h1>
+<p>In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a <em>memory hierarchy</em>. Essentially, a progressively larger and slower series of caches that serve as memory for the processor.</p>
+<div class="center">
+<p><img src="images/memory_levels.png" alt="image" /></p>
+</div>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-2011fourthcomporgdesign" class="csl-entry" role="doc-biblioentry">
+Patterson, David A., and John L. Hennessy. 2011. <em>Computer Organization and Design, Revised Fourth Edition, Fourth Edition: The Hardware/Software Interface</em>. 4th ed. San Francisco, CA, USA: Morgan Kaufmann Publishers Inc.
+</div>
+</div>
+</section>
+</body>
+</html>

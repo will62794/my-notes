@@ -127,7 +127,14 @@
 </section>
 <section id="pipelining" class="level2" data-number="4.2">
 <h2 data-number="4.2"><span class="header-section-number">4.2</span> Pipelining</h2>
-<p>TODO.</p>
+<p>MIPS instruction execution classically takes five steps:</p>
+<ol>
+<li><p><strong>Fetch</strong> instruction from memory.</p></li>
+<li><p><strong>Read</strong> registers while <strong>decoding</strong> the instruction.</p></li>
+<li><p><strong>Execute</strong> the operation to calculate an address.</p></li>
+<li><p>Access an operand in data <strong>memory</strong>.</p></li>
+<li><p><strong>Write</strong> the result into a register.</p></li>
+</ol>
 </section>
 </section>
 <section id="the-memory-hierarchy" class="level1" data-number="5">
@@ -141,7 +148,7 @@
 <li><p><strong>Temporal locality</strong>: if an item is referenced at some point in time, it is likely to be referenced again soon.</p></li>
 <li><p><strong>Spatial locality</strong>: if an item is referenced, other items that are nearby are likely to be referenced soon.</p></li>
 </ul>
-<p>We make us of this to construct the memory hierarchy from a series of <em>caches</em>, that get progressively faster and smaller as they get closer to the actual processor.</p>
+<p>We make use of this to construct the memory hierarchy from a series of <em>caches</em>, that get progressively faster and smaller as they get closer to the actual processor.</p>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>

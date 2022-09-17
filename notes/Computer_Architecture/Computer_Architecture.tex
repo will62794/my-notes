@@ -92,7 +92,14 @@ Since state (i.e. sequential) elements are the only ones that can store values, 
 
 \subsection{Pipelining}
 
-TODO.
+MIPS instruction execution classically takes five steps:
+\begin{enumerate}
+    \item \textbf{Fetch} instruction from memory.
+    \item \textbf{Read} registers while \textbf{decoding} the instruction.
+    \item \textbf{Execute} the operation to calculate an address.
+    \item Access an operand in data \textbf{memory}.
+    \item \textbf{Write} the result into a register.
+\end{enumerate}
 
 \section{The Memory Hierarchy}
 
@@ -107,7 +114,7 @@ Note that the \textit{principle of locality} underlies the way that programs ope
     \item \textbf{Temporal locality}: if an item is referenced at some point in time, it is likely to be referenced again soon.
     \item \textbf{Spatial locality}: if an item is referenced, other items that are nearby are likely to be referenced soon.
 \end{itemize}
-We make us of this to construct the memory hierarchy from a series of \textit{caches}, that get progressively faster and smaller as they get closer to the actual processor.
+We make use of this to construct the memory hierarchy from a series of \textit{caches}, that get progressively faster and smaller as they get closer to the actual processor.
 
 \bibliographystyle{plain}
 \bibliography{../../references.bib}

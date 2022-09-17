@@ -71,12 +71,12 @@
 <section id="markovs-inequality" class="level2 unnumbered">
 <h2 class="unnumbered">Markov’s Inequality</h2>
 <p><em>Markov’s inequality</em> is an elementary large deviation bound valid for <em>all</em> non-negative random variables. Let <span class="math inline">\(X\)</span> be a non-negative random variable with <span class="math inline">\(\mathbb{E}\left[X\right] &gt; 0\)</span>. Then, for all <span class="math inline">\(\lambda &gt; 0\)</span> <span class="math display">\[\begin{aligned}
-    Pr(X \geq \lambda) \leq \dfrac{\mathbb{E}\left[X\right]}{\lambda}\end{aligned}\]</span></p>
+    Pr(X \geq \lambda \mathbb{E}\left[X\right]) \leq \dfrac{1}{\lambda}\end{aligned}\]</span> That is, this establishes a bound, for some given parameter <span class="math inline">\(\lambda\)</span>, on how likely a random variable is to be far away from its mean. For example, if <span class="math inline">\(\lambda = 10\)</span>, then this means that the probability that <span class="math inline">\(X\)</span> is greater than 10 times its mean is <span class="math inline">\(\leq \frac{1}{10}\)</span>. Note that this bound doesn’t take into account anything about the actual distribution (only about its mean), so it may serve as only a rough estimate.</p>
 </section>
 <section id="chebyshevs-inequality" class="level2 unnumbered">
 <h2 class="unnumbered">Chebyshev’s Inequality</h2>
-<p>Let <span class="math inline">\(X\)</span> be a random variable with <span class="math inline">\(\text{Var}(X) &gt; 0\)</span>. Then, for all <span class="math inline">\(\lambda &gt; 0\)</span> <span class="math display">\[\begin{aligned}
-    Pr \left[ |X - \mathbb{E}\left[X\right]| \geq \lambda \right] \leq \dfrac{\text{Var}(X)}{\lambda^2}\end{aligned}\]</span></p>
+<p>Let <span class="math inline">\(X\)</span> be a random variable with <span class="math inline">\(\text{Var}(X) &gt; 0\)</span>, and where <span class="math inline">\(\sigma = \sqrt{\text{Var}(X)}\)</span> is its standard deviation. Then, for all <span class="math inline">\(\lambda &gt; 0\)</span> <span class="math display">\[\begin{aligned}
+    Pr \left[ \left| X - \mathbb{E}\left[X\right] \right| \geq \lambda \sigma \right] \leq \dfrac{1}{\lambda^2}\end{aligned}\]</span> This bound tells us something about how far a random variable is from its expectation, in terms of the variance of the RV. That is, it puts a bound on the probability of how many (<span class="math inline">\(\lambda\)</span>) standard deviations (<span class="math inline">\(\sigma\)</span>) away from its mean <span class="math inline">\(X\)</span> may be.</p>
 </section>
 <section id="chernoff-bound" class="level2 unnumbered">
 <h2 class="unnumbered">Chernoff Bound</h2>

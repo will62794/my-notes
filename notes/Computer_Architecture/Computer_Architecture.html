@@ -47,20 +47,23 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#instructions-language-of-the-computer"><span class="toc-section-number">1</span> Instructions: Language of the Computer</a>
+<li><a href="#overview-what-is-a-computer"><span class="toc-section-number">1</span> Overview: What is a computer?</a></li>
+<li><a href="#instructions-language-of-the-computer"><span class="toc-section-number">2</span> Instructions: Language of the Computer</a>
 <ul>
-<li><a href="#instructions-for-making-decisions"><span class="toc-section-number">1.1</span> Instructions for Making Decisions</a></li>
+<li><a href="#instructions-for-making-decisions"><span class="toc-section-number">2.1</span> Instructions for Making Decisions</a></li>
 </ul></li>
-<li><a href="#arithmetic-for-computers"><span class="toc-section-number">2</span> Arithmetic for Computers</a></li>
-<li><a href="#the-processor"><span class="toc-section-number">3</span> The Processor</a>
+<li><a href="#arithmetic-for-computers"><span class="toc-section-number">3</span> Arithmetic for Computers</a></li>
+<li><a href="#the-processor"><span class="toc-section-number">4</span> The Processor</a>
 <ul>
-<li><a href="#logic-design-conventions"><span class="toc-section-number">3.1</span> Logic Design Conventions</a></li>
-<li><a href="#pipelining"><span class="toc-section-number">3.2</span> Pipelining</a></li>
+<li><a href="#logic-design-conventions"><span class="toc-section-number">4.1</span> Logic Design Conventions</a></li>
+<li><a href="#pipelining"><span class="toc-section-number">4.2</span> Pipelining</a></li>
 </ul></li>
-<li><a href="#the-memory-hierarchy"><span class="toc-section-number">4</span> The Memory Hierarchy</a></li>
+<li><a href="#the-memory-hierarchy"><span class="toc-section-number">5</span> The Memory Hierarchy</a></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
+<section id="overview-what-is-a-computer" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Overview: What is a computer?</h1>
 <p>At a high level, any computer can be viewed as consisting of the following abstract components:</p>
 <ol>
 <li><p><strong>Input</strong></p></li>
@@ -73,11 +76,12 @@
 <div class="center">
 <p><img src="images/amd_barcelona_die.png" alt="image" /></p>
 </div>
-<section id="instructions-language-of-the-computer" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Instructions: Language of the Computer</h1>
+</section>
+<section id="instructions-language-of-the-computer" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Instructions: Language of the Computer</h1>
 <p>To command a computer you must speak its language. The words of a computer language are called <em>instructions</em>, and its vocabulary called an <em>instruction set</em>. The <em>stored-program concept</em> is the idea that instructions and data of many types can be stored in a computer’s memory as numbers.</p>
-<section id="instructions-for-making-decisions" class="level2" data-number="1.1">
-<h2 data-number="1.1"><span class="header-section-number">1.1</span> Instructions for Making Decisions</h2>
+<section id="instructions-for-making-decisions" class="level2" data-number="2.1">
+<h2 data-number="2.1"><span class="header-section-number">2.1</span> Instructions for Making Decisions</h2>
 <p><em>Conditional branch</em> instructions are analogous to <code>if</code> and <code>goto</code> statements in a programming language e.g. the following “branch if equal” instruction</p>
 <div class="center">
 <p><code>beq register1, register2, L1</code></p>
@@ -85,12 +89,12 @@
 <p>goes to the statement labeled <code>L1</code> if the value in <code>register1</code> and <code>register2</code> are equal.</p>
 </section>
 </section>
-<section id="arithmetic-for-computers" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Arithmetic for Computers</h1>
+<section id="arithmetic-for-computers" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Arithmetic for Computers</h1>
 <p>Addition, substraction, multiplication, division, floating point, ALU, etc.</p>
 </section>
-<section id="the-processor" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> The Processor</h1>
+<section id="the-processor" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> The Processor</h1>
 <p>To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the MIPS instruction set. This includes a subset of the core MIPS instruction set:</p>
 <ul>
 <li><p>The memory reference instructions load word (<code>lw</code>) and store word (<code>sw</code>)</p></li>
@@ -106,8 +110,8 @@
 <div class="center">
 <p><img src="images/mips_processor_high_level.png" alt="image" /></p>
 </div>
-<section id="logic-design-conventions" class="level2" data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span> Logic Design Conventions</h2>
+<section id="logic-design-conventions" class="level2" data-number="4.1">
+<h2 data-number="4.1"><span class="header-section-number">4.1</span> Logic Design Conventions</h2>
 <p>Note that the datapath elements of a MIPS implementation consists of two different type of logic elements:</p>
 <ul>
 <li><p><strong>Combinational</strong>: elements that operate on data values, where their outputs always depend only on the current inputs (i.e. think of them as implementing pure functions)</p></li>
@@ -121,17 +125,23 @@
 <p>A <em>clocking methodology</em> defines when signals can be read and when they can be written. We can assume an <em>edge-triggered clocking</em> methodology, which means that any values stored in a sequential logic element are updated only on a clock edge.</p>
 <p>Since state (i.e. sequential) elements are the only ones that can store values, any collection of combinational logic must have its inputs come from a set of state elements and its outputs written into a set of state elements The inputs are values that were written in a previous clock cycle, while the outputs are values that can be used in a following clock cycle.</p>
 </section>
-<section id="pipelining" class="level2" data-number="3.2">
-<h2 data-number="3.2"><span class="header-section-number">3.2</span> Pipelining</h2>
+<section id="pipelining" class="level2" data-number="4.2">
+<h2 data-number="4.2"><span class="header-section-number">4.2</span> Pipelining</h2>
 <p>TODO.</p>
 </section>
 </section>
-<section id="the-memory-hierarchy" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> The Memory Hierarchy</h1>
+<section id="the-memory-hierarchy" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> The Memory Hierarchy</h1>
 <p>In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a <em>memory hierarchy</em>. Essentially, a progressively larger and slower series of caches that serve as memory for the processor.</p>
 <div class="center">
 <p><img src="images/memory_levels.png" alt="image" /></p>
 </div>
+<p>Note that the <em>principle of locality</em> underlies the way that programs operate. That is, the assumption is that programs access a relatively small portion of their address space at any instant of time. There are two different types of locality:</p>
+<ul>
+<li><p><strong>Temporal locality</strong>: if an item is referenced at some point in time, it is likely to be referenced again soon.</p></li>
+<li><p><strong>Spatial locality</strong>: if an item is referenced, other items that are nearby are likely to be referenced soon.</p></li>
+</ul>
+<p>We make us of this to construct the memory hierarchy from a series of <em>caches</em>, that get progressively faster and smaller as they get closer to the actual processor.</p>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>

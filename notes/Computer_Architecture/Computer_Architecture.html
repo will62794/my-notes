@@ -61,7 +61,10 @@
 </ul></li>
 <li><a href="#the-memory-hierarchy"><span class="toc-section-number">5</span> The Memory Hierarchy</a>
 <ul>
-<li><a href="#cache-basics"><span class="toc-section-number">5.1</span> Cache Basics</a></li>
+<li><a href="#cache-basics"><span class="toc-section-number">5.1</span> Cache Basics</a>
+<ul>
+<li><a href="#set-associative-caches">Set Associative Caches</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#hardware-description-languages"><span class="toc-section-number">6</span> Hardware Description Languages</a>
 <ul>
@@ -165,10 +168,14 @@
 <h2 data-number="5.1"><span class="header-section-number">5.1</span> Cache Basics</h2>
 <p>In a basic scenario, we can imagine that a processor issues memory requests that are each one word (e.g. 32 bits) and the blocks in the cache are also one word. If a cache contains words <span class="math inline">\(X_1,\dots,X_{n-1}\)</span> prior to a request for a word <span class="math inline">\(X_n\)</span> not in the cache, then a cache miss occurs and <span class="math inline">\(X_n\)</span> is brought into the cache.</p>
 <p>When servicing a processor request, we need to know (1) is the data item in the cache and, if so, (2) how do we find it? The simplest approach is to simply map each word to a locatino in the cache based on its address, which is known as <em>direct mapping</em>. This is essentially a simple hash based addressing scheme. With this approach, however, there may be collisions in addresses that map to the same cache location, so we need to deal with this. One approach is to add a set of <em>tags</em> to the cache. Basically, for each cache entry, we add a tag that contains the bits of the address that were not included in the hash function, so that we can disambiguate between two addresses that may map to the same cache location. In practice we may also include a <em>valid</em> bit that tells whether a particular cached value is currently valid to use or not.</p>
+<section id="set-associative-caches" class="level3 unnumbered">
+<h3 class="unnumbered">Set Associative Caches</h3>
 <p>An alternative to the direct mapping approach is to make the cache <em>set associative</em>. So, instead of giving every address exactly one location in the cache, we give it <span class="math inline">\(n\)</span> possible locations, which we call <span class="math inline">\(n\)</span>-way set associative. If the cache can hold <span class="math inline">\(m\)</span> entries then a <span class="math inline">\(m\)</span>-way set associative cache is also referred to as <em>fully associative</em>. In this other extreme, it means that a block can be placed anywhere in the cache, but then comes with the tradeoff that finding a block is more expensive, since we may need to search through every block to find it.</p>
 <div class="center">
 <p><img src="images/cache_assoc.png" alt="image" /></p>
 </div>
+<p>Note that allowing for more potential locations for a block can decrease contention for blocks, since if there are only a few unused blocks, a new request is then free to pick any unused block. This is in contrast to a direct mapped scheme, where choice of block is completely determined by the address mapping function. Also, in an associative cache, we have a choice of where to place the new block, so potentially a choice of which block to kick out of the cache. The most commonly used scheme is <em>least recently used</em> (LRU) i.e. we remove blocks that were unused for the longest time.</p>
+</section>
 </section>
 </section>
 <section id="hardware-description-languages" class="level1" data-number="6">

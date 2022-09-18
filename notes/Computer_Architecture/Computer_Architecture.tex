@@ -126,11 +126,13 @@ In a basic scenario, we can imagine that a processor issues memory requests that
 
 When servicing a processor request, we need to know (1) is the data item in the cache and, if so, (2) how do we find it? The simplest approach is to simply map each word to a locatino in the cache based on its address, which is known as \textit{direct mapping}. This is essentially a simple hash based addressing scheme. With this approach, however, there may be collisions in addresses that map to the same cache location, so we need to deal with this. One approach is to add a set of \textit{tags} to the cache. Basically, for each cache entry, we add a tag that contains the bits of the address that were not included in the hash function, so that we can disambiguate between two addresses that may map to the same cache location. In practice we may also include a \textit{valid} bit that tells whether a particular cached value is currently valid to use or not.
 
-An alternative to the direct mapping approach is to make the cache \textit{set associative}. So, instead of giving every address exactly one location in the cache, we give it $n$ possible locations, which we call $n$-way set associative. If the cache can hold $m$ entries then a $m$-way set associative cache is also referred to as \textit{fully associative}. In this other extreme, it means that a block can be placed anywhere in the cache, but then comes with the tradeoff that finding a block is more expensive, since we may need to search through every block to find it.
+\subsubsection*{Set Associative Caches}
 
+An alternative to the direct mapping approach is to make the cache \textit{set associative}. So, instead of giving every address exactly one location in the cache, we give it $n$ possible locations, which we call $n$-way set associative. If the cache can hold $m$ entries then a $m$-way set associative cache is also referred to as \textit{fully associative}. In this other extreme, it means that a block can be placed anywhere in the cache, but then comes with the tradeoff that finding a block is more expensive, since we may need to search through every block to find it.
 \begin{center}
     \includegraphics[scale=0.35]{images/cache_assoc.png}
 \end{center}
+Note that allowing for more potential locations for a block can decrease contention for blocks, since if there are only a few unused blocks, a new request is then free to pick any unused block. This is in contrast to a direct mapped scheme, where choice of block is completely determined by the address mapping function. Also, in an associative cache, we have a choice of where to place the new block, so potentially a choice of which block to kick out of the cache. The most commonly used scheme is \textit{least recently used} (LRU) i.e. we remove blocks that were unused for the longest time.
 
 \section{Hardware Description Languages}
 

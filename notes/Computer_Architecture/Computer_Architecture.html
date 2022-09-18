@@ -35,6 +35,7 @@
     }
   </style>
   <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
@@ -58,7 +59,10 @@
 <li><a href="#logic-design-conventions"><span class="toc-section-number">4.1</span> Logic Design Conventions</a></li>
 <li><a href="#pipelining"><span class="toc-section-number">4.2</span> Pipelining</a></li>
 </ul></li>
-<li><a href="#the-memory-hierarchy"><span class="toc-section-number">5</span> The Memory Hierarchy</a></li>
+<li><a href="#the-memory-hierarchy"><span class="toc-section-number">5</span> The Memory Hierarchy</a>
+<ul>
+<li><a href="#cache-basics"><span class="toc-section-number">5.1</span> Cache Basics</a></li>
+</ul></li>
 <li><a href="#hardware-description-languages"><span class="toc-section-number">6</span> Hardware Description Languages</a>
 <ul>
 <li><a href="#verilog">Verilog</a></li>
@@ -143,7 +147,7 @@
 </section>
 <section id="the-memory-hierarchy" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> The Memory Hierarchy</h1>
-<p>In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a <em>memory hierarchy</em>. Essentially, a progressively larger and slower series of caches that serve as memory for the processor.</p>
+<p>In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a <em>memory hierarchy</em>. That is, a progressively larger and slower series of caches that serve as memory for the processor.</p>
 <div class="center">
 <p><img src="images/memory_levels.png" alt="image" /></p>
 </div>
@@ -153,6 +157,19 @@
 <li><p><strong>Spatial locality</strong>: if an item is referenced, other items that are nearby are likely to be referenced soon.</p></li>
 </ul>
 <p>We make use of this to construct the memory hierarchy from a series of <em>caches</em>, that get progressively faster and smaller as they get closer to the actual processor.</p>
+<p>A memory hierarchy may consist of multiple levels, but data is copied only between two adjacent levels at a time, so we can consider only two levels when describing the caching mechanisms. There is an <em>upper level</em> (faster and closer to the processor) and a <em>lower level</em>. The smallest unit of information that can be either present or absent from any cache level is typically referred to as a cache <em>block</em> or <em>line</em>.</p>
+<div class="center">
+<p><img src="images/mem_2levels.png" alt="image" /></p>
+</div>
+<section id="cache-basics" class="level2" data-number="5.1">
+<h2 data-number="5.1"><span class="header-section-number">5.1</span> Cache Basics</h2>
+<p>In a basic scenario, we can imagine that a processor issues memory requests that are each one word (e.g. 32 bits) and the blocks in the cache are also one word. If a cache contains words <span class="math inline">\(X_1,\dots,X_{n-1}\)</span> prior to a request for a word <span class="math inline">\(X_n\)</span> not in the cache, then a cache miss occurs and <span class="math inline">\(X_n\)</span> is brought into the cache.</p>
+<p>When servicing a processor request, we need to know (1) is the data item in the cache and, if so, (2) how do we find it? The simplest approach is to simply map each word to a locatino in the cache based on its address, which is known as <em>direct mapping</em>. This is essentially a simple hash based addressing scheme. With this approach, however, there may be collisions in addresses that map to the same cache location, so we need to deal with this. One approach is to add a set of <em>tags</em> to the cache. Basically, for each cache entry, we add a tag that contains the bits of the address that were not included in the hash function, so that we can disambiguate between two addresses that may map to the same cache location. In practice we may also include a <em>valid</em> bit that tells whether a particular cached value is currently valid to use or not.</p>
+<p>An alternative to the direct mapping approach is to make the cache <em>set associative</em>. So, instead of giving every address exactly one location in the cache, we give it <span class="math inline">\(n\)</span> possible locations, which we call <span class="math inline">\(n\)</span>-way set associative. If the cache can hold <span class="math inline">\(m\)</span> entries then a <span class="math inline">\(m\)</span>-way set associative cache is also referred to as <em>fully associative</em>. In this other extreme, it means that a block can be placed anywhere in the cache, but then comes with the tradeoff that finding a block is more expensive, since we may need to search through every block to find it.</p>
+<div class="center">
+<p><img src="images/cache_assoc.png" alt="image" /></p>
+</div>
+</section>
 </section>
 <section id="hardware-description-languages" class="level1" data-number="6">
 <h1 data-number="6"><span class="header-section-number">6</span> Hardware Description Languages</h1>

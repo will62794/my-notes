@@ -103,18 +103,34 @@ MIPS instruction execution classically takes five steps:
 
 \section{The Memory Hierarchy}
 
-In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a \textit{memory hierarchy}. Essentially, a progressively larger and slower series of caches that serve as memory for the processor.
-
+In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a \textit{memory hierarchy}. That is, a progressively larger and slower series of caches that serve as memory for the processor.
 \begin{center}
     \includegraphics[scale=0.35]{images/memory_levels.png}
 \end{center}
-
 Note that the \textit{principle of locality} underlies the way that programs operate. That is, the assumption is that programs access a relatively small portion of their address space at any instant of time. There are two different types of locality:
 \begin{itemize}
     \item \textbf{Temporal locality}: if an item is referenced at some point in time, it is likely to be referenced again soon.
     \item \textbf{Spatial locality}: if an item is referenced, other items that are nearby are likely to be referenced soon.
 \end{itemize}
 We make use of this to construct the memory hierarchy from a series of \textit{caches}, that get progressively faster and smaller as they get closer to the actual processor.
+
+A memory hierarchy may consist of multiple levels, but data is copied only between two adjacent levels at a time, so we can consider only two levels when describing the caching mechanisms. There is an \textit{upper level} (faster and closer to the processor) and a \textit{lower level}. The smallest unit of information that can be either present or absent from any cache level is typically referred to as a cache \textit{block} or \textit{line}.
+
+\begin{center}
+    \includegraphics[scale=0.35]{images/mem_2levels.png}
+\end{center}
+
+\subsection{Cache Basics}
+
+In a basic scenario, we can imagine that a processor issues memory requests that are each one word (e.g. 32 bits) and the blocks in the cache are also one word. If a cache contains words $X_1,\dots,X_{n-1}$ prior to a request for a word $X_n$ not in the cache, then a cache miss occurs and $X_n$ is brought into the cache.
+
+When servicing a processor request, we need to know (1) is the data item in the cache and, if so, (2) how do we find it? The simplest approach is to simply map each word to a locatino in the cache based on its address, which is known as \textit{direct mapping}. This is essentially a simple hash based addressing scheme. With this approach, however, there may be collisions in addresses that map to the same cache location, so we need to deal with this. One approach is to add a set of \textit{tags} to the cache. Basically, for each cache entry, we add a tag that contains the bits of the address that were not included in the hash function, so that we can disambiguate between two addresses that may map to the same cache location. In practice we may also include a \textit{valid} bit that tells whether a particular cached value is currently valid to use or not.
+
+An alternative to the direct mapping approach is to make the cache \textit{set associative}. So, instead of giving every address exactly one location in the cache, we give it $n$ possible locations, which we call $n$-way set associative. If the cache can hold $m$ entries then a $m$-way set associative cache is also referred to as \textit{fully associative}. In this other extreme, it means that a block can be placed anywhere in the cache, but then comes with the tradeoff that finding a block is more expensive, since we may need to search through every block to find it.
+
+\begin{center}
+    \includegraphics[scale=0.35]{images/cache_assoc.png}
+\end{center}
 
 \section{Hardware Description Languages}
 

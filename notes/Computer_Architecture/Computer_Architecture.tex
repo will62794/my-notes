@@ -116,6 +116,28 @@ Note that the \textit{principle of locality} underlies the way that programs ope
 \end{itemize}
 We make use of this to construct the memory hierarchy from a series of \textit{caches}, that get progressively faster and smaller as they get closer to the actual processor.
 
+\section{Hardware Description Languages}
+
+
+\textit{Hardware description languages (HDLs)} are languages for describing digital circuits at a higher level of abstraction, rather than directly describing every logic gate and their exact placement, connections, etc. 
+
+\subsection*{Verilog}
+
+\textit{Verilog} is one of the most common HDLs, and it can be used to define both combinational and sequential circuits. As a simple example, we can describe a simple combinational circuit in Verilog as a \textit{module}. For example, the following describes a circuit with one \textit{input} and one \textit{output}, where the output is the negation of the input.
+\begin{verbatim}
+    module top_module(input a, output b);
+        assign b = !a;
+    endmodule
+\end{verbatim}
+When circuits become more complex, we can also declare \textit{wires}, which are like internal connections that are not externally visible outside of the module. For example, the following declares an internal wire that takes on the negation of the input \verb|a|, and this wire is then fed (i.e. connected to) the output. For this simple example the wire doesn't really serve a necessary purpose, but with larger circuits wires can help to decompose more complex bits of logic.
+\begin{verbatim}
+    module top_module(input a, output b);
+        wire w1; // wire declaration.
+        assign w1 = !a;
+        assign b = w1;
+    endmodule
+\end{verbatim}
+
 \bibliographystyle{plain}
 \bibliography{../../references.bib}
 

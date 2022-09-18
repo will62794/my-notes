@@ -59,6 +59,10 @@
 <li><a href="#pipelining"><span class="toc-section-number">4.2</span> Pipelining</a></li>
 </ul></li>
 <li><a href="#the-memory-hierarchy"><span class="toc-section-number">5</span> The Memory Hierarchy</a></li>
+<li><a href="#hardware-description-languages"><span class="toc-section-number">6</span> Hardware Description Languages</a>
+<ul>
+<li><a href="#verilog">Verilog</a></li>
+</ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
@@ -149,6 +153,23 @@
 <li><p><strong>Spatial locality</strong>: if an item is referenced, other items that are nearby are likely to be referenced soon.</p></li>
 </ul>
 <p>We make use of this to construct the memory hierarchy from a series of <em>caches</em>, that get progressively faster and smaller as they get closer to the actual processor.</p>
+</section>
+<section id="hardware-description-languages" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Hardware Description Languages</h1>
+<p><em>Hardware description languages (HDLs)</em> are languages for describing digital circuits at a higher level of abstraction, rather than directly describing every logic gate and their exact placement, connections, etc.</p>
+<section id="verilog" class="level2 unnumbered">
+<h2 class="unnumbered">Verilog</h2>
+<p><em>Verilog</em> is one of the most common HDLs, and it can be used to define both combinational and sequential circuits. As a simple example, we can describe a simple combinational circuit in Verilog as a <em>module</em>. For example, the following describes a circuit with one <em>input</em> and one <em>output</em>, where the output is the negation of the input.</p>
+<pre><code>    module top_module(input a, output b);
+        assign b = !a;
+    endmodule</code></pre>
+<p>When circuits become more complex, we can also declare <em>wires</em>, which are like internal connections that are not externally visible outside of the module. For example, the following declares an internal wire that takes on the negation of the input <code>a</code>, and this wire is then fed (i.e. connected to) the output. For this simple example the wire doesn’t really serve a necessary purpose, but with larger circuits wires can help to decompose more complex bits of logic.</p>
+<pre><code>    module top_module(input a, output b);
+        wire w1; // wire declaration.
+        assign w1 = !a;
+        assign b = w1;
+    endmodule</code></pre>
+</section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>

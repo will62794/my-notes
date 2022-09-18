@@ -82,8 +82,8 @@
 <li><p><strong>Memory</strong></p></li>
 <li><p><strong>Processor</strong> = (Datapath + Control)</p></li>
 </ol>
-<p>where the processor can be viewed as consisting of two distinct sub-components. <em>Datapath</em> is the hardware responsible for performing all required operations (e.g. ALU, registers, internal buses), and <em>Control</em> is the hardware that tells the datapath what to do e.g. in terms of switching, operation selection, data movement between ALU components, etc. <span class="citation" data-cites="2011fourthcomporgdesign">(<a href="#ref-2011fourthcomporgdesign" role="doc-biblioref">Patterson and Hennessy 2011</a>)</span>.</p>
-<p>For example, below is a photograph of the quad-core AMD Barcelona processor chip, originally shipped in 2007, with overlaid diagram describing the various subcomponents.</p>
+<p>The processor can be viewed as consisting of two distinct sub-components: <em>Datapath</em> is the hardware responsible for performing all required operations (e.g. ALU, registers, internal buses), and <em>Control</em> is the hardware that tells the datapath what to do e.g. in terms of switching, operation selection, data movement between ALU components, etc. <span class="citation" data-cites="2011fourthcomporgdesign">(<a href="#ref-2011fourthcomporgdesign" role="doc-biblioref">Patterson and Hennessy 2011</a>)</span>.</p>
+<p>As a concrete example, below is a photograph of the quad-core AMD Barcelona processor chip, originally shipped in 2007, with overlaid diagram describing the various subcomponents.</p>
 <div class="center">
 <p><img src="images/amd_barcelona_die.png" alt="image" /></p>
 </div>
@@ -106,7 +106,7 @@
 </section>
 <section id="the-processor" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> The Processor</h1>
-<p>To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the MIPS instruction set. This includes a subset of the core MIPS instruction set:</p>
+<p>To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the <a href="https://en.wikipedia.org/wiki/MIPS_architecture">MIPS instruction set</a>. This includes a subset of the core MIPS instruction set:</p>
 <ul>
 <li><p>The memory reference instructions load word (<code>lw</code>) and store word (<code>sw</code>)</p></li>
 <li><p>The arithmetic-logical instructions <code>add</code>,<code>sub</code>,<code>AND</code>,<code>OR</code>, and <code>slt</code></p></li>

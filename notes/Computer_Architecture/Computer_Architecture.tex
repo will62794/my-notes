@@ -9,6 +9,7 @@
 \usepackage{fancyvrb}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{hyperref}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes,snakes}
 \usepackage[english]{babel}
@@ -30,9 +31,9 @@ At a high level, any computer can be viewed as consisting of the following abstr
     \item \textbf{Memory}
     \item \textbf{Processor} = (Datapath + Control)
 \end{enumerate}
- where the processor can be viewed as consisting of two distinct sub-components. \textit{Datapath} is the hardware responsible for performing all required operations (e.g. ALU, registers, internal buses), and \textit{Control} is the hardware that tells the datapath what to do e.g. in terms of switching, operation selection, data movement between ALU components, etc. \cite{2011fourthcomporgdesign}.
+The processor can be viewed as consisting of two distinct sub-components: \textit{Datapath} is the hardware responsible for performing all required operations (e.g. ALU, registers, internal buses), and \textit{Control} is the hardware that tells the datapath what to do e.g. in terms of switching, operation selection, data movement between ALU components, etc. \cite{2011fourthcomporgdesign}. 
 
- For example, below is a photograph of the quad-core AMD Barcelona processor chip, originally shipped in 2007, with overlaid diagram describing the various subcomponents.
+As a concrete example, below is a photograph of the quad-core AMD Barcelona processor chip, originally shipped in 2007, with overlaid diagram describing the various subcomponents.
 
 \begin{center}
 \includegraphics[scale=0.4]{images/amd_barcelona_die.png}
@@ -57,7 +58,7 @@ Addition, substraction, multiplication, division, floating point, ALU, etc.
 
 \section{The Processor}
 
-To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the MIPS instruction set. This includes a subset of the core MIPS instruction set:
+To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the \href{https://en.wikipedia.org/wiki/MIPS_architecture}{MIPS instruction set}. This includes a subset of the core MIPS instruction set:
 \begin{itemize}
     \item The memory reference instructions load word (\verb|lw|) and store word (\verb|sw|)
     \item The arithmetic-logical instructions \verb|add|,\verb|sub|,\verb|AND|,\verb|OR|, and \verb|slt|

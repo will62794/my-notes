@@ -135,6 +135,31 @@ An alternative to the direct mapping approach is to make the cache \textit{set a
 \end{center}
 Note that allowing for more potential locations for a block can decrease contention for blocks, since if there are only a few unused blocks, a new request is then free to pick any unused block. This is in contrast to a direct mapped scheme, where choice of block is completely determined by the address mapping function. Also, in an associative cache, we have a choice of where to place the new block, so potentially a choice of which block to kick out of the cache. The most commonly used scheme is \textit{least recently used} (LRU) i.e. we remove blocks that were unused for the longest time.
 
+\subsection{Parallelism and Memory: Cache Coherence}
+
+For multicore processors, multiple processors likely operate on a common physical address space. If different processors have their own caches, though, then this means that the view of memory held by different processors may be mismatched i.e. two processors see different values for a given memory location. This issue is generally referred to as the \textit{cache coherence problem}.
+
+Informally, we might want to define a memory system as being coherent if any read of a data item returns the most recently written value of that data item. This is a bit too simplistic, though, and this definition contains two different aspects of memory system behavior. The first, \textit{coherence}, defines \textit{what values} can be returned by a read. The second, called \textit{consistency}, determines \textit{when} a written value will be returned by a read. Considering coherence first, we say that a memory system is coherent if
+\begin{enumerate}
+    \item A read by processor $P$ to a location $X$ that follows a write by $P$ to $X$, with no writes of $X$ by another processor occurring between the write and the read by $P$, always returns the value written by $P$.
+    \item A read by a processor $P_1$ to a location $X$ that follows a write by another processor $P_2$ to $X$ returns the value written by $P_2$ if the read and write are ``sufficiently separated" in time and no other writes to $X$ occurred between the two accesses.
+    \item Writes to the same location are \textit{serialized}. That is, two writes to the same location by any two processors are seen in the same order by all processors.
+\end{enumerate}
+
+The first property establishes a basic local ordering property for each processor i.e. it is what we would expect to hold true for a uniprocessor system. The second property defines a notion of what it means for multiple processors to have a coherent view of memory i.e. processors should observe the most recent effects of writes by other processors. The third property, \textit{write serialization}, is also required, to ensure that all processors observe writes to a particular memory address in the same order. 
+% For example, if processor $P_1$ wrote a value to location $X$ followed by a write by $P_2$ to $X$, then by rules 
+
+\subsubsection*{Basic Schemes for Enforcing Coherence}
+
+In a cache coherent multiprocessor, the caches provide both \textit{migration} and \textit{replication} of shared data items:
+\begin{itemize}
+    \item \textit{Migration}: A data item can be moved to a local cache and used there in a transparent fashion.
+    \item \textit{Replication}: When shared data are being simultaneously read, the caches make a copy of the data item in the local cache. This reduces latency of access and contention for a read shared data item.
+\end{itemize}
+The protocols to maintain coherence for multiple processors are \textit{cache coherence protocols}.
+
+TODO: \textit{Snooping} vs. \textit{directory-based} cache coherence protocols.
+ 
 \section{Hardware Description Languages}
 
 

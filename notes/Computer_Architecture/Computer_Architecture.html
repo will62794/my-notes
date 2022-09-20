@@ -65,6 +65,10 @@
 <ul>
 <li><a href="#set-associative-caches">Set Associative Caches</a></li>
 </ul></li>
+<li><a href="#parallelism-and-memory-cache-coherence"><span class="toc-section-number">5.2</span> Parallelism and Memory: Cache Coherence</a>
+<ul>
+<li><a href="#basic-schemes-for-enforcing-coherence">Basic Schemes for Enforcing Coherence</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#hardware-description-languages"><span class="toc-section-number">6</span> Hardware Description Languages</a>
 <ul>
@@ -175,6 +179,27 @@
 <p><img src="images/cache_assoc.png" alt="image" /></p>
 </div>
 <p>Note that allowing for more potential locations for a block can decrease contention for blocks, since if there are only a few unused blocks, a new request is then free to pick any unused block. This is in contrast to a direct mapped scheme, where choice of block is completely determined by the address mapping function. Also, in an associative cache, we have a choice of where to place the new block, so potentially a choice of which block to kick out of the cache. The most commonly used scheme is <em>least recently used</em> (LRU) i.e. we remove blocks that were unused for the longest time.</p>
+</section>
+</section>
+<section id="parallelism-and-memory-cache-coherence" class="level2" data-number="5.2">
+<h2 data-number="5.2"><span class="header-section-number">5.2</span> Parallelism and Memory: Cache Coherence</h2>
+<p>For multicore processors, multiple processors likely operate on a common physical address space. If different processors have their own caches, though, then this means that the view of memory held by different processors may be mismatched i.e. two processors see different values for a given memory location. This issue is generally referred to as the <em>cache coherence problem</em>.</p>
+<p>Informally, we might want to define a memory system as being coherent if any read of a data item returns the most recently written value of that data item. This is a bit too simplistic, though, and this definition contains two different aspects of memory system behavior. The first, <em>coherence</em>, defines <em>what values</em> can be returned by a read. The second, called <em>consistency</em>, determines <em>when</em> a written value will be returned by a read. Considering coherence first, we say that a memory system is coherent if</p>
+<ol>
+<li><p>A read by processor <span class="math inline">\(P\)</span> to a location <span class="math inline">\(X\)</span> that follows a write by <span class="math inline">\(P\)</span> to <span class="math inline">\(X\)</span>, with no writes of <span class="math inline">\(X\)</span> by another processor occurring between the write and the read by <span class="math inline">\(P\)</span>, always returns the value written by <span class="math inline">\(P\)</span>.</p></li>
+<li><p>A read by a processor <span class="math inline">\(P_1\)</span> to a location <span class="math inline">\(X\)</span> that follows a write by another processor <span class="math inline">\(P_2\)</span> to <span class="math inline">\(X\)</span> returns the value written by <span class="math inline">\(P_2\)</span> if the read and write are “sufficiently separated" in time and no other writes to <span class="math inline">\(X\)</span> occurred between the two accesses.</p></li>
+<li><p>Writes to the same location are <em>serialized</em>. That is, two writes to the same location by any two processors are seen in the same order by all processors.</p></li>
+</ol>
+<p>The first property establishes a basic local ordering property for each processor i.e. it is what we would expect to hold true for a uniprocessor system. The second property defines a notion of what it means for multiple processors to have a coherent view of memory i.e. processors should observe the most recent effects of writes by other processors. The third property, <em>write serialization</em>, is also required, to ensure that all processors observe writes to a particular memory address in the same order.</p>
+<section id="basic-schemes-for-enforcing-coherence" class="level3 unnumbered">
+<h3 class="unnumbered">Basic Schemes for Enforcing Coherence</h3>
+<p>In a cache coherent multiprocessor, the caches provide both <em>migration</em> and <em>replication</em> of shared data items:</p>
+<ul>
+<li><p><em>Migration</em>: A data item can be moved to a local cache and used there in a transparent fashion.</p></li>
+<li><p><em>Replication</em>: When shared data are being simultaneously read, the caches make a copy of the data item in the local cache. This reduces latency of access and contention for a read shared data item.</p></li>
+</ul>
+<p>The protocols to maintain coherence for multiple processors are <em>cache coherence protocols</em>.</p>
+<p>TODO: <em>Snooping</em> vs. <em>directory-based</em> cache coherence protocols.</p>
 </section>
 </section>
 </section>

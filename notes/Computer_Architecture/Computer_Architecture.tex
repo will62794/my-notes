@@ -159,6 +159,26 @@ In a cache coherent multiprocessor, the caches provide both \textit{migration} a
 The protocols to maintain coherence for multiple processors are \textit{cache coherence protocols}.
 
 TODO: \textit{Snooping} vs. \textit{directory-based} cache coherence protocols.
+
+\section{Virtual Memory}
+
+In the same sense of smaller memory units acting as caches for main memory, we can also view main memory as acting as a ``cache'' for external storage: this technique is known \textit{virtual memory}. The motivations for virtual memory were historically twofold: 
+\begin{enumerate}
+    \item Eliminate the programming burdens of only having access to a limited amount of main memory.
+    \item Allow safe and efficient \textit{sharing} of memory between multiple programs.
+\end{enumerate}
+The latter is the more important consideration in modern systems (since main memory units have gotten quite large). We would like to compile programs such that they use their own \textit{address space} i.e. a separate range of memory locations accessible only to that program. Virtual memory implements the translation of a program's address space to \textit{physical addresses}.
+
+Concepts between virtual memory and caches are essentially the same, but things carry different naming conventions for historical reasons. 
+\begin{itemize}
+    \item \textit{page}: a virtual memory block
+    \item \textit{page fault}: virtual memory miss
+\end{itemize}
+With virtual memory, the processor produces a \textit{virtual address}, which is translated through a combo of hardware + software into a \textit{physical address}, which can be used to access main memory. This process is called \textit{address translation}. It's just another cache!
+
+\subsection{Making Address Translation Fast: the TLB}
+
+When a translation for a virtual page number is used, it will probably be needed again in th near future. So, modern processors include a special cache that keeps track of recent translations. Typically this cache is called the \textit{translation-lookaside buffer (TLB)}, but it would really be more appropriate to just call it a \textit{translation cache}.
  
 \section{Hardware Description Languages}
 

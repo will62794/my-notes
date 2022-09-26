@@ -70,7 +70,11 @@
 <li><a href="#basic-schemes-for-enforcing-coherence">Basic Schemes for Enforcing Coherence</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#hardware-description-languages"><span class="toc-section-number">6</span> Hardware Description Languages</a>
+<li><a href="#virtual-memory"><span class="toc-section-number">6</span> Virtual Memory</a>
+<ul>
+<li><a href="#making-address-translation-fast-the-tlb"><span class="toc-section-number">6.1</span> Making Address Translation Fast: the TLB</a></li>
+</ul></li>
+<li><a href="#hardware-description-languages"><span class="toc-section-number">7</span> Hardware Description Languages</a>
 <ul>
 <li><a href="#verilog">Verilog</a></li>
 </ul></li>
@@ -203,8 +207,27 @@
 </section>
 </section>
 </section>
-<section id="hardware-description-languages" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Hardware Description Languages</h1>
+<section id="virtual-memory" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Virtual Memory</h1>
+<p>In the same sense of smaller memory units acting as caches for main memory, we can also view main memory as acting as a “cache” for external storage: this technique is known <em>virtual memory</em>. The motivations for virtual memory were historically twofold:</p>
+<ol>
+<li><p>Eliminate the programming burdens of only having access to a limited amount of main memory.</p></li>
+<li><p>Allow safe and efficient <em>sharing</em> of memory between multiple programs.</p></li>
+</ol>
+<p>The latter is the more important consideration in modern systems (since main memory units have gotten quite large). We would like to compile programs such that they use their own <em>address space</em> i.e. a separate range of memory locations accessible only to that program. Virtual memory implements the translation of a program’s address space to <em>physical addresses</em>.</p>
+<p>Concepts between virtual memory and caches are essentially the same, but things carry different naming conventions for historical reasons.</p>
+<ul>
+<li><p><em>page</em>: a virtual memory block</p></li>
+<li><p><em>page fault</em>: virtual memory miss</p></li>
+</ul>
+<p>With virtual memory, the processor produces a <em>virtual address</em>, which is translated through a combo of hardware + software into a <em>physical address</em>, which can be used to access main memory. This process is called <em>address translation</em>. It’s just another cache!</p>
+<section id="making-address-translation-fast-the-tlb" class="level2" data-number="6.1">
+<h2 data-number="6.1"><span class="header-section-number">6.1</span> Making Address Translation Fast: the TLB</h2>
+<p>When a translation for a virtual page number is used, it will probably be needed again in th near future. So, modern processors include a special cache that keeps track of recent translations. Typically this cache is called the <em>translation-lookaside buffer (TLB)</em>, but it would really be more appropriate to just call it a <em>translation cache</em>.</p>
+</section>
+</section>
+<section id="hardware-description-languages" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Hardware Description Languages</h1>
 <p><em>Hardware description languages (HDLs)</em> are languages for describing digital circuits at a higher level of abstraction, rather than directly describing every logic gate and their exact placement, connections, etc.</p>
 <section id="verilog" class="level2 unnumbered">
 <h2 class="unnumbered">Verilog</h2>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <meta name="author" content="William Schultz" />
+  <title>DSA Problems</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">DSA Problems</h1>
+<p class="author">William Schultz</p>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#merge-k-sorted-lists">Merge k Sorted Lists</a></li>
+<li><a href="#remove-duplicates-from-sorted-linked-list">Remove duplicates from sorted linked list</a></li>
+</ul>
+</nav>
+<section id="merge-k-sorted-lists" class="level2 unnumbered">
+<h2 class="unnumbered">Merge k Sorted Lists</h2>
+<ul>
+<li><p><strong>Problem</strong>: Given a set of <span class="math inline">\(k\)</span> linked lists, each which are individually sorted in ascending order, merge all <span class="math inline">\(k\)</span> lists into one sorted list.</p></li>
+<li><p><strong>Solution Idea</strong>: The basic approach is to essentially just perform the <em>merge</em> step of merge-sort. That is, if we are given a set of already sorted lists, we can merge them all into one sorted lists by repeatedly popping the smallest element from the remaining, non-empty lists and appending it to the output list.</p></li>
+<li><p><strong>Key Concepts</strong>:</p>
+<ul>
+<li><p><span style="color: blue"><em><strong>Mergesort Merging</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List Manipulation</strong></em></span></p></li>
+</ul>
+<p>The essence of the solution is very straightforward as long as you know and understand the ideas behind mergesort i.e. knowing the core idea that you can merge a set of already sorted lists by incrementally choosing the smallest element from each.</p></li>
+</ul>
+</section>
+<section id="remove-duplicates-from-sorted-linked-list" class="level2 unnumbered">
+<h2 class="unnumbered">Remove duplicates from sorted linked list</h2>
+<ul>
+<li><p><strong>Problem</strong>: Given a sorted linked list, remove any duplicates from the list.</p></li>
+<li><p><strong>Solution Idea</strong>: Iterate through the linked list, but at each node look ahead to see how many nodes in front of you contain an identical value to your own. Update your current “next" pointer to point to the first node after this block of identical nodes in front of you. Since the list is sorted, you know that any duplicates of the current value must be directly in front of you.</p></li>
+<li><p><strong>Key Concepts</strong>:</p>
+<ul>
+<li><p><span style="color: blue"><em><strong>Linked List Iteration</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List Deletion</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Sorting for Duplicate Detection</strong></em></span></p></li>
+</ul>
+<p>The underlying insight in the solution is to recognize that sorting a list can be used an easy mechanism for detecting duplicates. That is, in a sorted list, all duplicates of a particular item will always appear in contiguous “blocks". Once you recognize this fact, then implementing the solution mostly requires a standard application of linked list iteration and linked list item deletion. Namely, that to delete an item <span class="math inline">\(n_2\)</span> from a linked list that appears in a list as <span class="math inline">\(n1 \rightarrow n_2 \rightarrow n_3\)</span>, you simply update the “next" pointer of <span class="math inline">\(n_1\)</span> to point to <span class="math inline">\(n_3\)</span> instead of <span class="math inline">\(n_2\)</span>. Recall that a basic linked list node is a <span class="math inline">\(LinkedListNode(val, next)\)</span> structure, where <span class="math inline">\(val\)</span> is the value of that node, and <span class="math inline">\(next\)</span> is a pointer to the next item in the list.</p></li>
+</ul>
+</section>
+</body>
+</html>

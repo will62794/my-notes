@@ -1,0 +1,55 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{DSA Problems}
+\author{William Schultz}
+\maketitle
+
+\newcommand{\concept}[1]{\textcolor{blue}{\textit{\textbf{#1}}}}
+
+\subsection*{Merge k Sorted Lists}
+
+\begin{itemize}
+    \item \textbf{Problem}: Given a set of $k$ linked lists, each which are individually sorted in ascending order, merge all $k$ lists into one sorted list. 
+    \item \textbf{Solution Idea}: The basic approach is to essentially just perform the \textit{merge} step of merge-sort. That is, if we are given a set of already sorted lists, we can merge them all into one sorted lists by repeatedly popping the smallest element from the remaining, non-empty lists and appending it to the output list.
+    \item \textbf{Key Concepts}: 
+    \begin{itemize}
+        \item \concept{Mergesort Merging}
+        \item \concept{Linked List Manipulation}
+    \end{itemize}
+    The essence of the solution is very straightforward as long as you know and understand the ideas behind mergesort i.e. knowing the core idea that you can merge a set of already sorted lists by incrementally choosing the smallest element from each.
+\end{itemize}
+
+\subsection*{Remove duplicates from sorted linked list}
+\begin{itemize}
+\item \textbf{Problem}: Given a sorted linked list, remove any duplicates from the list.
+\item \textbf{Solution Idea}: Iterate through the linked list, but at each node look ahead to see how many nodes in front of you contain an identical value to your own. Update your current ``next" pointer to point to the first node after this block of identical nodes in front of you. Since the list is sorted, you know that any duplicates of the current value must be directly in front of you.
+\item \textbf{Key Concepts}: 
+\begin{itemize}
+    \item \concept{Linked List Iteration}
+    \item \concept{Linked List Deletion}
+    \item \concept{Sorting for Duplicate Detection}
+\end{itemize}
+The underlying insight in the solution is to recognize that sorting a list can be used an easy mechanism for detecting duplicates. That is, in a sorted list, all duplicates of a particular item will always appear in contiguous ``blocks". Once you recognize this fact, then implementing the solution mostly requires a standard application of linked list iteration and linked list item deletion. Namely, that to delete an item $n_2$ from a linked list that appears in a list as $n1 \rightarrow n_2 \rightarrow n_3$, you simply update  the ``next" pointer of $n_1$ to point to $n_3$ instead of $n_2$. Recall that a basic linked list node is a $LinkedListNode(val, next)$ structure, where $val$ is the value of that node, and $next$ is a pointer to the next item in the list.
+\end{itemize}
+
+% \bibliographystyle{plain}
+% \bibliography{../../references.bib}
+
+\end{document}

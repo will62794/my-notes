@@ -42,12 +42,41 @@
 \item \textbf{Solution Idea}: Iterate through the linked list, but at each node look ahead to see how many nodes in front of you contain an identical value to your own. Update your current ``next" pointer to point to the first node after this block of identical nodes in front of you. Since the list is sorted, you know that any duplicates of the current value must be directly in front of you.
 \item \textbf{Key Concepts}: 
 \begin{itemize}
-    \item \concept{Linked List Iteration}
+    \item \concept{Linked List Traversal}
     \item \concept{Linked List Deletion}
-    \item \concept{Sorting for Duplicate Detection}
+    \item \concept{Duplicate Detection by Sorting}
 \end{itemize}
 The underlying insight in the solution is to recognize that sorting a list can be used an easy mechanism for detecting duplicates. That is, in a sorted list, all duplicates of a particular item will always appear in contiguous ``blocks". Once you recognize this fact, then implementing the solution mostly requires a standard application of linked list iteration and linked list item deletion. Namely, that to delete an item $n_2$ from a linked list that appears in a list as $n1 \rightarrow n_2 \rightarrow n_3$, you simply update  the ``next" pointer of $n_1$ to point to $n_3$ instead of $n_2$. Recall that a basic linked list node is a $LinkedListNode(val, next)$ structure, where $val$ is the value of that node, and $next$ is a pointer to the next item in the list.
 \end{itemize}
+
+\subsection*{Intersection of two linked lists}
+\begin{itemize}
+\item \textbf{Problem}: Given two singly linked lists, return the node at which the two lists intersect. If they have no intersection, then return \textit{null}.
+\item \textbf{Solution Idea}: TODO.
+\item \textbf{Key Concepts}: TODO.
+% \begin{itemize}
+%     % \item \concept{Linked List Iteration}
+%     % \item \concept{Linked List Deletion}
+%     % \item \concept{Sorting for Duplicate Detection}
+% \end{itemize}
+\end{itemize}
+
+\subsection*{Reverse linked list}
+\begin{itemize}
+\item \textbf{Problem}: Given a singly linked list, reverse the list.
+\item \textbf{Solution Idea}: Iterate over the list and at each node, re-arrange the \textit{next} pointer so it now points to the previous node rather than the next node.
+\item \begin{align*}
+    None \rightarrow a \rightarrow b \rightarrow c
+\end{align*}
+If $curr=a$ and $curr.next = b$, then to do the reversal we want to end up with $a.next = None$ and then step forward, ending up with $curr=b$. So, at each step of the traversal, we keep track of hte previous item we looked at, so that we can reverse the pointer of the current node to point to it. We also need to save a reference to the next node before we update it.
+\item \textbf{Key Concepts}:
+\begin{itemize}
+    \item \concept{Linked List Traversal}
+    \item \concept{Pointer Swapping (?)}
+\end{itemize}
+Need to have a solid grasp of how to traverse a linked list, but also need to have good confidence in how to update points in a few steps (similar to how we swap variables), without overwriting the info we need to continue.
+\end{itemize}
+
 
 % \bibliographystyle{plain}
 % \bibliography{../../references.bib}

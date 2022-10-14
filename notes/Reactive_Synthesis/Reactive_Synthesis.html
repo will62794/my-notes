@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <meta name="author" content="William Schultz" />
+  <title>Reactive Synthesis</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Reactive Synthesis</h1>
+<p class="author">William Schultz</p>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#bibliography">References</a></li>
+</ul>
+</nav>
+<ul>
+<li><p>The <strong>verification problem</strong> is: given system <span class="math inline">\(M\)</span> and spec/property <span class="math inline">\(\varphi\)</span>, check that <span class="math inline">\(M \vDash \varphi\)</span>.</p></li>
+<li><p>The <strong>synthesis problem</strong> is: given spec <span class="math inline">\(\varphi\)</span> synthesize <span class="math inline">\(M\)</span> such that <span class="math inline">\(M \vDash \varphi\)</span>.</p></li>
+</ul>
+<p>The <em>deductive approach</em> <span class="citation" data-cites="manna1980deductive">(<a href="#ref-manna1980deductive" role="doc-biblioref">Manna and Waldinger 1980</a>)</span> tries to synthesize an input/output program by extracting it from a realizability proof.</p>
+<p><em>Temporal synthesis</em> considers specifications given in the form of LTL, for example. Initial approach was to use satisfiability of a temporal formula as a way to derive <span class="math inline">\(M\)</span> <span class="citation" data-cites="1981clarkemerson">(<a href="#ref-1981clarkemerson" role="doc-biblioref">Clarke and Emerson 1982</a>)</span>.</p>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-1981clarkemerson" class="csl-entry" role="doc-biblioentry">
+Clarke, Edmund M., and E. Allen Emerson. 1982. <span>“Design and Synthesis of Synchronization Skeletons Using Branching Time Temporal Logic.”</span> In <em>Logics of Programs</em>, edited by Dexter Kozen, 52–71. Berlin, Heidelberg: Springer Berlin Heidelberg.
+</div>
+<div id="ref-manna1980deductive" class="csl-entry" role="doc-biblioentry">
+Manna, Zohar, and Richard Waldinger. 1980. <span>“A Deductive Approach to Program Synthesis.”</span> <em>ACM Transactions on Programming Languages and Systems (TOPLAS)</em> 2 (1): 90–121.
+</div>
+</div>
+</section>
+</body>
+</html>

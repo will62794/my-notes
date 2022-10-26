@@ -70,14 +70,13 @@
 <li><p><span class="math inline">\(A_i \subseteq S \times S\)</span>: transition relation of process <span class="math inline">\(i\)</span></p></li>
 <li><p><span class="math inline">\(L\)</span>: assignment of atomic propositions to each state</p></li>
 </ul>
-<p>They use a decision procedure for satisfiability of CTL formulae (similar to one described in <span class="citation" data-cites="1981benari">(<a href="#ref-1981benari" role="doc-biblioref">Ben-Ari, Manna, and Pnueli 1981</a>)</span>) as part of their synthesis procedure. Given a CTL formula <span class="math inline">\(f_0\)</span>, the procedure returns either "Yes, <span class="math inline">\(f_0\)</span> is satisfiable or “No, <span class="math inline">\(f_0\)</span> is unsatisfiable”. If <span class="math inline">\(f_0\)</span> is satisfiable, then a finite model (structure) is also constructed.</p>
-<p>So, their overall synthesis algorithm consists of the following high level steps:</p>
+<p>They use a decision procedure for satisfiability of CTL formulae (similar to one described in <span class="citation" data-cites="1981benari">(<a href="#ref-1981benari" role="doc-biblioref">Ben-Ari, Manna, and Pnueli 1981</a>)</span>) as part of their synthesis procedure. Given a CTL formula <span class="math inline">\(f_0\)</span>, the decision procedure returns either “Yes, <span class="math inline">\(f_0\)</span> is satisfiable or “No, <span class="math inline">\(f_0\)</span> is unsatisfiable”. If <span class="math inline">\(f_0\)</span> is satisfiable, then a finite model (structure) is also constructed. Their overall synthesis algorithm consists of the following high level steps:</p>
 <ol>
 <li><p>Specify the desired behavior of the concurrent system using a CTL formula <span class="math inline">\(\varphi\)</span>.</p></li>
-<li><p>Apply the decision procedure to the formula <span class="math inline">\(\varphi\)</span> to obtain a finite model fo the formula.</p></li>
-<li><p>Factor out the synchroniztion skeletons of the individual processes from the global system flowgraph defined by the model.</p></li>
+<li><p>Apply the decision procedure to the formula <span class="math inline">\(\varphi\)</span> to obtain a finite model of the formula.</p></li>
+<li><p>Factor out the synchronization skeletons of the individual processes from the global system flowgraph defined by the model.</p></li>
 </ol>
-<p>They demonstrate this procedure on a simple, 2 process mutual exclusion example. Below is shown the description of the abstract states of each process, <span class="math inline">\(NCS_i, TRY_i, CS_i\)</span>:</p>
+<p>They demonstrate this procedure on a simple, 2 process mutual exclusion example. Below is shown the description of the abstract states of each process, <span class="math inline">\(\{NCS_i, TRY_i, CS_i\}\)</span>:</p>
 <div class="center">
 <p><img src="images/mutex_processes.png" alt="image" /></p>
 </div>
@@ -85,7 +84,7 @@
 <div class="center">
 <p><img src="images/mutex_spec.png" alt="image" /></p>
 </div>
-<p>From this they then construct the tableau <span class="math inline">\(T\)</span> using their decision procedure:</p>
+<p>From this they then construct a tableau <span class="math inline">\(T\)</span> using their decision procedure:</p>
 <div class="center">
 <p><img src="images/mutex_tableau.png" alt="image" /></p>
 </div>
@@ -93,7 +92,8 @@
 <div class="center">
 <p><img src="images/mutex_model.png" alt="image" /></p>
 </div>
-<p>Note that they manually introduced an auxiliary variable <span class="math inline">\(TURN\)</span> in order to distinguish states <span class="math inline">\(H_6\)</span> and <span class="math inline">\(H_7\)</span> in the tableau, which carries over into the extracted model. After constructing the model representing the global program behavior, they then extract “skeletons” for each individual process, which they seem to describe in a somewhat ad hoc manner i.e. they don’t seem to provide a formal algorithmic procedure for this. Note that this is pointed out in <span class="citation" data-cites="2001attie">(<a href="#ref-2001attie" role="doc-biblioref">Attie and Emerson 2001</a>)</span>, which appears to give a more formal treatment of this extraction procedure. The final, extracted skeletons for process <span class="math inline">\(P_1\)</span> and <span class="math inline">\(P_2\)</span> are shown as follows:</p>
+<p>Note they manually introduced an auxiliary variable <span class="math inline">\(TURN\)</span> in order to distinguish states <span class="math inline">\(H_6\)</span> and <span class="math inline">\(H_7\)</span> in the tableau, which carries over into the extracted model.</p>
+<p>After constructing the model representing the global program behavior, they extract “skeletons” for each individual process, which they seem to describe in a somewhat ad hoc manner i.e. they don’t give a formal algorithmic procedure for this. Note that this is pointed out in <span class="citation" data-cites="2001attie">(<a href="#ref-2001attie" role="doc-biblioref">Attie and Emerson 2001</a>)</span>, which appears to give a more formal treatment of this extraction procedure. The final, extracted skeletons for process <span class="math inline">\(P_1\)</span> and <span class="math inline">\(P_2\)</span> are shown as follows:</p>
 <div class="center">
 <p><img src="images/mutex_p1.png" alt="image" /></p>
 </div>

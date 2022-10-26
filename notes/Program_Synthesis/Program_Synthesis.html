@@ -85,10 +85,28 @@
 <div class="center">
 <p><img src="images/mutex_spec.png" alt="image" /></p>
 </div>
+<p>From this they then construct the tableau <span class="math inline">\(T\)</span> using their decision procedure:</p>
+<div class="center">
+<p><img src="images/mutex_tableau.png" alt="image" /></p>
+</div>
+<p>and then from <span class="math inline">\(T\)</span> they extract a finite model of the global program behavior:</p>
+<div class="center">
+<p><img src="images/mutex_model.png" alt="image" /></p>
+</div>
+<p>Note that they manually introduced an auxiliary variable <span class="math inline">\(TURN\)</span> in order to distinguish states <span class="math inline">\(H_6\)</span> and <span class="math inline">\(H_7\)</span> in the tableau, which carries over into the extracted model. After constructing the model representing the global program behavior, they then extract “skeletons” for each individual process, which they seem to describe in a somewhat ad hoc manner i.e. they don’t seem to provide a formal algorithmic procedure for this. Note that this is pointed out in <span class="citation" data-cites="2001attie">(<a href="#ref-2001attie" role="doc-biblioref">Attie and Emerson 2001</a>)</span>, which appears to give a more formal treatment of this extraction procedure. The final, extracted skeletons for process <span class="math inline">\(P_1\)</span> and <span class="math inline">\(P_2\)</span> are shown as follows:</p>
+<div class="center">
+<p><img src="images/mutex_p1.png" alt="image" /></p>
+</div>
+<div class="center">
+<p><img src="images/mutex_p2.png" alt="image" /></p>
+</div>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-2001attie" class="csl-entry" role="doc-biblioentry">
+Attie, Paul C., and E. Allen Emerson. 2001. <span>“Synthesis of Concurrent Programs for an Atomic Read/Write Model of Computation.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 23 (2): 187–242. <a href="https://doi.org/10.1145/383043.383044">https://doi.org/10.1145/383043.383044</a>.
+</div>
 <div id="ref-1981benari" class="csl-entry" role="doc-biblioentry">
 Ben-Ari, Mordechai, Zohar Manna, and Amir Pnueli. 1981. <span>“The Temporal Logic of Branching Time.”</span> In <em>Proceedings of the 8th ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages</em>, 164–76. POPL ’81. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/567532.567551">https://doi.org/10.1145/567532.567551</a>.
 </div>

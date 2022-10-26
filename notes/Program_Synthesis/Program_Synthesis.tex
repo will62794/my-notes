@@ -44,7 +44,7 @@ In \cite{1981clarkemerson} they consider concurrent systems consisting of a fini
     \item $A_i \subseteq S \times S$: transition relation of process $i$
     \item $L$: assignment of atomic propositions to each state
 \end{itemize}
-They use a decision procedure for satisfiability of CTL formulae (similar to one described in \cite{1981benari}) as part of their synthesis procedure. Given a CTL formula $f_0$, the decision procedure returns either "Yes, $f_0$ is satisfiable or ``No, $f_0$ is unsatisfiable''. If $f_0$ is satisfiable, then a finite model (structure) is also constructed. Their overall synthesis algorithm consists of the following high level steps:
+They use a decision procedure for satisfiability of CTL formulae (similar to one described in \cite{1981benari}) as part of their synthesis procedure. Given a CTL formula $f_0$, the decision procedure returns either ``Yes, $f_0$ is satisfiable or ``No, $f_0$ is unsatisfiable''. If $f_0$ is satisfiable, then a finite model (structure) is also constructed. Their overall synthesis algorithm consists of the following high level steps:
 \begin{enumerate}
     \item Specify the desired behavior of the concurrent system using a CTL formula $\varphi$.
     \item Apply the decision procedure to the formula $\varphi$ to obtain a finite model of the formula.

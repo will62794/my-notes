@@ -44,23 +44,21 @@ In \cite{1981clarkemerson} they consider concurrent systems consisting of a fini
     \item $A_i \subseteq S \times S$: transition relation of process $i$
     \item $L$: assignment of atomic propositions to each state
 \end{itemize}
-They use a decision procedure for satisfiability of CTL formulae (similar to one described in \cite{1981benari}) as part of their synthesis procedure. Given a CTL formula $f_0$, the procedure returns either "Yes, $f_0$ is satisfiable or ``No, $f_0$ is unsatisfiable''. If $f_0$ is satisfiable, then a finite model (structure) is also constructed. 
-
-So, their overall synthesis algorithm consists of the following high level steps:
+They use a decision procedure for satisfiability of CTL formulae (similar to one described in \cite{1981benari}) as part of their synthesis procedure. Given a CTL formula $f_0$, the decision procedure returns either "Yes, $f_0$ is satisfiable or ``No, $f_0$ is unsatisfiable''. If $f_0$ is satisfiable, then a finite model (structure) is also constructed. Their overall synthesis algorithm consists of the following high level steps:
 \begin{enumerate}
     \item Specify the desired behavior of the concurrent system using a CTL formula $\varphi$.
-    \item Apply the decision procedure to the formula $\varphi$ to obtain a finite model fo the formula.
-    \item Factor out the synchroniztion skeletons of the individual processes from the global system flowgraph defined by the model.
+    \item Apply the decision procedure to the formula $\varphi$ to obtain a finite model of the formula.
+    \item Factor out the synchronization skeletons of the individual processes from the global system flowgraph defined by the model.
 \end{enumerate}
-They demonstrate this procedure on a simple, 2 process mutual exclusion example. Below is shown the description of the abstract states of each process, $NCS_i, TRY_i, CS_i$: 
+They demonstrate this procedure on a simple, 2 process mutual exclusion example. Below is shown the description of the abstract states of each process, $\{NCS_i, TRY_i, CS_i\}$: 
 \begin{center}
     \includegraphics[scale=0.4]{images/mutex_processes.png}
 \end{center}
 and they give the specification of the mutual exclusion problem in CTL as follows:
 \begin{center}
-    \includegraphics[scale=0.3]{images/mutex_spec.png}
+    \includegraphics[scale=0.45]{images/mutex_spec.png}
 \end{center}
-From this they then construct the tableau $T$ using their decision procedure:
+From this they then construct a tableau $T$ using their decision procedure:
 \begin{center}
     \includegraphics[scale=0.4]{images/mutex_tableau.png}
 \end{center}
@@ -68,7 +66,9 @@ and then from $T$ they extract a finite model of the global program behavior:
 \begin{center}
     \includegraphics[scale=0.4]{images/mutex_model.png}
 \end{center}
-Note that they manually introduced an auxiliary variable $TURN$ in order to distinguish states $H_6$ and $H_7$ in the tableau, which carries over into the extracted model. After constructing the model representing the global program behavior, they then extract ``skeletons'' for each individual process, which they seem to describe in a somewhat ad hoc manner i.e. they don't seem to provide a formal algorithmic procedure for this. Note that this is pointed out in \cite{2001attie}, which appears to give a more formal treatment of this extraction procedure. The final, extracted skeletons for process $P_1$ and $P_2$ are shown as follows:
+Note they manually introduced an auxiliary variable $TURN$ in order to distinguish states $H_6$ and $H_7$ in the tableau, which carries over into the extracted model. 
+
+After constructing the model representing the global program behavior, they extract ``skeletons'' for each individual process, which they seem to describe in a somewhat ad hoc manner i.e. they don't give a formal algorithmic procedure for this. Note that this is pointed out in \cite{2001attie}, which appears to give a more formal treatment of this extraction procedure. The final, extracted skeletons for process $P_1$ and $P_2$ are shown as follows:
 \begin{center}
     \includegraphics[scale=0.3]{images/mutex_p1.png}
 \end{center}
@@ -77,7 +77,7 @@ Note that they manually introduced an auxiliary variable $TURN$ in order to dist
 \end{center}
 
 % \bibliographystyle{plain}
-\bibliographystyle{apalike} 
+\bibliographystyle{alpha} 
 \bibliography{../../references.bib}
 
 \end{document}

@@ -70,7 +70,7 @@ Again, we can think of this as simply a composition of cross product and filteri
 \begin{align*}
     A \Join_p B = \sigma_p(A \times B)
 \end{align*}
-where $\sigma_p$ represents the filtering operation based on tuples satisfying a predicate $p$.
+where $\sigma_p$ represents the filtering operation for a given predicate $p$ on tuples.
 
 Note that joins are \textit{commutative} i.e. $A \Join_p B = B \Join_p A$. This can be easily seen from examining the decomposed form of joins in terms of cross products and filtering i.e. since $A \times B = B \times A$ (if we ignore ordering of columns in the output tuples). Note also that we can view a sequence of joins as a big cross product followed by a filtering operation at the end i.e.
 \begin{align*}

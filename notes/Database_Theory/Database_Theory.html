@@ -169,7 +169,12 @@
     A \Join_p B\end{aligned}\]</span> Again, we can think of this as simply a composition of cross product and filtering operations i.e. <span class="math display">\[\begin{aligned}
     A \Join_p B = \sigma_p(A \times B)\end{aligned}\]</span> where <span class="math inline">\(\sigma_p\)</span> represents the filtering operation for a given predicate <span class="math inline">\(p\)</span> on tuples.</p>
 <p>Note that joins are <em>commutative</em> i.e. <span class="math inline">\(A \Join_p B = B \Join_p A\)</span>. This can be easily seen from examining the decomposed form of joins in terms of cross products and filtering i.e. since <span class="math inline">\(A \times B = B \times A\)</span> (if we ignore ordering of columns in the output tuples). Note also that we can view a sequence of joins as a big cross product followed by a filtering operation at the end i.e. <span class="math display">\[\begin{aligned}
-    (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) = \sigma_{p \wedge q}(A \times B \times C)\end{aligned}\]</span> Furthermore, joins are <em>associative</em>. This means that we can re-order joins as we please (since they are both <em>associative</em> and <em>commutative</em>), so there may be many different join executing orderings that produce the same final result (TODO: query optimization).</p>
+    (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) = \sigma_{p \wedge q}(A \times B \times C)\end{aligned}\]</span> Furthermore, joins are <em>associative</em>. This means that we can re-order joins as we please (since they are both <em>associative</em> and <em>commutative</em>), so there may be many different join executing orderings that produce the same final result (TODO: query optimization). That is, <span class="math display">\[\begin{aligned}
+    (A \Join_p B) \Join_q C \\ 
+    A \Join_p (B \Join_q C) \\
+    A \Join_p (C \Join_q B) \\
+    (A \Join_p C) \Join_q B \\
+    (C \Join_p A) \Join_q B\end{aligned}\]</span> are all equivalent. Some orderings may, however, be much more efficient to execute. More generally, we can think of a particular join ordering as a binary tree, that essentially maps to the syntactic parse tree of the above expressions.</p>
 </section>
 </body>
 </html>

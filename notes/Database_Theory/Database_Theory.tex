@@ -76,8 +76,14 @@ Note that joins are \textit{commutative} i.e. $A \Join_p B = B \Join_p A$. This 
 \begin{align*}
     (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) = \sigma_{p \wedge q}(A \times B \times C)
 \end{align*}
-Furthermore, joins are \textit{associative}. This means that we can re-order joins as we please (since they are both \textit{associative} and \textit{commutative}), so there may be many different join executing orderings that produce the same final result (TODO: query optimization).
-
-
+Furthermore, joins are \textit{associative}. This means that we can re-order joins as we please (since they are both \textit{associative} and \textit{commutative}), so there may be many different join executing orderings that produce the same final result (TODO: query optimization). That is,
+\begin{align*}
+    (A \Join_p B) \Join_q C \\ 
+    A \Join_p (B \Join_q C) \\
+    A \Join_p (C \Join_q B) \\
+    (A \Join_p C) \Join_q B \\
+    (C \Join_p A) \Join_q B
+\end{align*}
+are all equivalent. Some orderings may, however, be much more efficient to execute. More generally, we can think of a particular join ordering as a binary tree, that essentially maps to the syntactic parse tree of the above expressions. 
 
 \end{document}

@@ -48,19 +48,21 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#union-bound">Union Bound</a></li>
+<li><a href="#linearity-of-expectation">Linearity of Expectation</a></li>
 <li><a href="#expectation-and-variance">Expectation and Variance</a></li>
 <li><a href="#markovs-inequality">Markov’s Inequality</a></li>
 <li><a href="#chebyshevs-inequality">Chebyshev’s Inequality</a></li>
 <li><a href="#chernoff-bound">Chernoff Bound</a></li>
+<li><a href="#union-bound">Union Bound</a></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
-<p>See <span class="citation" data-cites="Doerr_2019">(<a href="#ref-Doerr_2019" role="doc-biblioref">Doerr 2019</a>)</span> for a reference on some probabilistic tools.</p>
-<section id="union-bound" class="level2 unnumbered">
-<h2 class="unnumbered">Union Bound</h2>
-<p>Let <span class="math inline">\(E_1,\dots,E_n\)</span> be arbitrary events in some probability space. Then, <span class="math display">\[\begin{aligned}
-    Pr \left[ \bigcup_{i=1}^n E_i \right] \leq \sum_{i=1}^n Pr[E_i]\end{aligned}\]</span> That is, for a set of events <span class="math inline">\(E_1,\dots,E_n\)</span>, the probability of at least one event occurring is less than or equal to the sum of the probabilities of the individual events.</p>
+<p>A <em>random variable</em> is a variable whose possible values are numerical outcomes of a random phenomenon. Each possible outcome is assigned some probability, with the condition that the sum of probabilities overall possible outcomes must sum to 1.<br />
+See <span class="citation" data-cites="Doerr_2019">(<a href="#ref-Doerr_2019" role="doc-biblioref">Doerr 2019</a>)</span> for a reference on some probabilistic tools.</p>
+<section id="linearity-of-expectation" class="level2 unnumbered">
+<h2 class="unnumbered">Linearity of Expectation</h2>
+<p>For any two random variables <span class="math inline">\(X,Y\)</span>, it holds that <span class="math display">\[\begin{aligned}
+    \mathbb{E}[X + Y] =  \mathbb{E}[X] + \mathbb{E}[Y]\end{aligned}\]</span></p>
 </section>
 <section id="expectation-and-variance" class="level2 unnumbered">
 <h2 class="unnumbered">Expectation and Variance</h2>
@@ -80,7 +82,28 @@
 </section>
 <section id="chernoff-bound" class="level2 unnumbered">
 <h2 class="unnumbered">Chernoff Bound</h2>
-<p>TODO.</p>
+<p>Let <span class="math inline">\(X_1,\dots,X_n\)</span> be independent random variables in <span class="math inline">\([0,1]\)</span>. Let <span class="math inline">\(X = \sum_{i=1}^n X_i\)</span> and let <span class="math inline">\(\mu = \mathbb{E}[X]\)</span>. Then</p>
+<ul>
+<li><p><span class="math inline">\(\quad 
+    Pr[X \geq (1+\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2+\delta}\mu}\right), \quad  \forall \delta &gt; 0\)</span></p></li>
+<li><p><span class="math inline">\(\quad
+    Pr[X \geq (1-\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2}\mu}\right), \quad  \forall \delta \in [0,1]\)</span></p></li>
+</ul>
+<p>The two tail bounds above can be combined into the following (slightly weaker) two-sided tail bound:</p>
+<ul>
+<li><p><span class="math inline">\(\quad 
+    Pr[|X-\mu| \geq \delta \mu] \leq 2 \exp\left({-\tfrac{\delta^2 \mu}{3}}\right), \quad  \forall \delta \in [0,1]\)</span></p></li>
+</ul>
+<p>We can also derive the <em>additive</em> form of the bound by setting <span class="math inline">\(t=\delta \mu\)</span>:</p>
+<ul>
+<li><p><span class="math inline">\(\quad 
+    Pr[|X-\mu| \geq t] \leq 2 \exp \left( {-\tfrac{t^2}{3 \mu}} \right), \quad  \forall t \in [0,\mu]\)</span></p></li>
+</ul>
+</section>
+<section id="union-bound" class="level2 unnumbered">
+<h2 class="unnumbered">Union Bound</h2>
+<p>Let <span class="math inline">\(E_1,\dots,E_n\)</span> be arbitrary events in some probability space. Then, <span class="math display">\[\begin{aligned}
+    Pr \left[ \bigcup_{i=1}^n E_i \right] \leq \sum_{i=1}^n Pr[E_i]\end{aligned}\]</span> That is, for a set of events <span class="math inline">\(E_1,\dots,E_n\)</span>, the probability of at least one event occurring is less than or equal to the sum of the probabilities of the individual events. We can think of the union bound with a simple set-based analogy i.e. if events are viewe as subsets of a potential sample space, then the union of these sets can be no larger than the sum of the individual sets (i.e. since the sets may have some non-empty intersections).</p>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>

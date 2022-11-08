@@ -34,28 +34,145 @@
 </nav>
 <section id="joins" class="level1 unnumbered">
 <h1 class="unnumbered">Joins</h1>
-<p>At a high level, database (i.e. SQL) tables can be viewed as <span class="math inline">\(n\)</span>-ary relations. Or, more plainly, as “spreadsheets". For example, consider the following relation <span class="math inline">\(A\)</span></p>
+<p>At a high level, database (i.e. SQL) tables can be viewed as <span class="math inline">\(n\)</span>-ary relations (or, more plainly, as “spreadsheets"). For example, consider the following relation <span class="math inline">\(P\)</span></p>
 <div class="center">
 <table>
 <tbody>
 <tr class="odd">
-<td style="text-align: center;"><strong>Name</strong></td>
-<td style="text-align: center;"><strong>Age</strong></td>
-<td style="text-align: center;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
 </tr>
 <tr class="even">
-<td style="text-align: center;">cell4</td>
-<td style="text-align: center;">cell5</td>
-<td style="text-align: center;">cell6</td>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center;">cell7</td>
-<td style="text-align: center;">cell8</td>
-<td style="text-align: center;">cell9</td>
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>and another relation <span class="math inline">\(H\)</span></p>
+<div class="center">
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We can consider the <em>cross product</em> of these two relations <span class="math inline">\(P \times H\)</span>, which is simply the Cartesian product of all rows (i.e. tuples) in <span class="math inline">\(P\)</span> with all rows in <span class="math inline">\(H\)</span>, giving relation <span class="math inline">\(P \times H\)</span> as</p>
+<div class="center">
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>with a total tuple count of <span class="math inline">\(|P \times H| = |P| \times |H| = 6\)</span>.</p>
+<p>On its own, the full cross product of two tables may not be very useful, but a commonly useful operation to apply after doing this cross product is the <em>join</em>, which essentially just applies some filter (e.g. predicate) to the tuples that are generated as a result of this cross product operation. If we filter the result <span class="math inline">\(P \times H\)</span> based on the predicate <span class="math inline">\(HouseId == Id\)</span>, then we say we’re “joining” the two tables, <span class="math inline">\(P\)</span> and <span class="math inline">\(H\)</span>, on <span class="math inline">\(HouseId == Id\)</span>, which gives as a result:</p>
+<div class="center">
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>which is basically the set of people in <span class="math inline">\(P\)</span> associated with the house in <span class="math inline">\(H\)</span> they own. More compactly, we typically notate a join on predicate <span class="math inline">\(p\)</span> between two relations <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as <span class="math display">\[\begin{aligned}
+    A \Join_p B\end{aligned}\]</span> Again, we can think of this as simply a composition of cross product and filtering operations i.e. <span class="math display">\[\begin{aligned}
+    A \Join_p B = \sigma_p(A \times B)\end{aligned}\]</span> where <span class="math inline">\(\sigma_p\)</span> represents the filtering operation based on tuples satisfying a predicate <span class="math inline">\(p\)</span>.</p>
+<p>Note that joins are <em>commutative</em> i.e. <span class="math inline">\(A \Join_p B = B \Join_p A\)</span>. This can be easily seen from examining the decomposed form of joins in terms of cross products and filtering i.e. since <span class="math inline">\(A \times B = B \times A\)</span> (if we ignore ordering of columns in the output tuples). Note also that we can view a sequence of joins as a big cross product followed by a filtering operation at the end i.e. <span class="math display">\[\begin{aligned}
+    (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) = \sigma_{p \wedge q}(A \times B \times C)\end{aligned}\]</span> Furthermore, joins are <em>associative</em>. This means that we can re-order joins as we please (since they are both <em>associative</em> and <em>commutative</em>), so there may be many different join executing orderings that produce the same final result (TODO: query optimization).</p>
 </section>
 </body>
 </html>

@@ -23,15 +23,60 @@
 
 \section*{Joins}
 
-At a high level, database (i.e. SQL) tables can be viewed as $n$-ary relations. Or, more plainly, as ``spreadsheets". For example, consider the following relation $A$
+At a high level, database (i.e. SQL) tables can be viewed as $n$-ary relations (or, more plainly, as ``spreadsheets"). For example, consider the following relation $P$
 \begin{center}
-    \begin{tabular}{ c c c }
-     \textbf{Name} & \textbf{Age} & \textbf{Id} \\ 
-     cell4 & cell5 & cell6 \\  
-     cell7 & cell8 & cell9    
+\begin{tabular}{| l | l | l |}
+     \textbf{Name} & \textbf{Age} & \textbf{HouseId} \\ 
+     Alice & 31 & 6 \\  
+     Bob & 32 & 3 \\    
+     Jane & 25 & 4    
 \end{tabular}
 \end{center}
+and another relation $H$
+\begin{center}
+    \begin{tabular}{| l | l | l |}
+         \textbf{Id} & \textbf{Year} \\ 
+         6 & 1904 \\ 
+         4 & 1965    
+\end{tabular}
+\end{center}
+We can consider the \textit{cross product} of these two relations $P \times H$, which is simply the Cartesian product of all rows (i.e. tuples) in $P$ with all rows in $H$, giving relation $P \times H$ as
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Alice & 31 & 6 & 4 & 1965 \\  
+        Bob & 32 & 3 & 6 & 1904 \\    
+        Bob & 32 & 3 & 4 & 1965  \\    
+        Jane & 25 & 4 & 6 & 1904  \\
+        Jane & 25 & 4 & 4 & 1965   
+\end{tabular}
+\end{center}
+with a total tuple count of $|P \times H| = |P| \times |H| = 6$.
 
+On its own, the full cross product of two tables may not be very useful, but a commonly useful operation to apply after doing this cross product is the \textit{join}, which essentially just applies some filter (e.g. predicate) to the tuples that are generated as a result of this cross product operation. If we filter the result $P \times H$ based on the predicate $HouseId == Id$, then we say we're ``joining'' the two tables, $P$ and $H$, on $HouseId == Id$, which gives as a result:
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Jane & 25 & 4 & 4 & 1965   
+\end{tabular}
+\end{center}
+which is basically the set of people in $P$ associated with the house in $H$ they own. More compactly, we typically notate a join on predicate $p$ between two relations $A$ and $B$ as
+\begin{align*}
+    A \Join_p B
+\end{align*}
+Again, we can think of this as simply a composition of cross product and filtering operations i.e.
+\begin{align*}
+    A \Join_p B = \sigma_p(A \times B)
+\end{align*}
+where $\sigma_p$ represents the filtering operation based on tuples satisfying a predicate $p$.
+
+Note that joins are \textit{commutative} i.e. $A \Join_p B = B \Join_p A$. This can be easily seen from examining the decomposed form of joins in terms of cross products and filtering i.e. since $A \times B = B \times A$ (if we ignore ordering of columns in the output tuples). Note also that we can view a sequence of joins as a big cross product followed by a filtering operation at the end i.e.
+\begin{align*}
+    (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) = \sigma_{p \wedge q}(A \times B \times C)
+\end{align*}
+Furthermore, joins are \textit{associative}. This means that we can re-order joins as we please (since they are both \textit{associative} and \textit{commutative}), so there may be many different join executing orderings that produce the same final result (TODO: query optimization).
 
 
 

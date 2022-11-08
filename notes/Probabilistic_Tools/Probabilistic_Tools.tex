@@ -70,20 +70,19 @@ This bound tells us something about how far a random variable is from its expect
 
 Let $X_1,\dots,X_n$ be independent random variables in $[0,1]$. Let $X = \sum_{i=1}^n X_i$ and let $\mu = \mathbb{E}[X]$. Then
 \begin{itemize}
-    \item \text{\textbf{Upper Tail}:} $\quad 
-    Pr[X \geq (1+\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2+\delta}\mu}\right), \quad  \forall \delta > 0$
-    \item \text{\textbf{Lower Tail}:} $\quad
-    Pr[X \geq (1-\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2}\mu}\right), \quad  \forall \delta \in [0,1]$
+    \item \textbf{Upper Tail}
+    $Pr[X \geq (1+\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2+\delta}\mu}\right), \quad  \forall \delta > 0$
+    \item \textbf{Lower Tail}:
+    $Pr[X \geq (1-\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2}\mu}\right), \quad  \forall \delta \in [0,1]$
 \end{itemize}
 The two tail bounds above can be combined into the following (slightly weaker) two-sided tail bound:
 \begin{itemize}
-    \item \text{\textbf{Two-sided bound}:} $\quad 
-    Pr[|X-\mu| \geq \delta \mu] \leq 2 \exp\left({-\tfrac{\delta^2 \mu}{3}}\right), \quad  \forall \delta \in [0,1]$
+    \item \textbf{Two-sided bound}: $Pr[|X-\mu| \geq \delta \mu] \leq 2 \exp\left({-\tfrac{\delta^2 \mu}{3}}\right), \quad  \forall \delta \in [0,1]$
 \end{itemize}
 We can also derive the \textit{additive} form of the bound by setting $t=\delta \mu$:
 \begin{itemize}
-    \item \text{\textbf{Additive Chernoff bound}:} $\quad 
-    Pr[|X-\mu| \geq t] \leq 2 \exp \left( {-\tfrac{t^2}{3 \mu}} \right), \quad  \forall t \in [0,\mu]$
+    \item \textbf{Additive Chernoff bound}: 
+    $Pr[|X-\mu| \geq t] \leq 2 \exp \left( {-\tfrac{t^2}{3 \mu}} \right), \quad  \forall t \in [0,\mu]$
 \end{itemize}
 
 \subsection*{Union Bound}

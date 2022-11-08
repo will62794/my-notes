@@ -84,20 +84,16 @@ See <span class="citation" data-cites="Doerr_2019">(<a href="#ref-Doerr_2019" ro
 <h2 class="unnumbered">Chernoff Bound</h2>
 <p>Let <span class="math inline">\(X_1,\dots,X_n\)</span> be independent random variables in <span class="math inline">\([0,1]\)</span>. Let <span class="math inline">\(X = \sum_{i=1}^n X_i\)</span> and let <span class="math inline">\(\mu = \mathbb{E}[X]\)</span>. Then</p>
 <ul>
-<li><p><span class="math inline">\(\quad 
-    Pr[X \geq (1+\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2+\delta}\mu}\right), \quad  \forall \delta &gt; 0\)</span></p></li>
-<li><p><span class="math inline">\(\quad
-    Pr[X \geq (1-\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2}\mu}\right), \quad  \forall \delta \in [0,1]\)</span></p></li>
+<li><p><strong>Upper Tail</strong> <span class="math inline">\(Pr[X \geq (1+\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2+\delta}\mu}\right), \quad  \forall \delta &gt; 0\)</span></p></li>
+<li><p><strong>Lower Tail</strong>: <span class="math inline">\(Pr[X \geq (1-\delta)\mu] \leq \exp\left({-\tfrac{\delta^2}{2}\mu}\right), \quad  \forall \delta \in [0,1]\)</span></p></li>
 </ul>
 <p>The two tail bounds above can be combined into the following (slightly weaker) two-sided tail bound:</p>
 <ul>
-<li><p><span class="math inline">\(\quad 
-    Pr[|X-\mu| \geq \delta \mu] \leq 2 \exp\left({-\tfrac{\delta^2 \mu}{3}}\right), \quad  \forall \delta \in [0,1]\)</span></p></li>
+<li><p><strong>Two-sided bound</strong>: <span class="math inline">\(Pr[|X-\mu| \geq \delta \mu] \leq 2 \exp\left({-\tfrac{\delta^2 \mu}{3}}\right), \quad  \forall \delta \in [0,1]\)</span></p></li>
 </ul>
 <p>We can also derive the <em>additive</em> form of the bound by setting <span class="math inline">\(t=\delta \mu\)</span>:</p>
 <ul>
-<li><p><span class="math inline">\(\quad 
-    Pr[|X-\mu| \geq t] \leq 2 \exp \left( {-\tfrac{t^2}{3 \mu}} \right), \quad  \forall t \in [0,\mu]\)</span></p></li>
+<li><p><strong>Additive Chernoff bound</strong>: <span class="math inline">\(Pr[|X-\mu| \geq t] \leq 2 \exp \left( {-\tfrac{t^2}{3 \mu}} \right), \quad  \forall t \in [0,\mu]\)</span></p></li>
 </ul>
 </section>
 <section id="union-bound" class="level2 unnumbered">

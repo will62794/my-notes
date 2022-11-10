@@ -35,7 +35,7 @@ For \textit{computation tree logic} (CTL), there is a model-checking algorithm w
 
 For \textit{linear temporal logic} (LTL) it is the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. 
 
-Note that there is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by the automaton iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$ is exponential, though, in the length of the formula $\psi$.
+Note that there is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula \cite{1985pnuelilich}. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by the automaton iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$ is exponential, though, in the length of the formula $\psi$.
 
 
 The following diagram is a good overview of common varieties of temporal logic properties and their counterexample characterizations.
@@ -176,7 +176,7 @@ Then, if we produce a proof of unsatisfiability of the whole unrolling constrain
 
 By this, we can know that $P$ is implied by the initial condition and by the first transition constraint, so it represents some approximation of all 1-step reachable states (i.e. it is an over-approximation of the forward image of $I$). Moreover, $P$ and $B$ are unsatisfiable, meaning that no state satisfying $P$ can reach a final state in $k-1$ steps. This over-approximate image operation can then be iterated to compute an over-approximation of the reachable states. 
 
-\bibliographystyle{plain}
+\bibliographystyle{alpha}
 \bibliography{../../references.bib}
 
 \end{document}

@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{upgreek}
+\usepackage{hyperref}
 
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes,snakes}
@@ -31,19 +32,36 @@ and, if $K \nvDash \upvarphi$, returning a counterexample. In the basic scenario
 
 \section{Temporal Logic Model Checking}
 
-For \textit{computation tree logic} (CTL), there is a model-checking algorithm whose running time depends linearly on the size of the Kripke structure and on the length of the CTL formula \cite{1986clarkeemerson}.
+There are a variety of temporal logics that have been used to reason about properties of programs/systems. A high level overview is shown in the relationship diagram below, where CTL* is one of the most expressive logics (encompassing both CTL and LTL).
+\begin{center}
+    \includegraphics[scale=0.3]{images/temp-logics.png}
+\end{center}
+In practice, I don't think it's that important to worry too much about the finer points of what distinguishes these different logics, since typically I am more concerned with how to express a desired correctness property (e.g. for which LTL is often sufficient). Nevertheless it is good to have a general view of the classification hierarchy to understand the landscape (and since various papers may choose to express/formalize things in different choices of logics).
 
-For \textit{linear temporal logic} (LTL) it is the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. 
-
-Note that there is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula \cite{1985pnuelilich}. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by the automaton iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$ is exponential, though, in the length of the formula $\psi$.
-
-
-The following diagram is a good overview of common varieties of temporal logic properties and their counterexample characterizations.
+The below diagram also shows the relationship between LTL, CTL, and CTL*. Namely, that LTL and CTL are not directly comparable, and CTL* subsumes them both.
+\begin{center}
+    \includegraphics[scale=0.2]{images/Expressive-Power-of-LTL-CTL-and-CTL.png}   
+\end{center}
+The following diagram \cite{Clarke2018ch1} also provides a good overview of common varieties of temporal logic properties and their counterexample characterizations.
 \begin{center}
     \includegraphics[scale=0.18]{images/common_ctl_ltl_formulas.png}
 \end{center}
 
-Technically the LTL model checking problem is PSPACE-complete, but it's worth keeping in mind that in practice the limiting complexity factor is usually the size of the system state space, rather than the size of the temporal specification.
+\subsection*{CTL Model Checking}
+
+For \textit{computation tree logic} (CTL), there is a model-checking algorithm whose running time depends linearly on the size of the Kripke structure and on the length of the CTL formula \cite{1986clarkeemerson}.
+
+\subsection*{LTL Model Checking}
+
+For \textit{linear temporal logic} (LTL) it is the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. Note that the ``lasso''-ness of LTL counterexamples is exploited in certain model checking approaches e.g. some liveness to safety reductions \cite{BIERE2002160}.
+
+\begin{center}
+    \includegraphics[scale=0.3]{images/ltl-lasso.png}
+\end{center}
+
+There is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula \cite{1985pnuelilich}. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by $B_{\psi}$ iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$, though, can be exponential in the length of the formula $\psi$. 
+
+Technically, the LTL model checking problem is PSPACE-complete \cite{1985sistlaclarke}, but it's worth keeping in mind that in practice the limiting complexity factor is usually the size of a system's state space, rather than the size of the temporal specification. (TODO: why PSPACE?)
 
 \section{Abstraction for Model Checking}
 

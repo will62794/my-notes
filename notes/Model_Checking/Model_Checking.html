@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="William Schultz" />
   <meta name="author" content="William Schultz" />
-  <title>Abstraction for Model Checking</title>
+  <title>Model Checking</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -42,11 +42,14 @@
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Abstraction for Model Checking</h1>
+<h1 class="title">Model Checking</h1>
 <p class="author">William Schultz</p>
 <p class="author">William Schultz</p>
 </header>
 <nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#temporal-logic-model-checking"><span class="toc-section-number">1</span> Temporal Logic Model Checking</a></li>
+<li><a href="#abstraction-for-model-checking"><span class="toc-section-number">2</span> Abstraction for Model Checking</a>
 <ul>
 <li><a href="#abstraction-of-kripke-structures">Abstraction of Kripke Structures</a>
 <ul>
@@ -62,12 +65,20 @@
 <ul>
 <li><a href="#interpolation">Interpolation</a></li>
 </ul></li>
+</ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
+<p>At a high level, <em>model checking</em> is a computer assisted method for the analysis of dynamical systems that can be modeled as discrete state transition systems. In the basic setting, we can view the model checking problem as taking in a transition system (e.g. a Kripke structre) <span class="math inline">\(K\)</span> and some system specification <span class="math inline">\(\upvarphi\)</span> (typically specified in some temporal logic) and verifying whether <span class="math display">\[\begin{aligned}
+    K \vDash \upvarphi\end{aligned}\]</span> and, if <span class="math inline">\(K \nvDash \upvarphi\)</span>, returning a counterexample.</p>
+<section id="temporal-logic-model-checking" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Temporal Logic Model Checking</h1>
+</section>
+<section id="abstraction-for-model-checking" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Abstraction for Model Checking</h1>
 <p>Abstraction, in the context of model checking, is generally aimed at reducing the size of the state space in an attempt to remove details that are irrelevant to the property being verified <span class="citation" data-cites="Dams2018">(<a href="#ref-Dams2018" role="doc-biblioref">Dams and Grumberg 2018</a>)</span>. That is, broadly, abstraction is a fundamental tool in tackling the “state explosion” problem.</p>
-<section id="abstraction-of-kripke-structures" class="level1 unnumbered">
-<h1 class="unnumbered">Abstraction of Kripke Structures</h1>
+<section id="abstraction-of-kripke-structures" class="level2 unnumbered">
+<h2 class="unnumbered">Abstraction of Kripke Structures</h2>
 <p>In general, an abstraction framework defines a set of concrete objects and abstract objects and a definition of how to map between them. For model checking, we typically use Kripke structures as our concrete objects. Recall that a <em>Kripe structure</em> <span class="math inline">\(M=(AP,S,I,R,L)\)</span> is defined as</p>
 <ul>
 <li><p>a set <span class="math inline">\(AP\)</span> of atomic propositions</p></li>
@@ -76,8 +87,8 @@
 <li><p>a transition relation <span class="math inline">\(R \subseteq S \times S\)</span></p></li>
 <li><p>a labeling function <span class="math inline">\(L : S \rightarrow 2^{AP}\)</span></p></li>
 </ul>
-<section id="simulation" class="level2 unnumbered">
-<h2 class="unnumbered">Simulation</h2>
+<section id="simulation" class="level3 unnumbered">
+<h3 class="unnumbered">Simulation</h3>
 <p>To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_2\)</span>. <em>Simulation</em> is a preorder (a reflexive and transitive partial order) in which the larger structure may have more behaviors, but possibly fewer states and transitions.</p>
 <p>Let <span class="math inline">\(M_1=(AP_1,S_1,I_1,R_1,L_1)\)</span> and <span class="math inline">\(M_2=(AP_2,S_2,I_2,R_2,L_2)\)</span> be Kripke structures such that <span class="math inline">\(AP_2 \subseteq AP_1\)</span>. A relation <span class="math inline">\(H\)</span> is a <em>simulation relation from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span></em> if for every <span class="math inline">\(s_1 \in S_1\)</span> and <span class="math inline">\(s_2 \in S_2\)</span> such that <span class="math inline">\(H(s_1,s_2)\)</span>, both of the following conditions hold:</p>
 <ul>
@@ -96,17 +107,17 @@
 <p>This abstraction basically only tracks whether a particular process is in the critical section or not, but ignores all other information. Note that <span class="math inline">\(AP_1 \subseteq AP\)</span>. A simulation relation <span class="math inline">\(H \subseteq S \times S_1\)</span> from <span class="math inline">\(M\)</span> to <span class="math inline">\(M_1\)</span> can then be defined as <span class="math display">\[\begin{aligned}
     H = \left\lbrace (s_1, a_1), (s_2, a_1), (s_3, a_1), (s_4, a_2), (s_5, a_1), (s_6, a_3), (s_7, a_2), (s_8, a_3) \right\rbrace\end{aligned}\]</span></p>
 </section>
-<section id="bisimulation" class="level2 unnumbered">
-<h2 class="unnumbered">Bisimulation</h2>
+<section id="bisimulation" class="level3 unnumbered">
+<h3 class="unnumbered">Bisimulation</h3>
 <p>One state is related to another by the bisimulation relation of they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and <em>vice versa</em>.</p>
 </section>
-<section id="existential-abstraction" class="level2 unnumbered">
-<h2 class="unnumbered">Existential Abstraction</h2>
+<section id="existential-abstraction" class="level3 unnumbered">
+<h3 class="unnumbered">Existential Abstraction</h3>
 <p>One way to define an abstract model (Kripke structure) from a concrete one is via a concretization function <span class="math inline">\(\gamma\)</span>. We can define abstract Kripke structures by means of <em>existential abstraction</em> <span class="citation" data-cites="94mcabs">(<a href="#ref-94mcabs" role="doc-biblioref">Clarke, Grumberg, and Long 1994</a>)</span>. Given a set <span class="math inline">\(\widehat{S}\)</span> of abstract states, the <em>concretization function</em> <span class="math inline">\(\gamma : \widehat{S} \rightarrow 2^S\)</span> indicates, for each abstract state <span class="math inline">\(\widehat{s}\)</span>, what set of concrete states are represented by <span class="math inline">\(\widehat{s}\)</span>. Similarly, there is a transition from abstract state <span class="math inline">\(\widehat{s}\)</span> to another abstract state <span class="math inline">\(\widehat{s}&#39;\)</span> if there is a transition from a state represented by <span class="math inline">\(\widehat{s}\)</span> to a state represented by <span class="math inline">\(\widehat{s}&#39;\)</span>. Essentially, we just take every transition between concrete states and add it into our abstract transition system, based on the abstract states that represent those concrete state transitions.</p>
 </section>
 </section>
-<section id="counterexample-guided-abstraction-refinement-cegar" class="level1 unnumbered">
-<h1 class="unnumbered">Counterexample-Guided Abstraction Refinement (CEGAR)</h1>
+<section id="counterexample-guided-abstraction-refinement-cegar" class="level2 unnumbered">
+<h2 class="unnumbered">Counterexample-Guided Abstraction Refinement (CEGAR)</h2>
 <p>Regardless of how we choose our abstraction, our abstract model <span class="math inline">\(\widehat{M}\)</span> generally contains less information than the concrete model <span class="math inline">\(M\)</span>, and so model checking <span class="math inline">\(\widehat{M}\)</span> may produce incorrect results. If a universal property is true in <span class="math inline">\(\widehat{M}\)</span> then it is also true in <span class="math inline">\(M\)</span>, but if the abstract model produces an error, the concrete model may still be correct.</p>
 <p>For example consider the following “traffic light” model and a simple abstraction of it</p>
 <div class="center">
@@ -129,8 +140,8 @@
 <li><p>Refine the abstract model, <span class="math inline">\(\widehat{M}\)</span>, so that <span class="math inline">\(\widehat{T}\)</span> will not be included in the new, refined abstract model. Go back to step 2.</p></li>
 </ol>
 <p>Note that refinement is typically done by <em>partitioning</em> an abstract state. That is, the set of concrete states represented by the abstract state is partitioned</p>
-<section id="identifying-spurious-counterexamples" class="level2 unnumbered">
-<h2 class="unnumbered">Identifying Spurious Counterexamples</h2>
+<section id="identifying-spurious-counterexamples" class="level3 unnumbered">
+<h3 class="unnumbered">Identifying Spurious Counterexamples</h3>
 <p>If we discover an abstract counterexample <span class="math inline">\(\widehat{T}\)</span>, we need some way to check if this is a real counterexample in the concrete model. Assume that <span class="math inline">\(\widehat{T}\)</span> is a path <span class="math inline">\(\widehat{s_1},\dots, \widehat{s_n}\)</span> starting at the initial abstract state <span class="math inline">\(\widehat{s_1}\)</span>. We can extend the concretization function <span class="math inline">\(\gamma\)</span> to sequences of abstract states as follows: <span class="math inline">\(\gamma(\widehat{T})\)</span> is the set of concrete paths defined as: <span class="math display">\[\begin{aligned}
     \gamma(\widehat{T}) = \left\lbrace \langle s_1,\dots,s_n \rangle \mid 
     \bigwedge_{i=1}^n s_i \in \gamma(\widehat{s_i}) \wedge I(s_1) \wedge 
@@ -145,12 +156,12 @@
 <p>Note that checking whether a counterexample is spurious involves computations on the concrete model.</p>
 </section>
 </section>
-<section id="sat-based-abstraction" class="level1 unnumbered">
-<h1 class="unnumbered">SAT-based Abstraction</h1>
+<section id="sat-based-abstraction" class="level2 unnumbered">
+<h2 class="unnumbered">SAT-based Abstraction</h2>
 <p>An alternative to the CEGAR based approach (introduced shortly after the initial CEGAR publication) is to rely more directly on a SAT solver for performing abstraction. A main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an <em>explanation</em> of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called <em>proof-based abstraction</em><span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">Kenneth L. McMillan and Amla 2003</a>)</span>.</p>
 <p>In the initial work of <span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">Kenneth L. McMillan and Amla 2003</a>)</span> (appeared in <em>TACAS 2003</em>, April), verification of a system <span class="math inline">\(M\)</span> is done by performing bounded model checking of <span class="math inline">\(M\)</span> for a fixed bound <span class="math inline">\(k\)</span>. If an error is found for this bound, then we’re done, since a counterexample has been found. Otherwise, the SAT solver can return a (resolution) proof of unsatisfiability. This proof is used to generate an abstraction, <span class="math inline">\(M&#39;\)</span>, of <span class="math inline">\(M\)</span> by seeing what clauses of the encoding of <span class="math inline">\(M\)</span> are actually used in the proof (see <span class="citation" data-cites="2003abswithoutcex">(<a href="#ref-2003abswithoutcex" role="doc-biblioref">Kenneth L. McMillan and Amla 2003</a>)</span> for more detail on this). Then, <em>unbounded</em> model checking is performed on the abstract model <span class="math inline">\(M&#39;\)</span>, which should in theory now be much cheaper since <span class="math inline">\(M&#39;\)</span> has been abstracted from <span class="math inline">\(M\)</span>.If model checking determines that there are no error traces in <span class="math inline">\(M&#39;\)</span>, then we are done. Otherwise, if model checking determines that <span class="math inline">\(M&#39;\)</span> does have an error run, then we know its length <span class="math inline">\(k&#39;\)</span> is greater than <span class="math inline">\(k\)</span>. Thus, we then restart the procedure with <span class="math inline">\(k&#39;\)</span> (or, generally, any value larger than <span class="math inline">\(k&#39;\)</span>)</p>
-<section id="interpolation" class="level2 unnumbered">
-<h2 class="unnumbered">Interpolation</h2>
+<section id="interpolation" class="level3 unnumbered">
+<h3 class="unnumbered">Interpolation</h3>
 <p>Slghtly subsequent work by McMillan <span class="citation" data-cites="2003satinterp">(<a href="#ref-2003satinterp" role="doc-biblioref">K. L. McMillan 2003</a>)</span> (appeared in <em>CAV 2003</em>, July) presented an extension of this approach that makes use of <em>interpolation</em> for doing abstraction with a SAT solver. Essentially this uses a similar bounded model checking approach and then extracts an <em>interpolant</em> from a bounded unsatisfiability proof to compute an abstraction.</p>
 <p>The standard bounded model checking unrolling is a constraint of the following basic form:</p>
 <div class="center">
@@ -167,6 +178,7 @@
 <li><p><span class="math inline">\(P \wedge B\)</span> is unsatisfiable</p></li>
 </ul>
 <p>By this, we can know that <span class="math inline">\(P\)</span> is implied by the initial condition and by the first transition constraint, so it represents some approximation of all 1-step reachable states (i.e. it is an over-approximation of the forward image of <span class="math inline">\(I\)</span>). Moreover, <span class="math inline">\(P\)</span> and <span class="math inline">\(B\)</span> are unsatisfiable, meaning that no state satisfying <span class="math inline">\(P\)</span> can reach a final state in <span class="math inline">\(k-1\)</span> steps. This over-approximate image operation can then be iterated to compute an over-approximation of the reachable states.</p>
+</section>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered">

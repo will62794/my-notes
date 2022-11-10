@@ -9,6 +9,8 @@
 \usepackage{fancyvrb}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{upgreek}
+
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes,snakes}
 \usepackage[english]{babel}
@@ -17,14 +19,27 @@
 
 \author{William Schultz}
 \begin{document}
-\title{Abstraction for Model Checking}
+\title{Model Checking}
 \author{William Schultz}
 \maketitle
+
+At a high level, \textit{model checking} is a computer assisted method for the analysis of dynamical systems that can be modeled as discrete state transition systems. In the basic setting, we can view the model checking problem as taking in a transition system (e.g. a Kripke structre) $K$ and some system specification $\upvarphi$ (typically specified in some temporal logic)  and verifying whether 
+\begin{align*}
+    K \vDash \upvarphi
+\end{align*}
+and, if $K \nvDash \upvarphi$, returning a counterexample.
+
+\section{Temporal Logic Model Checking}
+
+
+
+
+\section{Abstraction for Model Checking}
 
 Abstraction, in the context of model checking, is generally aimed at reducing the size of the state space in an attempt to remove details that are irrelevant to the property being verified \cite{Dams2018}. That is, broadly, abstraction is a fundamental tool in tackling the ``state explosion'' problem.
 
 
-\section*{Abstraction of Kripke Structures}
+\subsection*{Abstraction of Kripke Structures}
 
 In general, an abstraction framework defines a set of concrete objects and abstract objects and a definition of how to map between them. For model checking, we typically use Kripke structures as our concrete objects. Recall that a \textit{Kripe structure} $M=(AP,S,I,R,L)$ is defined as
 \begin{itemize}
@@ -35,7 +50,7 @@ In general, an abstraction framework defines a set of concrete objects and abstr
     \item a labeling function $L : S \rightarrow 2^{AP}$
 \end{itemize}
 
-\subsection*{Simulation}
+\subsubsection*{Simulation}
 To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures $M_1$ and $M_2$. \textit{Simulation} is a preorder (a reflexive and transitive partial order) in which the larger structure may have more behaviors, but possibly fewer states and transitions.
 
 Let $M_1=(AP_1,S_1,I_1,R_1,L_1)$ and $M_2=(AP_2,S_2,I_2,R_2,L_2)$ be Kripke structures such that $AP_2 \subseteq AP_1$. A relation $H$ is a \textit{simulation relation from $M_1$ to $M_2$} if for every $s_1 \in S_1$ and $s_2 \in S_2$ such that $H(s_1,s_2)$, both of the following conditions hold:
@@ -60,15 +75,15 @@ This abstraction basically only tracks whether a particular process is in the cr
     H = \left\lbrace (s_1, a_1), (s_2, a_1), (s_3, a_1), (s_4, a_2), (s_5, a_1), (s_6, a_3), (s_7, a_2), (s_8, a_3) \right\rbrace
 \end{align*}
 
-\subsection*{Bisimulation}
+\subsubsection*{Bisimulation}
 
 One state is related to another by the bisimulation relation of they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and \textit{vice versa}.
 
-\subsection*{Existential Abstraction}
+\subsubsection*{Existential Abstraction}
 
 One way to define an abstract model (Kripke structure) from a concrete one is via a concretization function $\gamma$. We can define abstract Kripke structures by means of \textit{existential abstraction} \cite{94mcabs}. Given a set $\widehat{S}$ of abstract states, the \textit{concretization function} $\gamma : \widehat{S} \rightarrow 2^S$ indicates, for each abstract state $\widehat{s}$, what set of concrete states are represented by $\widehat{s}$. Similarly, there is a transition from abstract state $\widehat{s}$ to another abstract state $\widehat{s}'$ if there is a transition from a state represented by $\widehat{s}$ to a state represented by $\widehat{s}'$. Essentially, we just take every transition between concrete states and add it into our abstract transition system, based on the abstract states that represent those concrete state transitions.
 
-\section*{Counterexample-Guided Abstraction Refinement (CEGAR)}
+\subsection*{Counterexample-Guided Abstraction Refinement (CEGAR)}
 
 
 Regardless of how we choose our abstraction, our abstract model $\widehat{M}$ generally contains less information than the concrete model $M$, and so model checking $\widehat{M}$ may produce incorrect results. If a universal property is true in $\widehat{M}$ then it is also true in $M$, but if the abstract model produces an error, the concrete model may still be correct.
@@ -99,7 +114,7 @@ The framework of \textit{counterexample-guided abstraction refinement (CEGAR)} d
 
 Note that refinement is typically done by \textit{partitioning} an abstract state. That is, the set of concrete states represented by the abstract state is partitioned
 
-\subsection*{Identifying Spurious Counterexamples}
+\subsubsection*{Identifying Spurious Counterexamples}
 
 If we discover an abstract counterexample $\widehat{T}$, we need some way to check if this is a real counterexample in the concrete model. Assume that $\widehat{T}$ is a path $\widehat{s_1},\dots, \widehat{s_n}$ starting at the initial abstract state $\widehat{s_1}$. We can extend the concretization function $\gamma$ to sequences of abstract states as follows: $\gamma(\widehat{T})$ is the set of concrete paths defined as:
 \begin{align*}
@@ -123,13 +138,13 @@ Note that checking whether a counterexample is spurious involves computations on
 
 % If we start with some abstraction of our Kripke strucutre and try to model check it, we may encounter spurious errors. So, we use such a counterexample to refine our abstraction, and then repreat this process.
 
-\section*{SAT-based Abstraction}
+\subsection*{SAT-based Abstraction}
 
 An alternative to the CEGAR based approach (introduced shortly after the initial CEGAR publication) is to rely more directly on a SAT solver for performing abstraction. A main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an \textit{explanation} of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called \textit{proof-based abstraction}\cite{2003abswithoutcex}. 
 
 In the initial work of \cite{2003abswithoutcex} (appeared in \textit{TACAS 2003}, April), verification of a system $M$ is done by performing bounded model checking of $M$ for  a fixed bound $k$. If an error is found for this bound, then we're done, since a counterexample has been found. Otherwise, the SAT solver can return a (resolution) proof of unsatisfiability. This proof is used to generate an abstraction, $M'$, of $M$ by seeing what clauses of the encoding of $M$ are actually used in the proof (see \cite{2003abswithoutcex} for more detail on this). Then, \textit{unbounded} model checking is performed on the abstract model $M'$, which should in theory now be much cheaper since $M'$ has been abstracted from $M$.If model checking determines that there are no error traces in $M'$, then we are done. Otherwise, if model checking determines that $M'$ does have an error run, then we know its length $k'$ is greater than $k$. Thus, we then restart the procedure with $k'$ (or, generally, any value larger than $k'$)
 
-\subsection*{Interpolation}
+\subsubsection*{Interpolation}
 
 Slghtly subsequent work by McMillan \cite{2003satinterp} (appeared in \textit{CAV 2003}, July) presented an extension of this approach that makes use of \textit{interpolation} for doing abstraction with a SAT solver. Essentially this uses a similar bounded model checking approach and then extracts an \textit{interpolant} from a bounded unsatisfiability proof to compute an abstraction.
 

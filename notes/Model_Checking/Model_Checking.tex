@@ -61,6 +61,13 @@ For \textit{linear temporal logic} (LTL) it is the case that any counterexample 
 
 There is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula \cite{1985pnuelilich}. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by $B_{\psi}$ iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$, though, can be exponential in the length of the formula $\psi$. 
 
+More precisely, we translate the negation of our property $\neg \psi$ into a Buchi automaton, and then consider the product of this automaton with our original system $K \times B_{\neg \psi}$. The problem then reduces to checking whether there are any accepting runs in $K \times B_{\neg \psi}$. Recall that an accepting run in a (deterministic) Buchi automaton is any run that visits an accepting state infinitely often. A standard algorithm for checking existence of an accepting run consists of
+\begin{enumerate}
+    \item Consider the automaton as a directed graph decompose it into its \href{https://will62794.github.io/my-notes/notes/Strongly_Connected_Components/Strongly_Connected_Components.html}{strongly connected components} (SCCs).
+    \item Run a search to find which SCCs are reachable from the initial state
+    \item Check whether there is a non-trivial SCC (i.e. consists of $\geq 1$ vertex) that is reachable and contains an accepting state.
+\end{enumerate}
+
 Technically, the LTL model checking problem is PSPACE-complete \cite{1985sistlaclarke}, but it's worth keeping in mind that in practice the limiting complexity factor is usually the size of a system's state space, rather than the size of the temporal specification. (TODO: why PSPACE?)
 
 \section{Abstraction for Model Checking}

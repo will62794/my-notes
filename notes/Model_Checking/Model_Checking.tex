@@ -33,7 +33,7 @@ and, if $K \nvDash \upvarphi$, returning a counterexample. In the basic scenario
 
 For \textit{computation tree logic} (CTL), there is a model-checking algorithm whose running time depends linearly on the size of the Kripke structure and on the length of the CTL formula \cite{1986clarkeemerson}.
 
-For \textit{linear temporal logic} (LTL) it is also the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. 
+For \textit{linear temporal logic} (LTL) it is the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. 
 
 Note that there is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by the automaton iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$ is exponential, though, in the length of the formula $\psi$.
 

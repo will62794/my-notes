@@ -23,16 +23,27 @@
 \author{William Schultz}
 \maketitle
 
-At a high level, \textit{model checking} is a computer assisted method for the analysis of dynamical systems that can be modeled as discrete state transition systems. In the basic setting, we can view the model checking problem as taking in a transition system (e.g. a Kripke structre) $K$ and some system specification $\upvarphi$ (typically specified in some temporal logic)  and verifying whether 
+At a high level, \textit{model checking} is a computer assisted method for the analysis of dynamical systems that can be modeled as discrete state transition systems \cite{Clarke2018ch1}. In the basic setting, we can view the model checking problem as taking in a transition system (e.g. a Kripke structre) $K$ and some system specification $\upvarphi$ (typically specified in some temporal logic)  and verifying whether 
 \begin{align*}
     K \vDash \upvarphi
 \end{align*}
-and, if $K \nvDash \upvarphi$, returning a counterexample.
+and, if $K \nvDash \upvarphi$, returning a counterexample. In the basic scenario, we can assume $K$ is finite state.
 
 \section{Temporal Logic Model Checking}
 
+For \textit{computation tree logic} (CTL), there is a model-checking algorithm whose running time depends linearly on the size of the Kripke structure and on the length of the CTL formula \cite{1986clarkeemerson}.
+
+For \textit{linear temporal logic} (LTL) it is also the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. 
+
+Note that there is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by the automaton iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$ is exponential, though, in the length of the formula $\psi$.
 
 
+The following diagram is a good overview of common varieties of temporal logic properties and their counterexample characterizations.
+\begin{center}
+    \includegraphics[scale=0.18]{images/common_ctl_ltl_formulas.png}
+\end{center}
+
+Technically the LTL model checking problem is PSPACE-complete, but it's worth keeping in mind that in practice the limiting complexity factor is usually the size of the system state space, rather than the size of the temporal specification.
 
 \section{Abstraction for Model Checking}
 

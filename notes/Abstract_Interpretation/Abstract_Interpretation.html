@@ -45,6 +45,7 @@
 </ul>
 <p>where <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\gamma\)</span> must form a <em>Galois connection</em>. That is, they satisfy the following condition <span class="math display">\[\begin{aligned}
     \forall x \in D, \forall \hat{x} \in \hat{D} : \alpha(x) \sqsubseteq \hat{x} \Leftrightarrow x \sqsubseteq \gamma(\hat{x}) \end{aligned}\]</span> Intuitively, this means that the abstraction and concretization functions respect the orderings of <span class="math inline">\(D\)</span> and <span class="math inline">\(\hat{D}\)</span>. That is, if <span class="math inline">\(\alpha(x)\)</span>, the abstraction of <span class="math inline">\(x\)</span>, is ordered before some other <span class="math inline">\(\hat{x} \in \hat{D}\)</span>, then <span class="math inline">\(x\)</span> should be ordered before <span class="math inline">\(\gamma(\hat{x})\)</span>, the concretization of <span class="math inline">\(\hat{x}\)</span>.</p>
+<p>Note that we also have <em>abstract transformers</em>, which are functions <span class="math inline">\(T: \hat{D} \rightarrow \hat{D}\)</span>, and which are <em>sound</em> if they respect the over-approximation property i.e., if an original abstract element <span class="math inline">\(d\)</span> is an overapproximation of its concretization, then after applying the transformer to <span class="math inline">\(d\)</span>, it will remain an overapproximation of the concretization of the transformed value. TODO: Make this clearer.</p>
 </section>
 </body>
 </html>

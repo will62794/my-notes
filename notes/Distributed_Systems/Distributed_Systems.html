@@ -48,19 +48,30 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#fault-tolerance">Fault Tolerance</a></li>
 <li><a href="#pbft">PBFT</a>
 <ul>
-<li><a href="#system-model">System Model</a></li>
+<li><a href="#model">Model</a></li>
 <li><a href="#intuitions-and-algorithm">Intuitions and Algorithm</a></li>
 <li><a href="#notes">Notes</a></li>
 </ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
+<section id="fault-tolerance" class="level1 unnumbered">
+<h1 class="unnumbered">Fault Tolerance</h1>
+<p>There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of <span class="math inline">\(f\)</span> nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any “work” we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least <span class="math inline">\(f+1\)</span> nodes, so that there is always at least one non-faulty node with the data we need to access. So, this seems to imply that having simply <span class="math inline">\(f+1\)</span> total nodes might be sufficient for a fault tolerant protocol. But, this still doesn’t satisfy a progress requirement, since if we now need to write everything down to <span class="math inline">\(f+1\)</span> nodes, then failure of <span class="math inline">\(f\)</span> out of <span class="math inline">\(f+1\)</span> nodes clearly stalls our protocol, since it can do any work safely. So, our additional requirement is that both</p>
+<ol type="1">
+<li><p>we must write any work down to <span class="math inline">\(f+1\)</span> nodes and</p></li>
+<li><p>that we always have <span class="math inline">\(f+1\)</span> non-faulty nodes available that we can write work down on</p></li>
+</ol>
+<p>Thus, this naturally gives us a total node requirement of <span class="math display">\[\begin{aligned}
+    n = f + (f+1) = 2f + 1\end{aligned}\]</span> That is, even in the case of <span class="math inline">\(f\)</span> maximum node failures, we will always have <span class="math inline">\(f+1\)</span> nodes available to us to write down our work, allowing us to make progress.</p>
+</section>
 <section id="pbft" class="level1 unnumbered">
 <h1 class="unnumbered">PBFT</h1>
-<section id="system-model" class="level2 unnumbered">
-<h2 class="unnumbered">System Model</h2>
+<section id="model" class="level2 unnumbered">
+<h2 class="unnumbered">Model</h2>
 <p>The work on Practical Byzantine Fault Tolerance <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
 </section>
 <section id="intuitions-and-algorithm" class="level2 unnumbered">

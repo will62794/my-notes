@@ -36,7 +36,7 @@ Thus, this naturally gives us a total node requirement of
 That is, even in the case of $f$ maximum node failures, we will always have $f+1$ nodes available to us to write down our work, allowing us to make progress.
 
 
-\section*{PBFT}
+\section*{BFT Protocols}
 
 \subsection*{Model}
 
@@ -51,15 +51,15 @@ If we assume a starting point of a classic 2-phase Paxos consensus approach, the
 \end{enumerate}
 A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (\textit{prepare} + \textit{accept}), then in the \textit{prepare} phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value 
 
-Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?
+% Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?
 
 The essence of the algorithm is as follows:
 \begin{enumerate}
-    \item Primary sends a $\textsc{pre-prepare}(value, p)$ message for view/proposal number $p$.
-    \item Replica responds to the first $\textsc{pre-prepare}$ message it receives from a primary.
-    \item Primary gathers $\textsc{pre-prepare}$ responses from $n-f$ replicas, and then sends $\textsc{prepare}(v, proof)$ (note this message may be linear in size since it contains signed codes fro   m up to $n$ nodes.)
-    \item If a replica sees $\textsc{prepare}(value, p, proof)$ and $proof$ contains $n-f$ valid signatures for $\textsc{pre-prepare} (value, p)$, then it goes ahead and accepts.
-    \item Primary then gathers $n-f$ $\textsc{prepare}$ responses from replicas.
+    \item Primary sends a $pre\_prepare(value, p)$ message for view/proposal number $p$.
+    \item Replica responds to the first $pre\_prepare$ message it receives from a primary.
+    \item Primary gathers $pre\_prepare$ responses from $n-f$ replicas, and then sends $prepare(v, proof)$ (note this message may be linear in size since it contains signed codes fro   m up to $n$ nodes.)
+    \item If a replica sees $prepare(value, p, proof)$ and $proof$ contains $n-f$ valid signatures for $pre\_prepare(value, p)$, then it goes ahead and accepts.
+    \item Primary then gathers $n-f$ $prepare$ responses from replicas.
 \end{enumerate}
 Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.
 

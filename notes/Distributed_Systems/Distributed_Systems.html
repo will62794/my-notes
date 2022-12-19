@@ -49,7 +49,7 @@
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#fault-tolerance">Fault Tolerance</a></li>
-<li><a href="#pbft">PBFT</a>
+<li><a href="#bft-protocols">BFT Protocols</a>
 <ul>
 <li><a href="#model">Model</a></li>
 <li><a href="#intuitions-and-algorithm">Intuitions and Algorithm</a></li>
@@ -68,8 +68,8 @@
 <p>Thus, this naturally gives us a total node requirement of <span class="math display">\[\begin{aligned}
     n = f + (f+1) = 2f + 1\end{aligned}\]</span> That is, even in the case of <span class="math inline">\(f\)</span> maximum node failures, we will always have <span class="math inline">\(f+1\)</span> nodes available to us to write down our work, allowing us to make progress.</p>
 </section>
-<section id="pbft" class="level1 unnumbered">
-<h1 class="unnumbered">PBFT</h1>
+<section id="bft-protocols" class="level1 unnumbered">
+<h1 class="unnumbered">BFT Protocols</h1>
 <section id="model" class="level2 unnumbered">
 <h2 class="unnumbered">Model</h2>
 <p>The work on Practical Byzantine Fault Tolerance <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
@@ -82,14 +82,13 @@
 <li><p><strong>Wrong value adoption</strong>: A leader (faulty or not) that accepts a wrong value (i.e. not highest among previously) chosen can lead to safety violation as considered in the standard 2-phase Paxos model.</p></li>
 </ol>
 <p>A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (<em>prepare</em> + <em>accept</em>), then in the <em>prepare</em> phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value</p>
-<p>Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?</p>
 <p>The essence of the algorithm is as follows:</p>
 <ol>
-<li><p>Primary sends a <span class="math inline">\(\textsc{pre-prepare}(value, p)\)</span> message for view/proposal number <span class="math inline">\(p\)</span>.</p></li>
-<li><p>Replica responds to the first <span class="math inline">\(\textsc{pre-prepare}\)</span> message it receives from a primary.</p></li>
-<li><p>Primary gathers <span class="math inline">\(\textsc{pre-prepare}\)</span> responses from <span class="math inline">\(n-f\)</span> replicas, and then sends <span class="math inline">\(\textsc{prepare}(v, proof)\)</span> (note this message may be linear in size since it contains signed codes fro m up to <span class="math inline">\(n\)</span> nodes.)</p></li>
-<li><p>If a replica sees <span class="math inline">\(\textsc{prepare}(value, p, proof)\)</span> and <span class="math inline">\(proof\)</span> contains <span class="math inline">\(n-f\)</span> valid signatures for <span class="math inline">\(\textsc{pre-prepare} (value, p)\)</span>, then it goes ahead and accepts.</p></li>
-<li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(\textsc{prepare}\)</span> responses from replicas.</p></li>
+<li><p>Primary sends a <span class="math inline">\(pre\_prepare(value, p)\)</span> message for view/proposal number <span class="math inline">\(p\)</span>.</p></li>
+<li><p>Replica responds to the first <span class="math inline">\(pre\_prepare\)</span> message it receives from a primary.</p></li>
+<li><p>Primary gathers <span class="math inline">\(pre\_prepare\)</span> responses from <span class="math inline">\(n-f\)</span> replicas, and then sends <span class="math inline">\(prepare(v, proof)\)</span> (note this message may be linear in size since it contains signed codes fro m up to <span class="math inline">\(n\)</span> nodes.)</p></li>
+<li><p>If a replica sees <span class="math inline">\(prepare(value, p, proof)\)</span> and <span class="math inline">\(proof\)</span> contains <span class="math inline">\(n-f\)</span> valid signatures for <span class="math inline">\(pre\_prepare(value, p)\)</span>, then it goes ahead and accepts.</p></li>
+<li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(prepare\)</span> responses from replicas.</p></li>
 </ol>
 <p>Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.</p>
 </section>

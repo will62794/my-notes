@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <meta name="author" content="William Schultz" />
+  <title>Distributed Systems</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
+  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Distributed Systems</h1>
+<p class="author">William Schultz</p>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#pbft">PBFT</a>
+<ul>
+<li><a href="#system-model">System Model</a></li>
+<li><a href="#intuitions-and-algorithm">Intuitions and Algorithm</a></li>
+<li><a href="#notes">Notes</a></li>
+</ul></li>
+<li><a href="#bibliography">References</a></li>
+</ul>
+</nav>
+<section id="pbft" class="level1 unnumbered">
+<h1 class="unnumbered">PBFT</h1>
+<section id="system-model" class="level2 unnumbered">
+<h2 class="unnumbered">System Model</h2>
+<p>The work on Practical Byzantine Fault Tolerance <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
+</section>
+<section id="intuitions-and-algorithm" class="level2 unnumbered">
+<h2 class="unnumbered">Intuitions and Algorithm</h2>
+<p>If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:</p>
+<ol>
+<li><p><strong>Leader equivocation</strong>: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept message with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?</p></li>
+<li><p><strong>Wrong value adoption</strong>: A leader (faulty or not) that accepts a wrong value (i.e. not highest among previously) chosen can lead to safety violation as considered in the standard 2-phase Paxos model.</p></li>
+</ol>
+<p>A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (<em>prepare</em> + <em>accept</em>), then in the <em>prepare</em> phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value</p>
+<p>Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?</p>
+<p>The essence of the algorithm is as follows:</p>
+<ol>
+<li><p>Primary sends a <span class="math inline">\(\textsc{pre-prepare}(value, p)\)</span> message for view/proposal number <span class="math inline">\(p\)</span>.</p></li>
+<li><p>Replica responds to the first <span class="math inline">\(\textsc{pre-prepare}\)</span> message it receives from a primary.</p></li>
+<li><p>Primary gathers <span class="math inline">\(\textsc{pre-prepare}\)</span> responses from <span class="math inline">\(n-f\)</span> replicas, and then sends <span class="math inline">\(\textsc{prepare}(v, proof)\)</span> (note this message may be linear in size since it contains signed codes fro m up to <span class="math inline">\(n\)</span> nodes.)</p></li>
+<li><p>If a replica sees <span class="math inline">\(\textsc{prepare}(value, p, proof)\)</span> and <span class="math inline">\(proof\)</span> contains <span class="math inline">\(n-f\)</span> valid signatures for <span class="math inline">\(\textsc{pre-prepare} (value, p)\)</span>, then it goes ahead and accepts.</p></li>
+<li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(\textsc{prepare}\)</span> responses from replicas.</p></li>
+</ol>
+<p>Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.</p>
+</section>
+<section id="notes" class="level2 unnumbered">
+<h2 class="unnumbered">Notes</h2>
+<ul>
+<li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any 2 quorums with <span class="math inline">\(n-f = 2f+1\)</span> nodes, we are guaranteed they intersect in at least <span class="math inline">\(f+1\)</span> nodes (just draw a picture). Note that if you talk to at least <span class="math inline">\(f+1\)</span> nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.</p></li>
+</ul>
+</section>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-1999castropbft" class="csl-entry" role="doc-biblioentry">
+Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA: USENIX Association.
+</div>
+<div id="ref-2011lamport" class="csl-entry" role="doc-biblioentry">
+Lamport, Leslie. 2011. <span>“Byzantizing Paxos by Refinement.”</span> In <em>Proceedings of the 25th International Conference on Distributed Computing</em>, 211–24. DISC’11. Berlin, Heidelberg: Springer-Verlag.
+</div>
+<div id="ref-1978rivestcrypto" class="csl-entry" role="doc-biblioentry">
+Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for Obtaining Digital Signatures and Public-Key Cryptosystems.”</span> <em>Commun. ACM</em> 21 (2): 120–26. <a href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.
+</div>
+</div>
+</section>
+</body>
+</html>

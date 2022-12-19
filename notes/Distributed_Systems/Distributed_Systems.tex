@@ -1,0 +1,61 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{tcolorbox}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{Distributed Systems}
+\author{William Schultz}
+\maketitle
+
+\section*{PBFT}
+
+\subsection*{System Model}
+
+The work on Practical Byzantine Fault Tolerance \cite{1999castropbft} considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver \cite{2011lamport}. This can be achieved this with public-key signatures \cite{1978rivestcrypto}, message authentication codes (MACs), etc.
+
+\subsection*{Intuitions and Algorithm}
+
+If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:
+\begin{enumerate}
+    \item \textbf{Leader equivocation}: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept message with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?
+    \item \textbf{Wrong value adoption}: A leader (faulty or not) that accepts a wrong value  (i.e. not highest among previously) chosen can lead to safety violation as considered in the standard 2-phase Paxos model.
+\end{enumerate}
+A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (\textit{prepare} + \textit{accept}), then in the \textit{prepare} phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value 
+
+Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?
+
+The essence of the algorithm is as follows:
+\begin{enumerate}
+    \item Primary sends a $\textsc{pre-prepare}(value, p)$ message for view/proposal number $p$.
+    \item Replica responds to the first $\textsc{pre-prepare}$ message it receives from a primary.
+    \item Primary gathers $\textsc{pre-prepare}$ responses from $n-f$ replicas, and then sends $\textsc{prepare}(v, proof)$ (note this message may be linear in size since it contains signed codes fro   m up to $n$ nodes.)
+    \item If a replica sees $\textsc{prepare}(value, p, proof)$ and $proof$ contains $n-f$ valid signatures for $\textsc{pre-prepare} (value, p)$, then it goes ahead and accepts.
+    \item Primary then gathers $n-f$ $\textsc{prepare}$ responses from replicas.
+\end{enumerate}
+Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.
+
+\subsection*{Notes}
+\begin{itemize}
+    \item Given $n=3f+1$ nodes, for any 2 quorums with $n-f = 2f+1$ nodes, we are guaranteed they intersect in at least $f+1$ nodes (just draw a picture). Note that if you talk to at least $f+1$ nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.
+\end{itemize}
+
+
+\bibliographystyle{plain}
+\bibliography{../../references.bib}
+
+\end{document}

@@ -40,11 +40,10 @@ where $\alpha$ and $\gamma$ must form a \textit{Galois connection}. That is, the
 \end{align*} 
 \begin{center}
     \includegraphics[scale=0.15]{diagrams/diagrams.001.png}
-    \textbf{TODO}
 \end{center}
 Note that a \textit{lattice} $L=(S,\sqsubseteq)$ is a partially ordered set where each pair of elements has a least upper bound (i.e. \textit{join} $\sqcup$) and a greatest lower bound (i.e. \textit{meet}, $\sqcap$).
 
-Intuitively, the above requirements means that the abstraction and concretization functions respect the orderings of $D$ and $A$. That is, if $\alpha(x)$, the abstraction of $x$, is ordered before some other $\hat{x} \in A$, then $x$ should be ordered before $\gamma(\hat{x})$, the concretization of $\hat{x}$.
+% Intuitively, the above requirements means that the abstraction and concretization functions respect the orderings of $D$ and $A$. That is, if $\alpha(x)$, the abstraction of $x$, is ordered before some other $\hat{x} \in A$, then $x$ should be ordered before $\gamma(\hat{x})$, the concretization of $\hat{x}$.
 
 % Note that we also have \textit{abstract transformers}, which are functions $T: A \rightarrow A$, and which are \textit{sound} if they respect the over-approximation property i.e., if an original abstract element $d$ is an overapproximation of its concretization, then after applying the transformer to $d$, it will remain an overapproximation of the concretization of the transformed value. TODO: Make this clearer. 
 

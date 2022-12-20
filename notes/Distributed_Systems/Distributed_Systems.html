@@ -48,6 +48,7 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
+<li><a href="#system-models">System Models</a></li>
 <li><a href="#fault-tolerance">Fault Tolerance</a></li>
 <li><a href="#bft-protocols">BFT Protocols</a>
 <ul>
@@ -58,6 +59,18 @@
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
+<section id="system-models" class="level1 unnumbered">
+<h1 class="unnumbered">System Models</h1>
+<ul>
+<li><p>In a <strong>synchronous</strong> message passing system, there exists some known finite bound <span class="math inline">\(\Delta\)</span> on message delays. That is, for any message sent, an adversary can delay its delivery by at most <span class="math inline">\(\Delta\)</span>.</p></li>
+<li><p>In a fully <strong>asynchronous</strong> model, there is no upper bound on the delay for a message to be delivered. This also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can’t distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.</p></li>
+<li><p>The <strong>partial synchrony</strong> model aims to find a middle ground between the two above models. The assumption is that there exists some known finite time bound <span class="math inline">\(\Delta\)</span> and a special event called GST (global stabilization time) such that:</p>
+<ul>
+<li><p>The adversary must cause the GST event to eventually happen after some unknown finite time.</p></li>
+<li><p>Any message sent at time <span class="math inline">\(x\)</span> must be delivered by <span class="math inline">\(\Delta + max(x, GST)\)</span>. That is, after the GST, messages are delivered within the known finite time bound <span class="math inline">\(\Delta\)</span> (i.e. the system has “reverted" to synchrony).</p></li>
+</ul></li>
+</ul>
+</section>
 <section id="fault-tolerance" class="level1 unnumbered">
 <h1 class="unnumbered">Fault Tolerance</h1>
 <p>There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of <span class="math inline">\(f\)</span> nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any “work” we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least <span class="math inline">\(f+1\)</span> nodes, so that there is always at least one non-faulty node with the data we need to access. So, this seems to imply that having simply <span class="math inline">\(f+1\)</span> total nodes might be sufficient for a fault tolerant protocol. But, this still doesn’t satisfy a progress requirement, since if we now need to write everything down to <span class="math inline">\(f+1\)</span> nodes, then failure of <span class="math inline">\(f\)</span> out of <span class="math inline">\(f+1\)</span> nodes clearly stalls our protocol, since it can do any work safely. So, our additional requirement is that both</p>

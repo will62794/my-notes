@@ -22,6 +22,18 @@
 \author{William Schultz}
 \maketitle
 
+\section*{System Models}
+
+\begin{itemize}
+    \item In a \textbf{synchronous} message passing system, there exists some known finite bound $\Delta$ on message delays. That is, for any message sent, an adversary can delay its delivery by at most $\Delta$.
+    \item  In a fully \textbf{asynchronous} model, there is no upper bound on the delay for a message to be delivered. This also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can't distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.
+    \item The \textbf{partial synchrony} model aims to find a middle ground between the two above models. The assumption is that there exists some known finite time bound $\Delta$ and a special event called GST (global stabilization time) such that:
+    \begin{itemize}
+        \item The adversary must cause the GST event to eventually happen after some unknown finite time.
+        \item Any message sent at time $x$ must be delivered by $\Delta + max(x, GST)$. That is, after the GST, messages are delivered within the known finite time bound $\Delta$ (i.e. the system has ``reverted" to synchrony).
+    \end{itemize}
+\end{itemize}
+
 \section*{Fault Tolerance}
 
 There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of $f$ nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any ``work'' we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least $f+1$ nodes, so that there is always at least one non-faulty node with the data we need to access. So, this seems to imply that having simply $f+1$ total nodes might be sufficient for a fault tolerant protocol. But, this still doesn't satisfy a progress requirement, since if we now need to write everything down to $f+1$ nodes, then failure of $f$ out of $f+1$ nodes clearly stalls our protocol, since it can do any work safely. So, our additional requirement is that both 

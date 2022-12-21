@@ -48,19 +48,19 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#system-models">System Models</a></li>
-<li><a href="#fault-tolerance">Fault Tolerance</a></li>
-<li><a href="#bft-protocols">BFT Protocols</a>
+<li><a href="#system-models"><span class="toc-section-number">1</span> System Models</a></li>
+<li><a href="#fault-tolerance"><span class="toc-section-number">2</span> Fault Tolerance</a></li>
+<li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">3</span> Byzantine Fault Tolerance</a>
 <ul>
-<li><a href="#model">Model</a></li>
-<li><a href="#intuitions-and-algorithm">Intuitions and Algorithm</a></li>
-<li><a href="#notes">Notes</a></li>
+<li><a href="#model"><span class="toc-section-number">3.1</span> Model</a></li>
+<li><a href="#intuitions-and-algorithm"><span class="toc-section-number">3.2</span> Intuitions and Algorithm</a></li>
+<li><a href="#notes"><span class="toc-section-number">3.3</span> Notes</a></li>
 </ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
-<section id="system-models" class="level1 unnumbered">
-<h1 class="unnumbered">System Models</h1>
+<section id="system-models" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> System Models</h1>
 <ul>
 <li><p>In a <strong>synchronous</strong> message passing system, there exists some known finite bound <span class="math inline">\(\Delta\)</span> on message delays. That is, for any message sent, an adversary can delay its delivery by at most <span class="math inline">\(\Delta\)</span>.</p></li>
 <li><p>In a fully <strong>asynchronous</strong> model, there is no upper bound on the delay for a message to be delivered. This also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can’t distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.</p></li>
@@ -71,8 +71,8 @@
 </ul></li>
 </ul>
 </section>
-<section id="fault-tolerance" class="level1 unnumbered">
-<h1 class="unnumbered">Fault Tolerance</h1>
+<section id="fault-tolerance" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Fault Tolerance</h1>
 <p>There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of <span class="math inline">\(f\)</span> nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any “work” we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least <span class="math inline">\(f+1\)</span> nodes, so that there is always at least one non-faulty node with the data we need to access. So, this seems to imply that having simply <span class="math inline">\(f+1\)</span> total nodes might be sufficient for a fault tolerant protocol. But, this still doesn’t satisfy a progress requirement, since if we now need to write everything down to <span class="math inline">\(f+1\)</span> nodes, then failure of <span class="math inline">\(f\)</span> out of <span class="math inline">\(f+1\)</span> nodes clearly stalls our protocol, since it can do any work safely. So, our additional requirement is that both</p>
 <ol type="1">
 <li><p>we must write any work down to <span class="math inline">\(f+1\)</span> nodes and</p></li>
@@ -81,14 +81,15 @@
 <p>Thus, this naturally gives us a total node requirement of <span class="math display">\[\begin{aligned}
     n = f + (f+1) = 2f + 1\end{aligned}\]</span> That is, even in the case of <span class="math inline">\(f\)</span> maximum node failures, we will always have <span class="math inline">\(f+1\)</span> nodes available to us to write down our work, allowing us to make progress.</p>
 </section>
-<section id="bft-protocols" class="level1 unnumbered">
-<h1 class="unnumbered">BFT Protocols</h1>
-<section id="model" class="level2 unnumbered">
-<h2 class="unnumbered">Model</h2>
+<section id="byzantine-fault-tolerance" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Byzantine Fault Tolerance</h1>
+<p>The earliest explicit reference to <em>Byzantine</em> faults appeared in <span class="citation" data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span>, though earlier work had touched on the same problem without referring to it by that moniker <span class="citation" data-cites="1980peasereaching 1978sift">(<a href="#ref-1980peasereaching" role="doc-biblioref">Pease, Shostak, and Lamport 1980</a>; <a href="#ref-1978sift" role="doc-biblioref">Wensley et al. 1978</a>)</span>. They show in <span class="citation" data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span> that when using “oral” messages (i.e. non-signed) messages, a Byzantine agreement solution requires <span class="math inline">\(3f+1\)</span> processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming <span class="math inline">\(n &gt; 3f+1\)</span>, and also show that if we allow for “written” (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only <span class="math inline">\(f+1\)</span> processes.</p>
+<section id="model" class="level2" data-number="3.1">
+<h2 data-number="3.1"><span class="header-section-number">3.1</span> Model</h2>
 <p>The work on Practical Byzantine Fault Tolerance <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
 </section>
-<section id="intuitions-and-algorithm" class="level2 unnumbered">
-<h2 class="unnumbered">Intuitions and Algorithm</h2>
+<section id="intuitions-and-algorithm" class="level2" data-number="3.2">
+<h2 data-number="3.2"><span class="header-section-number">3.2</span> Intuitions and Algorithm</h2>
 <p>If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:</p>
 <ol>
 <li><p><strong>Leader equivocation</strong>: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept message with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?</p></li>
@@ -105,8 +106,8 @@
 </ol>
 <p>Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.</p>
 </section>
-<section id="notes" class="level2 unnumbered">
-<h2 class="unnumbered">Notes</h2>
+<section id="notes" class="level2" data-number="3.3">
+<h2 data-number="3.3"><span class="header-section-number">3.3</span> Notes</h2>
 <ul>
 <li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any 2 quorums with <span class="math inline">\(n-f = 2f+1\)</span> nodes, we are guaranteed they intersect in at least <span class="math inline">\(f+1\)</span> nodes (just draw a picture). Note that if you talk to at least <span class="math inline">\(f+1\)</span> nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.</p></li>
 </ul>
@@ -121,8 +122,17 @@ Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tol
 <div id="ref-2011lamport" class="csl-entry" role="doc-biblioentry">
 Lamport, Leslie. 2011. <span>“Byzantizing Paxos by Refinement.”</span> In <em>Proceedings of the 25th International Conference on Distributed Computing</em>, 211–24. DISC’11. Berlin, Heidelberg: Springer-Verlag.
 </div>
+<div id="ref-1982lamportshostak" class="csl-entry" role="doc-biblioentry">
+Lamport, Leslie, Robert Shostak, and Marshall Pease. 1982. <span>“<span>The Byzantine Generals Problem</span>.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 4 (3): 382–401. <a href="https://doi.org/10.1145/357172.357176">https://doi.org/10.1145/357172.357176</a>.
+</div>
+<div id="ref-1980peasereaching" class="csl-entry" role="doc-biblioentry">
+Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.
+</div>
 <div id="ref-1978rivestcrypto" class="csl-entry" role="doc-biblioentry">
 Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for Obtaining Digital Signatures and Public-Key Cryptosystems.”</span> <em>Commun. ACM</em> 21 (2): 120–26. <a href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.
+</div>
+<div id="ref-1978sift" class="csl-entry" role="doc-biblioentry">
+Wensley, J. H., L. Lamport, J. Goldberg, M. W. Green, K. N. Levitt, P. M. Melliar-Smith, R. E. Shostak, and C. B. Weinstock. 1978. <span>“SIFT: Design and Analysis of a Fault-Tolerant Computer for Aircraft Control.”</span> <em>Proceedings of the IEEE</em> 66 (10): 1240–55. <a href="https://doi.org/10.1109/PROC.1978.11114">https://doi.org/10.1109/PROC.1978.11114</a>.
 </div>
 </div>
 </section>

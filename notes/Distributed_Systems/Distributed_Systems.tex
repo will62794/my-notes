@@ -22,7 +22,7 @@
 \author{William Schultz}
 \maketitle
 
-\section*{System Models}
+\section{System Models}
 
 \begin{itemize}
     \item In a \textbf{synchronous} message passing system, there exists some known finite bound $\Delta$ on message delays. That is, for any message sent, an adversary can delay its delivery by at most $\Delta$.
@@ -34,7 +34,7 @@
     \end{itemize}
 \end{itemize}
 
-\section*{Fault Tolerance}
+\section{Fault Tolerance}
 
 There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of $f$ nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any ``work'' we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least $f+1$ nodes, so that there is always at least one non-faulty node with the data we need to access. So, this seems to imply that having simply $f+1$ total nodes might be sufficient for a fault tolerant protocol. But, this still doesn't satisfy a progress requirement, since if we now need to write everything down to $f+1$ nodes, then failure of $f$ out of $f+1$ nodes clearly stalls our protocol, since it can do any work safely. So, our additional requirement is that both 
 \begin{enumerate}[1)]
@@ -48,13 +48,15 @@ Thus, this naturally gives us a total node requirement of
 That is, even in the case of $f$ maximum node failures, we will always have $f+1$ nodes available to us to write down our work, allowing us to make progress.
 
 
-\section*{BFT Protocols}
+\section{Byzantine Fault Tolerance}
 
-\subsection*{Model}
+The earliest explicit reference to \textit{Byzantine} faults appeared in \cite{1982lamportshostak}, though earlier work had touched on the same problem without referring to it by that moniker \cite{1980peasereaching,1978sift}. They show in \cite{1982lamportshostak} that when using ``oral'' messages (i.e. non-signed) messages, a Byzantine agreement solution requires $3f+1$ processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming $n > 3f+1$, and also show that if we allow for ``written'' (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only $f+1$ processes.
+
+\subsection{Model}
 
 The work on Practical Byzantine Fault Tolerance \cite{1999castropbft} considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver \cite{2011lamport}. This can be achieved this with public-key signatures \cite{1978rivestcrypto}, message authentication codes (MACs), etc.
 
-\subsection*{Intuitions and Algorithm}
+\subsection{Intuitions and Algorithm}
 
 If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:
 \begin{enumerate}
@@ -75,7 +77,7 @@ The essence of the algorithm is as follows:
 \end{enumerate}
 Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.
 
-\subsection*{Notes}
+\subsection{Notes}
 \begin{itemize}
     \item Given $n=3f+1$ nodes, for any 2 quorums with $n-f = 2f+1$ nodes, we are guaranteed they intersect in at least $f+1$ nodes (just draw a picture). Note that if you talk to at least $f+1$ nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.
 \end{itemize}

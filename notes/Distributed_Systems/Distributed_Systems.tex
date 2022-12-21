@@ -25,14 +25,24 @@
 \section{System Models}
 
 \begin{itemize}
-    \item In a \textbf{synchronous} message passing system, there exists some known finite bound $\Delta$ on message delays. That is, for any message sent, an adversary can delay its delivery by at most $\Delta$.
-    \item  In a fully \textbf{asynchronous} model, there is no upper bound on the delay for a message to be delivered. This also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can't distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.
+    \item In a \textbf{synchronous} message passing system, there exists some known finite bound $\Delta$ on message delays. That is, for any message sent, an adversary can delay its delivery by at most $\Delta$. So, every process that sends messages at time $t$ gets them delivered by time $t+\Delta$. i.e., the whole system runs in lockstep, marching forward in perfectly synchronous rounds. For example, \cite{2018abrahamsyncbyz} provides a standard (modern) description of the synchronous model: 
+    
+    \begin{quote}
+    If an honest party $i$ sends a message to another honest party $j$ at the beginning of a round, the message is guaranteed to reach by the end of that round. We describe the protocol assuming lock-step execution, i.e., parties enter and exit each round simultaneously. Later...we will present a clock synchronization protocol to bootstrap lock-step execution from bounded message delay.
+    \end{quote}
+    
+    \item  In a fully \textbf{asynchronous} model, there is no upper bound on the delay for a message to be delivered, but we do assume that the delay is some finite value (e.g. chosen by an adversary).  So, even though the message delay may be some unknown/unbounded quantity, we do assume that every message eventually gets delivered, even if the delay is unknown a priori.
+    
+    The nature of asynchronous networks also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can't distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.
+
     \item The \textbf{partial synchrony} model aims to find a middle ground between the two above models. The assumption is that there exists some known finite time bound $\Delta$ and a special event called GST (global stabilization time) such that:
     \begin{itemize}
         \item The adversary must cause the GST event to eventually happen after some unknown finite time.
         \item Any message sent at time $x$ must be delivered by $\Delta + max(x, GST)$. That is, after the GST, messages are delivered within the known finite time bound $\Delta$ (i.e. the system has ``reverted" to synchrony).
     \end{itemize}
 \end{itemize}
+
+\textit{What are the fundamental differences between the synchronous and asynchronous models, and what exactly makes the latter harder?}
 
 \section{Fault Tolerance}
 
@@ -83,7 +93,7 @@ Note that since we assume a public key infrastructure (PKI) set up between nodes
 \end{itemize}
 
 
-\bibliographystyle{plain}
+\bibliographystyle{alpha}
 \bibliography{../../references.bib}
 
 \end{document}

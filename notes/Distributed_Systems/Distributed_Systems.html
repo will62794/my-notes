@@ -62,14 +62,19 @@
 <section id="system-models" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> System Models</h1>
 <ul>
-<li><p>In a <strong>synchronous</strong> message passing system, there exists some known finite bound <span class="math inline">\(\Delta\)</span> on message delays. That is, for any message sent, an adversary can delay its delivery by at most <span class="math inline">\(\Delta\)</span>.</p></li>
-<li><p>In a fully <strong>asynchronous</strong> model, there is no upper bound on the delay for a message to be delivered. This also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can’t distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.</p></li>
+<li><p>In a <strong>synchronous</strong> message passing system, there exists some known finite bound <span class="math inline">\(\Delta\)</span> on message delays. That is, for any message sent, an adversary can delay its delivery by at most <span class="math inline">\(\Delta\)</span>. So, every process that sends messages at time <span class="math inline">\(t\)</span> gets them delivered by time <span class="math inline">\(t+\Delta\)</span>. i.e., the whole system runs in lockstep, marching forward in perfectly synchronous rounds. For example, <span class="citation" data-cites="2018abrahamsyncbyz">(<a href="#ref-2018abrahamsyncbyz" role="doc-biblioref">Abraham et al. 2019</a>)</span> provides a standard (modern) description of the synchronous model:</p>
+<blockquote>
+<p>If an honest party <span class="math inline">\(i\)</span> sends a message to another honest party <span class="math inline">\(j\)</span> at the beginning of a round, the message is guaranteed to reach by the end of that round. We describe the protocol assuming lock-step execution, i.e., parties enter and exit each round simultaneously. Later...we will present a clock synchronization protocol to bootstrap lock-step execution from bounded message delay.</p>
+</blockquote></li>
+<li><p>In a fully <strong>asynchronous</strong> model, there is no upper bound on the delay for a message to be delivered, but we do assume that the delay is some finite value (e.g. chosen by an adversary). So, even though the message delay may be some unknown/unbounded quantity, we do assume that every message eventually gets delivered, even if the delay is unknown a priori.</p>
+<p>The nature of asynchronous networks also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can’t distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.</p></li>
 <li><p>The <strong>partial synchrony</strong> model aims to find a middle ground between the two above models. The assumption is that there exists some known finite time bound <span class="math inline">\(\Delta\)</span> and a special event called GST (global stabilization time) such that:</p>
 <ul>
 <li><p>The adversary must cause the GST event to eventually happen after some unknown finite time.</p></li>
 <li><p>Any message sent at time <span class="math inline">\(x\)</span> must be delivered by <span class="math inline">\(\Delta + max(x, GST)\)</span>. That is, after the GST, messages are delivered within the known finite time bound <span class="math inline">\(\Delta\)</span> (i.e. the system has “reverted" to synchrony).</p></li>
 </ul></li>
 </ul>
+<p><em>What are the fundamental differences between the synchronous and asynchronous models, and what exactly makes the latter harder?</em></p>
 </section>
 <section id="fault-tolerance" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Fault Tolerance</h1>
@@ -116,6 +121,9 @@
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-2018abrahamsyncbyz" class="csl-entry" role="doc-biblioentry">
+Abraham, Ittai, Srinivas Devadas, Danny Dolev, Kartik Nayak, and Ling Ren. 2019. <span>“Synchronous Byzantine Agreement with Expected o(1) Rounds, Expected Communication, and Optimal Resilience.”</span> In <em>Financial Cryptography and Data Security: 23rd International Conference, FC 2019, Frigate Bay, St. Kitts and Nevis, February 18–22, 2019, Revised Selected Papers</em>, 320–34. Berlin, Heidelberg: Springer-Verlag. <a href="https://doi.org/10.1007/978-3-030-32101-7_20">https://doi.org/10.1007/978-3-030-32101-7_20</a>.
+</div>
 <div id="ref-1999castropbft" class="csl-entry" role="doc-biblioentry">
 Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA: USENIX Association.
 </div>

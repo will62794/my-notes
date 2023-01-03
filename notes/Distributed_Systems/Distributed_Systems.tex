@@ -46,14 +46,16 @@
 
 \section{Fault Tolerance}
 
-There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of $f$ nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any ``work'' we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least $f+1$ nodes, so that there is always at least one non-faulty node with the data we need to access. So, this seems to imply that having simply $f+1$ total nodes might be sufficient for a fault tolerant protocol. But, this still doesn't satisfy a progress requirement, since if we now need to write everything down to $f+1$ nodes, then failure of $f$ out of $f+1$ nodes clearly stalls our protocol, since it can do any work safely. So, our additional requirement is that both 
+There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of $f$ nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any ``work'' we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least $f+1$ nodes, so that there is always at least one non-faulty node with the data we need to access. 
+
+This seems to imply that having $f+1$ nodes might be sufficient for a protocol to be fault tolerant. But, this doesn't satisfy a progress requirement. That is, if we now need to write everything down to $f+1$ nodes, then failure of $f$ out of $f+1$ nodes would clearly stall our protocol, since it can't do any work safely. So, our additional requirement is that both: 
 \begin{enumerate}[1)]
-    \item we must write any work down to $f+1$ nodes and
-    \item  that we always have $f+1$ non-faulty nodes available that we can write work down on
+    \item Write any work down to $f+1$ nodes.
+    \item Always have $f+1$ non-faulty nodes available that we can write work down on.
 \end{enumerate}
 Thus, this naturally gives us a total node requirement of 
 \begin{align*}
-    n = f + (f+1) = 2f + 1
+    n = (f+1) + f = 2f + 1
 \end{align*}
 That is, even in the case of $f$ maximum node failures, we will always have $f+1$ nodes available to us to write down our work, allowing us to make progress.
 

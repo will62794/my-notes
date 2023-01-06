@@ -46,6 +46,7 @@ def make_index_page_html(notes):
     out_html = "<html>\n"
     out_html += "<body style='padding:20px;'>"
     out_html += "<link rel='stylesheet' href='style.css' />"
+    out_html += '<link rel="icon" type="image/x-icon" href="favicon.ico">'
     out_html += "<h1>Notes</h1>\n"
     for note in notes:
         note_display_name = note.replace("_", " ")

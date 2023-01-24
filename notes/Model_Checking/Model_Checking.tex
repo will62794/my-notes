@@ -91,8 +91,8 @@ To define a notion of abstraction for Kripke structures, we define a few standar
 
 Let $M_1=(AP_1,S_1,I_1,R_1,L_1)$ and $M_2=(AP_2,S_2,I_2,R_2,L_2)$ be Kripke structures such that $AP_2 \subseteq AP_1$. A relation $H$ is a \textit{simulation relation from $M_1$ to $M_2$} if for every $s_1 \in S_1$ and $s_2 \in S_2$ such that $H(s_1,s_2)$, both of the following conditions hold:
 \begin{itemize}
-    \item For all $p \in AP_2$, $p \in L_1(s_1) \iff p \in L_2(s_2)$
-    \item $\forall t_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))$
+    \item $\forall p \in AP_2 : p \in L_1(s_1) \iff p \in L_2(s_2)$
+    \item $\forall t_1 \in S_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))$
 \end{itemize}
 The second condition states that for every transition of the ``smaller'' (i.e. more concrete) system $M_1$, there must exist a corresponding transition in the larger system $M_2$. We say that $M_1$ \textit{is simulated by} $M_2$ (or $M_2$ \textit{simulates} $M_1$) (denoted $M_1 \leq M_2$) if there exists a simulation relation $H$ from $M_1$ to $M_2$ such that 
 \begin{align*}
@@ -113,7 +113,7 @@ This abstraction basically only tracks whether a particular process is in the cr
 
 \subsubsection*{Bisimulation}
 
-One state is related to another by the bisimulation relation of they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and \textit{vice versa}.
+One state is related to another by the bisimulation relation If they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and \textit{vice versa}.
 
 \subsubsection*{Existential Abstraction}
 

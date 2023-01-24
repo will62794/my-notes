@@ -128,8 +128,8 @@
 <p>To define a notion of abstraction for Kripke structures, we define a few standard relations between two structures <span class="math inline">\(M_1\)</span> and <span class="math inline">\(M_2\)</span>. <em>Simulation</em> is a preorder (a reflexive and transitive partial order) in which the larger structure may have more behaviors, but possibly fewer states and transitions.</p>
 <p>Let <span class="math inline">\(M_1=(AP_1,S_1,I_1,R_1,L_1)\)</span> and <span class="math inline">\(M_2=(AP_2,S_2,I_2,R_2,L_2)\)</span> be Kripke structures such that <span class="math inline">\(AP_2 \subseteq AP_1\)</span>. A relation <span class="math inline">\(H\)</span> is a <em>simulation relation from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span></em> if for every <span class="math inline">\(s_1 \in S_1\)</span> and <span class="math inline">\(s_2 \in S_2\)</span> such that <span class="math inline">\(H(s_1,s_2)\)</span>, both of the following conditions hold:</p>
 <ul>
-<li><p>For all <span class="math inline">\(p \in AP_2\)</span>, <span class="math inline">\(p \in L_1(s_1) \iff p \in L_2(s_2)\)</span></p></li>
-<li><p><span class="math inline">\(\forall t_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))\)</span></p></li>
+<li><p><span class="math inline">\(\forall p \in AP_2 : p \in L_1(s_1) \iff p \in L_2(s_2)\)</span></p></li>
+<li><p><span class="math inline">\(\forall t_1 \in S_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))\)</span></p></li>
 </ul>
 <p>The second condition states that for every transition of the “smaller” (i.e. more concrete) system <span class="math inline">\(M_1\)</span>, there must exist a corresponding transition in the larger system <span class="math inline">\(M_2\)</span>. We say that <span class="math inline">\(M_1\)</span> <em>is simulated by</em> <span class="math inline">\(M_2\)</span> (or <span class="math inline">\(M_2\)</span> <em>simulates</em> <span class="math inline">\(M_1\)</span>) (denoted <span class="math inline">\(M_1 \leq M_2\)</span>) if there exists a simulation relation <span class="math inline">\(H\)</span> from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span> such that <span class="math display">\[\begin{aligned}
     \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))\end{aligned}\]</span> For example, consider the concrete Kripke structure <span class="math inline">\(M\)</span>, modeling a mutual exclusion program where its atomic propositions <span class="math inline">\(AP=\{N_1,T_1,C_1,N_2,T_2,C_2,F_0\}\)</span>:</p>
@@ -145,7 +145,7 @@
 </section>
 <section id="bisimulation" class="level3 unnumbered">
 <h3 class="unnumbered">Bisimulation</h3>
-<p>One state is related to another by the bisimulation relation of they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and <em>vice versa</em>.</p>
+<p>One state is related to another by the bisimulation relation If they agree on their common atomic propositions and, in addition, for every successor of one state there is a corresponding successor of the other state, and <em>vice versa</em>.</p>
 </section>
 <section id="existential-abstraction" class="level3 unnumbered">
 <h3 class="unnumbered">Existential Abstraction</h3>

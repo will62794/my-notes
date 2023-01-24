@@ -94,6 +94,18 @@ Let $M_1=(AP_1,S_1,I_1,R_1,L_1)$ and $M_2=(AP_2,S_2,I_2,R_2,L_2)$ be Kripke stru
     \item $\forall p \in AP_2 : p \in L_1(s_1) \iff p \in L_2(s_2)$
     \item $\forall t_1 \in S_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))$
 \end{itemize}
+Note that it is helpful to visually illustrate these conditions e.g. if there is a (blue) transition $s_1 \rightarrow s_1'$ in system $M_1$, and states $s_1,s_2$ are related via the simulation relation $H$, then there must exist a (red) transition $s_2 \rightarrow s_2'$ such that $(s_1',s_2') \in H$.
+\begin{center}
+\begin{tabular}{c c c}
+    $\textcolor{blue}{s_1}$ & $\overset{H}{\longrightarrow}$ & $\textcolor{red}{s_2}$ \\
+    $\textcolor{blue}{\downarrow}$ &  & $\textcolor{red}{\downarrow}$ \\
+    $\textcolor{blue}{s_1'}$ & $\overset{H}{\longrightarrow}$ & $\textcolor{red}{s_2'}$
+    % &s_1 \longrightarrow &s_2 \\
+    % &\Downarrow &\Downarrow \\
+    % &s_1' \longrightarrow &s_2'
+\end{tabular}
+\end{center}
+
 The second condition states that for every transition of the ``smaller'' (i.e. more concrete) system $M_1$, there must exist a corresponding transition in the larger system $M_2$. We say that $M_1$ \textit{is simulated by} $M_2$ (or $M_2$ \textit{simulates} $M_1$) (denoted $M_1 \leq M_2$) if there exists a simulation relation $H$ from $M_1$ to $M_2$ such that 
 \begin{align*}
     \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))

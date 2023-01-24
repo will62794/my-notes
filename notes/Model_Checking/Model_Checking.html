@@ -131,6 +131,28 @@
 <li><p><span class="math inline">\(\forall p \in AP_2 : p \in L_1(s_1) \iff p \in L_2(s_2)\)</span></p></li>
 <li><p><span class="math inline">\(\forall t_1 \in S_1 :  R_1(s_1,t_1) \Rightarrow \exists t_2 : (R_2(s_2,t_2) \wedge H(t_1,t_2))\)</span></p></li>
 </ul>
+<p>Note that it is helpful to visually illustrate these conditions e.g. if there is a (blue) transition <span class="math inline">\(s_1 \rightarrow s_1&#39;\)</span> in system <span class="math inline">\(M_1\)</span>, and states <span class="math inline">\(s_1,s_2\)</span> are related via the simulation relation <span class="math inline">\(H\)</span>, then there must exist a (red) transition <span class="math inline">\(s_2 \rightarrow s_2&#39;\)</span> such that <span class="math inline">\((s_1&#39;,s_2&#39;) \in H\)</span>.</p>
+<div class="center">
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\textcolor{blue}{s_1}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\overset{H}{\longrightarrow}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\textcolor{red}{s_2}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(\textcolor{blue}{\downarrow}\)</span></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"><span class="math inline">\(\textcolor{red}{\downarrow}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\textcolor{blue}{s_1&#39;}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\overset{H}{\longrightarrow}\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(\textcolor{red}{s_2&#39;}\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>The second condition states that for every transition of the “smaller” (i.e. more concrete) system <span class="math inline">\(M_1\)</span>, there must exist a corresponding transition in the larger system <span class="math inline">\(M_2\)</span>. We say that <span class="math inline">\(M_1\)</span> <em>is simulated by</em> <span class="math inline">\(M_2\)</span> (or <span class="math inline">\(M_2\)</span> <em>simulates</em> <span class="math inline">\(M_1\)</span>) (denoted <span class="math inline">\(M_1 \leq M_2\)</span>) if there exists a simulation relation <span class="math inline">\(H\)</span> from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span> such that <span class="math display">\[\begin{aligned}
     \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))\end{aligned}\]</span> For example, consider the concrete Kripke structure <span class="math inline">\(M\)</span>, modeling a mutual exclusion program where its atomic propositions <span class="math inline">\(AP=\{N_1,T_1,C_1,N_2,T_2,C_2,F_0\}\)</span>:</p>
 <div class="center">

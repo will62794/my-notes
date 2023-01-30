@@ -60,6 +60,7 @@
 <li><a href="#simulation">Simulation</a></li>
 <li><a href="#bisimulation">Bisimulation</a></li>
 <li><a href="#existential-abstraction">Existential Abstraction</a></li>
+<li><a href="#trace-equivalence-vs.-bisimulation">Trace Equivalence vs. Bisimulation</a></li>
 </ul></li>
 <li><a href="#counterexample-guided-abstraction-refinement-cegar">Counterexample-Guided Abstraction Refinement (CEGAR)</a>
 <ul>
@@ -173,6 +174,10 @@
 <h3 class="unnumbered">Existential Abstraction</h3>
 <p>One way to define an abstract model (Kripke structure) from a concrete one is via a concretization function <span class="math inline">\(\gamma\)</span>. We can define abstract Kripke structures by means of <em>existential abstraction</em> <span class="citation" data-cites="94mcabs">(<a href="#ref-94mcabs" role="doc-biblioref">Edmund M. Clarke, Grumberg, and Long 1994</a>)</span>. Given a set <span class="math inline">\(\widehat{S}\)</span> of abstract states, the <em>concretization function</em> <span class="math inline">\(\gamma : \widehat{S} \rightarrow 2^S\)</span> indicates, for each abstract state <span class="math inline">\(\widehat{s}\)</span>, what set of concrete states are represented by <span class="math inline">\(\widehat{s}\)</span>. Similarly, there is a transition from abstract state <span class="math inline">\(\widehat{s}\)</span> to another abstract state <span class="math inline">\(\widehat{s}&#39;\)</span> if there is a transition from a state represented by <span class="math inline">\(\widehat{s}\)</span> to a state represented by <span class="math inline">\(\widehat{s}&#39;\)</span>. Essentially, we just take every transition between concrete states and add it into our abstract transition system, based on the abstract states that represent those concrete state transitions.</p>
 </section>
+<section id="trace-equivalence-vs.-bisimulation" class="level3 unnumbered">
+<h3 class="unnumbered">Trace Equivalence vs. Bisimulation</h3>
+<p>Note that trace inclusion and trace equivalence notions of transition system similiarity or equivalence are often sufficient when concerned with linear time properties (i.e. LTL formulae) <span class="citation" data-cites="2008principlemc">(<a href="#ref-2008principlemc" role="doc-biblioref">Baier and Katoen 2008</a>)</span>. Bisimulation and simulation can be considered primarily as relations that respect the <em>branching time</em> behavior. Bisimulation, for example, is a stronger notion than trace equivalence. That is, if two systems <span class="math inline">\(TS_1\)</span> and <span class="math inline">\(TS_2\)</span> are bisimilar, then they admit the same set of traces. And so, these systems also fulfill the same linear time properties.</p>
+</section>
 </section>
 <section id="counterexample-guided-abstraction-refinement-cegar" class="level2 unnumbered">
 <h2 class="unnumbered">Counterexample-Guided Abstraction Refinement (CEGAR)</h2>
@@ -242,6 +247,9 @@
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-2008principlemc" class="csl-entry" role="doc-biblioentry">
+Baier, Christel, and Joost-Pieter Katoen. 2008. <em>Principles of Model Checking</em>. Vol. 26202649.
+</div>
 <div id="ref-BIERE2002160" class="csl-entry" role="doc-biblioentry">
 Biere, Armin, Cyrille Artho, and Viktor Schuppan. 2002. <span>“Liveness Checking as Safety Checking.”</span> <em>Electronic Notes in Theoretical Computer Science</em> 66 (2): 160–77. https://doi.org/<a href="https://doi.org/10.1016/S1571-0661(04)80410-9">https://doi.org/10.1016/S1571-0661(04)80410-9</a>.
 </div>

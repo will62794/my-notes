@@ -131,6 +131,10 @@ One state is related to another by the bisimulation relation If they agree on th
 
 One way to define an abstract model (Kripke structure) from a concrete one is via a concretization function $\gamma$. We can define abstract Kripke structures by means of \textit{existential abstraction} \cite{94mcabs}. Given a set $\widehat{S}$ of abstract states, the \textit{concretization function} $\gamma : \widehat{S} \rightarrow 2^S$ indicates, for each abstract state $\widehat{s}$, what set of concrete states are represented by $\widehat{s}$. Similarly, there is a transition from abstract state $\widehat{s}$ to another abstract state $\widehat{s}'$ if there is a transition from a state represented by $\widehat{s}$ to a state represented by $\widehat{s}'$. Essentially, we just take every transition between concrete states and add it into our abstract transition system, based on the abstract states that represent those concrete state transitions.
 
+\subsubsection*{Trace Equivalence vs. Bisimulation}
+
+Note that trace inclusion and trace equivalence notions of transition system similiarity or equivalence are often sufficient when concerned with linear time properties (i.e. LTL formulae)  \cite{2008principlemc}. Bisimulation and simulation can be considered primarily as relations that respect the \textit{branching time} behavior. Bisimulation, for example, is a stronger notion than trace equivalence. That is, if two systems $TS_1$ and $TS_2$ are bisimilar, then they admit the same set of traces. And so, these systems also fulfill the same linear time properties. 
+
 \subsection*{Counterexample-Guided Abstraction Refinement (CEGAR)}
 
 

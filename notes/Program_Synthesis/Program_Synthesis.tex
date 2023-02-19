@@ -24,18 +24,41 @@
 
 % \section{Reactive synthesis}
 
+In general, we can present the \textit{synthesis} problem in contrast to the verification problem as follows:
 \begin{itemize}
     \item The \textbf{verification problem}: given system $M$ and spec $\varphi$, check that $M \vDash \varphi$.
     \item The \textbf{synthesis problem}: given spec $\varphi$, find $M$ such that $M \vDash \varphi$.
 \end{itemize}
 
-\subsection*{Deductive Synthesis}
+\subsection{Functional Synthesis}
+
+The classic, \textit{functional synthesis} problem, is defined with respect to programs that take some input $x$ and transform it to output $y$. In this setting, if we are given a specification $\varphi$ that prescribes the desired input/output relation, we can construct a program by means of establishing validity of the theorem
+\begin{align*}
+    \forall x \, \exists y : \varphi(x,y)
+\end{align*}
+Note that this is equivalent to the second order formula
+\begin{align*}
+    \exists f, \forall x : \varphi(x,f(x))
+\end{align*}
+where $f$ is a concrete function that takes input $x$ and returns the correct output $y$ satisfying specification $\varphi$ \cite{1989pnuelirosner,1969waldingersynthprow}. If we have a constructive way to prove this theorem, then we can construct $f$, from which we can construct a program that satisfies $\varphi$.
+
+\subsection{Reactive Synthesis}
+
+The above approach is suitable for sequential programs, but if we want to move to concurrent programs, then we need a more expressive specification lagnauge to express $\varphi$. Temporal logic became the natural choice for this and works of \cite{1981clarkemerson, 1984mannawolper} essentially do concurrent program synthesis by showing satisfiability of of a particular temporal formula specification $\varphi$, and use the model satisfying $\varphi$ to construct a program implementing $\varphi$.
+
+In \cite{1989pnuelirosner}, however, they claim that the approach taken in \cite{1981clarkemerson, 1984mannawolper} is not quite sufficient, because it assumes that we are trying to synthesize \textit{closed} systems. That is, systems for which we have full control over every component of the system. They claim that if, for example, we aree synthesizing a system with two components, $C_1$ and $C_2$, the ``hidden assumption'' in \cite{1981clarkemerson} is that we have the power to construct both $C_1$ and $C_2$ in a way that will ensure the needed cooperation. But, if we are in a so-called \textit{open system} setting, then $C_1$, for example, may represent the \textit{environment} over which the implementor has no control, while $C_2$ is the body of the system itself (which we may refer to as a \textit{reactive module}). In this case, we instead have to synthesize $C_2$ in such a way that it will work correctly in response to any possible behaviors of the environment $C_1$. For example, if $C_1$ is a module that can only modify $x$ (a shared variable for communication), and $C_2$ can only modify $y$, then they claim the synthesis problem should instead be stated as
+\begin{align*}
+    \forall x \, \exists y : \varphi(x,y)
+\end{align*}
+which they refer to as the \textit{reactive synthesis} problem. Note that in the formal statement above, we should now interpret $x$ and $y$ as being quantified over behaviors of the computation, since we are now interpreting it over temporal logic. So, the statement is saying that for any possible sequence of values $x$ (that can be produced by the environment $C_1$), there exists a sequence of values $y$ (produced by the controllable system $C_2$) such that $\varphi(x,y)$ holds. They note that the approach of \cite{1981clarkemerson} can be viewed as a solution to the alternate problem statement $\exists x \, \exists y : \varphi(x,y)$.
+
+\subsection{Deductive Synthesis}
 
 The \textit{deductive approach} \cite{manna1980deductive} tries to synthesize an input/output program by extracting it from a realizability proof.
 
-\subsection*{Temporal Synthesis}
+\subsection{Temporal Synthesis}
 
-\textit{Temporal synthesis} considers specifications given in the form of LTL (or CTL), for example. Initial approach was to use satisfiability of a temporal formula as a way to derive $M$ \cite{1981clarkemerson}. 
+\textit{Temporal synthesis} considers specifications given in the form of LTL (or CTL), for example. An initial approach was to use satisfiability of a temporal formula as a way to derive $M$ \cite{1981clarkemerson}. 
 See also \cite{1984mannawolper}. 
 
 In \cite{1981clarkemerson} they consider concurrent systems consisting of a finite number of fixed processes $P_1,\dots,P_m$ running in parallel. They treat parallelism in the usual sense i.e. non-deterministic interleaving of the sequential atomic actions of each process. They use CTL as a specification language, and consider the semantics of CTL with respect to a (Kripke) structure $M=(S,A_1,\dots,A_k,L)$, where

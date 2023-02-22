@@ -26,7 +26,7 @@ The notion of \textit{weakest precondition} in program analysis derives from the
 \begin{center}
     \includegraphics[scale=0.3]{gcl_grammar.png}
 \end{center}
-So, given a program $S$ and a postcondition $\varphi$, we define the \textit{weakest precondition} as the weakest property of the input state that guarantees that $S$ will terminate with the postcondition $\varphi$, denoted $wp(S, \varphi)$. In the definition of GCL, we can provide definitions of how to compute the weakest precondition for various program statements. For example, for an assignment statement $x := E$, we have that
+Given a program $S$ and a postcondition $\varphi$, we define the associated \textit{weakest precondition}, denoted $wp(S, \varphi)$, as the weakest property of the input state that guarantees that $S$ will terminate with the postcondition $\varphi$. In the context of GCL, we can provide basic rules for how to compute the weakest precondition for various program statements. For example, for an assignment statement $x := E$, we have
 \begin{align*}
     wp(x := E, \varphi) \equiv \varphi\{E/x\}
 \end{align*}
@@ -37,11 +37,11 @@ where $\varphi\{E/x\}$ represents the property $\varphi$ with appearances of $x$
     & \equiv x = 2\\
 \end{align*}
 
-From a more semantic perspective, we can also think about weakest preconditions in terms of symbolic transition relations. If we have a transition relation $T$ and a postcondition $\varphi$ (i.e. a state predicate), the weakest precondition of $T$ with respect to $\varphi$ is the weakest predicate $P$ (in other words, the largest set of states) such that a transition out of any state in $P$ will uphold the property $\varphi$.
+We can also think about weakest preconditions from a more semantic perspective. If we have a symbolic transition relation $T$ and a postcondition $\varphi$ (i.e. a state predicate), the weakest precondition of $T$ with respect to $\varphi$ is the weakest predicate $P$ (in other words, the largest set of states) such that a transition out of any state in $P$ will uphold the property $\varphi$.
 \begin{center}
     \includegraphics[scale=0.18]{weakest_precond.png}
 \end{center}
-We can also consider weakest precondition computation as a kind of \textit{backwards symbolic execution}. That is, we start from a given postcondition predicate, and a given transition relation, and execute the transition relation backwards to compute the states contained in the weakest precondition.
+So, we can also consider weakest precondition computation as a kind of \textit{backwards symbolic execution}. That is, we start from a given postcondition predicate, and a given transition relation, and execute the transition relation backwards to compute the states contained in the weakest precondition.
 
 
 \bibliographystyle{plain}

@@ -241,6 +241,16 @@
         assign w1 = !a;
         assign b = w1;
     endmodule</code></pre>
+<section id="vectors" class="level4 unnumbered">
+<h4 class="unnumbered">Vectors</h4>
+<p>Vectors in Verilog are used to group related signals using one name to make things more convenient. For example, declaring <code>wire [7:0] w;</code> declares an 8-bit vector named <code>w</code> that is functionally equivalent to having 8 separate writes.</p>
+<p>Note how the declaration of a vector places the dimensions before the name. But, note that the <em>part select</em> (i.e. accessing a particular entry in the vector) has the dimensions <em>after</em> the vector name e.g.</p>
+<pre><code>    wire [99:0] w; // declare 100 element vector.
+    assign out = w[3]; // part select one bit of the vector.</code></pre>
+<p>More generally, the syntax for declaring vectors is as follows:</p>
+<pre><code>    type [high:low] vector_name;</code></pre>
+<p>where <code>type</code> specifies the datatype of the vector (typically <code>wire</code> or <code>reg</code>). Note that the <em>endianness</em> of a vector is whether the least significant bit has a lower index (little endian <code>[3:0]</code>) or a higher index (big endian <code>[0:3]</code>). Once a vector is declared with a particular endianness, it must always be used the same way.</p>
+</section>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered">

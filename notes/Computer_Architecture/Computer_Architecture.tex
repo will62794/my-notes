@@ -202,6 +202,19 @@ When circuits become more complex, we can also declare \textit{wires}, which are
     endmodule
 \end{verbatim}
 
+\paragraph*{Vectors} Vectors in Verilog are used to group related signals using one name to make things more convenient. For example, declaring \verb|wire [7:0] w;| declares an 8-bit vector named \verb|w| that is functionally equivalent to having 8 separate writes.
+
+Note how the declaration of a vector places the dimensions before the name. But, note that the \textit{part select} (i.e. accessing a particular entry in the vector) has the dimensions \textit{after} the vector name e.g.
+\begin{verbatim}
+    wire [99:0] w; // declare 100 element vector.
+    assign out = w[3]; // part select one bit of the vector.
+\end{verbatim}
+More generally, the syntax for declaring vectors is as follows:
+\begin{verbatim}
+    type [high:low] vector_name;
+\end{verbatim}
+where \verb|type| specifies the datatype of the vector (typically \verb|wire| or \verb|reg|). Note that the \textit{endianness} of a vector is whether the least significant bit has a lower index (little endian \verb|[3:0]|) or a higher index (big endian \verb|[0:3]|). Once a vector is declared with a particular endianness, it must always be used the same way.
+
 \bibliographystyle{plain}
 \bibliography{../../references.bib}
 

@@ -192,9 +192,9 @@ Note that checking whether a counterexample is spurious involves computations on
 
 \subsection*{SAT-based Abstraction}
 
-An alternative to the CEGAR based approach (introduced shortly after the initial CEGAR publication) is to rely more directly on a SAT solver for performing abstraction. A main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an \textit{explanation} of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called \textit{proof-based abstraction}\cite{2003abswithoutcex}. 
+An alternative to the CEGAR based approach (introduced shortly after the initial CEGAR publication) is to rely more directly on a SAT solver for performing abstraction. A main idea is to do bounded model checking and then use proofs of unsatisfiability in this case to provide an \textit{explanation} of correctness, and to help us generate an abstraction for proving a property in the unbounded case. Using such a proof to generate an abstraction is called \textit{proof-based abstraction} \cite{2003abswithoutcex}. 
 
-In the initial work of \cite{2003abswithoutcex} (appeared in \textit{TACAS 2003}, April), verification of a system $M$ is done by performing bounded model checking of $M$ for  a fixed bound $k$. If an error is found for this bound, then we're done, since a counterexample has been found. Otherwise, the SAT solver can return a (resolution) proof of unsatisfiability. This proof is used to generate an abstraction, $M'$, of $M$ by seeing what clauses of the encoding of $M$ are actually used in the proof (see \cite{2003abswithoutcex} for more detail on this). Then, \textit{unbounded} model checking is performed on the abstract model $M'$, which should in theory now be much cheaper since $M'$ has been abstracted from $M$.If model checking determines that there are no error traces in $M'$, then we are done. Otherwise, if model checking determines that $M'$ does have an error run, then we know its length $k'$ is greater than $k$. Thus, we then restart the procedure with $k'$ (or, generally, any value larger than $k'$)
+In the initial work of \cite{2003abswithoutcex} (appeared in \textit{TACAS 2003}, April), verification of a system $M$ is done by performing bounded model checking of $M$ for  a fixed bound $k$. If an error is found for this bound, then we're done, since a counterexample has been found. Otherwise, the SAT solver can return a (resolution) proof of unsatisfiability. This proof is used to generate an abstraction, $M'$, of $M$ by seeing what clauses of the encoding of $M$ are actually used in the proof (see \cite{2003abswithoutcex} for details). Then, \textit{unbounded} model checking is performed on the abstract model $M'$, which should in theory now be much cheaper since $M'$ has been abstracted from $M$. If model checking determines that there are no error traces in $M'$, then we are done. Otherwise, if model checking determines that $M'$ does have an error run, then we know its length $k'$ is greater than $k$. Thus, we then restart the procedure with $k'$ (or, generally, any value larger than $k'$)
 
 \subsubsection*{Interpolation}
 
@@ -216,6 +216,10 @@ Then, if we produce a proof of unsatisfiability of the whole unrolling constrain
 \end{itemize}
 
 By this, we can know that $P$ is implied by the initial condition and by the first transition constraint, so it represents some approximation of all 1-step reachable states (i.e. it is an over-approximation of the forward image of $I$). Moreover, $P$ and $B$ are unsatisfiable, meaning that no state satisfying $P$ can reach a final state in $k-1$ steps. This over-approximate image operation can then be iterated to compute an over-approximation of the reachable states. 
+
+\begin{itemize}
+    \item What is the difference between abstracting the entire system (e.g. the transition relation) and model checking that (like in CEGAR) vs. coming up with an abstraction of the reachable states and checking for inductiveness? Are these two approahces different but related in some way? Are there advantages to one over the other?
+\end{itemize}
 
 \bibliographystyle{alpha}
 \bibliography{../../references.bib}

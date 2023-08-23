@@ -77,6 +77,14 @@ If we assume a starting point of a classic 2-phase Paxos consensus approach, the
 \end{enumerate}
 A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (\textit{prepare} + \textit{accept}), then in the \textit{prepare} phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value 
 
+\textbf{Note:} focus on reasoning about the protocol from ground up by looking at two special cases:
+\begin{itemize}
+    \item Faulty acceptors (can't trust 1b or 2b messages of classic Paxos since acceptors can lie)
+    \item Faulty proposers/leaders (can't trust 1a or 2a messages of classic Paxos since proposers can lie)
+\end{itemize}
+Need to have ways to protect against both scenarios. Generally, for the faulyty acceptor case, we need to increase our quorum sizes in a way that ensures a propsoer can gather enough responses to be sure a sufficient number of honest responses were received. For faulty proposers, acceptors will need to implement some additional safety check to guard against proposers sending dishonest messages about values to be proposers/accepted.
+
+
 % Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?
 
 The essence of the algorithm is as follows:

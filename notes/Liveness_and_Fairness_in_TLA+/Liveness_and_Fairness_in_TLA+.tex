@@ -81,7 +81,7 @@ which simply states that eventually $x=2$ or $y=2$. If we did not specify weak f
 
 Weak fairness $WF_v(A)$ is formally defined as 
 \begin{align*}
-WF_v(A) \equiv \square (\square \text{\scriptsize ENABLED} \langle A \rangle _v \Rightarrow \square \langle A \rangle _v)
+WF_v(A) \equiv \square (\square \text{\scriptsize ENABLED} \langle A \rangle _v \Rightarrow \Diamond \langle A \rangle _v)
 \end{align*}
 
 This formula says that, if a non-stuttering $A$ step ever becomes forever enabled, then eventually a non-stuttering $A$ step must be taken. The weak fairness formula can be written equivalently as

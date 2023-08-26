@@ -116,7 +116,10 @@ Ok, so now that we worked out how to ensure the two important correctness condit
     if read(X) is not set:
         write(X, v)
 \end{verbatim}
-But what if we can't atomically read and write the version number register? (TODO...) Perhaps \cite{1991waitfreesync} is the reference I'm looking for here.
+But what if we can't atomically read and write the version number register? (TODO...) Perhaps \cite{1991waitfreesync} is the reference I'm looking for here. Note one of their main claims:
+\begin{quote}
+    From a set of atomic registers, we show that it is impossible to construct a wait-free implementation of (1) common data types such as sets, queues, stacks, priority queues, or lists, (2) most if not all the classical synchronization primitives, such as \textit{test\&set}, \textit{compare\&swap}, and \textit{fetch\&add}, and (3) such simple memory-to-memory operations as move or memory-to-memory swap.
+\end{quote}
 
 (In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?) 
 

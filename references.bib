@@ -799,3 +799,22 @@ pages = {453–457},
 numpages = {5},
 keywords = {sequencing primitives, correctness proof, programming languages, program semantics, derivation of programs, programming methodology, termination, repetition, nondeterminancy, case-construction, programming language semantics}
 }
+@article{1991waitfreesync,
+author = {Herlihy, Maurice},
+title = {Wait-Free Synchronization},
+year = {1991},
+issue_date = {Jan. 1991},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {13},
+number = {1},
+issn = {0164-0925},
+url = {https://doi.org/10.1145/114005.102808},
+doi = {10.1145/114005.102808},
+abstract = {A wait-free implementation of a concurrent data object is one that guarantees that any process can complete any operation in a finite number of steps, regardless of the execution speeds of the other processes. The problem of constructing a wait-free implementation of one data object from another lies at the heart of much recent work in concurrent algorithms, concurrent data structures, and multiprocessor architectures. First, we introduce a simple and general technique, based on reduction to a concensus protocol, for proving statements of the form, “there is no wait-free implementation of X by Y.” We derive a hierarchy of objects such that no object at one level has a wait-free implementation in terms of objects at lower levels. In particular, we show that atomic read/write registers, which have been the focus of much recent attention, are at the bottom of the hierarchy: thay cannot be used to construct wait-free implementations of many simple and familiar data types. Moreover, classical synchronization primitives such astest\&set and fetch\&add, while more powerful than read and write, are also computationally weak, as are the standard message-passing primitives. Second, nevertheless, we show that there do exist simple universal objects from which one can construct a wait-free implementation of any sequential object.},
+journal = {ACM Trans. Program. Lang. Syst.},
+month = {jan},
+pages = {124–149},
+numpages = {26},
+keywords = {linearization, wait-free synchronization}
+}

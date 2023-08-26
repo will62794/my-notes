@@ -97,7 +97,7 @@ Now, if we assume that all transactions are tagged with a unique, totally ordere
 
 \begin{itemize}
     \item (C2) This condition is fairly straightforward to handle. Whenever transaction $T$ with sequence number $n$ does a read, it can tag the register with sequence number $n$. Then, subsequent writes from transactions in sequence numbers $k$ can check their sequence number against $n$. If $k < n$ then we can prevent the write from occurring, and if $k  \geq n$, then we can allow the write to succeed. This clearly ensures that once a read occurs by transaction in sequence number $n$, no future writes can be made to the register by transactions ordered $ < n$.
-    \item (C1) This condition is a bit more tricky, since it is complicated slightly by the fact that we no longer assume a global serialization order between transaction operations as we did in the lock-based solution. For example, if we make a fundamental assumption that transaction operations may be always be interleaved in arbitrary orders (based on the fact that we have no global locking/mutex primitive), how can we possibly satisfy C1 in a case like the following,
+    \item (C1) This condition is a bit more tricky, since it is complicated by the fact that we no longer assume a global serialization order between transaction operations as we did in the lock-based solution. For example, if we make a fundamental assumption that transaction operations may be always be interleaved in arbitrary orders (based on the fact that we have no global locking/mutex primitive), how can we possibly satisfy C1 in a case like the following,
     \begin{verbatim}
         read:2(X)
         write:1(X, v)

@@ -135,7 +135,10 @@
     write(V, N)
     if read(X) is not set:
         write(X, v)</code></pre>
-<p>But what if we can’t atomically read and write the version number register? (TODO...) Perhaps <span class="citation" data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync" role="doc-biblioref">Herlihy 1991</a>)</span> is the reference I’m looking for here.</p>
+<p>But what if we can’t atomically read and write the version number register? (TODO...) Perhaps <span class="citation" data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync" role="doc-biblioref">Herlihy 1991</a>)</span> is the reference I’m looking for here. Note one of their main claims:</p>
+<blockquote>
+<p>From a set of atomic registers, we show that it is impossible to construct a wait-free implementation of (1) common data types such as sets, queues, stacks, priority queues, or lists, (2) most if not all the classical synchronization primitives, such as <em>test&amp;set</em>, <em>compare&amp;swap</em>, and <em>fetch&amp;add</em>, and (3) such simple memory-to-memory operations as move or memory-to-memory swap.</p>
+</blockquote>
 <p>(In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?)</p>
 </section>
 </section>

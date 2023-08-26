@@ -107,7 +107,7 @@
 <p>R1. If a thread writes a value <span class="math inline">\(v\)</span> to the register, then it should not differ from the most recently written value.</p>
 </blockquote>
 <p>This is the very basic, fundamental requirement, simply stating that whenever somebody tries to write to the register they better not overwrite an already existing, different value in the register. In order to start working out a lock-less solution to the problem, let’s consider how the lock-based solution satisfies this above requirement.</p>
-<p>Well, in the lock-based solution we can think about every thread as executing a simple request/transaction, that consists of the following steps:</p>
+<p>In the lock-based solution we can think about every thread as executing a simple request/transaction, that consists of the following steps:</p>
 <pre><code>    acquire(lock)
     if read(X) is not set:
         write(X, v)

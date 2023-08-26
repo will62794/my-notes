@@ -77,7 +77,7 @@ If we think about the fundamental requirements of consensus in this ``single reg
 \end{quote}
 This is the very basic, fundamental requirement, simply stating that whenever somebody tries to write to the register they better not overwrite an already existing, different value in the register. In order to start working out a lock-less solution to the problem, let's consider how the lock-based solution satisfies this above requirement.
 
-Well, in the lock-based solution we can think about every thread as executing a simple request/transaction, that consists of the following steps:
+In the lock-based solution we can think about every thread as executing a simple request/transaction, that consists of the following steps:
 \begin{verbatim}
     acquire(lock)
     if read(X) is not set:

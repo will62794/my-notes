@@ -139,6 +139,39 @@
 <blockquote>
 <p>From a set of atomic registers, we show that it is impossible to construct a wait-free implementation of (1) common data types such as sets, queues, stacks, priority queues, or lists, (2) most if not all the classical synchronization primitives, such as <em>test&amp;set</em>, <em>compare&amp;swap</em>, and <em>fetch&amp;add</em>, and (3) such simple memory-to-memory operations as move or memory-to-memory swap.</p>
 </blockquote>
+<p>Note the following table of consensus numbers of some objects:</p>
+<div class="center">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Consensus Number</th>
+<th style="text-align: center;">Object</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">read/write registers</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">test&amp;set, swap, fetch&amp;add</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">⋮</td>
+<td style="text-align: center;">⋮</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;"><span class="math inline">\(2n-2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(n\)</span>-register assignment</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;"><span class="math inline">\(\infty\)</span></td>
+<td style="text-align: center;">compare&amp;swap</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>(In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?)</p>
 </section>
 </section>

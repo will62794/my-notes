@@ -120,6 +120,18 @@ But what if we can't atomically read and write the version number register? (TOD
 \begin{quote}
     From a set of atomic registers, we show that it is impossible to construct a wait-free implementation of (1) common data types such as sets, queues, stacks, priority queues, or lists, (2) most if not all the classical synchronization primitives, such as \textit{test\&set}, \textit{compare\&swap}, and \textit{fetch\&add}, and (3) such simple memory-to-memory operations as move or memory-to-memory swap.
 \end{quote}
+Note the following table of consensus numbers of some objects:
+\begin{center}
+    \begin{tabular}{c | c}
+        Consensus Number & Object \\\hline
+        1 & read/write registers \\ \hline
+        2 & test\&set, swap, fetch\&add \\ \hline
+        \vdots & \vdots \\ \hline
+        $2n-2$ & $n$-register assignment \\ \hline
+        $\infty$ & compare\&swap
+    \end{tabular}
+\end{center}
+
 
 (In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?) 
 

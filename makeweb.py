@@ -51,6 +51,8 @@ def make_index_page_html(notes):
     out_html += "<head/>\n"
     out_html += "<body style='padding:20px;'>\n"
     out_html += "<h1>Notes</h1>\n"
+    # out_html += "<p><a style='font-size:14px' href='https://github.com/will62794/my-notes'>Github</a></p>\n"
+    out_html += "<div style='width:20px;padding-bottom:15px;'><a style='font-size:14px' href='https://github.com/will62794/my-notes'><img src='./github-mark.png' width=15></img></a></div>\n"
     for note in notes:
         note_display_name = note.replace("_", " ")
         out_html += f"<div class='note-link'><a href='notes/{note}/{note}.html'>{note_display_name}</a></div>"

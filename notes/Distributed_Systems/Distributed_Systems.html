@@ -54,6 +54,7 @@
 <ul>
 <li><a href="#single-machine-concurrent-consensus-with-locks"><span class="toc-section-number">3.1</span> Single Machine, Concurrent Consensus with Locks</a></li>
 <li><a href="#single-machine-concurrent-consensus-without-locks"><span class="toc-section-number">3.2</span> Single Machine, Concurrent Consensus without Locks</a></li>
+<li><a href="#note-on-compare-and-swap-cas"><span class="toc-section-number">3.3</span> Note on Compare and Swap (CAS)</a></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
 <ul>
@@ -172,6 +173,17 @@
 </tbody>
 </table>
 </div>
+<p>See also <span class="citation" data-cites="1990aspnesherlihy">(<a href="#ref-1990aspnesherlihy" role="doc-biblioref">Aspnes and Herlihy 1990</a>)</span> as possibly relevant.</p>
+</section>
+<section id="note-on-compare-and-swap-cas" class="level2" data-number="3.3">
+<h2 data-number="3.3"><span class="header-section-number">3.3</span> Note on Compare and Swap (CAS)</h2>
+<p>Also, note that <em>compare&amp;swap</em> primitive is kind of just implementing “lock like" mutual exclusion at a lower level i.e. for register <code>X</code></p>
+<pre><code>    CAS(X, old, new):
+        if X == old:
+            X := new
+            return true
+        return false</code></pre>
+<p>That is, it basically allows you to do a read and a write atomically, as if you were doing it under a “virtual" lock. It’s just that in practice, this “lock" isn’t explicit and failure while holding a lock isn’t an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of “virtual" lock automatically released.</p>
 <p>(In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?)</p>
 </section>
 </section>
@@ -218,6 +230,9 @@
 <div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
 <div id="ref-2018abrahamsyncbyz" class="csl-entry" role="doc-biblioentry">
 Abraham, Ittai, Srinivas Devadas, Danny Dolev, Kartik Nayak, and Ling Ren. 2019. <span>“Synchronous Byzantine Agreement with Expected o(1) Rounds, Expected Communication, and Optimal Resilience.”</span> In <em>Financial Cryptography and Data Security: 23rd International Conference, FC 2019, Frigate Bay, St. Kitts and Nevis, February 18–22, 2019, Revised Selected Papers</em>, 320–34. Berlin, Heidelberg: Springer-Verlag. <a href="https://doi.org/10.1007/978-3-030-32101-7_20">https://doi.org/10.1007/978-3-030-32101-7_20</a>.
+</div>
+<div id="ref-1990aspnesherlihy" class="csl-entry" role="doc-biblioentry">
+Aspnes, James, and M. Herlihy. 1990. <span>“Fast Randomized Consensus Using Shared Memory.”</span> <em>J. Algorithms</em> 11 (3): 441–61. <a href="https://doi.org/10.1016/0196-6774(90)90021-6">https://doi.org/10.1016/0196-6774(90)90021-6</a>.
 </div>
 <div id="ref-1999castropbft" class="csl-entry" role="doc-biblioentry">
 Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA: USENIX Association.

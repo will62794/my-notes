@@ -131,6 +131,19 @@ Note the following table of consensus numbers of some objects:
         $\infty$ & compare\&swap
     \end{tabular}
 \end{center}
+See also \cite{1990aspnesherlihy} as possibly relevant.
+
+\subsection{Note on Compare and Swap (CAS)}
+
+Also, note that \textit{compare\&swap} primitive is kind of just implementing ``lock like" mutual exclusion at a lower level i.e. for register \verb|X|
+\begin{verbatim}
+    CAS(X, old, new):
+        if X == old:
+            X := new
+            return true
+        return false
+\end{verbatim}
+That is, it basically allows you to do a read and a write atomically, as if you were doing it under a ``virtual" lock. It's just that in practice, this ``lock" isn't explicit and failure while holding a lock isn't an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of ``virtual" lock automatically released.
 
 
 (In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?) 

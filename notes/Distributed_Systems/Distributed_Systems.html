@@ -53,8 +53,10 @@
 <li><a href="#consensus-and-mutual-exclusion"><span class="toc-section-number">3</span> Consensus and Mutual Exclusion</a>
 <ul>
 <li><a href="#single-machine-concurrent-consensus-with-locks"><span class="toc-section-number">3.1</span> Single Machine, Concurrent Consensus with Locks</a></li>
-<li><a href="#single-machine-concurrent-consensus-without-locks"><span class="toc-section-number">3.2</span> Single Machine, Concurrent Consensus without Locks</a></li>
-<li><a href="#note-on-compare-and-swap-cas"><span class="toc-section-number">3.3</span> Note on Compare and Swap (CAS)</a></li>
+<li><a href="#single-machine-concurrent-consensus-without-locks"><span class="toc-section-number">3.2</span> Single Machine, Concurrent Consensus without Locks</a>
+<ul>
+<li><a href="#note-on-compare-and-swap-cas"><span class="toc-section-number">3.2.1</span> Note on Compare and Swap (CAS)</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
 <ul>
@@ -102,8 +104,7 @@
 </section>
 <section id="single-machine-concurrent-consensus-without-locks" class="level2" data-number="3.2">
 <h2 data-number="3.2"><span class="header-section-number">3.2</span> Single Machine, Concurrent Consensus without Locks</h2>
-<p>Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won’t be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won’t exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal.</p>
-<p>(<strong>Side Note:</strong>) The most trivial consensus algorithm for a single register in shared memory context is just to use a compare and swap (CAS) when writing to the register. Each process just runs <code>CAS(X, null, v)</code> to update the register only if it hasn’t been set. The first writer always wins and consensus is always achieved. But isn’t this kind of cheating? Like, don’t we want to figure out a way to do consensus with weaker forms of atomic primitives?</p>
+<p>Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won’t be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won’t exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal (isn’t there a trivial solution to this, though, in shared memory setting?). See note<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
 <p>If we think about the fundamental requirements of consensus in this “single register” model, it boils down to a simple high level requirement that threads must satisfy:</p>
 <blockquote>
 <p>R1. If a thread writes a value <span class="math inline">\(v\)</span> to the register, then it should not differ from the most recently written value.</p>
@@ -175,9 +176,8 @@
 </table>
 </div>
 <p>See also <span class="citation" data-cites="1990aspnesherlihy">(<a href="#ref-1990aspnesherlihy" role="doc-biblioref">Aspnes and Herlihy 1990</a>)</span> as possibly relevant.</p>
-</section>
-<section id="note-on-compare-and-swap-cas" class="level2" data-number="3.3">
-<h2 data-number="3.3"><span class="header-section-number">3.3</span> Note on Compare and Swap (CAS)</h2>
+<section id="note-on-compare-and-swap-cas" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1"><span class="header-section-number">3.2.1</span> Note on Compare and Swap (CAS)</h3>
 <p>Also, note that <em>compare&amp;swap</em> primitive is kind of just implementing “lock like" mutual exclusion at a lower level i.e. for register <code>X</code></p>
 <pre><code>    CAS(X, old, new):
         if X == old:
@@ -186,6 +186,7 @@
         return false</code></pre>
 <p>That is, it basically allows you to do a read and a write atomically, as if you were doing it under a “virtual" lock. It’s just that in practice, this “lock" isn’t explicit and failure while holding a lock isn’t an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of “virtual" lock automatically released.</p>
 <p>(In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?)</p>
+</section>
 </section>
 </section>
 <section id="byzantine-fault-tolerance" class="level1" data-number="4">
@@ -257,6 +258,12 @@ Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for Obtaining 
 Wensley, J. H., L. Lamport, J. Goldberg, M. W. Green, K. N. Levitt, P. M. Melliar-Smith, R. E. Shostak, and C. B. Weinstock. 1978. <span>“SIFT: Design and Analysis of a Fault-Tolerant Computer for Aircraft Control.”</span> <em>Proceedings of the IEEE</em> 66 (10): 1240–55. <a href="https://doi.org/10.1109/PROC.1978.11114">https://doi.org/10.1109/PROC.1978.11114</a>.
 </div>
 </div>
+</section>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>The most trivial consensus algorithm for a single register in shared memory context is just to use compare&amp;swap (CAS) when attempting to update the register. Each process just runs <span class="math inline">\(CAS(X, \bot, v)\)</span> to update the register <span class="math inline">\(X\)</span> to value <span class="math inline">\(v\)</span> only if it hasn’t been set, where <span class="math inline">\(\bot\)</span> represents the empty/unset register value. The first writer always wins and consensus is achieved. But isn’t this kind of cheating? Like, don’t we want to figure out a way to do consensus with weaker forms of atomic primitives? Also, if we move to a truly distributed/fault-tolerant setting, we can’t necessarily assume we have a global register which we can just CAS easily like this?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 </body>
 </html>

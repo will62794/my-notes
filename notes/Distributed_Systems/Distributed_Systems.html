@@ -50,12 +50,13 @@
 <ul>
 <li><a href="#system-models"><span class="toc-section-number">1</span> System Models</a></li>
 <li><a href="#fault-tolerance"><span class="toc-section-number">2</span> Fault Tolerance</a></li>
-<li><a href="#consensus-and-mutual-exclusion"><span class="toc-section-number">3</span> Consensus and Mutual Exclusion</a>
+<li><a href="#consensus"><span class="toc-section-number">3</span> Consensus</a>
 <ul>
-<li><a href="#single-machine-concurrent-consensus-with-locks"><span class="toc-section-number">3.1</span> Single Machine, Concurrent Consensus with Locks</a></li>
-<li><a href="#single-machine-concurrent-consensus-without-locks"><span class="toc-section-number">3.2</span> Single Machine, Concurrent Consensus without Locks</a>
+<li><a href="#shared-memory-consensus-lock-based"><span class="toc-section-number">3.1</span> Shared Memory Consensus: Lock-based</a></li>
+<li><a href="#shared-memory-consensus-lock-less"><span class="toc-section-number">3.2</span> Shared Memory Consensus: Lock-less</a>
 <ul>
-<li><a href="#note-on-compare-and-swap-cas"><span class="toc-section-number">3.2.1</span> Note on Compare and Swap (CAS)</a></li>
+<li><a href="#trivial-solution-compare-and-swap-cas"><span class="toc-section-number">3.2.1</span> Trivial Solution: Compare and Swap (CAS)</a></li>
+<li><a href="#generalizable-solution"><span class="toc-section-number">3.2.2</span> Generalizable Solution</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
@@ -95,16 +96,32 @@
 <p>Thus, this naturally gives us a total node requirement of <span class="math display">\[\begin{aligned}
     n = (f+1) + f = 2f + 1\end{aligned}\]</span> That is, even in the case of <span class="math inline">\(f\)</span> maximum node failures, we will always have <span class="math inline">\(f+1\)</span> nodes available to us to write down our work, allowing us to make progress.</p>
 </section>
-<section id="consensus-and-mutual-exclusion" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Consensus and Mutual Exclusion</h1>
+<section id="consensus" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Consensus</h1>
 <p>The problem of <em>consensus</em> in a distributed system is to get a set of separate nodes to agree on a single value. That is, if one node marks a value as chosen, no other node can ever mark a different value as chosen. To understand the constraints of how we might solve this problem, we can start by thinking about this problem in a simpler setting e.g. a single (non-distributed) node. For an individual node/thread, solving consensus is trivial, since that node/thread can just write into a single register and then never change its decision. But, even when we introduce multiple concurrent clients (e.g. threads), the problem is nontrivial.</p>
-<section id="single-machine-concurrent-consensus-with-locks" class="level2" data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span> Single Machine, Concurrent Consensus with Locks</h2>
+<section id="shared-memory-consensus-lock-based" class="level2" data-number="3.1">
+<h2 data-number="3.1"><span class="header-section-number">3.1</span> Shared Memory Consensus: Lock-based</h2>
 <p>We assume we have a single register which represents our consensus “object", and we have multiple threads that can access the register. That is, they can read or write a value to the register atomically. If we have a locking primitive available, then we can solve the single register consensus problem easily. Each thread just acquires a global lock before it tries to do anything, reads the register to check if it has already been written to, and if it has, then do nothing, and if it hasn’t, then go ahead and write whatever value you want. It is obvious to see that this upholds the basic correctness properties of consensus.</p>
 </section>
-<section id="single-machine-concurrent-consensus-without-locks" class="level2" data-number="3.2">
-<h2 data-number="3.2"><span class="header-section-number">3.2</span> Single Machine, Concurrent Consensus without Locks</h2>
-<p>Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won’t be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won’t exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal (isn’t there a trivial solution to this, though, in shared memory setting?). See note<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<section id="shared-memory-consensus-lock-less" class="level2" data-number="3.2">
+<h2 data-number="3.2"><span class="header-section-number">3.2</span> Shared Memory Consensus: Lock-less</h2>
+<p>Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won’t be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won’t exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal (isn’t there a trivial solution to this, though, in shared memory setting?).</p>
+<section id="trivial-solution-compare-and-swap-cas" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1"><span class="header-section-number">3.2.1</span> Trivial Solution: Compare and Swap (CAS)</h3>
+<p>First, a trivial consensus algorithm for a single register in the shared memory context is just to use compare&amp;swap (CAS) when attempting to update the register. Each process just runs <span class="math inline">\(CAS(X, \bot, v)\)</span> to update the register <span class="math inline">\(X\)</span> to value <span class="math inline">\(v\)</span> only if it hasn’t been set, where <span class="math inline">\(\bot\)</span> represents the empty/unset register value. The first writer always wins and consensus is achieved. See this described briefly in Theorem 5 of <span class="citation" data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync" role="doc-biblioref">Herlihy 1991</a>)</span>, which establishes that CAS register has an infinite consensus number. But isn’t this kind of cheating? Like, don’t we want to figure out a way to do consensus with weaker forms of atomic primitives? Also, if we move to a truly distributed/fault-tolerant setting, we can’t necessarily assume we have a global register which we can just CAS easily like this?</p>
+<section id="remark-on-cas" class="level4" data-number="3.2.1.1">
+<h4 data-number="3.2.1.1"><span class="header-section-number">3.2.1.1</span> Remark on CAS</h4>
+<p>Note that <em>compare&amp;swap</em> primitive is kind of just implementing “lock like" mutual exclusion at a lower level i.e. for register <code>X</code></p>
+<pre><code>    CAS(X, old, new):
+        if X == old:
+            X := new
+            return true
+        return false</code></pre>
+<p>That is, it basically allows you to do a read and a write atomically, as if you were doing it under a “virtual" lock. It’s just that in practice, this “lock" isn’t explicit and failure while holding a lock isn’t an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of “virtual" lock automatically released.</p>
+</section>
+</section>
+<section id="generalizable-solution" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2"><span class="header-section-number">3.2.2</span> Generalizable Solution</h3>
 <p>If we think about the fundamental requirements of consensus in this “single register” model, it boils down to a simple high level requirement that threads must satisfy:</p>
 <blockquote>
 <p>R1. If a thread writes a value <span class="math inline">\(v\)</span> to the register, then it should not differ from the most recently written value.</p>
@@ -131,7 +148,7 @@
         write:1(X, v)</code></pre>
 <p>where <code>op:seqno</code> indicates that <code>op</code> is an operation from transaction with sequence number <code>seqno</code>? That is, how can we ever enforce that a read from transaction at sequence number <span class="math inline">\(n\)</span> will necessarily see the writes from transactions at sequence numbers <span class="math inline">\(&lt; n\)</span>, if it can’t forcibly protect against such transactions doing writes after the transaction in <span class="math inline">\(n\)</span> does its read? Well, we can’t really be sure, if we make the fundamental concurrency/interleaving assumption above. So, this is where our solution to dealing with C2 comes into play. Instead of trying to ensure C1 exactly, we just explicitly prevent any future writes that would violate it. If some writes have already occurred in sequence numbers <span class="math inline">\(&lt; n\)</span>, then we will obviously read their effects when we read at transaction <span class="math inline">\(n\)</span>, but then after we read at <span class="math inline">\(n\)</span>, we just force the system to never execute a write at a transaction number <span class="math inline">\(&lt; n\)</span> in the future. Note also that we aren’t really impairing ourselves unnecessarily here. That is, once a transaction in sequence number <span class="math inline">\(n\)</span> has started, we make the implicit assumption that it “overrules” any transactions in earlier sequence numbers, so there’s not really any point in letting an earlier transaction go ahread and write when a higher transaction number has already started anyway. So, we can view it as acceptable to just prevent/discard these “stale” writes anyway.</p></li>
 </ul>
-<p>Ok, so now that we worked out how to ensure the two important correctness conditions above, we get to a final, lock-less procedure for each thread that looks like the following, where we now assume that alongside the register there also sits a “version" number register <code>V</code> that can also be written and read by threads.</p>
+<p>Ok, so now that we worked out how to ensure the two important correctness conditions above, we get to a final, lock-less procedure for each thread that looks like the following, where we now assume that alongside the register there also sits a “version" number register <code>V</code> that can also be written and read by threads. (TODO: implement correct shared-memory like version of consensus here.)</p>
 <pre><code>    // Procedure for transaction with sequence number N.
     if read(V) &gt; N:
         return
@@ -176,15 +193,6 @@
 </table>
 </div>
 <p>See also <span class="citation" data-cites="1990aspnesherlihy">(<a href="#ref-1990aspnesherlihy" role="doc-biblioref">Aspnes and Herlihy 1990</a>)</span> as possibly relevant.</p>
-<section id="note-on-compare-and-swap-cas" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1"><span class="header-section-number">3.2.1</span> Note on Compare and Swap (CAS)</h3>
-<p>Also, note that <em>compare&amp;swap</em> primitive is kind of just implementing “lock like" mutual exclusion at a lower level i.e. for register <code>X</code></p>
-<pre><code>    CAS(X, old, new):
-        if X == old:
-            X := new
-            return true
-        return false</code></pre>
-<p>That is, it basically allows you to do a read and a write atomically, as if you were doing it under a “virtual" lock. It’s just that in practice, this “lock" isn’t explicit and failure while holding a lock isn’t an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of “virtual" lock automatically released.</p>
 <p>(In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?)</p>
 </section>
 </section>
@@ -258,12 +266,6 @@ Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for Obtaining 
 Wensley, J. H., L. Lamport, J. Goldberg, M. W. Green, K. N. Levitt, P. M. Melliar-Smith, R. E. Shostak, and C. B. Weinstock. 1978. <span>“SIFT: Design and Analysis of a Fault-Tolerant Computer for Aircraft Control.”</span> <em>Proceedings of the IEEE</em> 66 (10): 1240–55. <a href="https://doi.org/10.1109/PROC.1978.11114">https://doi.org/10.1109/PROC.1978.11114</a>.
 </div>
 </div>
-</section>
-<section class="footnotes" role="doc-endnotes">
-<hr />
-<ol>
-<li id="fn1" role="doc-endnote"><p>The most trivial consensus algorithm for a single register in shared memory context is just to use compare&amp;swap (CAS) when attempting to update the register. Each process just runs <span class="math inline">\(CAS(X, \bot, v)\)</span> to update the register <span class="math inline">\(X\)</span> to value <span class="math inline">\(v\)</span> only if it hasn’t been set, where <span class="math inline">\(\bot\)</span> represents the empty/unset register value. The first writer always wins and consensus is achieved. But isn’t this kind of cheating? Like, don’t we want to figure out a way to do consensus with weaker forms of atomic primitives? Also, if we move to a truly distributed/fault-tolerant setting, we can’t necessarily assume we have a global register which we can just CAS easily like this?<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 </body>
 </html>

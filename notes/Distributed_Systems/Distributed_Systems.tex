@@ -60,18 +60,34 @@ Thus, this naturally gives us a total node requirement of
 \end{align*}
 That is, even in the case of $f$ maximum node failures, we will always have $f+1$ nodes available to us to write down our work, allowing us to make progress.
 
-\section{Consensus and Mutual Exclusion}
+\section{Consensus}
 
 The problem of \textit{consensus} in a distributed system is to get a set of separate nodes to agree on a single value. That is, if one node marks a value as chosen, no other node can ever mark a different value as chosen. To understand the constraints of how we might solve this problem, we can start by thinking about this problem in a simpler setting e.g. a single (non-distributed) node. For an individual node/thread, solving consensus is trivial, since that node/thread can just write into a single register and then never change its decision. But, even when we introduce multiple concurrent clients (e.g. threads), the problem is nontrivial. 
 
-\subsection{Single Machine, Concurrent Consensus with Locks}
+\subsection{Shared Memory Consensus: Lock-based}
 
 We assume we have a single register which represents our consensus ``object", and we have multiple threads that can access the register. That is, they can read or write a value to the register atomically. If we have a locking primitive available, then we can solve the single register consensus problem easily. Each thread just acquires a global lock before it tries to do anything, reads the register to check if it has already been written to, and if it has, then do nothing, and if it hasn't, then go ahead and write whatever value you want. It is obvious to see that this upholds the basic correctness properties of consensus. 
 
-\subsection{Single Machine, Concurrent Consensus without Locks}
+\subsection{Shared Memory Consensus: Lock-less}
 
-Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won't be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won't exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal (isn't there a trivial solution to this, though, in shared memory setting?). See note\footnote{The most trivial consensus algorithm for a single register in shared memory context is just to use compare\&swap (CAS) when attempting to update the register. Each process just runs $CAS(X, \bot, v)$ to update the register $X$ to value $v$ only if it hasn't been set, where $\bot$ represents the empty/unset register value. The first writer always wins and consensus is achieved. But isn't this kind of cheating? Like, don't we want to figure out a way to do consensus with weaker forms of atomic primitives? Also, if we move to a truly distributed/fault-tolerant setting, we can't necessarily assume we have a global register which we can just CAS easily like this?}.
-% \color{black}
+Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won't be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won't exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal (isn't there a trivial solution to this, though, in shared memory setting?).
+
+\subsubsection{Trivial Solution: Compare and Swap (CAS)}
+
+First, a trivial consensus algorithm for a single register in the shared memory context is just to use compare\&swap (CAS) when attempting to update the register. Each process just runs $CAS(X, \bot, v)$ to update the register $X$ to value $v$ only if it hasn't been set, where $\bot$ represents the empty/unset register value. The first writer always wins and consensus is achieved. See this described briefly in Theorem 5 of \cite{1991waitfreesync}, which establishes that CAS register has an infinite consensus number. But isn't this kind of cheating? Like, don't we want to figure out a way to do consensus with weaker forms of atomic primitives? Also, if we move to a truly distributed/fault-tolerant setting, we can't necessarily assume we have a global register which we can just CAS easily like this?
+
+\paragraph{Remark on CAS}
+Note that \textit{compare\&swap} primitive is kind of just implementing ``lock like" mutual exclusion at a lower level i.e. for register \verb|X|
+\begin{verbatim}
+    CAS(X, old, new):
+        if X == old:
+            X := new
+            return true
+        return false
+\end{verbatim}
+That is, it basically allows you to do a read and a write atomically, as if you were doing it under a ``virtual" lock. It's just that in practice, this ``lock" isn't explicit and failure while holding a lock isn't an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of ``virtual" lock automatically released.
+
+\subsubsection{Generalizable Solution}
 
 If we think about the fundamental requirements of consensus in this ``single register'' model, it boils down to a simple high level requirement that threads must satisfy:
 \begin{quote}
@@ -109,7 +125,7 @@ If we now assume that all transactions are tagged with a unique, totally ordered
     where \verb|op:seqno| indicates that \verb|op| is an operation from transaction with sequence number \verb|seqno|? That is, how can we ever enforce that a read from transaction at sequence number $n$ will necessarily see the writes from transactions at sequence numbers $< n$, if it can't forcibly protect against such transactions doing writes after the transaction in $n$ does its read? Well, we can't really be sure, if we make the fundamental concurrency/interleaving assumption above. So, this is where our solution to dealing with C2 comes into play. Instead of trying to ensure C1 exactly, we just explicitly prevent any future writes that would violate it. If some writes have already occurred in sequence numbers $< n$, then we will obviously read their effects when we read at transaction $n$, but then after we read at $n$, we just force the system to never execute a write at a transaction number $< n$ in the future. Note also that we aren't really impairing ourselves unnecessarily here. That is, once a transaction in sequence number $n$ has started, we make the implicit assumption that it ``overrules'' any transactions in earlier sequence numbers, so there's not really any point in letting an earlier transaction go ahread and write when a higher transaction number has already started anyway. So, we can view it as acceptable to just prevent/discard these ``stale'' writes anyway.
 \end{itemize}
 
-Ok, so now that we worked out how to ensure the two important correctness conditions above, we get to a final, lock-less procedure for each thread that looks like the following, where we now assume that alongside the register there also sits a ``version" number register \verb|V| that can also be written and read by threads.
+Ok, so now that we worked out how to ensure the two important correctness conditions above, we get to a final, lock-less procedure for each thread that looks like the following, where we now assume that alongside the register there also sits a ``version" number register \verb|V| that can also be written and read by threads. (TODO: implement correct shared-memory like version of consensus here.)
 \begin{verbatim}
     // Procedure for transaction with sequence number N.
     if read(V) > N:
@@ -134,19 +150,6 @@ Note the following table of consensus numbers of some objects:
     \end{tabular}
 \end{center}
 See also \cite{1990aspnesherlihy} as possibly relevant.
-
-\subsubsection{Note on Compare and Swap (CAS)}
-
-Also, note that \textit{compare\&swap} primitive is kind of just implementing ``lock like" mutual exclusion at a lower level i.e. for register \verb|X|
-\begin{verbatim}
-    CAS(X, old, new):
-        if X == old:
-            X := new
-            return true
-        return false
-\end{verbatim}
-That is, it basically allows you to do a read and a write atomically, as if you were doing it under a ``virtual" lock. It's just that in practice, this ``lock" isn't explicit and failure while holding a lock isn't an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of ``virtual" lock automatically released.
-
 
 (In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?) 
 

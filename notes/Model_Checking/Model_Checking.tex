@@ -70,7 +70,7 @@ More precisely, we translate the negation of our property $\neg \psi$ into a Buc
 
 Technically, the LTL model checking problem is PSPACE-complete \cite{1985sistlaclarke}, but it's worth keeping in mind that in practice the limiting complexity factor is usually the size of a system's state space, rather than the size of the temporal specification. (TODO: why PSPACE?)
 
-\subsection{Liveness to Safety Translation}
+\subsection*{Liveness to Safety Translation}
 
 Safety checking (e.g. checking invariants) amounts to reachability analysis on the state graph of a transition system/Kripke structure. It turns out we can apply the same verification approach to liveness properties, motivated by the fact that violations to liveness properties in finite systems are \textit{lasso}-shaped i.e. they consist of a prefix that leads to a loop. The problem then becomes how to detect such a loop. In the translation given in \cite{2002bierelivenessassafety}, the loop is found by saving a previously visited state and later checking whether the current state already occurred.
 

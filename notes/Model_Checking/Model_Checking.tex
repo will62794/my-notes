@@ -226,6 +226,23 @@ By this, we can know that $P$ is implied by the initial condition and by the fir
     \item What is the difference between abstracting the entire system (e.g. the transition relation) and model checking that (like in CEGAR) vs. coming up with an abstraction of the reachable states and checking for inductiveness? Are these two approaches different but related in some way? Are there advantages to one over the other?
 \end{itemize}
 
+\section{IC3/PDR}
+
+IC3/PDR \cite{bradley2011sat} uses a SAT solver to make simple induction queries, from which it generates counterexamples to induction (CTIs) that it then generalizes into strengthening lemmas. Furthermore, it makes uses of previously accumulated lemmas to make the approach ``incremental'' i.e. it can check for inductiveness of a candidate lemma in the context of previously discovered lemmas. Some of the foundational ideas for this approach go back to some earlier work of Manna-Bradley \cite{2007bradleymannasafety}.
+
+Note some basic facts about inductive invariants and counterexamples to induction. If a property $S$ is a true invariant of your system, but is not inductive, then there will exist some CTIs i.e. states that start in $S$ but leave $S$ via some state transition.
+
+\begin{center}
+    \includegraphics[scale=0.15]{images/inductive_inv1/inductive_inv1.001.png}
+\end{center}
+
+In the case where $S$ is not a true invariant of your system, but the initial states satisfy $S$, then there must be some CTI of $S$ that starts in $S \wedge Reach$ and transitions to a state in $Reach \wedge \neg S$. That is, it transitions to a reachable state that violates the invariant. There may be other CTIs of $S$ that simply start in an unreachable state within $S$ and leave $S$ as in the prior ``safe'' case. But, in the unsafe case, we can imagine the $CTI^*$ state as being one to find if we actually want to discover the bug in this system. If we find this CTI, then we can discover the full buggy trace via backwards reachability. We can alternatively think of this through the lens of simple bug-finding via backwards reachability i.e., start from states in $\neg S$ and try to find paths from there that lead back to the initial states.
+
+\begin{center}
+    % \includegraphics[scale=0.15,page=2]{images/inductive_inv1.pdf}
+    \includegraphics[scale=0.15]{images/inductive_inv1/inductive_inv1.002.png}
+\end{center}
+
 \bibliographystyle{alpha}
 \bibliography{../../references.bib}
 

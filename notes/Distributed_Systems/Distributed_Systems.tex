@@ -177,6 +177,15 @@ Classic Paxos takes 2 round trips to get a value committed (1 for the $Prepare$ 
 
 Egalitarian Paxos (EPaxos) \cite{2013epaxosmoraru} goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.
 
+\subsection{Zab}
+
+Zab \cite{2011zab,2008zabsimple} is a crash-recovery atomic broadcast algorithm used in Apache Zookeeper. The protocol consists of two main modes: \textit{broadcast} and \textit{recovery}. 
+
+In a stable system, it should be in broadcast mode, where a single leader is broadcasting transaction messages to a quorum of synchronized followers, until the leader fails or it no longer has a quorum of followers. Leaders will broadcast a proposal for a message to be delivered, and before doing this will assign a monotonically increasing unique id,  the \textit{zxid}. Delivered messages will be ordered by their zxids. When a leader receives ACKs from a quorum, the leader will broadcast a \textsc{COMMIT} message and deliver the message locally.
+
+
+When the service starts or a leader fails, the system enters into recovery mode. Recovery and leader election is needed to ensure liveness in the face of leader failure. In a standard implementation zxids are 64-bit numbers where the lower 32 bits are a simple counter, and the higher order 32 bits are the epoch. The epoch is incremented by a new leader to something greater than the highest epoch it has seen, and then the counter is reset to zero. If the leader election protocol guarantees that the new leader has the highest proposal number in a quorum of servers, a newly elected leader will also have all committed messages.
+
 \section{Byzantine Fault Tolerance}
 
 The earliest explicit reference to \textit{Byzantine} faults appeared in \cite{1982lamportshostak}, though earlier work had touched on the same problem without referring to it by that moniker \cite{1980peasereaching,1978sift}. They show in \cite{1982lamportshostak} that when using ``oral'' messages (i.e. non-signed) messages, a Byzantine agreement solution requires $3f+1$ processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming $n > 3f+1$, and also show that if we allow for ``written'' (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only $f+1$ processes.

@@ -61,6 +61,7 @@
 <li><a href="#paxos"><span class="toc-section-number">3.3</span> Paxos</a></li>
 <li><a href="#fast-paxos"><span class="toc-section-number">3.4</span> Fast Paxos</a></li>
 <li><a href="#egalitarian-paxos"><span class="toc-section-number">3.5</span> Egalitarian Paxos</a></li>
+<li><a href="#zab"><span class="toc-section-number">3.6</span> Zab</a></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
 <ul>
@@ -216,6 +217,12 @@
 <h2 data-number="3.5"><span class="header-section-number">3.5</span> Egalitarian Paxos</h2>
 <p>Egalitarian Paxos (EPaxos) <span class="citation" data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru" role="doc-biblioref">Moraru, Andersen, and Kaminsky 2013</a>)</span> goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.</p>
 </section>
+<section id="zab" class="level2" data-number="3.6">
+<h2 data-number="3.6"><span class="header-section-number">3.6</span> Zab</h2>
+<p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini 2011</a>; <a href="#ref-2008zabsimple" role="doc-biblioref">Reed and Junqueira 2008</a>)</span> is a crash-recovery atomic broadcast algorithm used in Apache Zookeeper. The protocol consists of two main modes: <em>broadcast</em> and <em>recovery</em>.</p>
+<p>In a stable system, it should be in broadcast mode, where a single leader is broadcasting transaction messages to a quorum of synchronized followers, until the leader fails or it no longer has a quorum of followers. Leaders will broadcast a proposal for a message to be delivered, and before doing this will assign a monotonically increasing unique id, the <em>zxid</em>. Delivered messages will be ordered by their zxids. When a leader receives ACKs from a quorum, the leader will broadcast a <span class="smallcaps">COMMIT</span> message and deliver the message locally.</p>
+<p>When the service starts or a leader fails, the system enters into recovery mode. Recovery and leader election is needed to ensure liveness in the face of leader failure. In a standard implementation zxids are 64-bit numbers where the lower 32 bits are a simple counter, and the higher order 32 bits are the epoch. The epoch is incremented by a new leader to something greater than the highest epoch it has seen, and then the counter is reset to zero. If the leader election protocol guarantees that the new leader has the highest proposal number in a quorum of servers, a newly elected leader will also have all committed messages.</p>
+</section>
 </section>
 <section id="byzantine-fault-tolerance" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Byzantine Fault Tolerance</h1>
@@ -270,6 +277,9 @@ Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tol
 <div id="ref-1991waitfreesync" class="csl-entry" role="doc-biblioentry">
 Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 13 (1): 124–49. <a href="https://doi.org/10.1145/114005.102808">https://doi.org/10.1145/114005.102808</a>.
 </div>
+<div id="ref-2011zab" class="csl-entry" role="doc-biblioentry">
+Junqueira, Flavio P., Benjamin C. Reed, and Marco Serafini. 2011. <span>“Zab: High-Performance Broadcast for Primary-Backup Systems.”</span> In <em>Proceedings of the 2011 IEEE/IFIP 41st International Conference on Dependable Systems&amp;networks</em>, 245–56. DSN ’11. USA: IEEE Computer Society. <a href="https://doi.org/10.1109/DSN.2011.5958223">https://doi.org/10.1109/DSN.2011.5958223</a>.
+</div>
 <div id="ref-lamport2006fast" class="csl-entry" role="doc-biblioentry">
 Lamport, Leslie. 2006. <span>“Fast Paxos.”</span> <em>Distributed Computing</em> 19: 79–103. <a href="https://www.microsoft.com/en-us/research/publication/fast-paxos/">https://www.microsoft.com/en-us/research/publication/fast-paxos/</a>.
 </div>
@@ -284,6 +294,9 @@ Moraru, Iulian, David G. Andersen, and Michael Kaminsky. 2013. <span>“There Is
 </div>
 <div id="ref-1980peasereaching" class="csl-entry" role="doc-biblioentry">
 Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.
+</div>
+<div id="ref-2008zabsimple" class="csl-entry" role="doc-biblioentry">
+Reed, Benjamin, and Flavio P. Junqueira. 2008. <span>“A Simple Totally Ordered Broadcast Protocol.”</span> In <em>Proceedings of the 2nd Workshop on Large-Scale Distributed Systems and Middleware</em>. LADIS ’08. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/1529974.1529978">https://doi.org/10.1145/1529974.1529978</a>.
 </div>
 <div id="ref-1978rivestcrypto" class="csl-entry" role="doc-biblioentry">
 Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for Obtaining Digital Signatures and Public-Key Cryptosystems.”</span> <em>Commun. ACM</em> 21 (2): 120–26. <a href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.

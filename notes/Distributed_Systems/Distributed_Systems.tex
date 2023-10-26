@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{geometry}
+\usepackage{hyperref}
 \usepackage{verbatim}
 \usepackage{enumerate}
 \usepackage{fancyvrb}
@@ -185,10 +186,11 @@ In a stable system, it should be in broadcast mode, where a single leader is bro
 
 
 When the service starts or a leader fails, the system enters into recovery mode. Recovery and leader election is needed to ensure liveness in the face of leader failure. In a standard implementation zxids are 64-bit numbers where the lower 32 bits are a simple counter, and the higher order 32 bits are the epoch. The epoch is incremented by a new leader to something greater than the highest epoch it has seen, and then the counter is reset to zero. If the leader election protocol guarantees that the new leader has the highest proposal number in a quorum of servers, a newly elected leader will also have all committed messages.
-
 \begin{center}
     \includegraphics[scale=0.3]{diagrams/zab-protocol-overview.png}
 \end{center}
+Can see a TLA+ formal specificaton of the high level Zab protocol \href{https://github.com/apache/zookeeper/blob/248cc091d440659a819bdd44fe5b41a38321a929/zookeeper-specifications/protocol-spec/Zab.tla}{here}, which is a part of the official Apache Zookeeper repo.
+
 
 \section{Byzantine Fault Tolerance}
 

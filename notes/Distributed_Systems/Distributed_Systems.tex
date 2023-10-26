@@ -173,6 +173,10 @@ Paxos is a protocol for implementing consensus in an asynchronous distributed sy
 
 Classic Paxos takes 2 round trips to get a value committed (1 for the $Prepare$ phase and 1 for the $Commit$ phase). How could we do better than this? Fast Paxos \cite{lamport2006fast} makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.
 
+\subsection{Egalitarian Paxos}
+
+Egalitarian Paxos (EPaxos) \cite{2013epaxosmoraru} goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.
+
 \section{Byzantine Fault Tolerance}
 
 The earliest explicit reference to \textit{Byzantine} faults appeared in \cite{1982lamportshostak}, though earlier work had touched on the same problem without referring to it by that moniker \cite{1980peasereaching,1978sift}. They show in \cite{1982lamportshostak} that when using ``oral'' messages (i.e. non-signed) messages, a Byzantine agreement solution requires $3f+1$ processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming $n > 3f+1$, and also show that if we allow for ``written'' (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only $f+1$ processes.

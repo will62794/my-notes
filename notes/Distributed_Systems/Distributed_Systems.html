@@ -60,6 +60,7 @@
 </ul></li>
 <li><a href="#paxos"><span class="toc-section-number">3.3</span> Paxos</a></li>
 <li><a href="#fast-paxos"><span class="toc-section-number">3.4</span> Fast Paxos</a></li>
+<li><a href="#egalitarian-paxos"><span class="toc-section-number">3.5</span> Egalitarian Paxos</a></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
 <ul>
@@ -211,6 +212,10 @@
 <h2 data-number="3.4"><span class="header-section-number">3.4</span> Fast Paxos</h2>
 <p>Classic Paxos takes 2 round trips to get a value committed (1 for the <span class="math inline">\(Prepare\)</span> phase and 1 for the <span class="math inline">\(Commit\)</span> phase). How could we do better than this? Fast Paxos <span class="citation" data-cites="lamport2006fast">(<a href="#ref-lamport2006fast" role="doc-biblioref">Lamport 2006</a>)</span> makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.</p>
 </section>
+<section id="egalitarian-paxos" class="level2" data-number="3.5">
+<h2 data-number="3.5"><span class="header-section-number">3.5</span> Egalitarian Paxos</h2>
+<p>Egalitarian Paxos (EPaxos) <span class="citation" data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru" role="doc-biblioref">Moraru, Andersen, and Kaminsky 2013</a>)</span> goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.</p>
+</section>
 </section>
 <section id="byzantine-fault-tolerance" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Byzantine Fault Tolerance</h1>
@@ -273,6 +278,9 @@ Lamport, Leslie. 2006. <span>“Fast Paxos.”</span> <em>Distributed Computing<
 </div>
 <div id="ref-1982lamportshostak" class="csl-entry" role="doc-biblioentry">
 Lamport, Leslie, Robert Shostak, and Marshall Pease. 1982. <span>“<span>The Byzantine Generals Problem</span>.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 4 (3): 382–401. <a href="https://doi.org/10.1145/357172.357176">https://doi.org/10.1145/357172.357176</a>.
+</div>
+<div id="ref-2013epaxosmoraru" class="csl-entry" role="doc-biblioentry">
+Moraru, Iulian, David G. Andersen, and Michael Kaminsky. 2013. <span>“There Is More Consensus in Egalitarian Parliaments.”</span> In <em>Proceedings of the Twenty-Fourth ACM Symposium on Operating Systems Principles</em>, 358–72. SOSP ’13. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2517349.2517350">https://doi.org/10.1145/2517349.2517350</a>.
 </div>
 <div id="ref-1980peasereaching" class="csl-entry" role="doc-biblioentry">
 Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.

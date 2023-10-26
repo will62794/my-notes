@@ -165,6 +165,14 @@ See also \cite{1990aspnesherlihy} as possibly relevant.
 
 (In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?) 
 
+\subsection{Paxos}
+
+Paxos is a protocol for implementing consensus in an asynchronous distributed system assuming crash faults. Modeled as \textit{proposers}, \textit{acceptors}, and \textit{learners}, and consists of 2 main phases, $Prepare$ and $Accept$. Proposers, which each own a disjoint set of a ballot space, propose values in one of their designated ballots, and send a $Prepare(b)$ message for this ballot to a quorum of acceptors. Acceptors will respond to a $Prepare(b)$ message if it is newer than the latest ballot they know about. A propoers, hearing a quorum of $Prepare$ responses, then sends out an $Accept(b,v)$ message for that ballot, where $v$ is chosen either as the value with the highest ballot it hear about in $Prepare$ phase, or as any value the proposer desires. Acceptors accept a value via an $Accept$ message if the ballot is not older than their own latest known ballot. A value is committed at a ballot $b$ if a quorum of acceptors have accepted that value at $b$.
+
+\subsection{Fast Paxos}
+
+Classic Paxos takes 2 round trips to get a value committed (1 for the $Prepare$ phase and 1 for the $Commit$ phase). How could we do better than this? Fast Paxos \cite{lamport2006fast} makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.
+
 \section{Byzantine Fault Tolerance}
 
 The earliest explicit reference to \textit{Byzantine} faults appeared in \cite{1982lamportshostak}, though earlier work had touched on the same problem without referring to it by that moniker \cite{1980peasereaching,1978sift}. They show in \cite{1982lamportshostak} that when using ``oral'' messages (i.e. non-signed) messages, a Byzantine agreement solution requires $3f+1$ processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming $n > 3f+1$, and also show that if we allow for ``written'' (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only $f+1$ processes.

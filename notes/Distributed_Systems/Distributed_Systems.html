@@ -222,6 +222,9 @@
 <p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini 2011</a>; <a href="#ref-2008zabsimple" role="doc-biblioref">Reed and Junqueira 2008</a>)</span> is a crash-recovery atomic broadcast algorithm used in Apache Zookeeper. The protocol consists of two main modes: <em>broadcast</em> and <em>recovery</em>.</p>
 <p>In a stable system, it should be in broadcast mode, where a single leader is broadcasting transaction messages to a quorum of synchronized followers, until the leader fails or it no longer has a quorum of followers. Leaders will broadcast a proposal for a message to be delivered, and before doing this will assign a monotonically increasing unique id, the <em>zxid</em>. Delivered messages will be ordered by their zxids. When a leader receives ACKs from a quorum, the leader will broadcast a <span class="smallcaps">COMMIT</span> message and deliver the message locally.</p>
 <p>When the service starts or a leader fails, the system enters into recovery mode. Recovery and leader election is needed to ensure liveness in the face of leader failure. In a standard implementation zxids are 64-bit numbers where the lower 32 bits are a simple counter, and the higher order 32 bits are the epoch. The epoch is incremented by a new leader to something greater than the highest epoch it has seen, and then the counter is reset to zero. If the leader election protocol guarantees that the new leader has the highest proposal number in a quorum of servers, a newly elected leader will also have all committed messages.</p>
+<div class="center">
+<p><img src="diagrams/zab-protocol-overview.png" alt="image" /></p>
+</div>
 </section>
 </section>
 <section id="byzantine-fault-tolerance" class="level1" data-number="4">

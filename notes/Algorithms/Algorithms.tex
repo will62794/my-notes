@@ -33,6 +33,10 @@ Depth-first search searches deeper in a graph before searching broader. Can do a
 \subsection{Breadth-first search}
 Breadth-first search searches all closer nodes before searching farther nodes i.e. it progresses in "levels" of depth. Not a standard way to implement it recursively, but can use a queue to keep track of the frontier nodes.
 
+\section{Dynamic Programming}
+
+Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the \textit{Subset Sum} problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get ``stuck'', with no next choices that allow the solution to be rectified, even if a solution does exist.
+
 \section*{Algorithms Problem List}
 
 \subsection*{Merge Strings Alternately}

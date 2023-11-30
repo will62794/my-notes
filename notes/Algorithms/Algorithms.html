@@ -34,6 +34,7 @@
 <li><a href="#depth-first-search"><span class="toc-section-number">1.1</span> Depth-first search</a></li>
 <li><a href="#breadth-first-search"><span class="toc-section-number">1.2</span> Breadth-first search</a></li>
 </ul></li>
+<li><a href="#dynamic-programming"><span class="toc-section-number">2</span> Dynamic Programming</a></li>
 <li><a href="#algorithms-problem-list">Algorithms Problem List</a>
 <ul>
 <li><a href="#merge-strings-alternately">Merge Strings Alternately</a></li>
@@ -59,6 +60,10 @@
 <h2 data-number="1.2"><span class="header-section-number">1.2</span> Breadth-first search</h2>
 <p>Breadth-first search searches all closer nodes before searching farther nodes i.e. it progresses in "levels" of depth. Not a standard way to implement it recursively, but can use a queue to keep track of the frontier nodes.</p>
 </section>
+</section>
+<section id="dynamic-programming" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Dynamic Programming</h1>
+<p>Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the <em>Subset Sum</em> problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get “stuck”, with no next choices that allow the solution to be rectified, even if a solution does exist.</p>
 </section>
 <section id="algorithms-problem-list" class="level1 unnumbered">
 <h1 class="unnumbered">Algorithms Problem List</h1>

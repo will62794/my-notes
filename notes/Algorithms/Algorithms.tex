@@ -35,7 +35,27 @@ Breadth-first search searches all closer nodes before searching farther nodes i.
 
 \section{Dynamic Programming}
 
+There are 2 main components of a problem that make it amenable to a so-called ``dynamic programming'' (badly named) approach:
+\begin{enumerate}
+    \item \textbf{Optimal Substructure}: A global solution can be described in terms of solutions to smaller ``local'' problems. In other words, it is possible to find a solution to a larger problem by solving smaller problems and combine them in an efficient way. 
+    \item \textbf{Overlapping Subproblems}: The global problem can be broken down into smaller ``local" sub-problems, and there is some overlap/redundancy between these subproblems, which is where you ideally get the efficiency speedup from.
+\end{enumerate}
+Note that either (1) and (2), in isolation, don't necessarily permit an efficient, dynamic programming based approach to a problem. For example, we can consider \textit{divide and conquer} type approaches as satisfying the \textit{optimal substructure} property, but don't necessarily satisfy the \textit{overlapping ubproblems} property. For example, merge sort solves smaller subproblems (subsequences of an original list) and then merges them into a larger solution. But, in general, these smaller sorting problems cannot be expected to actually overlap at all.
+
+Examples of problems with efficient DP approaches:
+\begin{enumerate}
+    \item \textbf{Fibonacci}: Compute the $n$-th Fibonacci number.
+    \item \textbf{Subset Sum}: Given a set (multi-set) $S$ of integers and a target sum $k$, determine if there is a subset of $X \subseteq S$ such that the sum of integers in $X$ equals $k$.
+    \item \textbf{Knapsack}: 
+    \item \textbf{Weighted Interval Scheduling}: Given a set of intervals $(s_i,e_i, W_i)$ represent as start and end times $s_i$ and $e_i$, respectively, and weight $W_i$, determine the maximum weight set of non-overlapping intervals.
+    \item \textbf{Minimum Edit Distance}: Given two strings $S$ and $T$ over some alphabet of characters $\Sigma$, determine the minimum number of insertions or deletions needed to transform $S$ to $T$.
+    \item \textbf{Matrix Chain Multiplication}: Given a sequence of matrices, determine the most efficient order in which to multiple them
+\end{enumerate}
+
+
+
 Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the \textit{Subset Sum} problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get ``stuck'', with no next choices that allow the solution to be rectified, even if a solution does exist.
+
 
 \section*{Algorithms Problem List}
 

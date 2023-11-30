@@ -63,6 +63,21 @@
 </section>
 <section id="dynamic-programming" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Dynamic Programming</h1>
+<p>There are 2 main components of a problem that make it amenable to a so-called “dynamic programming” (badly named) approach:</p>
+<ol>
+<li><p><strong>Optimal Substructure</strong>: A global solution can be described in terms of solutions to smaller “local” problems. In other words, it is possible to find a solution to a larger problem by solving smaller problems and combine them in an efficient way.</p></li>
+<li><p><strong>Overlapping Subproblems</strong>: The global problem can be broken down into smaller “local" sub-problems, and there is some overlap/redundancy between these subproblems, which is where you ideally get the efficiency speedup from.</p></li>
+</ol>
+<p>Note that either (1) and (2), in isolation, don’t necessarily permit an efficient, dynamic programming based approach to a problem. For example, we can consider <em>divide and conquer</em> type approaches as satisfying the <em>optimal substructure</em> property, but don’t necessarily satisfy the <em>overlapping ubproblems</em> property. For example, merge sort solves smaller subproblems (subsequences of an original list) and then merges them into a larger solution. But, in general, these smaller sorting problems cannot be expected to actually overlap at all.</p>
+<p>Examples of problems with efficient DP approaches:</p>
+<ol>
+<li><p><strong>Fibonacci</strong>: Compute the <span class="math inline">\(n\)</span>-th Fibonacci number.</p></li>
+<li><p><strong>Subset Sum</strong>: Given a set (multi-set) <span class="math inline">\(S\)</span> of integers and a target sum <span class="math inline">\(k\)</span>, determine if there is a subset of <span class="math inline">\(X \subseteq S\)</span> such that the sum of integers in <span class="math inline">\(X\)</span> equals <span class="math inline">\(k\)</span>.</p></li>
+<li><p><strong>Knapsack</strong>:</p></li>
+<li><p><strong>Weighted Interval Scheduling</strong>: Given a set of intervals <span class="math inline">\((s_i,e_i, W_i)\)</span> represent as start and end times <span class="math inline">\(s_i\)</span> and <span class="math inline">\(e_i\)</span>, respectively, and weight <span class="math inline">\(W_i\)</span>, determine the maximum weight set of non-overlapping intervals.</p></li>
+<li><p><strong>Minimum Edit Distance</strong>: Given two strings <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> over some alphabet of characters <span class="math inline">\(\Sigma\)</span>, determine the minimum number of insertions or deletions needed to transform <span class="math inline">\(S\)</span> to <span class="math inline">\(T\)</span>.</p></li>
+<li><p><strong>Matrix Chain Multiplication</strong>: Given a sequence of matrices, determine the most efficient order in which to multiple them</p></li>
+</ol>
 <p>Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the <em>Subset Sum</em> problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get “stuck”, with no next choices that allow the solution to be rectified, even if a solution does exist.</p>
 </section>
 <section id="algorithms-problem-list" class="level1 unnumbered">

@@ -58,6 +58,20 @@ Examples of problems with efficient DP approaches:
 
 Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the \textit{Subset Sum} problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get ``stuck'', with no next choices that allow the solution to be rectified, even if a solution does exist.
 
+\subsection*{Stair Climbing}
+
+This is an example of a somewhat simpler DP problem but is good to practice the basics. We are given a staircase, which can be represented as simply a sequence of $n$ steps, each with an associated cost. You can start at either the 0th or 1st step, and at each step you pay the cost of the current step and take either 1 or 2 steps up. Given these rules, you want to find the path up the stairs with minimal overall cost. This problem has a simple recursive breakdown that is simpler in character to other path finding problems, where the overall minimum cost solution can be represented in terms minimum cost solution to smaller paths of the original problem. Basically, if we say $\textsc{MinCost}(i)$ is the minimum cost solution starting from step index $i$, then we can represent this solution recursively as
+\begin{align*}
+    \textsc{MinCost}(i) = cost(i) + Min(\textsc{MinCost}(i+1), \textsc{MinCost}(i+2))
+\end{align*}
+while also accounting for the base case where $i > n$, in which case this means we've reached the top and can return cost 0.
+
+If we expand the above recursion naively, though, it will contain an exponential number of calls, though there are many shared subproblems, similar to Fibonacci.
+\begin{center}
+    \includegraphics[scale=0.35]{diagrams/stairs_tree.png}
+\end{center}
+One simple approach here is to memoize solutions as we go, avoiding the exponential work blowup.
+
 
 \subsection*{Subset Sum}
 \label{sec:subset-sum}
@@ -73,6 +87,11 @@ Basically, if our target sum is $T$, then there are at most $T$ unique ``used up
 0-1 Knapsack is very similar to \nameref{sec:subset-sum} i.e., we have to find a subset of $n$ given items that remains under our given capacity and maximizes the sum of the chosen item values. As in \textbf{Subset Sum} case, we can imagine solution search tree where we either include or exclude the first element, and the subproblems we recurse on are basically the rest of the elements with a capacity reduced by that of our first element, or the rest of the elements with the original capacity. Again, this tree might grow exponentially, but, if our capacity is $C$, we actually only have at most $C$ unique possible capacities, and at most $n$ suffixes of elements. Note also that the minor difference from Subset Sum is that, when we combine solutions to recursive subproblems, we want to take the maximum solution (since this is an optimization problem variant), rather than just taking the disjunction.
 
 \section*{Algorithms Problem List}
+
+\subsubsection*{Difference of Two Arrays}
+\begin{itemize}
+    \item \textbf{Problem}: Given two integer arrays $S_1$ and $S_2$, return sets $U_1,U_2$ where $U_1$ is the set of distinct integers in $S_1$ and not in $S_2$, and $U_2$ is the set of distinct integers in $S_2$ and not in $S_1$.
+\end{itemize}
 
 \subsubsection*{Merge Strings Alternately}
 \begin{itemize}

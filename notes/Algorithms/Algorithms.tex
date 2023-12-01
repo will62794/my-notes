@@ -9,8 +9,11 @@
 \usepackage{fancyvrb}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{hyperref}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes,snakes}
+\usepackage{nameref}
+
 \usepackage[english]{babel}
 
 \geometry{legalpaper, margin=1.5in}
@@ -40,22 +43,34 @@ There are 2 main components of a problem that make it amenable to a so-called ``
     \item \textbf{Optimal Substructure}: A global solution can be described in terms of solutions to smaller ``local'' problems. In other words, it is possible to find a solution to a larger problem by solving smaller problems and combine them in an efficient way. 
     \item \textbf{Overlapping Subproblems}: The global problem can be broken down into smaller ``local" sub-problems, and there is some overlap/redundancy between these subproblems, which is where you ideally get the efficiency speedup from.
 \end{enumerate}
-Note that either (1) and (2), in isolation, don't necessarily permit an efficient, dynamic programming based approach to a problem. For example, we can consider \textit{divide and conquer} type approaches as satisfying the \textit{optimal substructure} property, but don't necessarily satisfy the \textit{overlapping ubproblems} property. For example, merge sort solves smaller subproblems (subsequences of an original list) and then merges them into a larger solution. But, in general, these smaller sorting problems cannot be expected to actually overlap at all.
+Note that either (1) and (2), in isolation, don't necessarily permit an efficient, dynamic programming based approach to a problem. For example, we can consider \textit{divide and conquer} type approaches as satisfying the \textit{optimal substructure} property, but don't necessarily satisfy the \textit{overlapping subproblems} property. For example, merge sort solves smaller subproblems (subsequences of an original list) and then merges them into a larger solution. But, in general, these smaller sorting problems cannot be expected to actually overlap at all.
 
 Examples of problems with efficient DP approaches:
 \begin{enumerate}
     \item \textbf{Fibonacci}: Compute the $n$-th Fibonacci number.
     \item \textbf{Subset Sum}: Given a set (multi-set) $S$ of integers and a target sum $k$, determine if there is a subset of $X \subseteq S$ such that the sum of integers in $X$ equals $k$.
-    \item \textbf{Knapsack}: 
+    \item \textbf{Knapsack}: Given a set of $n$ items, each with a weight $w_i$ and values $v_i$, find a subset of items that fits in a knapsack of capacity $B$ and maximizes the overall value of included items.
     \item \textbf{Weighted Interval Scheduling}: Given a set of intervals $(s_i,e_i, W_i)$ represent as start and end times $s_i$ and $e_i$, respectively, and weight $W_i$, determine the maximum weight set of non-overlapping intervals.
     \item \textbf{Minimum Edit Distance}: Given two strings $S$ and $T$ over some alphabet of characters $\Sigma$, determine the minimum number of insertions or deletions needed to transform $S$ to $T$.
     \item \textbf{Matrix Chain Multiplication}: Given a sequence of matrices, determine the most efficient order in which to multiple them
 \end{enumerate}
 
 
-
 Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the \textit{Subset Sum} problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get ``stuck'', with no next choices that allow the solution to be rectified, even if a solution does exist.
 
+
+\subsection*{Subset Sum}
+\label{sec:subset-sum}
+
+To understand the idea behind approach for \textbf{Subset Sum}, can think about each element of the given list of $n$ integers $S=\{a_1,\dots,a_n\}$. If we wanted to come up with a naive recursive solution, we could imagine the decision tree for building all subsets of $S$, where each branch point represents whether we include that element or not in the subset. This is one way to simply generate all possible subsets of a given set. Within this tree, though, at each node, we can imagine we are dealing with a subset of the original set, based on the subset (e.g. suffix) of elements that we have not made a choice about including or excluding. Along with this, we can imagine that each node of the tree also has associated with it the ``used up'' amount, which is the sum of elements chosen to include based on the path to this position in the tree. Now, even though this tree naively has size (i.e, width) exponential in the number of elements, there are actually a limited number of unique problems to solve in this tree, so there is sufficient overlap between them to make this efficient.
+
+Basically, if our target sum is $T$, then there are at most $T$ unique ``used up" values that can appear at any node in this tree. And, there are most $n$ unique suffixes that can appear as well.
+
+% Note: not sure if I actually like the phrasing of the subproblem as ``suffixes''. Rather, we could imagine the subproblems as more generally being about 
+
+\subsection*{Knapsack}
+
+0-1 Knapsack is very similar to \nameref{sec:subset-sum} i.e., we have to find a subset of $n$ given items that remains under our given capacity and maximizes the sum of the chosen item values. As in \textbf{Subset Sum} case, we can imagine solution search tree where we either include or exclude the first element, and the subproblems we recurse on are basically the rest of the elements with a capacity reduced by that of our first element, or the rest of the elements with the original capacity. Again, this tree might grow exponentially, but, if our capacity is $C$, we actually only have at most $C$ unique possible capacities, and at most $n$ suffixes of elements. Note also that the minor difference from Subset Sum is that, when we combine solutions to recursive subproblems, we want to take the maximum solution (since this is an optimization problem variant), rather than just taking the disjunction.
 
 \section*{Algorithms Problem List}
 

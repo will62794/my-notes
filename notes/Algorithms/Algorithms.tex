@@ -60,9 +60,9 @@ Can also look at some problems as having solution that can be built by a sequenc
 
 \subsection*{Stair Climbing}
 
-This is an example of a somewhat simpler DP problem but is good to practice the basics. We are given a staircase, which can be represented as simply a sequence of $n$ steps, each with an associated cost. You can start at either the 0th or 1st step, and at each step you pay the cost of the current step and take either 1 or 2 steps up. Given these rules, you want to find the path up the stairs with minimal overall cost. This problem has a simple recursive breakdown that is simpler in character to other path finding problems, where the overall minimum cost solution can be represented in terms minimum cost solution to smaller paths of the original problem. Basically, if we say $\textsc{MinCost}(i)$ is the minimum cost solution starting from step index $i$, then we can represent this solution recursively as
+This is an example of a somewhat simpler DP problem but is good to practice the basics. We are given a staircase, which can be represented as simply a sequence of $n$ steps, each with an associated cost. You can start at either the 0th or 1st step, and at each step you pay the cost of the current step and take either 1 or 2 steps up. Given these rules, you want to find the path up the stairs with minimal overall cost. This problem has a simple recursive breakdown that is simpler in character to other path finding problems, where the overall minimum cost solution can be represented in terms minimum cost solution to smaller paths of the original problem. Basically, if we say $\mathit{MinCost}(i)$ is the minimum cost solution starting from step index $i$, then we can represent this solution recursively as
 \begin{align*}
-    \textsc{MinCost}(i) = cost(i) + Min(\textsc{MinCost}(i+1), \textsc{MinCost}(i+2))
+    \mathit{MinCost}(i) = cost(i) + \mathit{Min}(\mathit{MinCost}(i+1), \mathit{MinCost}(i+2))
 \end{align*}
 while also accounting for the base case where $i > n$, in which case this means we've reached the top and can return cost 0.
 

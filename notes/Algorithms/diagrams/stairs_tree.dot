@@ -1,0 +1,18 @@
+digraph G {
+    "MinCost(0)" -> "MinCost(1)";
+    "MinCost(0)" -> "MinCost(2)";
+
+    minCost2_1[label="MinCost(2)"];
+    minCost3_1[label="MinCost(3)"];
+    "MinCost(1)" -> minCost2_1;
+    "MinCost(1)" -> minCost3_1;
+
+    minCost3_2[label="MinCost(3)"];
+    minCost4_2[label="MinCost(4)"];
+    "MinCost(2)" -> minCost3_2;
+    "MinCost(2)" -> minCost4_2;
+
+    // minCost4_2 -> "MinCost(5)";
+    // minCost4_2 -> "MinCost(6)";
+
+}

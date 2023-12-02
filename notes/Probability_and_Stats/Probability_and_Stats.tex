@@ -31,7 +31,7 @@ We can model probabilistic events based on \textit{outcomes}, which are the outc
 
 A \textbf{random variable} is then, formally, simply a mapping from outcomes in the sample space to the set of real numbers. For example consider a 6-sided die with sides $\{1,2,3,4,5,6\}$. Some possible outcomes are $1$, $3$, or $5$, and the sample space is $\{1,2,3,4,5,6\}$. The probability of each outcome for a fair die, deteremined by some random variable, is $1/6$. We can define an event $A$ representing the case that the roll is odd i.e., $A=\{1,3,5\}$.
 
-\subsection*{Expected Value}
+\subsection{Expected Value}
 The \textbf{expected value} of a random variable $X$ can be thought of as the ``average'' or ``mean'' value attained by that random variable. Formally, expected value is defined as
 \begin{align*}
     E[X] = \sum_{x} x * P(X=x)
@@ -52,9 +52,25 @@ our expected payoff from rolling this die is
     \frac{1}{4}*1 + \frac{1}{4}*2 + \frac{1}{4}*3 + \frac{1}{4}*10 = 4
 \end{align*}
 
-% \subsection*{Some Examples}
-% 
-% Assume there are two gamblers
+\section*{Some Examples}
+
+\paragraph{Coin Toss Game} Assume there are two gamblers playing a coin toss game. Gambler $A$ has $(n+1)$ fair coins, and $B$ has $n$ fair coins. What is the probability that $A$ will have more heads than $B$ if both flip all of their coins?
+
+We cna look at this problem symmetrically if we imagine a slightly simplified scenario where $A$ and $B$ both have $n$ coins. Then, we know that for the following 3 scenarios
+\begin{itemize}
+    \item $A$ flips more heads than $B$.
+    \item $A$ flips the same number of heads as $B$.
+    \item $A$ flips fewer heads than $B$. 
+\end{itemize}
+the first and third are symmetric, and so must have equal probabilities. Then, we really only need to consider the second case, which is the case where $A$'s $n+1$-th flip would actually make a difference.
+
+\paragraph*{Card Game} A casino offers a card game from a deck of 52 cards with 4 cards each for $2,3,4,5,6,7,8,9,10,J,Q,K,A$. You pick up a card from the deck and the dealer picks another one with replacement. What is the probability that you picked a larger card than the dealer's?
+
+Well, one way to analyze this is by considering all possible choices of two cards $C_1$ and $C_2$. The probabibility of pciking any particular suit for $C_1$ is $4/52 = 1/13$. We can choose to then simply analyze the probability of getting a smaller card for each possible suit case. Basically, for each suit, the probability of picking a lesser card for $C_2$ is $4/51 * k$, where $k$ is the rank of the suit. So, in general, we can compute the overall probability as
+\begin{align*}
+    \left(\frac{1}{13}*\frac{4}{51}*0\right) + \left(\frac{1}{13}*\frac{4}{51}*1\right) + \left(\frac{1}{13}*\frac{4}{51}*2\right) + \dots + \left(\frac{1}{13}*\frac{4}{51}*12\right) = 0.4705
+\end{align*}
+
 
 % \bibliographystyle{alpha}
 % \bibliography{../../references.bib}

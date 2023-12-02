@@ -31,16 +31,17 @@
 <ul>
 <li><a href="#random-variables"><span class="toc-section-number">1</span> Random Variables</a>
 <ul>
-<li><a href="#expected-value">Expected Value</a></li>
+<li><a href="#expected-value"><span class="toc-section-number">1.1</span> Expected Value</a></li>
 </ul></li>
+<li><a href="#some-examples">Some Examples</a></li>
 </ul>
 </nav>
 <section id="random-variables" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Random Variables</h1>
 <p>We can model probabilistic events based on <em>outcomes</em>, which are the outcome of an experiment or a trial (e.g., getting a “3” on the roll of a die), and a <em>sample space</em>, which is a set of possible outcomes, and <em>events</em>, which are a subset of the sample space.</p>
 <p>A <strong>random variable</strong> is then, formally, simply a mapping from outcomes in the sample space to the set of real numbers. For example consider a 6-sided die with sides <span class="math inline">\(\{1,2,3,4,5,6\}\)</span>. Some possible outcomes are <span class="math inline">\(1\)</span>, <span class="math inline">\(3\)</span>, or <span class="math inline">\(5\)</span>, and the sample space is <span class="math inline">\(\{1,2,3,4,5,6\}\)</span>. The probability of each outcome for a fair die, deteremined by some random variable, is <span class="math inline">\(1/6\)</span>. We can define an event <span class="math inline">\(A\)</span> representing the case that the roll is odd i.e., <span class="math inline">\(A=\{1,3,5\}\)</span>.</p>
-<section id="expected-value" class="level2 unnumbered">
-<h2 class="unnumbered">Expected Value</h2>
+<section id="expected-value" class="level2" data-number="1.1">
+<h2 data-number="1.1"><span class="header-section-number">1.1</span> Expected Value</h2>
 <p>The <strong>expected value</strong> of a random variable <span class="math inline">\(X\)</span> can be thought of as the “average” or “mean” value attained by that random variable. Formally, expected value is defined as <span class="math display">\[\begin{aligned}
     E[X] = \sum_{x} x * P(X=x)\end{aligned}\]</span> for every outcome <span class="math inline">\(x\)</span> in the sample space of <span class="math inline">\(X\)</span>. For example, for a fair, 6-sided die, the expected value is <span class="math display">\[\begin{aligned}
   \frac{1}{6}*1 + \frac{1}{6}*2 + \frac{1}{6}*3 + \frac{1}{6}*4 + \frac{1}{6}*5 + \frac{1}{6}*6 = 3.5\end{aligned}\]</span> Or if we have, say, a 4-sided die where each roll has some “payoff”, e.g.</p>
@@ -52,6 +53,26 @@
 </ul>
 <p>our expected payoff from rolling this die is <span class="math display">\[\begin{aligned}
     \frac{1}{4}*1 + \frac{1}{4}*2 + \frac{1}{4}*3 + \frac{1}{4}*10 = 4\end{aligned}\]</span></p>
+</section>
+</section>
+<section id="some-examples" class="level1 unnumbered">
+<h1 class="unnumbered">Some Examples</h1>
+<section id="coin-toss-game" class="level4" data-number="1.1.0.1">
+<h4 data-number="1.1.0.1"><span class="header-section-number">1.1.0.1</span> Coin Toss Game</h4>
+<p>Assume there are two gamblers playing a coin toss game. Gambler <span class="math inline">\(A\)</span> has <span class="math inline">\((n+1)\)</span> fair coins, and <span class="math inline">\(B\)</span> has <span class="math inline">\(n\)</span> fair coins. What is the probability that <span class="math inline">\(A\)</span> will have more heads than <span class="math inline">\(B\)</span> if both flip all of their coins?</p>
+<p>We cna look at this problem symmetrically if we imagine a slightly simplified scenario where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> both have <span class="math inline">\(n\)</span> coins. Then, we know that for the following 3 scenarios</p>
+<ul>
+<li><p><span class="math inline">\(A\)</span> flips more heads than <span class="math inline">\(B\)</span>.</p></li>
+<li><p><span class="math inline">\(A\)</span> flips the same number of heads as <span class="math inline">\(B\)</span>.</p></li>
+<li><p><span class="math inline">\(A\)</span> flips fewer heads than <span class="math inline">\(B\)</span>.</p></li>
+</ul>
+<p>the first and third are symmetric, and so must have equal probabilities. Then, we really only need to consider the second case, which is the case where <span class="math inline">\(A\)</span>’s <span class="math inline">\(n+1\)</span>-th flip would actually make a difference.</p>
+</section>
+<section id="card-game" class="level4 unnumbered">
+<h4 class="unnumbered">Card Game</h4>
+<p>A casino offers a card game from a deck of 52 cards with 4 cards each for <span class="math inline">\(2,3,4,5,6,7,8,9,10,J,Q,K,A\)</span>. You pick up a card from the deck and the dealer picks another one with replacement. What is the probability that you picked a larger card than the dealer’s?</p>
+<p>Well, one way to analyze this is by considering all possible choices of two cards <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span>. The probabibility of pciking any particular suit for <span class="math inline">\(C_1\)</span> is <span class="math inline">\(4/52 = 1/13\)</span>. We can choose to then simply analyze the probability of getting a smaller card for each possible suit case. Basically, for each suit, the probability of picking a lesser card for <span class="math inline">\(C_2\)</span> is <span class="math inline">\(4/51 * k\)</span>, where <span class="math inline">\(k\)</span> is the rank of the suit. So, in general, we can compute the overall probability as <span class="math display">\[\begin{aligned}
+    \left(\frac{1}{13}*\frac{4}{51}*0\right) + \left(\frac{1}{13}*\frac{4}{51}*1\right) + \left(\frac{1}{13}*\frac{4}{51}*2\right) + \dots + \left(\frac{1}{13}*\frac{4}{51}*12\right) = 0.4705\end{aligned}\]</span></p>
 </section>
 </section>
 </body>

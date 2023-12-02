@@ -1,0 +1,62 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{upgreek}
+\usepackage{hyperref}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{Probability and Stats}
+\author{William Schultz}
+\maketitle
+
+
+\section{Random Variables}
+
+We can model probabilistic events based on \textit{outcomes}, which are the outcome of an experiment or a trial (e.g., getting a ``3'' on the roll of a die), and a \textit{sample space}, which is a set of possible outcomes, and \textit{events}, which are a subset of the sample space. 
+
+A \textbf{random variable} is then, formally, simply a mapping from outcomes in the sample space to the set of real numbers. For example consider a 6-sided die with sides $\{1,2,3,4,5,6\}$. Some possible outcomes are $1$, $3$, or $5$, and the sample space is $\{1,2,3,4,5,6\}$. The probability of each outcome for a fair die, deteremined by some random variable, is $1/6$. We can define an event $A$ representing the case that the roll is odd i.e., $A=\{1,3,5\}$.
+
+\subsection*{Expected Value}
+The \textbf{expected value} of a random variable $X$ can be thought of as the ``average'' or ``mean'' value attained by that random variable. Formally, expected value is defined as
+\begin{align*}
+    E[X] = \sum_{x} x * P(X=x)
+\end{align*}
+for every outcome $x$ in the sample space of $X$. For example, for a fair, 6-sided die, the expected value is 
+\begin{align*}
+  \frac{1}{6}*1 + \frac{1}{6}*2 + \frac{1}{6}*3 + \frac{1}{6}*4 + \frac{1}{6}*5 + \frac{1}{6}*6 = 3.5
+\end{align*}
+Or if we have, say, a 4-sided die where each roll has some ``payoff'', e.g. 
+\begin{itemize}
+    \item 1 $\mapsto$ 1
+    \item 2 $\mapsto$ 2
+    \item 3 $\mapsto$ 3
+    \item 4 $\mapsto$ 10
+\end{itemize}
+our expected payoff from rolling this die is
+\begin{align*}
+    \frac{1}{4}*1 + \frac{1}{4}*2 + \frac{1}{4}*3 + \frac{1}{4}*10 = 4
+\end{align*}
+
+% \subsection*{Some Examples}
+% 
+% Assume there are two gamblers
+
+% \bibliographystyle{alpha}
+% \bibliography{../../references.bib}
+
+\end{document}

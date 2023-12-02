@@ -66,7 +66,7 @@ the first and third are symmetric, and so must have equal probabilities. Then, w
 
 \paragraph*{Card Game} A casino offers a card game from a deck of 52 cards with 4 cards each for $2,3,4,5,6,7,8,9,10,J,Q,K,A$. You pick up a card from the deck and the dealer picks another one with replacement. What is the probability that you picked a larger card than the dealer's?
 
-Well, one way to analyze this is by considering all possible choices of two cards $C_1$ and $C_2$. The probabibility of pciking any particular suit for $C_1$ is $4/52 = 1/13$. We can choose to then simply analyze the probability of getting a smaller card for each possible suit case. Basically, for each suit, the probability of picking a lesser card for $C_2$ is $4/51 * k$, where $k$ is the rank of the suit. So, in general, we can compute the overall probability as
+Well, one way to analyze this is by considering all possible choices of two cards $C_1$ and $C_2$. The probabibility of pciking any particular suit for $C_1$ is $4/52 = 1/13$. We can choose to then simply analyze the probability of getting a smaller card for each possible suit case. Basically, for each suit, the probability of picking a lesser card for $C_2$ is $4/51 * k$, where $k$ is 1 less than the rank of the suit. So, in general, we can compute the overall probability as
 \begin{align*}
     \left(\frac{1}{13}*\frac{4}{51}*0\right) + \left(\frac{1}{13}*\frac{4}{51}*1\right) + \left(\frac{1}{13}*\frac{4}{51}*2\right) + \dots + \left(\frac{1}{13}*\frac{4}{51}*12\right) = 0.4705
 \end{align*}

@@ -34,6 +34,11 @@
 <li><a href="#expected-value"><span class="toc-section-number">1.1</span> Expected Value</a></li>
 </ul></li>
 <li><a href="#some-examples">Some Examples</a></li>
+<li><a href="#conditional-probability-and-bayes-formula"><span class="toc-section-number">2</span> Conditional Probability and Bayes’ Formula</a>
+<ul>
+<li><a href="#bayes-rule"><span class="toc-section-number">2.1</span> Bayes’ Rule</a></li>
+</ul></li>
+<li><a href="#markov-chains"><span class="toc-section-number">3</span> Markov Chains</a></li>
 </ul>
 </nav>
 <section id="random-variables" class="level1" data-number="1">
@@ -73,6 +78,38 @@
 <p>A casino offers a card game from a deck of 52 cards with 4 cards each for <span class="math inline">\(2,3,4,5,6,7,8,9,10,J,Q,K,A\)</span>. You pick up a card from the deck and the dealer picks another one with replacement. What is the probability that you picked a larger card than the dealer’s?</p>
 <p>Well, one way to analyze this is by considering all possible choices of two cards <span class="math inline">\(C_1\)</span> and <span class="math inline">\(C_2\)</span>. The probability of pciking any particular suit for <span class="math inline">\(C_1\)</span> is <span class="math inline">\(4/52 = 1/13\)</span>. We can choose to then simply analyze the probability of getting a smaller card for each possible suit case. Basically, for each suit, the probability of picking a lesser card for <span class="math inline">\(C_2\)</span> is <span class="math inline">\(4/51 * k\)</span>, where <span class="math inline">\(k\)</span> is 1 less than the rank of the suit. So, in general, we can compute the overall probability as <span class="math display">\[\begin{aligned}
     \left(\frac{1}{13}*\frac{4}{51}*0\right) + \left(\frac{1}{13}*\frac{4}{51}*1\right) + \left(\frac{1}{13}*\frac{4}{51}*2\right) + \dots + \left(\frac{1}{13}*\frac{4}{51}*12\right) = 0.4705\end{aligned}\]</span></p>
+</section>
+</section>
+<section id="conditional-probability-and-bayes-formula" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Conditional Probability and Bayes’ Formula</h1>
+<p>In standard probability notions, we may have some event <span class="math inline">\(A\)</span> and want to know the probability of <span class="math inline">\(A\)</span> occurring. If, however, we have two separate events, <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, we can also consider the probability that one event occurs <em>given</em> that the other occurs. This is known as conditional probability i.e., for events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, the conditional probability of <span class="math inline">\(A\)</span> <em>given</em> <span class="math inline">\(B\)</span> is defined as <span class="math display">\[\begin{aligned}
+    P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}\end{aligned}\]</span> You can think of this formula visually:</p>
+<div class="center">
+<p><img src="diagrams/prob_diagrams/prob_diagrams.001.png" alt="image" /></p>
+</div>
+<p>That is, if we consider <span class="math inline">\(P(A | B)\)</span>, we can imagine this is like saying our sample space is now shrunk just to <span class="math inline">\(B\)</span>, and so the probability of <span class="math inline">\(A\)</span> in this reduced space is dependent on the size of the intersection between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as a proportion of <span class="math inline">\(B\)</span>, as represented in the formula.</p>
+<section id="bayes-rule" class="level2" data-number="2.1">
+<h2 data-number="2.1"><span class="header-section-number">2.1</span> Bayes’ Rule</h2>
+<p><strong>Bayes’ rule</strong> provides an alternate expression for conditional probability. For two events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it states: <span class="math display">\[\begin{aligned}
+    P(A \mid B) = \dfrac{P(B|A) * P(A)}{P(B)}\end{aligned}\]</span> You can think of this as deriving from the basic conditional probability statement above since <span class="math inline">\(P(B \mid A)\)</span> can be viewed as the probability of the intersection between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as a proportion to <span class="math inline">\(A\)</span> as our sample space, and then we scale this up by factor of <span class="math inline">\(P(A)\)</span> to explicitly get <span class="math inline">\(P(A \cap B)\)</span> in the numerator.</p>
+</section>
+</section>
+<section id="markov-chains" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Markov Chains</h1>
+<p>A <strong>Markov chain</strong> is a sequence of random variables <span class="math inline">\(X_0,X_1,\dots,X_n,\dots\)</span> with the Markov property that, given the present state, the future states and past states are independent. In other words, once the current state is known, past history has no bearing on the future. A Markov chain with <span class="math inline">\(M\)</span> states can be completely described by an <span class="math inline">\(M \times M\)</span> transition matrix <span class="math inline">\(P\)</span> and the initial probabilities <span class="math inline">\(P(X_0)\)</span>, where <span class="math inline">\(p_{ij}\)</span> is the probability of transitioning from state <span class="math inline">\(i\)</span> to state <span class="math inline">\(j\)</span>. The probability of a particular path of states then, is the product of the probabilities of taking each corresponding transition in that path.</p>
+<p>A <strong>transition graph</strong> is more commonly used to graphically represent the transition matrix i.e.</p>
+<div class="center">
+<p><img src="diagrams/markov_chain_graph.png" alt="image" /></p>
+</div>
+<p>Note that a state <span class="math inline">\(i\)</span> is called <strong>absorbing</strong> if it is impossible to leave this state.</p>
+<section id="example-gamblers-ruin" class="level4" data-number="3.0.0.1">
+<h4 data-number="3.0.0.1"><span class="header-section-number">3.0.0.1</span> Example: Gambler’s Ruin</h4>
+<p>As an example, consider the gambler’s ruin problem. Say player <span class="math inline">\(M\)</span> has $1 and play N has $2. Each game gives the winner of that game $1 from the other. As a better player, <span class="math inline">\(M\)</span> wins 2/3 of the games, and they play until one of them is bankrupt. What is the probability that <span class="math inline">\(M\)</span> wins?</p>
+<p>We can model this as a Markov chain where states are tuples of the account values of <span class="math inline">\(M\)</span> and <span class="math inline">\(N\)</span>, with initial state of <span class="math inline">\((1,2)\)</span>. At each state, there are then two possible transitions: one where <span class="math inline">\(M\)</span> wins and one where <span class="math inline">\(N\)</span> wins, the former having probability <span class="math inline">\(2/3\)</span> and the latter having probability <span class="math inline">\(1/3\)</span>. The <span class="math inline">\(M\)</span> winning transition goes from a state <span class="math inline">\((m,n)\)</span> to <span class="math inline">\((m+1,n-1)\)</span>, and similarly for the <span class="math inline">\(N\)</span> winning transition. A winning (losing) state is one where one player’s account balance is <span class="math inline">\(\leq 0\)</span>. So, we want to determine the probability of reaching a state where <span class="math inline">\(M\)</span> wins, starting from the initial state.</p>
+<p>The Markov chain (i.e. probabilistic transition system) for this problem can be drawn as follows (where bankrupt values are shown in red):</p>
+<div class="center">
+<p><img src="diagrams/prob_diagrams/prob_diagrams.002.png" alt="image" /></p>
+</div>
 </section>
 </section>
 </body>

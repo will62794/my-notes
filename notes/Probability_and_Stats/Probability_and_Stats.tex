@@ -71,6 +71,48 @@ Well, one way to analyze this is by considering all possible choices of two card
     \left(\frac{1}{13}*\frac{4}{51}*0\right) + \left(\frac{1}{13}*\frac{4}{51}*1\right) + \left(\frac{1}{13}*\frac{4}{51}*2\right) + \dots + \left(\frac{1}{13}*\frac{4}{51}*12\right) = 0.4705
 \end{align*}
 
+\section{Conditional Probability and Bayes' Formula}
+
+In standard probability notions, we may have some event $A$ and want to know the probability of $A$ occurring. If, however, we have two separate events, $A$ and $B$, we can also consider the probability that one event occurs \textit{given} that the other occurs. This is known as conditional probability i.e., for events $A$ and $B$, the conditional probability of $A$ \textit{given} $B$ is defined as 
+\begin{align*}
+    P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}
+\end{align*}
+You can think of this formula visually: 
+\begin{center}
+    \includegraphics[scale=0.1]{diagrams/prob_diagrams/prob_diagrams.001.png}
+\end{center}
+That is, if we consider $P(A | B)$, we can imagine this is like saying our sample space is now shrunk just to $B$, and so the probability of $A$ in this reduced space is dependent on the size of the intersection between $A$ and $B$ as a proportion of $B$, as represented in the formula.
+
+\subsection{Bayes' Rule}
+
+\textbf{Bayes' rule} provides an alternate expression for conditional probability. For two events $A$ and $B$, it states: 
+\begin{align*}
+    P(A \mid B) = \dfrac{P(B|A) * P(A)}{P(B)}
+\end{align*}
+You can think of this as deriving from the basic conditional probability statement above since $P(B \mid A)$ can be viewed as the probability of the intersection between $A$ and $B$ as a proportion to $A$ as our sample space, and then we scale this up by factor of $P(A)$ to explicitly get $P(A \cap B)$ in the numerator.
+
+\section{Markov Chains}
+A \textbf{Markov chain} is a sequence of random variables $X_0,X_1,\dots,X_n,\dots$ with the Markov property that, given the present state, the future states and past states are independent. In other words, once the current state is known, past history has no bearing on the future. A Markov chain with $M$ states can be completely described by an $M \times M$ transition matrix $P$ and the initial probabilities $P(X_0)$, where $p_{ij}$ is the probability of transitioning from state $i$ to state $j$. The probability of a particular path of states then, is the product of the probabilities of taking each corresponding transition in that path.
+
+A \textbf{transition graph} is more commonly used to graphically represent the transition matrix i.e.
+\begin{center}
+    \includegraphics[scale=0.5]{diagrams/markov_chain_graph.png}
+\end{center}
+Note that a state $i$ is called \textbf{absorbing} if it is impossible to leave this state.
+
+\paragraph{Example: Gambler's Ruin} 
+As an example, consider the gambler's ruin problem. Say player $M$ has \$1 and play N has \$2. Each game gives the winner of that game \$1 from the other. As a better player, $M$ wins 2/3 of the games, and they play until one of them is bankrupt. What is the probability that $M$ wins?
+
+We can model this as a Markov chain where states are tuples of the account values of $M$ and $N$, with initial state of $(1,2)$. At each state, there are then two possible transitions: one where $M$ wins and one where $N$ wins, the former having probability $2/3$ and the latter having probability $1/3$. The $M$ winning transition goes from a state $(m,n)$ to $(m+1,n-1)$, and similarly for the $N$ winning transition. A winning (losing) state is one where one player's account balance is $\leq 0$. So, we want to determine the probability of reaching a state where $M$ wins, starting from the initial state.
+
+The Markov chain (i.e. probabilistic transition system) for this problem can be drawn as follows (where bankrupt values are shown in red):
+\begin{center}
+    \includegraphics[scale=0.15]{diagrams/prob_diagrams/prob_diagrams.002.png}
+\end{center}
+% and from this we can see the probability of $M$ winning is the product of probabilities along the single winning path in this case
+% \begin{align*}
+%     \frac{2}{3} * \frac{2}{3} = \frac{4}{9}
+% \end{align*}
 
 % \bibliographystyle{alpha}
 % \bibliography{../../references.bib}

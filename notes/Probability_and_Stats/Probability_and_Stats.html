@@ -32,12 +32,12 @@
 <li><a href="#random-variables"><span class="toc-section-number">1</span> Random Variables</a>
 <ul>
 <li><a href="#expected-value"><span class="toc-section-number">1.1</span> Expected Value</a></li>
-</ul></li>
 <li><a href="#some-examples">Some Examples</a></li>
+</ul></li>
 <li><a href="#conditional-probability-and-bayes-formula"><span class="toc-section-number">2</span> Conditional Probability and Bayes’ Formula</a>
 <ul>
-<li><a href="#examples">Examples</a></li>
 <li><a href="#bayes-rule"><span class="toc-section-number">2.1</span> Bayes’ Rule</a></li>
+<li><a href="#examples">Examples</a></li>
 </ul></li>
 <li><a href="#markov-chains"><span class="toc-section-number">3</span> Markov Chains</a></li>
 </ul>
@@ -60,9 +60,8 @@
 <p>our expected payoff from rolling this die is <span class="math display">\[\begin{aligned}
     \frac{1}{4}*1 + \frac{1}{4}*2 + \frac{1}{4}*3 + \frac{1}{4}*10 = 4\end{aligned}\]</span></p>
 </section>
-</section>
-<section id="some-examples" class="level1 unnumbered">
-<h1 class="unnumbered">Some Examples</h1>
+<section id="some-examples" class="level2 unnumbered">
+<h2 class="unnumbered">Some Examples</h2>
 <section id="coin-toss-game" class="level4" data-number="1.1.0.1">
 <h4 data-number="1.1.0.1"><span class="header-section-number">1.1.0.1</span> Coin Toss Game</h4>
 <p>Assume there are two gamblers playing a coin toss game. Gambler <span class="math inline">\(A\)</span> has <span class="math inline">\((n+1)\)</span> fair coins, and <span class="math inline">\(B\)</span> has <span class="math inline">\(n\)</span> fair coins. What is the probability that <span class="math inline">\(A\)</span> will have more heads than <span class="math inline">\(B\)</span> if both flip all of their coins?</p>
@@ -81,6 +80,7 @@
     \left(\frac{1}{13}*\frac{4}{51}*0\right) + \left(\frac{1}{13}*\frac{4}{51}*1\right) + \left(\frac{1}{13}*\frac{4}{51}*2\right) + \dots + \left(\frac{1}{13}*\frac{4}{51}*12\right) = 0.4705\end{aligned}\]</span></p>
 </section>
 </section>
+</section>
 <section id="conditional-probability-and-bayes-formula" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Conditional Probability and Bayes’ Formula</h1>
 <p>In standard probability notions, we may have some event <span class="math inline">\(A\)</span> and want to know the probability of <span class="math inline">\(A\)</span> occurring. If, however, we have two separate events, <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, we can also consider the probability that one event occurs <em>given</em> that the other occurs. This is known as conditional probability i.e., for events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, the conditional probability of <span class="math inline">\(A\)</span> <em>given</em> <span class="math inline">\(B\)</span> is defined as <span class="math display">\[\begin{aligned}
@@ -89,14 +89,14 @@
 <p><img src="diagrams/prob_diagrams/prob_diagrams.001.png" alt="image" /></p>
 </div>
 <p>That is, if we consider <span class="math inline">\(P(A | B)\)</span>, we can imagine this is like saying our sample space is now shrunk just to <span class="math inline">\(B\)</span>, and so the probability of <span class="math inline">\(A\)</span> in this reduced space is dependent on the size of the intersection between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as a proportion of <span class="math inline">\(B\)</span>, as represented in the formula.</p>
-<section id="examples" class="level2 unnumbered">
-<h2 class="unnumbered">Examples</h2>
-<p>For example, if I roll a fair 6-sided die, then the probability of rolling a 4 is <span class="math inline">\(1/6\)</span>. But, if I tell you upfront that the die roll seen is <span class="math inline">\(&gt;= 4\)</span>, then the probability that the roll is a 4 is actually now <span class="math inline">\(1/3\)</span>, since there are now only 3 possible outcomes in the reduced/conditioned sample sample (<span class="math inline">\(\{4,5,6\}\)</span>) and our outcome 4 is one of them.</p>
-</section>
 <section id="bayes-rule" class="level2" data-number="2.1">
 <h2 data-number="2.1"><span class="header-section-number">2.1</span> Bayes’ Rule</h2>
 <p><strong>Bayes’ rule</strong> provides an alternate expression for conditional probability. For two events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it states: <span class="math display">\[\begin{aligned}
     P(A \mid B) = \dfrac{P(B|A) * P(A)}{P(B)}\end{aligned}\]</span> You can think of this as deriving from the basic conditional probability statement above since <span class="math inline">\(P(B \mid A)\)</span> can be viewed as the probability of the intersection between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as a proportion to <span class="math inline">\(A\)</span> as our sample space, and then we scale this up by factor of <span class="math inline">\(P(A)\)</span> to explicitly get <span class="math inline">\(P(A \cap B)\)</span> in the numerator.</p>
+</section>
+<section id="examples" class="level2 unnumbered">
+<h2 class="unnumbered">Examples</h2>
+<p>For example, if I roll a fair 6-sided die, then the probability of rolling a 4 is <span class="math inline">\(1/6\)</span>. But, if I tell you upfront that the die roll seen is <span class="math inline">\(&gt;= 4\)</span>, then the probability that the roll is a 4 is actually now <span class="math inline">\(1/3\)</span>, since there are now only 3 possible outcomes in the reduced/conditioned sample sample (<span class="math inline">\(\{4,5,6\}\)</span>) and our outcome 4 is one of them.</p>
 </section>
 </section>
 <section id="markov-chains" class="level1" data-number="3">

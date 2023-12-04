@@ -40,6 +40,11 @@
 <li><a href="#examples">Examples</a></li>
 </ul></li>
 <li><a href="#markov-chains"><span class="toc-section-number">3</span> Markov Chains</a></li>
+<li><a href="#basic-calculus"><span class="toc-section-number">4</span> Basic Calculus</a>
+<ul>
+<li><a href="#common-derivative-rules">Common Derivative Rules</a></li>
+<li><a href="#derivatives-of-common-functions">Derivatives of Common Functions</a></li>
+</ul></li>
 </ul>
 </nav>
 <section id="random-variables" class="level1" data-number="1">
@@ -115,6 +120,30 @@
 <div class="center">
 <p><img src="diagrams/prob_diagrams/prob_diagrams.002.png" alt="image" /></p>
 </div>
+</section>
+</section>
+<section id="basic-calculus" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Basic Calculus</h1>
+<section id="common-derivative-rules" class="level3 unnumbered">
+<h3 class="unnumbered">Common Derivative Rules</h3>
+<ul>
+<li><p><strong>Power Rule</strong>: For <span class="math inline">\(f(x) = ax^n\)</span>, we have <span class="math display">\[f&#39;(x) = n \cdot a x^{n-1}\]</span></p></li>
+<li><p><strong>Product Rule</strong>: For functions <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, we have <span class="math display">\[(f \cdot g)&#39; = f&#39;g + fg&#39;\]</span> i.e., the derivative of the product of <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> can be remembered as “the derivative of <span class="math inline">\(f\)</span> times <span class="math inline">\(g\)</span> plus <span class="math inline">\(f\)</span> times the derivative of <span class="math inline">\(g\)</span>”.</p></li>
+<li><p><strong>Chain Rule</strong>: For two functions <span class="math inline">\(f(x)\)</span> and <span class="math inline">\(g(x)\)</span>, and their composition <span class="math inline">\(h(x) = f(g(x))\)</span>, we have <span class="math display">\[\begin{aligned}
+        h&#39;(x) = f&#39;(g(x))g&#39;(x)
+    \end{aligned}\]</span> Alternately stated as: <span class="math display">\[\begin{aligned}
+        (f \circ g)&#39; = (f&#39; \circ g) \cdot g&#39; 
+    \end{aligned}\]</span></p></li>
+</ul>
+</section>
+<section id="derivatives-of-common-functions" class="level3 unnumbered">
+<h3 class="unnumbered">Derivatives of Common Functions</h3>
+<ul>
+<li><p><span class="math inline">\(\frac{d}{dx} (\ln{x}) = \frac{1}{x}\)</span></p></li>
+<li><p><span class="math inline">\(\frac{d}{dx} (e^{x}) = {e}^{x}\)</span></p></li>
+<li><p><span class="math inline">\(\frac{d}{dx} (\sin{x}) = \cos{x}\)</span></p></li>
+<li><p><span class="math inline">\(\frac{d}{dx} (\cos{x}) = -\sin{x}\)</span></p></li>
+</ul>
 </section>
 </section>
 </body>

@@ -119,4 +119,30 @@ The Markov chain (i.e. probabilistic transition system) for this problem can be 
 % \bibliographystyle{alpha}
 % \bibliography{../../references.bib}
 
+\section{Basic Calculus}
+
+\subsubsection*{Common Derivative Rules}
+% Some common derivative rules:
+\begin{itemize}
+    \item \textbf{Power Rule}: For $f(x) = ax^n$, we have $$f'(x) = n \cdot a x^{n-1}$$
+    \item \textbf{Product Rule}: For functions $f(x)$ and $g(x)$, we have $$(f \cdot g)' = f'g + fg'$$ i.e., the derivative of the product of $f$ and $g$ can be remembered as ``the derivative of $f$ times $g$ plus $f$ times the derivative of $g$''.
+    \item \textbf{Chain Rule}: For two functions $f(x)$ and $g(x)$, and their composition $h(x) = f(g(x))$, we have 
+    \begin{align*}
+        h'(x) = f'(g(x))g'(x)
+    \end{align*}  
+    Alternately stated as:
+    \begin{align*}
+        (f \circ g)' = (f' \circ g) \cdot g' 
+    \end{align*}
+\end{itemize}
+
+\subsubsection*{Derivatives of Common Functions}
+\begin{itemize}
+    \item $\frac{d}{dx} (\ln{x}) = \frac{1}{x}$
+    \item $\frac{d}{dx} (e^{x}) = {e}^{x}$
+    \item $\frac{d}{dx} (\sin{x}) = \cos{x}$
+    \item $\frac{d}{dx} (\cos{x}) = -\sin{x}$
+\end{itemize}
+ 
+
 \end{document}

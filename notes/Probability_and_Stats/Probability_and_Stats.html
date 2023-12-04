@@ -88,6 +88,10 @@
 <p><img src="diagrams/prob_diagrams/prob_diagrams.001.png" alt="image" /></p>
 </div>
 <p>That is, if we consider <span class="math inline">\(P(A | B)\)</span>, we can imagine this is like saying our sample space is now shrunk just to <span class="math inline">\(B\)</span>, and so the probability of <span class="math inline">\(A\)</span> in this reduced space is dependent on the size of the intersection between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> as a proportion of <span class="math inline">\(B\)</span>, as represented in the formula.</p>
+<section id="example" class="level4 unnumbered">
+<h4 class="unnumbered">Example</h4>
+<p>For example, if I roll a fair 6-sided die, then the probability of rolling a 4 is <span class="math inline">\(1/6\)</span>. But, if I tell you upfront that the die roll seen is <span class="math inline">\(&gt;= 4\)</span>, then the probability that the roll is a 4 is actually now <span class="math inline">\(1/3\)</span>, since there are now only 3 possible outcomes in the reduced/conditioned sample sample (<span class="math inline">\(\{4,5,6\}\)</span>) and our outcome 4 is one of them.</p>
+</section>
 <section id="bayes-rule" class="level2" data-number="2.1">
 <h2 data-number="2.1"><span class="header-section-number">2.1</span> Bayes’ Rule</h2>
 <p><strong>Bayes’ rule</strong> provides an alternate expression for conditional probability. For two events <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, it states: <span class="math display">\[\begin{aligned}
@@ -102,8 +106,8 @@
 <p><img src="diagrams/markov_chain_graph.png" alt="image" /></p>
 </div>
 <p>Note that a state <span class="math inline">\(i\)</span> is called <strong>absorbing</strong> if it is impossible to leave this state.</p>
-<section id="example-gamblers-ruin" class="level4" data-number="3.0.0.1">
-<h4 data-number="3.0.0.1"><span class="header-section-number">3.0.0.1</span> Example: Gambler’s Ruin</h4>
+<section id="example-gamblers-ruin" class="level4 unnumbered">
+<h4 class="unnumbered">Example: Gambler’s Ruin</h4>
 <p>As an example, consider the gambler’s ruin problem. Say player <span class="math inline">\(M\)</span> has $1 and play N has $2. Each game gives the winner of that game $1 from the other. As a better player, <span class="math inline">\(M\)</span> wins 2/3 of the games, and they play until one of them is bankrupt. What is the probability that <span class="math inline">\(M\)</span> wins?</p>
 <p>We can model this as a Markov chain where states are tuples of the account values of <span class="math inline">\(M\)</span> and <span class="math inline">\(N\)</span>, with initial state of <span class="math inline">\((1,2)\)</span>. At each state, there are then two possible transitions: one where <span class="math inline">\(M\)</span> wins and one where <span class="math inline">\(N\)</span> wins, the former having probability <span class="math inline">\(2/3\)</span> and the latter having probability <span class="math inline">\(1/3\)</span>. The <span class="math inline">\(M\)</span> winning transition goes from a state <span class="math inline">\((m,n)\)</span> to <span class="math inline">\((m+1,n-1)\)</span>, and similarly for the <span class="math inline">\(N\)</span> winning transition. A winning (losing) state is one where one player’s account balance is <span class="math inline">\(\leq 0\)</span>. So, we want to determine the probability of reaching a state where <span class="math inline">\(M\)</span> wins, starting from the initial state.</p>
 <p>The Markov chain (i.e. probabilistic transition system) for this problem can be drawn as follows (where bankrupt values are shown in red):</p>

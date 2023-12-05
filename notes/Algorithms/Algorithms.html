@@ -42,6 +42,7 @@
 </ul></li>
 <li><a href="#algorithms-problem-list">Algorithms Problem List</a>
 <ul>
+<li><a href="#product-of-array-except-self">Product of Array Except Self</a></li>
 <li><a href="#difference-of-two-arrays">Difference of Two Arrays</a></li>
 <li><a href="#merge-strings-alternately">Merge Strings Alternately</a></li>
 <li><a href="#greatest-common-divisor-of-strings">Greatest Common Divisor of Strings</a></li>
@@ -107,6 +108,68 @@
 </section>
 <section id="algorithms-problem-list" class="level1 unnumbered">
 <h1 class="unnumbered">Algorithms Problem List</h1>
+<section id="product-of-array-except-self" class="level3 unnumbered">
+<h3 class="unnumbered">Product of Array Except Self</h3>
+<ul>
+<li><p><strong>Problem</strong>: Given an array of integers, <span class="math inline">\(S\)</span>, compute an output array <span class="math inline">\(A\)</span> such that <span class="math inline">\(A[i]\)</span> is equal to the product of all integers in <span class="math inline">\(S\)</span> excluding <span class="math inline">\(S[i]\)</span>.</p></li>
+<li><p><strong>Solution Idea</strong>: The naive solution is to go over every index <span class="math inline">\(i\)</span> in <span class="math inline">\(S\)</span> and compute the product of all other indices in <span class="math inline">\(S\)</span> and set <span class="math inline">\(A[i]\)</span> equal to this product. The downside is that this is not so efficient, since it takes <span class="math inline">\(O(n^2)\)</span> time in the worst case, if <span class="math inline">\(n\)</span> is the length of the input array <span class="math inline">\(S\)</span>. The key goal is to see if we can somehow do this more efficiently.</p>
+<p>One way to think about this is to consider the multiplications we are doing in the brute force solution e.g. if we have an array <span class="math inline">\(S=\{1,2,3,4\}\)</span> and we consider the multiplications being done at each index: <span class="math display">\[\begin{aligned}
+        i=0 : \, \, (\phantom{1 \cdot} 2 \cdot 3 \cdot 4) \\ 
+        i=1 : \, \, (1 \phantom{1 \cdot} \cdot 3 \cdot 4) \\
+        i=2 : \, \, (1 \cdot 2 \phantom{1 \cdot} \cdot 4) \\
+        i=3 : \, \, (1 \cdot 2 \cdot 3 \phantom{1 \cdot})
+    \end{aligned}\]</span> It seems like we are doing some repeated work across this set of different multiplications. For example, the multiplication pair <span class="math inline">\(2 \cdot 3\)</span> occurs at index <span class="math inline">\(0\)</span> and index <span class="math inline">\(3\)</span>, and the pair <span class="math inline">\(1 \cdot 3\)</span> occurs at indices <span class="math inline">\(1\)</span> and <span class="math inline">\(3\)</span>. This would seem to imply that we only need to do these sub-multiplications once, and can then cache the results each time we need them.</p>
+<p>More generally, we can actually observe that each index in the output array can be represented more succintly as a product of a <em>prefix</em> and <em>suffix</em> of the input array. And, each of these prefixes and suffixes are, then, naturally nested subproblems relative to each other, so if we compute the product of one prefix, we can compute the product of the next larger prefix without re-computing the whole prefix product from scratch. So, the essential idea is that if we can go through, in linear time, and compute these prefix and suffix products for each index of the input array, then we can go again and compute the values for each index of the output array with one scan, by simply multiplying the appropriate prefix and suffix product together.</p>
+<div class="center">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: center;">-</th>
+<th style="text-align: center;">2</th>
+<th style="text-align: center;">3</th>
+<th style="text-align: center;">4</th>
+<th style="text-align: center;">5</th>
+<th style="text-align: center;">= <span class="math inline">\((2 \cdot 3 \cdot 4 \cdot 5)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">= <span class="math inline">\((1) \cdot (3 \cdot 4 \cdot 5)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2) \cdot  (4 \cdot 5)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2 \cdot 3) \cdot (5)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2 \cdot 3 \cdot 4)\)</span></td>
+</tr>
+</tbody>
+</table>
+</div></li>
+</ul>
+</section>
 <section id="difference-of-two-arrays" class="level3 unnumbered">
 <h3 class="unnumbered">Difference of Two Arrays</h3>
 <ul>

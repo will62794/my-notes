@@ -88,6 +88,47 @@ Basically, if our target sum is $T$, then there are at most $T$ unique ``used up
 
 \section*{Algorithms Problem List}
 
+\subsubsection*{Product of Array Except Self}
+
+\begin{itemize}
+    \item \textbf{Problem}: Given an array of integers, $S$, compute an output array $A$ such that $A[i]$ is equal to the product of all integers in $S$ excluding $S[i]$.
+    \item \textbf{Solution Idea}: The naive solution is to go over every index $i$ in $S$ and compute the product of all other indices in $S$ and set $A[i]$ equal to this product. The downside is that this is not so efficient, since it takes $O(n^2)$ time in the worst case, if $n$ is the length of the input array $S$. The key goal is to see if we can somehow do this more efficiently. 
+    
+    One way to think about this is to consider the multiplications we are doing in the brute force solution e.g. if we have an array $S=\{1,2,3,4\}$ and we consider the multiplications being done at each index:
+    \begin{align*}
+        i=0 : \, \, (\phantom{1 \cdot} 2 \cdot 3 \cdot 4) \\ 
+        i=1 : \, \, (1 \phantom{1 \cdot} \cdot 3 \cdot 4) \\
+        i=2 : \, \, (1 \cdot 2 \phantom{1 \cdot} \cdot 4) \\
+        i=3 : \, \, (1 \cdot 2 \cdot 3 \phantom{1 \cdot})
+    \end{align*}
+    It seems like we are doing some repeated work across this set of different multiplications. For example, the multiplication pair $2 \cdot 3$ occurs at index $0$ and index $3$, and the pair $1 \cdot 3$ occurs at indices $1$ and $3$. This would seem to imply that we only need to do these sub-multiplications once, and can then cache the results each time we need them. 
+    
+    More generally, we can actually observe that each index in the output array can be represented more succintly as a product of a \textit{prefix} and \textit{suffix} of the input array. And, each of these prefixes and suffixes are, then, naturally nested subproblems relative to each other, so if we compute the product of one prefix, we can compute the product of the next larger prefix without re-computing the whole prefix product from scratch. So, the essential idea is that if we can go through, in linear time, and compute these prefix and suffix products for each index of the input array, then we can go again and compute the values for each index of the output array with one scan, by simply multiplying the appropriate prefix and suffix product together.
+
+    % Table representing matrix with numbers 1,2,3,4,5 in rows and columns.
+    \begin{center}
+        \begin{tabular}{c|c|c|c|c|c}
+            - & 2 & 3 & 4 & 5 & = $(2 \cdot 3 \cdot 4 \cdot 5)$\\
+            \hline
+            1 & - & 3 & 4 & 5 & = $(1) \cdot (3 \cdot 4 \cdot 5)$ \\
+            \hline
+            1 & 2 & - & 4 & 5 & = $(1 \cdot 2) \cdot  (4 \cdot 5)$ \\
+            \hline
+            1 & 2 & 3 & - & 5 & = $(1 \cdot 2 \cdot 3) \cdot (5)$ \\
+            \hline
+            1 & 2 & 3 & 4 & - & = $(1 \cdot 2 \cdot 3 \cdot 4)$ \\
+        \end{tabular}
+    \end{center}
+
+
+
+    
+\end{itemize}
+
+
+
+
+
 \subsubsection*{Difference of Two Arrays}
 \begin{itemize}
     \item \textbf{Problem}: Given two integer arrays $S_1$ and $S_2$, return sets $U_1,U_2$ where $U_1$ is the set of distinct integers in $S_1$ and not in $S_2$, and $U_2$ is the set of distinct integers in $S_2$ and not in $S_1$.

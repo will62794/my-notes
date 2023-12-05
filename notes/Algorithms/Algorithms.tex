@@ -119,14 +119,18 @@ Basically, if our target sum is $T$, then there are at most $T$ unique ``used up
             1 & 2 & 3 & 4 & - & = $(1 \cdot 2 \cdot 3 \cdot 4)$ \\
         \end{tabular}
     \end{center}
-
-
-
-    
 \end{itemize}
 
 
 
+\subsubsection*{Increasing Triplet Subsequence}
+
+\begin{itemize}
+    \item \textbf{Problem}: Given an integer array $nums$, return \textit{true} if there exists a triple of indices $i,j,k$ such that $i < j < k$ and $nums[i] < nums[j] < nums[k]$.
+    \item \textbf{Solution Idea}: A brute force way to compute this would be to loop over all indices $i$, and, for each, first search for $j > i$ such that $nums[j] > nums[i]$. If found, then start from $j$ and search for $k > j$ such that $nums[k] > nums[j]$. Actually, what is the worst case running time of this solution? In the worst, case, I think this would be $O(n^3)$, since for each index, we may need to search $n$ other indices, and we are doing this both for $j$ w.r.t $i$ and $k$ w.r.t $j$, in the worst case.
+    
+    Ok, note a key insight: for \textit{any} valid increasing triplet subsequence, there must also be such a valid triplet that includes the smallest (and second smallest) element of the array. So, we can utilize this insight to maintain only a conservative lower bound for the possible triplet subsequences i.e., we really only need to maintain the two smallest elements in order to check for possible triplet subsequences. Essentially, checking for a triplet subsequence with some $i,j,k$ for which there exists an $i' < i$ s.t. $nums[i'] < nums[i]$ is actually wasteful, if we've already checked it for $(i',j,k)$.
+\end{itemize}
 
 
 \subsubsection*{Difference of Two Arrays}

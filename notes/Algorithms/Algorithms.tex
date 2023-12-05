@@ -150,6 +150,23 @@ Basically, if our target sum is $T$, then there are at most $T$ unique ``used up
 \subsubsection*{Greatest Common Divisor of Strings}
 \begin{itemize}
     \item \textbf{Problem}: Given two strings $s$ and $t$, we say that $t$ ``divides'' $s$ if $s = t + t + \dots + t$. That is, $s$ consists of $t$ concateneated with  itself 1 or more times. Given two strings $s_1$ and $s_2$, we want to find the greatest common divisor $x$ between $s_1$ and $s_2$. That is, the largest string $x$ such that $x$ divides $s_1$ and $s_2$.
+    \item \textbf{Solution Idea}: An insightful way to look at this problem is to view it as a variant of Euclid's algorithm for computing the GCD of two numbers. It is helpful to understand the underlying principle that Euclid's algorithm is based on. Namely, that if you have two numbers $A$ and $B$, and $B > A$, then if we consider the "overhang" of $B$ with respect to $A$, then the common factors between $A$ and $B$ must be the same as those between $A$ and this ``overhang''. This is essentially the basis of Euclid's algorithm i.e. we then reduce the problem by looking for greatest common divisors between $B$ and the ``overhang'', and continue this process.
+    \begin{center}
+        \includegraphics[scale=0.15]{diagrams/algorithms_notes_diagrams/algorithms_notes_diagrams.001.png}
+    \end{center}
+    We can apply a very similar idea to this string based problem. We can think of strings as potentially constructed of smaller atomic ``factors", as numbers are, but with one difference, which is that they are not necessarily built up from concatenations of uniform atomic units, as numbers are inherently required to be. So, for example, if we applied Euclid's algorithm naively to a case like
+    \begin{align*}
+        A &= ABAB \\
+        B &= ABCCAB
+    \end{align*}
+    we might take the overhang $B$ as $AB$ and then go forward comparing it again to $A=ABAB$, and end up where we think their greatest common divisor is $AB$. But, this is clearly wrong since $B$ is not actually composed of concatenations of $AB$. We can work around this by checking, when we take the overhang value, if the remaining section of $B$ is actually composed of the same factors as the overhang. For example consider this other example:
+    \begin{align*}
+        A &= AB \\
+        B &= ABABABAB
+    \end{align*}
+    The overhang of $B$ is $ABABAB$, $B$ is not a concatenation of, but the overhang is a concatenation of the remaining prefix of $B$.
+
+    TODO: Clarify this explanation a bit more crisply.
 \end{itemize}
 
 \subsubsection*{Kids with Greatest Number of Candies}

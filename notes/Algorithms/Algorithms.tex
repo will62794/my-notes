@@ -169,6 +169,23 @@ Basically, if our target sum is $T$, then there are at most $T$ unique ``used up
     TODO: Clarify this explanation a bit more crisply.
 \end{itemize}
 
+\subsubsection*{Are Two Strings Close}
+\begin{itemize}
+    \item \textbf{Problem}: Given two strings $s_1$ and $s_2$, we have to determine if these strings are ``close''. Closeness is defined as whether $s_1$ can be transformed into $s_2$ by 2 possible types of operations:
+     \begin{itemize}
+        \item $Op_1$, any two characters of $s_1$ can be swapped in position.
+        \item $Op_2$, any two character types in $s_1$ can be replaced swapped with each other e.g. in $aabbb$, we can swap $a \leftrightarrow b$ to get $bbaaa$.
+    \end{itemize}
+    \item \textbf{Solution Idea}: The essential idea here is to observe a few key facts about the conditions under which operations can be performed to transform strings into one another.
+    \begin{itemize}
+        \item First, if strings are not the same length, then one can't be transformed into the other, since no operations change the length of a string. 
+        \item Then, we can see if they have the exact same set and count of characters. If they do, then they can easily be transformed merely by sequence of $Op_1$ operations, since we only need to re-arrange characters.
+        \item Next, we can see if their character \textit{sets} (not necessarily counts) are the same. If they aren't, then again, there is no possible way to transform one string into the other, since no operations actually change the character set of a string.
+        \item If the character sets are the same and the overall set of character counts is also the same, then this means we can similarly swap characters via $Op_2$ in some sequence to get matching character sets and counts, from which point we can then just apply a further sequence of $Op_1$.
+    \end{itemize}
+    
+\end{itemize}
+
 \subsubsection*{Kids with Greatest Number of Candies}
 \begin{itemize}
     \item \textbf{Problem}: Given array of kids with some number of candies, and number of extra candides, compute whehter each kid would have max candies after receiving the number of extra candies you have.

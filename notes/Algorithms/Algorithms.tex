@@ -133,6 +133,10 @@ Basically, if our target sum is $T$, then there are at most $T$ unique ``used up
     
     Ok, note a key insight: for \textit{any} valid increasing triplet subsequence, there must also be such a valid triplet that includes the smallest (and second smallest) element of the array. So, we can utilize this insight to maintain only a conservative lower bound for the possible triplet subsequences i.e., we really only need to maintain the two smallest elements in order to check for possible triplet subsequences. Essentially, checking for a triplet subsequence with some $i,j,k$ for which there exists an $i' < i$ s.t. $nums[i'] < nums[i]$ is actually wasteful, if we've already checked it for $(i',j,k)$.
     \item \textbf{Ohter Notes}: Think about how this problem relates to the more general problem of finding the \textit{longest} increasing subsequence in such an array.
+    
+    \begin{center}
+        \includegraphics[scale=0.1]{diagrams/algorithms_notes_diagrams/algorithms_notes_diagrams.002.png}
+    \end{center}
 \end{itemize}
 
 

@@ -39,6 +39,7 @@
 <li><a href="#stair-climbing">Stair Climbing</a></li>
 <li><a href="#sec:subset-sum">Subset Sum</a></li>
 <li><a href="#knapsack">Knapsack</a></li>
+<li><a href="#longest-increasing-subsequence"><span class="toc-section-number">2.1</span> Longest Increasing Subsequence</a></li>
 </ul></li>
 <li><a href="#algorithms-problem-list">Algorithms Problem List</a>
 <ul>
@@ -105,7 +106,23 @@
 </section>
 <section id="knapsack" class="level2 unnumbered">
 <h2 class="unnumbered">Knapsack</h2>
-<p>0-1 Knapsack is very similar to i.e., we have to find a subset of <span class="math inline">\(n\)</span> given items that remains under our given capacity and maximizes the sum of the chosen item values. Indeed, we can think of <strong>Subset Sum</strong> as a special case of the knapsack problem, where the values and weights of each element are the same. As in <strong>Subset Sum</strong> case, we can imagine a solution search tree where we either include or exclude the first element, and the subproblems we recurse on are basically the rest of the elements with a capacity reduced by that of our first element, or the rest of the elements with the original capacity. Again, this tree might grow exponentially, but, if our capacity is <span class="math inline">\(C\)</span>, we actually only have at most <span class="math inline">\(C\)</span> unique possible capacities, and at most <span class="math inline">\(n\)</span> suffixes of elements. Note also that the minor difference from Subset Sum is that, when we combine solutions to recursive subproblems, we want to take the maximum solution (since this is an optimization problem variant), rather than just taking the disjunction.</p>
+<p>0-1 Knapsack is very similar to Subset Sum i.e., we have to determine if there exists a subset of <span class="math inline">\(n\)</span> given items with corresponding weights and values <span class="math inline">\((w_i,v_i)\)</span>, that remains under our given capacity and maximizes the sum of the chosen item values. Indeed, we can think of <strong>Subset Sum</strong> as a special case of the knapsack problem, where the values and weights of each element are the same. As in <strong>Subset Sum</strong> case, we can imagine a solution search tree where we either include or exclude the first element, and the subproblems we recurse on are basically the rest of the elements with a capacity reduced by that of our first element, or the rest of the elements with the original capacity. Again, this tree might grow exponentially, but, if our capacity is <span class="math inline">\(C\)</span>, we actually only have at most <span class="math inline">\(C\)</span> unique possible capacities, and at most <span class="math inline">\(n\)</span> suffixes of elements. Note also that the minor difference from Subset Sum is that, when we combine solutions to recursive subproblems, we want to take the maximum solution (since this is an optimization problem variant), rather than just taking the disjunction. So, the recursive formulation is as follows <span class="math display">\[\begin{aligned}
+    &amp;\textsc{Knapsack}(S,C,i) = 
+    \begin{cases}
+        \textsc{Knapsack}(S,C, i-1) \text{ if } (C-w_i) \leq 0 \\
+        Max
+        \begin{cases}
+            v_1 + \textsc{Knapsack}(S,C-w_i,i-1) \text{ if } (C-w_i) &gt; 0 \\
+            \textsc{Knapsack}(S,C,i-1) \\
+        \end{cases}
+    \end{cases}\\\end{aligned}\]</span></p>
+</section>
+<section id="longest-increasing-subsequence" class="level2" data-number="2.1">
+<h2 data-number="2.1"><span class="header-section-number">2.1</span> Longest Increasing Subsequence</h2>
+<ul>
+<li><p><strong>Problem</strong>: Given an array of size <span class="math inline">\(n\)</span>, find the length of the longest increasing subsequence i.e., the longest possible subsequence in which the elements of the subsequence are sorted in increasing order.</p></li>
+<li><p><strong>Solution Idea</strong>: If we consider any increasing subsequence, we can always naturally extend it with an earlier, smaller element in the array. So, if we have a longest possible subsequence for a suffix of our original array, we should be able to potentially extend it with with an earlier element that is smaller than the minimum element of this subsequence. (TODO: Think more about the above reasoning?)</p></li>
+</ul>
 </section>
 </section>
 <section id="algorithms-problem-list" class="level1 unnumbered">

@@ -158,7 +158,14 @@ N.B. \textit{It is important to remember to first formulate the problem abstract
 
 \begin{itemize}
     \item \textbf{Problem}: Given an array of integers, move all zeroes in the array to the end of the array, while maintaining the relative order of the non-zero elements.
-    \item \textbf{Solution Idea}: TODO. How to do this in-place, and with the optimal number of operations?
+    \item \textbf{Solution Idea}: TODO. How to do this in-place, and with the optimal number of operations? 
+\end{itemize}
+
+\subsubsection*{Is Subsequence}
+
+\begin{itemize}
+    \item \textbf{Problem}: Given a string $s$ and string $t$, determine if $s$ appears as a subsequence of $t$.
+    \item \textbf{Solution Idea}: Idea is to scan forward in both strings, maintaining a current pointer in both. When characters match, you can move forward both poitners, and when they don't match, you can move forward the pointer in $t$ (we can assume $t$ is longer than $s$). After we reach the end of $t$ with the pointer, if $s$ was truly a subsequence in $t$, we should have matched it with its appropriate matching characters in $t$. So, if the $s$ pointer had not reached the end of $s$ after we finish scanning $t$, then such a subsequence must not have existed. Otherwise, if we scan past the end of $s$, then we have found $s$ as a valid subsequence in $t$.
 \end{itemize}
 
 \subsubsection*{Product of Array Except Self}

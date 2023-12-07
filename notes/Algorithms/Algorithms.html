@@ -48,6 +48,7 @@
 <li><a href="#algorithms-problem-list">Algorithms Problem List</a>
 <ul>
 <li><a href="#move-zeroes">Move Zeroes</a></li>
+<li><a href="#is-subsequence">Is Subsequence</a></li>
 <li><a href="#product-of-array-except-self">Product of Array Except Self</a></li>
 <li><a href="#increasing-triplet-subsequence">Increasing Triplet Subsequence</a></li>
 <li><a href="#difference-of-two-arrays">Difference of Two Arrays</a></li>
@@ -165,6 +166,13 @@
 <ul>
 <li><p><strong>Problem</strong>: Given an array of integers, move all zeroes in the array to the end of the array, while maintaining the relative order of the non-zero elements.</p></li>
 <li><p><strong>Solution Idea</strong>: TODO. How to do this in-place, and with the optimal number of operations?</p></li>
+</ul>
+</section>
+<section id="is-subsequence" class="level3 unnumbered">
+<h3 class="unnumbered">Is Subsequence</h3>
+<ul>
+<li><p><strong>Problem</strong>: Given a string <span class="math inline">\(s\)</span> and string <span class="math inline">\(t\)</span>, determine if <span class="math inline">\(s\)</span> appears as a subsequence of <span class="math inline">\(t\)</span>.</p></li>
+<li><p><strong>Solution Idea</strong>: Idea is to scan forward in both strings, maintaining a current pointer in both. When characters match, you can move forward both poitners, and when they don’t match, you can move forward the pointer in <span class="math inline">\(t\)</span> (we can assume <span class="math inline">\(t\)</span> is longer than <span class="math inline">\(s\)</span>). After we reach the end of <span class="math inline">\(t\)</span> with the pointer, if <span class="math inline">\(s\)</span> was truly a subsequence in <span class="math inline">\(t\)</span>, we should have matched it with its appropriate matching characters in <span class="math inline">\(t\)</span>. So, if the <span class="math inline">\(s\)</span> pointer had not reached the end of <span class="math inline">\(s\)</span> after we finish scanning <span class="math inline">\(t\)</span>, then such a subsequence must not have existed. Otherwise, if we scan past the end of <span class="math inline">\(s\)</span>, then we have found <span class="math inline">\(s\)</span> as a valid subsequence in <span class="math inline">\(t\)</span>.</p></li>
 </ul>
 </section>
 <section id="product-of-array-except-self" class="level3 unnumbered">

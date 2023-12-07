@@ -43,6 +43,7 @@
 </ul></li>
 <li><a href="#knapsack">Knapsack</a></li>
 <li><a href="#longest-increasing-subsequence">Longest Increasing Subsequence</a></li>
+<li><a href="#general-technique">General Technique</a></li>
 </ul></li>
 <li><a href="#algorithms-problem-list">Algorithms Problem List</a>
 <ul>
@@ -143,6 +144,17 @@
 <li><p><strong>Problem</strong>: Given an array of size <span class="math inline">\(n\)</span>, find the length of the longest increasing subsequence i.e., the longest possible subsequence in which the elements of the subsequence are sorted in increasing order.</p></li>
 <li><p><strong>Solution Idea</strong>: If we consider any increasing subsequence, we can always naturally extend it with an earlier, smaller element in the array. So, if we have a longest possible subsequence for a suffix of our original array, we should be able to potentially extend it with with an earlier element that is smaller than the minimum element of this subsequence. (TODO: Think more about the above reasoning?)</p></li>
 </ul>
+</section>
+<section id="general-technique" class="level2 unnumbered">
+<h2 class="unnumbered">General Technique</h2>
+<p>Overall, one high-level, general approach to solving problems amenable to a dynamic programming can be viewed as follows:</p>
+<ol>
+<li><p>Is it a decision or optimization problem?</p></li>
+<li><p>Define the recursive formulation of the problem i.e., how you would define the solution to a larger problem in terms of smaller subproblems. (i.e. <em>optimal substructure</em>)</p></li>
+<li><p>Identify any sharing between subproblems. (i.e. <em>overlapping subproblems</em>)</p></li>
+<li><p>Decide on an implementation strategy: top-down or bottom up.</p></li>
+</ol>
+<p>N.B. <em>It is important to remember to first formulate the problem abstractly in terms of the inductive/recursive structure, then think about it in terms of how substructure is shared in a DAG, and only then worry about coding strategies.</em></p>
 </section>
 </section>
 <section id="algorithms-problem-list" class="level1 unnumbered">

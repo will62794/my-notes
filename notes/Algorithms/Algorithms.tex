@@ -140,6 +140,17 @@ In a bottom up approach, we would, instead of generating the subproblems in this
     \item \textbf{Solution Idea}: If we consider any increasing subsequence, we can always naturally extend it with an earlier, smaller element in the array. So, if we have a longest possible subsequence for a suffix of our original array, we should be able to potentially extend it with with an earlier element that is smaller than the minimum element of this subsequence. (TODO: Think more about the above reasoning?)
 \end{itemize}
 
+\subsection*{General Technique}
+Overall, one high-level, general approach to solving problems amenable to a dynamic programming can be viewed as follows:
+\begin{enumerate}
+    \item Is it a decision or optimization problem?
+    \item Define the recursive formulation of the problem i.e., how you would define the solution to a larger problem in terms of smaller subproblems. (i.e. \textit{optimal substructure})
+    \item Identify any sharing between subproblems. (i.e. \textit{overlapping subproblems})
+    \item Decide on an implementation strategy: top-down or bottom up.
+\end{enumerate}
+
+N.B. \textit{It is important to remember to first formulate the problem abstractly in terms of the inductive/recursive structure, then think about it in terms of how substructure is shared in a DAG, and only then worry about coding strategies.}
+
 
 \section*{Algorithms Problem List}
 

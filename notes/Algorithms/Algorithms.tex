@@ -154,11 +154,18 @@ N.B. \textit{It is important to remember to first formulate the problem abstract
 
 \section*{Algorithms Problem List}
 
+\subsubsection*{String Compression}
+
+\begin{itemize}
+    \item \textbf{Problem}: Given an array of characters, compress the string by replacing repeated consecutvie characters by that character follower by the number of times it appears. Do this compression pass in place.
+    \item \textbf{Solution Idea}: Each string will get compressed into a string of size $leq$ itself, so we can process character groups from left to right, recording the beginning and end of a consecutive character group, and its size. We can keep track of an index in the array of where to place the next compressed string, and move this along as we go overwriting lower parts of the array while continuing to process upper parts.
+\end{itemize}
+
 \subsubsection*{Move Zeroes}
 
 \begin{itemize}
     \item \textbf{Problem}: Given an array of integers, move all zeroes in the array to the end of the array, while maintaining the relative order of the non-zero elements.
-    \item \textbf{Solution Idea}: TODO. How to do this in-place, and with the optimal number of operations? 
+    \item \textbf{Solution Idea}: TODO. How to do this in-place, and with the optimal number of operations?
 \end{itemize}
 
 \subsubsection*{Is Subsequence}

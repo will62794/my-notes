@@ -37,7 +37,10 @@
 <li><a href="#dynamic-programming"><span class="toc-section-number">2</span> Dynamic Programming</a>
 <ul>
 <li><a href="#stair-climbing">Stair Climbing</a></li>
-<li><a href="#sec:subset-sum">Subset Sum</a></li>
+<li><a href="#sec:subset-sum">Subset Sum</a>
+<ul>
+<li><a href="#bottom-up-computation">Bottom Up Computation</a></li>
+</ul></li>
 <li><a href="#knapsack">Knapsack</a></li>
 <li><a href="#longest-increasing-subsequence">Longest Increasing Subsequence</a></li>
 </ul></li>
@@ -101,8 +104,20 @@
 </section>
 <section id="sec:subset-sum" class="level2 unnumbered">
 <h2 class="unnumbered">Subset Sum</h2>
-<p>To understand the idea behind approach for <strong>Subset Sum</strong>, can think about each element of the given list of <span class="math inline">\(n\)</span> integers <span class="math inline">\(S=\{a_1,\dots,a_n\}\)</span>. If we wanted to come up with a naive recursive solution, we could imagine the decision tree for building all subsets of <span class="math inline">\(S\)</span>, where each branch point represents whether we include that element or not in the subset. This is one way to simply generate all possible subsets of a given set. Within this tree, though, at each node, we can imagine we are dealing with a subset of the original set, based on the subset (e.g. suffix) of elements that we have not made a choice about including or excluding. Along with this, we can imagine that each node of the tree also has associated with it the “used up” amount, which is the sum of elements chosen to include based on the path to this position in the tree. Now, even though this tree naively has size (i.e, width) exponential in the number of elements, there are actually a limited number of unique problems to solve in this tree, so there is sufficient overlap between them to make this efficient.</p>
-<p>Basically, if our target sum is <span class="math inline">\(T\)</span>, then there are at most <span class="math inline">\(T\)</span> unique “used up" values that can appear at any node in this tree. And, there are most <span class="math inline">\(n\)</span> unique suffixes that can appear as well.</p>
+<p>To understand the idea behind approach for <strong>Subset Sum</strong>, can think about each element of the given list of <span class="math inline">\(n\)</span> integers <span class="math inline">\(S=\{a_1,\dots,a_n\}\)</span>. If we wanted to come up with a naive recursive solution, we could imagine the decision tree for building all subsets of <span class="math inline">\(S\)</span>, where each branch point represents whether we include that element or not in the subset. This is one way to simply generate all possible subsets of a given set. Within this tree, though, at each node, we can imagine we are dealing with a subset of the original set, based on the subset (e.g. suffix) of elements that we have not made a choice about including or excluding. Along with this, we can imagine that each node of the tree also has associated with it the “remaining target” amount, which is the target minus the sum of elements included based on this decision path in the tree. Now, even though this tree naively has size (i.e, width) exponential in the number of elements, there are actually a limited number of unique problems to solve in this tree, so there is sufficient overlap between them to make this efficient.</p>
+<section id="bottom-up-computation" class="level3 unnumbered">
+<h3 class="unnumbered">Bottom Up Computation</h3>
+<p>Note that many problems of this character can be computed in either a “top down” or “bottom up” fashion. In our recursive formulation, we are formulating this top-down, since we are starting with larger problems and breaking them down into smaller ones, and we can deal with overlapping subproblems by caching/memoizing as we go. In a bottom up approach, we can built a table of subproblems potentially starting with smaller ones first. For example, in the subset sum problem, we can built a <span class="math inline">\(T \times n\)</span> table <span class="math inline">\(M\)</span> where entry <span class="math inline">\(M[t][k]\)</span> represents the solution to problem with target sum <span class="math inline">\(t\)</span> and suffix <span class="math inline">\(S[k..]\)</span> of elements starting from index <span class="math inline">\(k\)</span> from the original array. We know that <span class="math display">\[M[t][k] = S[k] + M[t-S[k]][k+1]\]</span> so we can use this to iteratively compute the entries in the table until we arrive at the solution to the top level problem. Note, however, that in some cases computing such a table is actually somewhat wasteful, even if it may have good asymptotic complexity. That is, when we go top down, we may compute exactly the tree of subprolems that are actually relevant to solving the top level problem. When going bottom up in this table fashion, though, we may actually end up computing solutions to some additional, unused subproblems, that are technically never used to compute the overall solution.</p>
+<p>For example, here is a full recursion tree for a subset sum computed for <span class="math display">\[S=\{1,2,3,5,9\},T=18\]</span></p>
+<div class="center">
+<p><img src="diagrams/subset_sum_tree.png" alt="image" /></p>
+</div>
+<p>and then we can look at the same tree but with identical subproblem nodes merged into one, illustrating the redundancy in subproblems:</p>
+<div class="center">
+<p><img src="diagrams/subset_sum_tree_opt.png" alt="image" /></p>
+</div>
+<p>In a bottom up approach, we would, instead of generating the subproblems in this tree explicitly, just start at the “leaf" level of this tree, compute the answers to those subproblems, and then work our way up to the top, combining solutions to smaller subproblems as we go.</p>
+</section>
 </section>
 <section id="knapsack" class="level2 unnumbered">
 <h2 class="unnumbered">Knapsack</h2>

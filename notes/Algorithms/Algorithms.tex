@@ -78,16 +78,32 @@ One simple approach here is to memoize solutions as we go, avoiding the exponent
 
 To understand the idea behind approach for \textbf{Subset Sum}, can think about each element of the given list of $n$ integers $S=\{a_1,\dots,a_n\}$. If we wanted to come up with a naive recursive solution, we could imagine the decision tree for building all subsets of $S$, where each branch point represents whether we include that element or not in the subset. This is one way to simply generate all possible subsets of a given set. Within this tree, though, at each node, we can imagine we are dealing with a subset of the original set, based on the subset (e.g. suffix) of elements that we have not made a choice about including or excluding. Along with this, we can imagine that each node of the tree also has associated with it the ``remaining target'' amount, which is the target minus the sum of elements included based on this decision path in the tree. Now, even though this tree naively has size (i.e, width) exponential in the number of elements, there are actually a limited number of unique problems to solve in this tree, so there is sufficient overlap between them to make this efficient.
 
+The recursive formulation of subset sum can then be formulated as follows, where $SS(i,T)$ represents the solution to subset sum for suffix $S[i..]$ and target value $T$:
+\begin{align*}
+    SS(i, T) = SS(i+1, T-S[i]) \vee SS(i+1, T)
+\end{align*}
+representing the two possible decision branches (i.e. include element $i$ or don't include it). We can then compute this recursive formulation efficiently by caching/memoizing results to $SS(i,T)$ subproblems as we go.
+
 % Notably, if our target sum is $T$, then there are at most $T$ unique ``remaining sum" values that can appear at any node in this tree. And, there are most $n$ unique suffixes that can appear as well.
 
 % If we model the inclusion or exclusion of each element as a decision tree, then we can think about the sub-problems that exist at each node of this decision tree i.e., if we go down a branch where we include element $i$, then we ``used up'' that amount in the overall sum, so the subproblem we can consider is whether we can create a subset of the remaining elements that sums to $T-v(i)$. But, it becomes clear that this decision tree actually has many repeated subproblems, bounded by the siz eof $T$.
 
 \subsubsection*{Bottom Up Computation}
 
-Note that many problems of this character can be computed in either a ``top down'' or ``bottom up'' fashion. In our recursive formulation, we are formulating this top-down, since we are starting with larger problems and breaking them down into smaller ones, and we can deal with overlapping subproblems by caching/memoizing as we go. In a bottom up approach, we can built a table of subproblems potentially starting with smaller ones first. For example, in the subset sum problem, we can built a $T \times n$ table $M$ where entry $M[t][k]$ represents the solution to problem with target sum $t$ and suffix $S[k..]$ of elements starting from index $k$ from the original array. We know that $$M[t][k] = S[k] + M[t-S[k]][k+1]$$ so we can use this to iteratively compute the entries in the table until we arrive at the solution to the top level problem. Note, however, that in some cases computing such a table is actually somewhat wasteful, even if it may have good asymptotic complexity. That is, when we go top down, we may compute exactly the tree of subprolems that are actually relevant to solving the top level problem. When going bottom up in this table fashion, though, we may actually end up computing solutions to some additional, unused subproblems, that are technically never used to compute the overall solution.
+Note that many problems of this character can be computed in either a ``top down'' or ``bottom up'' fashion. In our recursive formulation, we are formulating this top-down, since we are starting with larger problems and breaking them down into smaller ones, and we can deal with overlapping subproblems by caching/memoizing as we go. In a bottom up approach, we can build a table of subproblems potentially starting with smaller ones first. For example, in the subset sum problem, we can build a $n \times T$ table $M$ where entry $M[k][t]$ represents the solution to problem with target sum $t$ and suffix $S[k..]$ of elements starting from index $k$ from the original array. 
+
+% If we want to compute the answer to $M[t][k]$, we can think about how we do this. Namely, 
 
 
-For example, here is a full recursion tree for a subset sum computed for $$S=\{1,2,3,5,9\},T=18$$
+We know from our recursive formulation above that
+\begin{align*}
+    M[k][t] = M[k+1][t-S[k]] \vee M[k+1][t]
+\end{align*}
+so we can use this to iteratively compute the entries in the table until we arrive at the solution to the top level problem. 
+
+Note, however, that in some cases computing such a table is actually be slightly wasteful/unnecessary, even if it may still have good asymptotic complexity. That is, when we go top down, we can typically compute exactly the tree of subproblems that are actually needed for solving the top level problem. When going bottom up in this tabular fashion, though, we may actually end up computing solutions to some additional, unused subproblems, that are technically never used to compute the overall solution.
+
+For example, here is a full recursion/decision tree for a subset sum computed for $$S=\{1,2,3,5,9\},T=18$$
 \begin{center}
     \includegraphics[scale=0.1]{diagrams/subset_sum_tree.png}
 \end{center}
@@ -95,7 +111,7 @@ and then we can look at the same tree but with identical subproblem nodes merged
 \begin{center}
     \includegraphics[scale=0.15]{diagrams/subset_sum_tree_opt.png}
 \end{center}
-In a bottom up approach, we would, instead of generating the subproblems in this tree explicitly, just start at the ``leaf" level of this tree, compute the answers to those subproblems, and then work our way up to the top, combining solutions to smaller subproblems as we go. 
+In a bottom up approach, we would, instead of generating the subproblems in this tree explicitly, just start at the ``leaf" level of this tree, compute the answers to those subproblems, and then work our way up to the top, combining solutions to smaller subproblems as we go. Note, though, that in the bottom row, for example, we never encounter a $(\{9\},6)$ subproblem, even though it may be computed in the bottom up approach.
 
 % How does bottom up constructino relate to this? Is recursive formulation with caching actually a tiny bit more efficient as it avoids constructing solutions to $(i,T)$ for values that aren't explicitly needed in final result? Intuitively, bottom up idea seems to be something like: if you know the answer for $SS(i,T)$, then you can compute the answer for $SS(i-1,T+v(i-1))$ trivially (???) 
 

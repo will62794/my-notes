@@ -65,6 +65,13 @@
 </ul>
 <p>our expected payoff from rolling this die is <span class="math display">\[\begin{aligned}
     \frac{1}{4}*1 + \frac{1}{4}*2 + \frac{1}{4}*3 + \frac{1}{4}*10 = 4\end{aligned}\]</span></p>
+<section id="expected-flips-until-k-heads" class="level4 unnumbered">
+<h4 class="unnumbered">Expected flips until <span class="math inline">\(k\)</span> heads</h4>
+<p>As another example, consider computing the expected number of flips of a fair coin until two heads appear in a row. We can think about this as a model where we sample by continuing to flip a coin until we get two heads, and then consider the length of the flip sequence we needed to get those two heads. Then, we want to consider the average number of flips it takes over all possible such flips sequences to get two heads in a row.</p>
+<p>Start with simpler: number of expected flips to get 1 heads. Can consider all possible sequence prefixes of length <span class="math inline">\(k\)</span> that end in a head. Probability of seeing that sequence is <span class="math inline">\(\frac{1}{2}^k\)</span>, so expected number of flips to get 1 heads is <span class="math display">\[\begin{aligned}
+    \sum_{k=1} k \cdot \frac{1}{2}^k = 
+    \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \frac{4}{16} + \dots = 2\end{aligned}\]</span></p>
+</section>
 </section>
 <section id="variance" class="level2" data-number="1.2">
 <h2 data-number="1.2"><span class="header-section-number">1.2</span> Variance</h2>

@@ -52,6 +52,15 @@ our expected payoff from rolling this die is
     \frac{1}{4}*1 + \frac{1}{4}*2 + \frac{1}{4}*3 + \frac{1}{4}*10 = 4
 \end{align*}
 
+\paragraph*{Expected flips until $k$ heads}
+As another example, consider computing the expected number of flips of a fair coin until two heads appear in a row. We can think about this as a model where we sample by continuing to flip a coin until we get two heads, and then consider the length of the flip sequence we needed to get those two heads. Then, we want to consider the average number of flips it takes over all possible such flips sequences to get two heads in a row.
+
+Start with simpler: number of expected flips to get 1 heads. Can consider all possible sequence prefixes of length $k$ that end in a head. Probability of seeing that sequence is $\frac{1}{2}^k$, so expected number of flips to get 1 heads is
+\begin{align*}
+    \sum_{k=1} k \cdot \frac{1}{2}^k = 
+    \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \frac{4}{16} + \dots = 2
+\end{align*}
+
 \subsection{Variance}
 
 The \textbf{variance} of a random variable $X$ is roughly a measure of how spread out it is from its mean. It is given as 

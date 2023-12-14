@@ -34,7 +34,13 @@ We can think about a general graph search algorithm as consisting of an \textit{
     \item \textit{visited}: Set of nodes we have seen i.e., marked as visitied.
     \item \textit{frontier}: Set of nodes that we know about and know are reachable, but have not yet visited.
 \end{itemize}
-We can view BFS and DFS searches as simply variants of this model in terms of how they select the next nodes to visit out of the current \textit{frontier} set. 
+We can view BFS and DFS searches as simply variants of this model in terms of how they select the next nodes to visit out of the current \textit{frontier} set. For example, consider two steps of a graph search progression, where blue nodes as visited and gray nodes as those in the frontier, and node K is the newly visited node below:
+\begin{center}
+    \includegraphics[scale=0.25]{diagrams/g3.png}
+\end{center}
+\begin{center}
+    \includegraphics[scale=0.25]{diagrams/g4.png}
+\end{center}
 
 \subsection{Depth-first search}
 Depth-first search searches deeper in a graph before searching broader. Can do a basic recursive or iterative implementation. Iterative implementation uses a stack to keep track of the frontier nodes, so that we explore deeper nodes first. We can also implement depth first search in a way that lets us recover paths to a node, by storing parent pointers as we go.

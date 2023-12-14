@@ -28,13 +28,21 @@
 
 \section{Graph Search}
 
-Can think about general graph search algorithm as consisting of an \textit{explored} set of nodes and a \textit{frontier} set of nodes. The goal is to eventually have the explored set equal to all nodes in the graph. The frontier is a set of nodes that we maintain along the way. Initially, we set the frontier to the starting node of the graph. It is unexplored but currently on our list of nodes that need to be explored i.e. it is on the frontier. We then pick a new node from the frontier set, mark it as explored, and do any other work we might need to do, and then take all of its neighbors and add them to the frontier set.
+We can think about a general graph search algorithm as consisting of an \textit{visited} set of nodes and a \textit{frontier} set of nodes. The goal is to eventually have the visited set equal to all nodes in the graph. The frontier is a set of nodes that we maintain along the way. Initially, we set the frontier to the starting node of the graph. It is unexplored but currently on our list of nodes that need to be explored i.e. it is on the frontier. We then pick a new node from the frontier set, mark it as explored, and do any other work we might need to do, and then take all of its neighbors and add them to the frontier set. In summary, our model is as follows:
+
+\begin{itemize}
+    \item \textit{visited}: Set of nodes we have seen i.e., marked as visitied.
+    \item \textit{frontier}: Set of nodes that we know about and know are reachable, but have not yet visited.
+\end{itemize}
+We can view BFS and DFS searches as simply variants of this model in terms of how they select the next nodes to visit out of the current \textit{frontier} set. 
 
 \subsection{Depth-first search}
 Depth-first search searches deeper in a graph before searching broader. Can do a basic recursive or iterative implementation. Iterative implementation uses a stack to keep track of the frontier nodes, so that we explore deeper nodes first. We can also implement depth first search in a way that lets us recover paths to a node, by storing parent pointers as we go.
 
+Note that if we want to explore a \textit{tree}, or, more generally, any acyclic graph, then we can use a depth first search without checking whether we have already seen a previously \textit{visited} node. Since, there are no cycles, the worst that will happen is we may mark a node as visited multiple times, but we should never get into a nonterminating loop in the search.
+
 \subsection{Breadth-first search}
-Breadth-first search searches all closer nodes before searching farther nodes i.e. it progresses in "levels" of depth. Not a standard way to implement it recursively, but can use a queue to keep track of the frontier nodes.
+Breadth-first search searches all closer nodes before searching farther nodes i.e. it progresses in ``levels" of depth. Not a standard way to implement it recursively, but can use a queue to keep track of the frontier nodes.
 
 \section{Dynamic Programming}
 

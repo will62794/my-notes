@@ -68,9 +68,17 @@
 <section id="expected-flips-until-k-heads" class="level4 unnumbered">
 <h4 class="unnumbered">Expected flips until <span class="math inline">\(k\)</span> heads</h4>
 <p>As another example, consider computing the expected number of flips of a fair coin until two heads appear in a row. We can think about this as a model where we sample by continuing to flip a coin until we get two heads, and then consider the length of the flip sequence we needed to get those two heads. Then, we want to consider the average number of flips it takes over all possible such flips sequences to get two heads in a row.</p>
-<p>Start with simpler: number of expected flips to get 1 heads. Can consider all possible sequence prefixes of length <span class="math inline">\(k\)</span> that end in a head. Probability of seeing that sequence is <span class="math inline">\(\frac{1}{2}^k\)</span>, so expected number of flips to get 1 heads is <span class="math display">\[\begin{aligned}
-    \sum_{k=1} k \cdot \frac{1}{2}^k = 
-    \frac{1}{2} + \frac{2}{4} + \frac{3}{8} + \frac{4}{16} + \dots = 2\end{aligned}\]</span></p>
+<p>One way to compute this probability is by considering it as a Markov chain and describe the expected path length recursively. That is, there are 3 cases:</p>
+<ul>
+<li><p>First two flips are heads: <span class="math inline">\(p=\frac{1}{4}\)</span> and we are done.</p></li>
+<li><p>First flip is heads, second is tails: <span class="math inline">\(p=\frac{1}{4}\)</span> and we are back to the start.</p></li>
+<li><p>First flip is tails: <span class="math inline">\(p=\frac{1}{2}\)</span> and we are back to the start.</p></li>
+</ul>
+<p>So, we can compute the overall expected path length <span class="math inline">\(x\)</span> by solving the following: <span class="math display">\[\begin{aligned}
+    x &amp;= \frac{1}{4}\cdot 2 + \frac{1}{4}\cdot (x+2) + \frac{1}{2}\cdot (x+1) \\
+    &amp;= \frac{3}{4}x+\frac{6}{4} \\
+    \frac{1}{4}x&amp;= \frac{6}{4} \\
+    x&amp;= 6\end{aligned}\]</span></p>
 </section>
 </section>
 <section id="variance" class="level2" data-number="1.2">

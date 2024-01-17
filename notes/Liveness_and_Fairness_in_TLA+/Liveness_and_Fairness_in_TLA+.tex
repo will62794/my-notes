@@ -95,7 +95,7 @@ WF_v(A) \equiv
 Weak fairness says that an action $A$ must be eventually be taken if it is enabled \textit{continuously} i.e. forever, after some point. Strong fairness, however, only asserts that an action is eventually taken if $A$ is enabled \textit{infinitely often}. This does not mean it must be enabled continuously, though. It is formally defined as
 
 \begin{align*}
-SF_v(A) \equiv \square \lozenge \text{\scriptsize ENABLED} \langle A \rangle _v \Rightarrow \square \Diamond \langle A \rangle _v
+SF_v(A) \equiv \square \lozenge ( \text{\scriptsize ENABLED} \langle A \rangle _v) \Rightarrow \square \Diamond \langle A \rangle _v
 \end{align*}
 which is stating that if action $A$ occurs infinitely often, then eventually A will be taken. we can compare the strong and weak fairness definitions
 \begin{align*}

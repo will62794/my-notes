@@ -69,6 +69,12 @@
 <li><a href="#intuitions-and-algorithm"><span class="toc-section-number">4.2</span> Intuitions and Algorithm</a></li>
 <li><a href="#notes"><span class="toc-section-number">4.3</span> Notes</a></li>
 </ul></li>
+<li><a href="#blockchain-and-cryptocurrency"><span class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
+<ul>
+<li><a href="#bitcoin">Bitcoin</a></li>
+<li><a href="#ethereum">Ethereum</a></li>
+<li><a href="#smart-contracts">Smart Contracts</a></li>
+</ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
@@ -233,29 +239,31 @@
 <p>The earliest explicit reference to <em>Byzantine</em> faults appeared in <span class="citation" data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span>, though earlier work had touched on the same problem without referring to it by that moniker <span class="citation" data-cites="1980peasereaching 1978sift">(<a href="#ref-1980peasereaching" role="doc-biblioref">Pease, Shostak, and Lamport 1980</a>; <a href="#ref-1978sift" role="doc-biblioref">Wensley et al. 1978</a>)</span>. They show in <span class="citation" data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span> that when using “oral” messages (i.e. non-signed) messages, a Byzantine agreement solution requires <span class="math inline">\(3f+1\)</span> processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming <span class="math inline">\(n &gt; 3f+1\)</span>, and also show that if we allow for “written” (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only <span class="math inline">\(f+1\)</span> processes.</p>
 <section id="model" class="level2" data-number="4.1">
 <h2 data-number="4.1"><span class="header-section-number">4.1</span> Model</h2>
-<p>The work on Practical Byzantine Fault Tolerance <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
+<p>The work on Practical Byzantine Fault Tolerance (PBFT) <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it allows for <em>Byzantine</em> faults i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. This model does assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. That is, Byzantine processes may send any arbitrary message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
 </section>
 <section id="intuitions-and-algorithm" class="level2" data-number="4.2">
 <h2 data-number="4.2"><span class="header-section-number">4.2</span> Intuitions and Algorithm</h2>
 <p>If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:</p>
 <ol>
-<li><p><strong>Leader equivocation</strong>: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept message with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?</p></li>
+<li><p><strong>Leader equivocation</strong>: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept messages with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?</p></li>
 <li><p><strong>Wrong value adoption</strong>: A leader (faulty or not) that accepts a wrong value (i.e. not highest among previously) chosen can lead to safety violation as considered in the standard 2-phase Paxos model.</p></li>
 </ol>
-<p>A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (<em>prepare</em> + <em>accept</em>), then in the <em>prepare</em> phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value</p>
-<p><strong>Note:</strong> focus on reasoning about the protocol from ground up by looking at two special cases:</p>
+<p>Need to have a way for honest acceptor to only accept values if they have actually have proof that</p>
 <ul>
-<li><p>Faulty acceptors (can’t trust 1b or 2b messages of classic Paxos since acceptors can lie)</p></li>
-<li><p>Faulty proposers/leaders (can’t trust 1a or 2a messages of classic Paxos since proposers can lie)</p></li>
+<li><p>If a leader/proposer is Byzantine, we can imagine it as not being a “useful” participant of the protocol, in that it may only be trying to be malicious. And, we can’t control its behavior anyways, so we really need to worry about how acceptors can protect themselves against malicious leaders.</p></li>
+<li><p>Normally, without Byzantine faults, acceptors can assume any incoming messages from proposers are legit, and they can respond with promises or acceptances accordingly.</p></li>
+<li><p>With Byzantine faults, though, the info they would hear from a proposer can’t be trusted. So, can we force acceptors to somehow be more stringent in their acceptance of messages from proposers? In order to ensure they only actually accept messages from honest proposers?</p></li>
+<li><p>In essence, have proposers record the info they received from a large enough set of honest acceptors, in order to prove to an acceptor that this info was collected. Basically, let acceptors require that proposers prove to them that they collected info about prior acceptances from enough honest acceptors. Since we assume no forging possible we can have acceptors sign info accordingly in a way that proves they actually had a certain piece of info.</p></li>
+<li><p><strong>Point</strong>: Acceptors will only accept if they have proof in the accept message that <span class="math inline">\(X\)</span> number of honest acceptors stored a particular proposal.</p></li>
+<li><p>So, proposers first try to do their proposals by asking around acceptors, from which they receive promises. Then, the proposer sends out another round of “real” proposer</p></li>
 </ul>
-<p>Need to have ways to protect against both scenarios. Generally, for the faulyty acceptor case, we need to increase our quorum sizes in a way that ensures a propsoer can gather enough responses to be sure a sufficient number of honest responses were received. For faulty proposers, acceptors will need to implement some additional safety check to guard against proposers sending dishonest messages about values to be proposers/accepted.</p>
 <p>The essence of the algorithm is as follows:</p>
 <ol>
-<li><p>Primary sends a <span class="math inline">\(pre\_prepare(value, p)\)</span> message for view/proposal number <span class="math inline">\(p\)</span>.</p></li>
-<li><p>Replica responds to the first <span class="math inline">\(pre\_prepare\)</span> message it receives from a primary.</p></li>
-<li><p>Primary gathers <span class="math inline">\(pre\_prepare\)</span> responses from <span class="math inline">\(n-f\)</span> replicas, and then sends <span class="math inline">\(prepare(v, proof)\)</span> (note this message may be linear in size since it contains signed codes fro m up to <span class="math inline">\(n\)</span> nodes.)</p></li>
-<li><p>If a replica sees <span class="math inline">\(prepare(value, p, proof)\)</span> and <span class="math inline">\(proof\)</span> contains <span class="math inline">\(n-f\)</span> valid signatures for <span class="math inline">\(pre\_prepare(value, p)\)</span>, then it goes ahead and accepts.</p></li>
-<li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(prepare\)</span> responses from replicas.</p></li>
+<li><p>Primary sends a <span class="math inline">\(PrePrepare(value, p)\)</span> message for view/proposal number <span class="math inline">\(p\)</span>.</p></li>
+<li><p>Replica responds to the first <span class="math inline">\(PrePrepare\)</span> message it receives from a primary.</p></li>
+<li><p>Primary gathers <span class="math inline">\(PrePrepare\)</span> responses from <span class="math inline">\(n-f\)</span> replicas, and then sends <span class="math inline">\(Prepare(v, proof)\)</span> (note this message may be linear in size since it contains signed codes fro m up to <span class="math inline">\(n\)</span> nodes.)</p></li>
+<li><p>If a replica sees <span class="math inline">\(Prepare(value, p, proof)\)</span> and <span class="math inline">\(proof\)</span> contains <span class="math inline">\(n-f\)</span> valid signatures for <span class="math inline">\(PrePrepare(value, p)\)</span>, then it goes ahead and accepts.</p></li>
+<li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(Prepare\)</span> responses from replicas.</p></li>
 </ol>
 <p>Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.</p>
 </section>
@@ -264,6 +272,21 @@
 <ul>
 <li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any 2 quorums with <span class="math inline">\(n-f = 2f+1\)</span> nodes, we are guaranteed they intersect in at least <span class="math inline">\(f+1\)</span> nodes (just draw a picture). Note that if you talk to at least <span class="math inline">\(f+1\)</span> nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.</p></li>
 </ul>
+</section>
+</section>
+<section id="blockchain-and-cryptocurrency" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Blockchain and Cryptocurrency</h1>
+<p>Decentralized currency have beomce a popular peer to peer consensus systems that operate under significantly different assumptions and fault models than previous systems.</p>
+<section id="bitcoin" class="level2 unnumbered">
+<h2 class="unnumbered">Bitcoin</h2>
+<p>Bitcoin <span class="citation" data-cites="nakamoto2009bitcoin">(<a href="#ref-nakamoto2009bitcoin" role="doc-biblioref">Nakamoto 2009</a>)</span> is the first widely used decentralized cryptocurrency. Nodes participate in a peer-to-peer network that implements a distributed ledge which records all transactions between parties, which can be uniquely identified using cryptogaphic keys (e.g. RSA private keys). The ledger can be viewed as a type of database, consisting of a series of blocks that record transactions on the database. The current state of the database can be considered as the state of the ledger after applying all transactions in the ledger.</p>
+</section>
+<section id="ethereum" class="level2 unnumbered">
+<h2 class="unnumbered">Ethereum</h2>
+<p>An newer alternative to Bitcoing that also supports smart contracts (?).</p>
+</section>
+<section id="smart-contracts" class="level2 unnumbered">
+<h2 class="unnumbered">Smart Contracts</h2>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
@@ -295,6 +318,9 @@ Lamport, Leslie, Robert Shostak, and Marshall Pease. 1982. <span>“<span>The By
 </div>
 <div id="ref-2013epaxosmoraru" class="csl-entry" role="doc-biblioentry">
 Moraru, Iulian, David G. Andersen, and Michael Kaminsky. 2013. <span>“There Is More Consensus in Egalitarian Parliaments.”</span> In <em>Proceedings of the Twenty-Fourth ACM Symposium on Operating Systems Principles</em>, 358–72. SOSP ’13. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2517349.2517350">https://doi.org/10.1145/2517349.2517350</a>.
+</div>
+<div id="ref-nakamoto2009bitcoin" class="csl-entry" role="doc-biblioentry">
+Nakamoto, Satoshi. 2009. <span>“Bitcoin: A Peer-to-Peer Electronic Cash System,”</span> May. <a href="http://www.bitcoin.org/bitcoin.pdf">http://www.bitcoin.org/bitcoin.pdf</a>.
 </div>
 <div id="ref-1980peasereaching" class="csl-entry" role="doc-biblioentry">
 Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.

@@ -197,35 +197,52 @@ Can see a TLA+ formal specificaton of the high level Zab protocol \href{https://
 The earliest explicit reference to \textit{Byzantine} faults appeared in \cite{1982lamportshostak}, though earlier work had touched on the same problem without referring to it by that moniker \cite{1980peasereaching,1978sift}. They show in \cite{1982lamportshostak} that when using ``oral'' messages (i.e. non-signed) messages, a Byzantine agreement solution requires $3f+1$ processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming $n > 3f+1$, and also show that if we allow for ``written'' (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only $f+1$ processes.
 
 \subsection{Model}
-
-The work on Practical Byzantine Fault Tolerance \cite{1999castropbft} considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it considers a Byzantine failure model i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. They do assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. In other words, Byzantine processes can send any message, but we assume the identity of the sender of a message can be determined by the receiver \cite{2011lamport}. This can be achieved this with public-key signatures \cite{1978rivestcrypto}, message authentication codes (MACs), etc.
+ 
+The work on Practical Byzantine Fault Tolerance (PBFT) \cite{1999castropbft} considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it allows for \textit{Byzantine} faults i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. This model does assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. That is, Byzantine processes may send any arbitrary message, but we assume the identity of the sender of a message can be determined by the receiver \cite{2011lamport}. This can be achieved this with public-key signatures \cite{1978rivestcrypto}, message authentication codes (MACs), etc.
 
 \subsection{Intuitions and Algorithm}
 
 If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:
 \begin{enumerate}
-    \item \textbf{Leader equivocation}: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept message with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?
+    \item \textbf{Leader equivocation}: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept messages with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?
     \item \textbf{Wrong value adoption}: A leader (faulty or not) that accepts a wrong value  (i.e. not highest among previously) chosen can lead to safety violation as considered in the standard 2-phase Paxos model.
 \end{enumerate}
-A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that we would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model. If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (\textit{prepare} + \textit{accept}), then in the \textit{prepare} phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value 
 
-\textbf{Note:} focus on reasoning about the protocol from ground up by looking at two special cases:
+Need to have a way for honest acceptor to only accept values if they have actually have proof that 
+
+
+% A key idea of the algorithm is about how we deal with the issue of potentially Byzantine leaders. That is, we need to protect against leaders sending conflicting messages to different followers such that would violate the constraints needed to ensure safety in, for example, classic asynchronous consensus Paxos in the standard omission (non Byzantine) fault model.
+
 \begin{itemize}
-    \item Faulty acceptors (can't trust 1b or 2b messages of classic Paxos since acceptors can lie)
-    \item Faulty proposers/leaders (can't trust 1a or 2a messages of classic Paxos since proposers can lie)
+    \item If a leader/proposer is Byzantine, we can imagine it as not being a ``useful'' participant of the protocol, in that it may only be trying to be malicious. And, we can't control its behavior anyways, so we really need to worry about how acceptors can protect themselves against malicious leaders. 
+    \item Normally, without Byzantine faults, acceptors can assume any incoming messages from proposers are legit, and they can respond with promises or acceptances accordingly.
+    \item With Byzantine faults, though, the info they would hear from a proposer can't be trusted. So, can we force acceptors to somehow be more stringent in their acceptance of messages from proposers? In order to ensure they only actually accept messages from honest proposers?
+    \item In essence, have proposers record the info they received from a large enough set of honest acceptors, in order to prove to an acceptor that this info was collected. Basically, let acceptors require that proposers prove to them that they collected info about prior acceptances from enough honest acceptors. Since we assume no forging possible we can have acceptors sign info accordingly in a way that proves they actually had a certain piece of info.
+    \item \textbf{Point}: Acceptors will only accept if they have proof in the accept message that $X$ number of honest acceptors stored a particular proposal. 
+    \item So, proposers first try to do their proposals by asking around acceptors, from which they receive promises. Then, the proposer sends out another round of ``real'' proposer
 \end{itemize}
-Need to have ways to protect against both scenarios. Generally, for the faulyty acceptor case, we need to increase our quorum sizes in a way that ensures a propsoer can gather enough responses to be sure a sufficient number of honest responses were received. For faulty proposers, acceptors will need to implement some additional safety check to guard against proposers sending dishonest messages about values to be proposers/accepted.
+
+
+
+% If a leader is faulty and just went ahead and followed the standard 2-phase protocol used in Paxos (\textit{Prepare} + \textit{Accept}), then in the \textit{Prepare} phase it could tell different replicas arbitrarily different things i.e. tell them to accept one value and then change this value 
+
+% \textbf{Note:} focus on reasoning about the protocol from ground up by looking at two special cases:
+% \begin{itemize}
+%     \item Faulty acceptors (can't trust 1b or 2b messages of classic Paxos since acceptors can lie)
+%     \item Faulty proposers/leaders (can't trust 1a or 2a messages of classic Paxos since proposers can lie)
+% \end{itemize}
+% Need to have ways to protect against both scenarios. Generally, for the faulty acceptor case, we need to increase our quorum sizes in a way that ensures a propsoer can gather enough responses to be sure a sufficient number of honest responses were received. For faulty proposers, acceptors will need to implement some additional safety check to guard against proposers sending dishonest messages about values to be proposers/accepted.
 
 
 % Why exactly is it bad if a leader is Byzantine i.e. even in classic Paxos?
 
 The essence of the algorithm is as follows:
 \begin{enumerate}
-    \item Primary sends a $pre\_prepare(value, p)$ message for view/proposal number $p$.
-    \item Replica responds to the first $pre\_prepare$ message it receives from a primary.
-    \item Primary gathers $pre\_prepare$ responses from $n-f$ replicas, and then sends $prepare(v, proof)$ (note this message may be linear in size since it contains signed codes fro   m up to $n$ nodes.)
-    \item If a replica sees $prepare(value, p, proof)$ and $proof$ contains $n-f$ valid signatures for $pre\_prepare(value, p)$, then it goes ahead and accepts.
-    \item Primary then gathers $n-f$ $prepare$ responses from replicas.
+    \item Primary sends a $PrePrepare(value, p)$ message for view/proposal number $p$.
+    \item Replica responds to the first $PrePrepare$ message it receives from a primary.
+    \item Primary gathers $PrePrepare$ responses from $n-f$ replicas, and then sends $Prepare(v, proof)$ (note this message may be linear in size since it contains signed codes fro   m up to $n$ nodes.)
+    \item If a replica sees $Prepare(value, p, proof)$ and $proof$ contains $n-f$ valid signatures for $PrePrepare(value, p)$, then it goes ahead and accepts.
+    \item Primary then gathers $n-f$ $Prepare$ responses from replicas.
 \end{enumerate}
 Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.
 
@@ -233,6 +250,21 @@ Note that since we assume a public key infrastructure (PKI) set up between nodes
 \begin{itemize}
     \item Given $n=3f+1$ nodes, for any 2 quorums with $n-f = 2f+1$ nodes, we are guaranteed they intersect in at least $f+1$ nodes (just draw a picture). Note that if you talk to at least $f+1$ nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.
 \end{itemize}
+
+\section{Blockchain and Cryptocurrency}
+
+Decentralized currency have beomce a popular peer to peer consensus systems that operate under significantly different assumptions and fault models than previous systems.
+
+\subsection*{Bitcoin}
+
+Bitcoin \cite{nakamoto2009bitcoin} is the first widely used decentralized cryptocurrency. Nodes participate in a peer-to-peer network that implements a distributed ledge which records all transactions between parties, which can be uniquely identified using cryptogaphic keys (e.g. RSA private keys). The ledger can be viewed as a type of database, consisting of a series of blocks that record transactions on the database. The current state of the database can be considered as the state of the ledger after applying all transactions in the ledger.
+
+\subsection*{Ethereum}
+
+An newer alternative to Bitcoing that also supports smart contracts (?).
+
+\subsection*{Smart Contracts}
+
 
 
 \bibliographystyle{alpha}

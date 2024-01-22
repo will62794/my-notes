@@ -951,3 +951,28 @@ series = {LADIS '08}
   url                      = {https://ethereum.org/whitepaper},
   howpublished             = {https://ethereum.org/whitepaper}
 }
+@inproceedings{2016towncrier,
+author = {Zhang, Fan and Cecchetti, Ethan and Croman, Kyle and Juels, Ari and Shi, Elaine},
+title = {Town Crier: An Authenticated Data Feed for Smart Contracts},
+year = {2016},
+isbn = {9781450341394},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2976749.2978326},
+doi = {10.1145/2976749.2978326},
+abstract = {Smart contracts are programs that execute autonomously on blockchains. Their key envisioned uses (e.g. financial instruments) require them to consume data from outside the blockchain (e.g. stock quotes). Trustworthy data feeds that support a broad range of data requests will thus be critical to smart contract ecosystems.We present an authenticated data feed system called Town Crier (TC). TC acts as a bridge between smart contracts and existing web sites, which are already commonly trusted for non-blockchain applications. It combines a blockchain front end with a trusted hardware back end to scrape HTTPS-enabled websites and serve source-authenticated data to relying smart contracts.TC also supports confidentiality. It enables private data requests with encrypted parameters. Additionally, in a generalization that executes smart-contract logic within TC, the system permits secure use of user credentials to scrape access-controlled online data sources.We describe TC's design principles and architecture and report on an implementation that uses Intel's recently introduced Software Guard Extensions (SGX) to furnish data to the Ethereum smart contract system. We formally model TC and define and prove its basic security properties in the Universal Composibility (UC) framework. Our results include definitions and techniques of general interest relating to resource consumption (Ethereum's "gas" fee system) and TCB minimization. We also report on experiments with three example applications.We plan to launch TC soon as an online public service.},
+booktitle = {Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security},
+pages = {270–282},
+numpages = {13},
+keywords = {authenticated data feeds, bitcoin, ethereum, intel SGX, smart contracts, trusted hardware},
+location = {Vienna, Austria},
+series = {CCS '16}
+}
+@article{breidenbach2021chainlink,
+  title={Chainlink 2.0: Next steps in the evolution of decentralized oracle networks},
+  author={Breidenbach, Lorenz and Cachin, Christian and Chan, Benedict and Coventry, Alex and Ellis, Steve and Juels, Ari and Koushanfar, Farinaz and Miller, Andrew and Magauran, Brendan and Moroz, Daniel and others},
+  journal={Chainlink Labs},
+  volume={1},
+  pages={1--136},
+  year={2021}
+}

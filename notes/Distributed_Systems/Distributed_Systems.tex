@@ -265,6 +265,10 @@ If you try to build a money system on this decentralized ledger/database model, 
 
 If everyone is updating their forks of the ledger independently, though, each with some potentially unsafe transactions, how do we enforce safety in a distributed fashion? Well, we must assume that there is at least some amount of honest nodes in the network that want to do good i.e., they are actually honest in wanting to verify the correctness of the chain. So, we can essentially just use some mechanism that allows the honest agents to ``outvote'' the bad players when deciding on the correctness of the ledger. This can be implemented with a \textit{proof of work} idea. Basically, we imagine appending a special \textit{nonce} to each transaction, such that the original transaction concatenated with this nonce makes up the full transaction that goes into the chain. In order for a transaction be valid, though, we require some property of the hashed block be true that is computationally hard to invert. For example, by requiring that the SHA hash of the original block plus the nonce starts with some number of zero bits. If this property holds true, then the transaction/block is considered valid, and this means fiddling with the data of the transaction would be computationally hard, since you would have to re-solve for a valid nonce. So, this implicitly ensures that votes are given to those with CPU pwoer, and so if enough CPUs are ``honest'', then we have a good guarantee that honest nodes will win out in selecting the true ledger. 
 
+\begin{itemize}
+    \item Basically, in order to make a block ``valid'', you have to sign it with a special hash that is based on the block's content, and is computationally hard to come up with. So, basically, if you've sent out a valid block, it means you must have spent some amount of computational work on creating this block. This serves as the kind of ``voting'' power.
+\end{itemize}
+
 
 \subsection*{Ethereum}
 

@@ -71,8 +71,8 @@
 </ul></li>
 <li><a href="#blockchain-and-cryptocurrency"><span class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
 <ul>
-<li><a href="#bitcoin">Bitcoin</a></li>
-<li><a href="#ethereum">Ethereum</a></li>
+<li><a href="#bitcoin"><span class="toc-section-number">5.1</span> Bitcoin</a></li>
+<li><a href="#ethereum"><span class="toc-section-number">5.2</span> Ethereum</a></li>
 <li><a href="#smart-contracts">Smart Contracts</a></li>
 </ul></li>
 <li><a href="#bibliography">References</a></li>
@@ -277,19 +277,28 @@
 <section id="blockchain-and-cryptocurrency" class="level1" data-number="5">
 <h1 data-number="5"><span class="header-section-number">5</span> Blockchain and Cryptocurrency</h1>
 <p>Decentralized currency have beomce a popular peer to peer consensus systems that operate under significantly different assumptions and fault models than previous systems.</p>
-<section id="bitcoin" class="level2 unnumbered">
-<h2 class="unnumbered">Bitcoin</h2>
+<section id="bitcoin" class="level2" data-number="5.1">
+<h2 data-number="5.1"><span class="header-section-number">5.1</span> Bitcoin</h2>
 <p>Bitcoin <span class="citation" data-cites="nakamoto2009bitcoin">(<a href="#ref-nakamoto2009bitcoin" role="doc-biblioref">Nakamoto 2009</a>)</span> is the first widely used decentralized cryptocurrency. Nodes participate in a peer-to-peer network that implements a distributed ledger which records all transactions between parties, which can be uniquely identified using cryptogaphic keys (e.g. RSA private keys). The ledger can be viewed as a type of database, consisting of a series of blocks that record transactions on the database. The current state of the database can be considered as the state of the ledger after applying all transactions in the ledger.</p>
-<p>Generally, we can view our current (or most any) money system as, more or less, a big old database. Every user/client of the database can have an account/entry in this database, which records the current amount of money in their “account”/“wallet”. Transactions are then carried out by consistently transferring money from one account to another, by deducting some amount <span class="math inline">\(X\)</span> from user <span class="math inline">\(A\)</span>’s account and adding <span class="math inline">\(X\)</span> to user <span class="math inline">\(B\)</span>’s account. Obviously, <span class="math inline">\(A\)</span> cannot send <span class="math inline">\(X\)</span> dollars to some other account if it does not have at least <span class="math inline">\(X\)</span> dollars. And, the transaction that completes between two accounts must occur atomically (consistently), before any other transactions take place. That is, we can think about all transactions as being serialized into a big list of transactions, which make up the <em>ledger</em> or <em>history</em> of the database. More generally, though, we can also just consider this ledger itself to contain the current state of the database, since the current state can always be computed by simply applying all transactions from the beginning of the ledger. We can also assume that there may be some special entries in this ledger that put new money into circulation by giving it to some account without requiring it to be transferred from an existing account.</p>
+<p>Generally, we can view our current (or most any) money system as, more or less, a big old database. As Buterin states in <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span>:</p>
+<blockquote>
+<p>…all a currency, or token systen, fundamentally is is a database with one operation: subtract X units from A and give X units to B, with the proviso that</p>
+<ol type="1">
+<li><p>A had at least X units before the transaction</p></li>
+<li><p>the transaction is approved by A.</p></li>
+</ol>
+</blockquote>
+<p>Every user/client of the database can have an account in this database, which records the current amount of money in their account (i.e. “wallet”). Transactions are then executed out by atomically transferring money from one account to another, by deducting some amount <span class="math inline">\(X\)</span> from user <span class="math inline">\(A\)</span>’s account and adding <span class="math inline">\(X\)</span> to user <span class="math inline">\(B\)</span>’s account. Obviously, <span class="math inline">\(A\)</span> cannot send <span class="math inline">\(X\)</span> dollars to some other account if it does not have at least <span class="math inline">\(X\)</span> dollars. And, the transaction that completes between two accounts must occur atomically (consistently), before any other transactions take place. That is, we can think about all transactions as being serialized into a big list of transactions, which make up the <em>ledger</em> or <em>history</em> of the database.</p>
+<p>More generally, though, we can also just consider this ledger itself to contain the current state of the database, since the current state can always be computed by simply applying all transactions from the beginning of the ledger. We also might assume that there may be some special entries in this ledger that put new money into circulation by giving it to some account without requiring it to be transferred from an existing account.</p>
 <p>If you try to build a money system on this decentralized ledger/database model, you have the obvious initial problem of how we update the database consistently and safely without the use of some central trusted authority. We can imagine that everyone has a copy of the full ledger, and can choose to make arbitrary updates to it locally e.g. even ones that break the <em>no double spending</em> consistency property (i.e., people could arbitrarily choose to spend money they don’t have). Additionally, we can assume that each party in the network can be uniquely identified by some crtypographic signing scheme e.g. each by their unique, private RSA key. They can mark a transaction between themselves, party <span class="math inline">\(A\)</span> and another user, party <span class="math inline">\(B\)</span>, by referring to the public key of <span class="math inline">\(B\)</span> and signing the transaction with <span class="math inline">\(A\)</span>’s private key. Based on this, other parties can then verify that <span class="math inline">\(A\)</span> was indeed the one who sent some money to <span class="math inline">\(B\)</span>.</p>
 <p>If everyone is updating their forks of the ledger independently, though, each with some potentially unsafe transactions, how do we enforce safety in a distributed fashion? Well, we must assume that there is at least some amount of honest nodes in the network that want to do good i.e., they are actually honest in wanting to verify the correctness of the chain. So, we can essentially just use some mechanism that allows the honest agents to “outvote” the bad players when deciding on the correctness of the ledger. This can be implemented with a <em>proof of work</em> idea. Basically, we imagine appending a special <em>nonce</em> to each transaction, such that the original transaction concatenated with this nonce makes up the full transaction that goes into the chain. In order for a transaction be valid, though, we require some property of the hashed block be true that is computationally hard to invert. For example, by requiring that the SHA hash of the original block plus the nonce starts with some number of zero bits. If this property holds true, then the transaction/block is considered valid, and this means fiddling with the data of the transaction would be computationally hard, since you would have to re-solve for a valid nonce. So, this implicitly ensures that votes are given to those with CPU pwoer, and so if enough CPUs are “honest”, then we have a good guarantee that honest nodes will win out in selecting the true ledger.</p>
 <ul>
 <li><p>Basically, in order to make a block “valid”, you have to sign it with a special hash that is based on the block’s content, and is computationally hard to come up with. So, basically, if you’ve sent out a valid block, it means you must have spent some amount of computational work on creating this block. This serves as the kind of “voting” power.</p></li>
 </ul>
 </section>
-<section id="ethereum" class="level2 unnumbered">
-<h2 class="unnumbered">Ethereum</h2>
-<p>An newer alternative to Bitcoin that also supports smart contracts (?).</p>
+<section id="ethereum" class="level2" data-number="5.2">
+<h2 data-number="5.2"><span class="header-section-number">5.2</span> Ethereum</h2>
+<p>Ethereum, originally published in a whitepaper <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span> in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on many similar concepts. Most notably, it introduces an explicit way to implement <em>smart contracts</em> within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried outbetween parties in the system. In a sense this kind of generalizes the basic financial <em>state transition model</em> of Bitcoin, that only allowed users to essentially send value between each other without more complex contractual logic determining rules on how coins can flow between parties.</p>
 </section>
 <section id="smart-contracts" class="level2 unnumbered">
 <h2 class="unnumbered">Smart Contracts</h2>
@@ -303,6 +312,9 @@ Abraham, Ittai, Srinivas Devadas, Danny Dolev, Kartik Nayak, and Ling Ren. 2019.
 </div>
 <div id="ref-1990aspnesherlihy" class="csl-entry" role="doc-biblioentry">
 Aspnes, James, and M. Herlihy. 1990. <span>“Fast Randomized Consensus Using Shared Memory.”</span> <em>J. Algorithms</em> 11 (3): 441–61. <a href="https://doi.org/10.1016/0196-6774(90)90021-6">https://doi.org/10.1016/0196-6774(90)90021-6</a>.
+</div>
+<div id="ref-Buterin2013" class="csl-entry" role="doc-biblioentry">
+Buterin, Vitalik. 2014. <span>“<span>Ethereum White Paper: A Next Generation Smart Contract &amp; Decentralized Application Platform</span>.”</span> <a href="https://ethereum.org/whitepaper">https://ethereum.org/whitepaper</a>.
 </div>
 <div id="ref-1999castropbft" class="csl-entry" role="doc-biblioentry">
 Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA: USENIX Association.

@@ -255,11 +255,24 @@ Note that since we assume a public key infrastructure (PKI) set up between nodes
 
 Decentralized currency have beomce a popular peer to peer consensus systems that operate under significantly different assumptions and fault models than previous systems.
 
-\subsection*{Bitcoin}
+\subsection{Bitcoin}
 
 Bitcoin \cite{nakamoto2009bitcoin} is the first widely used decentralized cryptocurrency. Nodes participate in a peer-to-peer network that implements a distributed ledger which records all transactions between parties, which can be uniquely identified using cryptogaphic keys (e.g. RSA private keys). The ledger can be viewed as a type of database, consisting of a series of blocks that record transactions on the database. The current state of the database can be considered as the state of the ledger after applying all transactions in the ledger.
 
-Generally, we can view our current (or most any) money system as, more or less, a big old database. Every user/client of the database can have an account/entry in this database, which records the current amount of money in their ``account''/``wallet''. Transactions are then carried out by consistently transferring money from one account to another, by deducting some amount $X$ from user $A$'s account and adding $X$ to user $B$'s account. Obviously, $A$ cannot send $X$ dollars to some other account if it does not have at least $X$ dollars. And, the transaction that completes between two accounts must occur atomically (consistently), before any other transactions take place. That is, we can think about all transactions as being serialized into a big list of transactions, which make up the \textit{ledger} or \textit{history} of the database. More generally, though, we can also just consider this ledger itself to contain the current state of the database, since the current state can always be computed by simply applying all transactions from the beginning of the ledger. We can also assume that there may be some special entries in this ledger that put new money into circulation by giving it to some account without requiring it to be transferred from an existing account.
+Generally, we can view our current (or most any) money system as, more or less, a big old database. As Buterin states in \cite{Buterin2013}:
+
+\begin{quote}
+    \dots all a currency, or token systen, fundamentally is is a database with one operation: subtract X units from A and give X units to B, with the proviso that 
+    \begin{enumerate}[(1)]
+        \item A had at least X units before the transaction
+        \item the transaction is approved by A. 
+    \end{enumerate}
+\end{quote}
+
+Every user/client of the database can have an account in this database, which records the current amount of money in their account (i.e. ``wallet''). Transactions are then executed out by atomically transferring money from one account to another, by deducting some amount $X$ from user $A$'s account and adding $X$ to user $B$'s account. Obviously, $A$ cannot send $X$ dollars to some other account if it does not have at least $X$ dollars. And, the transaction that completes between two accounts must occur atomically (consistently), before any other transactions take place. That is, we can think about all transactions as being serialized into a big list of transactions, which make up the \textit{ledger} or \textit{history} of the database. 
+
+
+More generally, though, we can also just consider this ledger itself to contain the current state of the database, since the current state can always be computed by simply applying all transactions from the beginning of the ledger. We also might assume that there may be some special entries in this ledger that put new money into circulation by giving it to some account without requiring it to be transferred from an existing account.
 
 If you try to build a money system on this decentralized ledger/database model, you have the obvious initial problem of how we update the database consistently and safely without the use of some central trusted authority. We can imagine that everyone has a copy of the full ledger, and can choose to make arbitrary updates to it locally e.g. even ones that break the \textit{no double spending} consistency property (i.e., people could arbitrarily choose to spend money they don't have). Additionally, we can assume that each party in the network can be uniquely identified by some crtypographic signing scheme e.g. each by their unique, private RSA key. They can mark a transaction between themselves, party $A$ and another user, party $B$, by referring to the public key of $B$ and signing the transaction with $A$'s private key. Based on this, other parties can then verify that $A$ was indeed the one who sent some money to $B$.
 
@@ -270,9 +283,9 @@ If everyone is updating their forks of the ledger independently, though, each wi
 \end{itemize}
 
 
-\subsection*{Ethereum}
+\subsection{Ethereum}
 
-An newer alternative to Bitcoin that also supports smart contracts (?).
+Ethereum, originally published in a whitepaper \cite{Buterin2013} in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on many similar concepts. Most notably, it introduces an explicit way to implement \textit{smart contracts} within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried outbetween parties in the system. In a sense this kind of generalizes the basic financial \textit{state transition model} of Bitcoin, that only allowed users to essentially send value between each other without more complex contractual logic determining rules on how coins can flow between parties.
 
 \subsection*{Smart Contracts}
 

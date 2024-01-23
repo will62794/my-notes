@@ -72,8 +72,10 @@
 <li><a href="#blockchain-and-cryptocurrency"><span class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
 <ul>
 <li><a href="#bitcoin"><span class="toc-section-number">5.1</span> Bitcoin</a></li>
-<li><a href="#ethereum"><span class="toc-section-number">5.2</span> Ethereum</a></li>
+<li><a href="#ethereum"><span class="toc-section-number">5.2</span> Ethereum</a>
+<ul>
 <li><a href="#messages-and-transactions">Messages and Transactions</a></li>
+</ul></li>
 <li><a href="#blockchain-oracles"><span class="toc-section-number">5.3</span> Blockchain Oracles</a></li>
 </ul></li>
 <li><a href="#bibliography">References</a></li>
@@ -307,11 +309,11 @@
 <li><p><strong>Contract accounts</strong>, which are controlled by their contract code.</p></li>
 </ol>
 <p>Externally owned accounts have no code, and you can send messages from such an account by creating and signing a transaction. In a contract account, every time the contract account receives a message its code activates, allowing it to read and write to internal storage and send other messages or create contracts.</p>
-</section>
-<section id="messages-and-transactions" class="level2 unnumbered">
-<h2 class="unnumbered">Messages and Transactions</h2>
+<section id="messages-and-transactions" class="level3 unnumbered">
+<h3 class="unnumbered">Messages and Transactions</h3>
 <p><em>Messages</em> in Ethereum are similar to <em>transactions</em> in Bitcoin, but differ in that an Ethereum message can be created either by an external entity or a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.</p>
 <p><em>Transactions</em> in Ethereum contain the recipient of the message, a signature identifying the sender, the amount of ether and the data to send, as well as two values called <em>STARTGAS</em> and <em>GASPRICE</em>. To prevent exponential blowup and infinite loops in execution of contract code, each transaction is required to set a limit to how many computational steps of code execution it can spawn, including both the initial message and any additional messages that get spawned during execution. <em>STARTGAS</em> is the limit on computational steps, and <em>GASPRICE</em> is the fee to pay to the miner per computational step.</p>
+</section>
 </section>
 <section id="blockchain-oracles" class="level2" data-number="5.3">
 <h2 data-number="5.3"><span class="header-section-number">5.3</span> Blockchain Oracles</h2>

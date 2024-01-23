@@ -295,7 +295,7 @@ In Ethereum, the state is made up of objects called ``accounts'', which are each
 \end{enumerate}
 Externally owned accounts have no code, and you can send messages from such an account by creating and signing a transaction. In a contract account, every time the contract account receives a message its code activates, allowing it to read and write to internal storage and send other messages or create contracts.
 
-\subsection*{Messages and Transactions}
+\subsubsection*{Messages and Transactions}
 
 \textit{Messages} in Ethereum are similar to \textit{transactions} in Bitcoin, but differ in that an Ethereum message can be created either by an external entity or a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.
 

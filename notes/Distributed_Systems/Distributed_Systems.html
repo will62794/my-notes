@@ -304,9 +304,9 @@
 <h2 data-number="5.2"><span class="header-section-number">5.2</span> Ethereum</h2>
 <p>Ethereum, originally published in a whitepaper <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span> in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on similar ideas and goals. Most notably, it introduces an explicit way to implement <em>smart contracts</em> within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried outbetween parties in the system. In a sense this is a kind of generalization of the basic banking <em>state transition model</em> of Bitcoin, that only allowed users to essentially send value between each other without more complex contractual logic determining rules on how coins can flow between parties.</p>
 <p>In Ethereum, the state is made up of objects called “accounts”, which are each identifier by a 20-byte address and transactions are direct transfers of value and information between accounts. An Ethereum account contains four fields: (1) <em>nonce</em>, a counter to ensure transactions are processed once, (2) <em>ether balance</em>, the current balance of the account, (3) <em>contract code</em>, if present, and (4) <em>storage</em>, which is empty by default. There are then two different types of accounts:</p>
-<ol>
-<li><p><strong>Externally owned accounts</strong>, which are controlled by private keys.</p></li>
-<li><p><strong>Contract accounts</strong>, which are controlled by their contract code.</p></li>
+<ol type="1">
+<li><p><strong>Externally owned accounts</strong>: controlled by private keys.</p></li>
+<li><p><strong>Contract accounts</strong>: controlled by their contract code.</p></li>
 </ol>
 <p>Externally owned accounts have no code, and you can send messages from such an account by creating and signing a transaction. In a contract account, every time the contract account receives a message its code activates, allowing it to read and write to internal storage and send other messages or create contracts.</p>
 <section id="messages-and-transactions" class="level3 unnumbered">

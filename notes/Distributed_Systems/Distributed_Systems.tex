@@ -310,6 +310,8 @@ Externally owned accounts have no code, and you can send messages from such an a
 
 Although smart contracts allow for secure, decentralized policies to be implemented within a blockchain network (e.g. in Ethereum) it is often the case that these contracts may want to use data sources that come from the outside wordl (e.g. stock stickers, weather, etc.). Mechanisms are needed for pulling in this data in a secure fashion, so that the security of the underlying contract is not compromised in cases where the external data source may also be compromised. A \textit{blockchain oracle} \cite{2016towncrier,breidenbach2021chainlink} is a third party service that connects a smart contract with the outside world, in an effort to address this issue.
 
+Some of these oracle systems \cite{2016towncrier} rely on running partially inside trusted execution environments, like Intel SGX.
+
 
 
 \bibliographystyle{alpha}

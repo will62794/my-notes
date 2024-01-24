@@ -246,6 +246,12 @@ The essence of the algorithm is as follows:
 \end{enumerate}
 Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.
 
+\subsection*{From Classic Paxos to Byzantine}
+
+In Classic Paxos, we can think about \textit{2a} messages being sent to acceptors as a record of the proposer gathering some information about that proposal in phase 1: namely, that a quorum of acceptors promised to prepare in that round/ballot, and never accept proposals from earlier rounds. In a Byzantine setting, we can't rely on a proposer/leader as an aggregator of this information, since a Byzantine leader can lie about any of this info. So, fundamentally, to achieve the same guarantees that we need before executing \textit{2a} messages in Classic Paxos, acceptors need to gather this information themselves, by simply broadcasting message queries to all other nodes and gathering responses. 
+
+If an acceptor can gather enough responses ($2f$) that other acceptors were prepared for a given proposal/round, then they can consider the proposal as accepted, and advance to learning/commit phase. If we assume at most $f$ failures and $3f+1$ acceptors, then if we get confirmation of $2f+1$ prepares, we know that...?
+
 \subsection{Notes}
 \begin{itemize}
     \item Given $n=3f+1$ nodes, for any 2 quorums with $n-f = 2f+1$ nodes, we are guaranteed they intersect in at least $f+1$ nodes (just draw a picture). Note that if you talk to at least $f+1$ nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.

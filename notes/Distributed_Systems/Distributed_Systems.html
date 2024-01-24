@@ -67,6 +67,7 @@
 <ul>
 <li><a href="#model"><span class="toc-section-number">4.1</span> Model</a></li>
 <li><a href="#intuitions-and-algorithm"><span class="toc-section-number">4.2</span> Intuitions and Algorithm</a></li>
+<li><a href="#from-classic-paxos-to-byzantine">From Classic Paxos to Byzantine</a></li>
 <li><a href="#notes"><span class="toc-section-number">4.3</span> Notes</a></li>
 </ul></li>
 <li><a href="#blockchain-and-cryptocurrency"><span class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
@@ -269,6 +270,11 @@
 <li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(Prepare\)</span> responses from replicas.</p></li>
 </ol>
 <p>Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.</p>
+</section>
+<section id="from-classic-paxos-to-byzantine" class="level2 unnumbered">
+<h2 class="unnumbered">From Classic Paxos to Byzantine</h2>
+<p>In Classic Paxos, we can think about <em>2a</em> messages being sent to acceptors as a record of the proposer gathering some information about that proposal in phase 1: namely, that a quorum of acceptors promised to prepare in that round/ballot, and never accept proposals from earlier rounds. In a Byzantine setting, we can’t rely on a proposer/leader as an aggregator of this information, since a Byzantine leader can lie about any of this info. So, fundamentally, to achieve the same guarantees that we need before executing <em>2a</em> messages in Classic Paxos, acceptors need to gather this information themselves, by simply broadcasting message queries to all other nodes and gathering responses.</p>
+<p>If an acceptor can gather enough responses (<span class="math inline">\(2f\)</span>) that other acceptors were prepared for a given proposal/round, then they can consider the proposal as accepted, and advance to learning/commit phase. If we assume at most <span class="math inline">\(f\)</span> failures and <span class="math inline">\(3f+1\)</span> acceptors, then if we get confirmation of <span class="math inline">\(2f+1\)</span> prepares, we know that...?</p>
 </section>
 <section id="notes" class="level2" data-number="4.3">
 <h2 data-number="4.3"><span class="header-section-number">4.3</span> Notes</h2>

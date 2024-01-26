@@ -292,18 +292,24 @@ In order to make a block ``valid'', you have to sign it with a special hash that
 
 \subsection{Ethereum}
 
-Ethereum, originally published in a whitepaper \cite{Buterin2013} in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on similar ideas and goals. Most notably, it introduces an explicit way to implement \textit{smart contracts} within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried outbetween parties in the system. In a sense this is a kind of generalization of the basic banking \textit{state transition model} of Bitcoin, that only allowed users to essentially send value between each other without more complex contractual logic determining rules on how coins can flow between parties.
+Ethereum, originally published in a whitepaper \cite{Buterin2013} in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on similar ideas and goals. Most notably, it introduces an explicit way to implement \textit{smart contracts} within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried out between parties in the system. This can be viewed as a kind of generalization of the basic banking \textit{state transition model} of Bitcoin, that only allowed users to  send value between each other without more complex contractual logic determining rules on how value can flow between parties.
 
-In Ethereum, the state is made up of objects called ``accounts'', which are each identifier by a 20-byte address and transactions are direct transfers of value and information between accounts. An Ethereum account contains four fields: (1) \textit{nonce}, a counter to ensure transactions are processed once, (2) \textit{ether balance}, the current balance of the account, (3) \textit{contract code}, if present, and (4) \textit{storage}, which is empty by default. There are then two different types of accounts:
-\begin{enumerate}[(1)]
-    \item \textbf{Externally owned accounts}: controlled by private keys.
-    \item \textbf{Contract accounts}: controlled by their contract code.
+In Ethereum, the global system state is made up of objects called \textit{accounts}, which are each identified by a 20-byte address. \textit{Transactions} are direct transfers of value and information between accounts. An Ethereum account contains four fields: 
+\begin{enumerate}[1.]
+    \item \textbf{nonce}: a counter to ensure transactions are processed once.
+    \item \textbf{ether balance}: the current balance of the account.
+    \item \textbf{contract code}: if present.
+    \item \textbf{storage}: which is empty by default.
 \end{enumerate}
-Externally owned accounts have no code, and you can send messages from such an account by creating and signing a transaction. In a contract account, every time the contract account receives a message its code activates, allowing it to read and write to internal storage and send other messages or create contracts.
+and there two different types of accounts:
+\begin{itemize}
+    \item \textbf{Externally owned accounts}: controlled by private keys. These accounts have no code, and you can send messages from such an account by creating and signing a transaction.
+    \item \textbf{Contract accounts}: controlled by their contract code. In these accounts, every time the contract account receives a \textit{message} its code activates, allowing it to read and write to internal storage, send other messages, or create new contracts.
+\end{itemize}
 
-\subsubsection*{Messages and Transactions}
+\subsubsection{Messages and Transactions}
 
-\textit{Messages} in Ethereum are similar to \textit{transactions} in Bitcoin, but differ in that an Ethereum message can be created either by an external entity or a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.
+A \textit{message} in Ethereum is similar to a ``transaction" in Bitcoin, but differs in that an Ethereum message can be created either by an external entity or by a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.
 
 \textit{Transactions} in Ethereum contain the recipient of the message, a signature identifying the sender, the amount of ether and the data to send, as well as two values called \textit{STARTGAS} and \textit{GASPRICE}. To prevent exponential blowup and infinite loops in execution of contract code, each transaction is required to set a limit to how many computational steps of code execution it can spawn, including both the initial message and any additional messages that get spawned during execution. \textit{STARTGAS} is the limit on computational steps, and \textit{GASPRICE} is the fee to pay to the miner per computational step. 
 

@@ -75,7 +75,7 @@
 <li><a href="#bitcoin"><span class="toc-section-number">5.1</span> Bitcoin</a></li>
 <li><a href="#ethereum"><span class="toc-section-number">5.2</span> Ethereum</a>
 <ul>
-<li><a href="#messages-and-transactions">Messages and Transactions</a></li>
+<li><a href="#messages-and-transactions"><span class="toc-section-number">5.2.1</span> Messages and Transactions</a></li>
 </ul></li>
 <li><a href="#blockchain-oracles"><span class="toc-section-number">5.3</span> Blockchain Oracles</a></li>
 </ul></li>
@@ -308,16 +308,22 @@
 </section>
 <section id="ethereum" class="level2" data-number="5.2">
 <h2 data-number="5.2"><span class="header-section-number">5.2</span> Ethereum</h2>
-<p>Ethereum, originally published in a whitepaper <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span> in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on similar ideas and goals. Most notably, it introduces an explicit way to implement <em>smart contracts</em> within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried outbetween parties in the system. In a sense this is a kind of generalization of the basic banking <em>state transition model</em> of Bitcoin, that only allowed users to essentially send value between each other without more complex contractual logic determining rules on how coins can flow between parties.</p>
-<p>In Ethereum, the state is made up of objects called “accounts”, which are each identifier by a 20-byte address and transactions are direct transfers of value and information between accounts. An Ethereum account contains four fields: (1) <em>nonce</em>, a counter to ensure transactions are processed once, (2) <em>ether balance</em>, the current balance of the account, (3) <em>contract code</em>, if present, and (4) <em>storage</em>, which is empty by default. There are then two different types of accounts:</p>
+<p>Ethereum, originally published in a whitepaper <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span> in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on similar ideas and goals. Most notably, it introduces an explicit way to implement <em>smart contracts</em> within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried out between parties in the system. This can be viewed as a kind of generalization of the basic banking <em>state transition model</em> of Bitcoin, that only allowed users to send value between each other without more complex contractual logic determining rules on how value can flow between parties.</p>
+<p>In Ethereum, the global system state is made up of objects called <em>accounts</em>, which are each identified by a 20-byte address. <em>Transactions</em> are direct transfers of value and information between accounts. An Ethereum account contains four fields:</p>
 <ol type="1">
-<li><p><strong>Externally owned accounts</strong>: controlled by private keys.</p></li>
-<li><p><strong>Contract accounts</strong>: controlled by their contract code.</p></li>
+<li><p><strong>nonce</strong>: a counter to ensure transactions are processed once.</p></li>
+<li><p><strong>ether balance</strong>: the current balance of the account.</p></li>
+<li><p><strong>contract code</strong>: if present.</p></li>
+<li><p><strong>storage</strong>: which is empty by default.</p></li>
 </ol>
-<p>Externally owned accounts have no code, and you can send messages from such an account by creating and signing a transaction. In a contract account, every time the contract account receives a message its code activates, allowing it to read and write to internal storage and send other messages or create contracts.</p>
-<section id="messages-and-transactions" class="level3 unnumbered">
-<h3 class="unnumbered">Messages and Transactions</h3>
-<p><em>Messages</em> in Ethereum are similar to <em>transactions</em> in Bitcoin, but differ in that an Ethereum message can be created either by an external entity or a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.</p>
+<p>and there two different types of accounts:</p>
+<ul>
+<li><p><strong>Externally owned accounts</strong>: controlled by private keys. These accounts have no code, and you can send messages from such an account by creating and signing a transaction.</p></li>
+<li><p><strong>Contract accounts</strong>: controlled by their contract code. In these accounts, every time the contract account receives a <em>message</em> its code activates, allowing it to read and write to internal storage, send other messages, or create new contracts.</p></li>
+</ul>
+<section id="messages-and-transactions" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1"><span class="header-section-number">5.2.1</span> Messages and Transactions</h3>
+<p>A <em>message</em> in Ethereum is similar to a “transaction" in Bitcoin, but differs in that an Ethereum message can be created either by an external entity or by a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.</p>
 <p><em>Transactions</em> in Ethereum contain the recipient of the message, a signature identifying the sender, the amount of ether and the data to send, as well as two values called <em>STARTGAS</em> and <em>GASPRICE</em>. To prevent exponential blowup and infinite loops in execution of contract code, each transaction is required to set a limit to how many computational steps of code execution it can spawn, including both the initial message and any additional messages that get spawned during execution. <em>STARTGAS</em> is the limit on computational steps, and <em>GASPRICE</em> is the fee to pay to the miner per computational step.</p>
 </section>
 </section>

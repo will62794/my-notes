@@ -59,9 +59,10 @@
 <li><a href="#generalizable-solution"><span class="toc-section-number">3.2.2</span> Generalizable Solution</a></li>
 </ul></li>
 <li><a href="#paxos"><span class="toc-section-number">3.3</span> Paxos</a></li>
-<li><a href="#fast-paxos"><span class="toc-section-number">3.4</span> Fast Paxos</a></li>
-<li><a href="#egalitarian-paxos"><span class="toc-section-number">3.5</span> Egalitarian Paxos</a></li>
-<li><a href="#zab"><span class="toc-section-number">3.6</span> Zab</a></li>
+<li><a href="#vertical-paxos"><span class="toc-section-number">3.4</span> Vertical Paxos</a></li>
+<li><a href="#fast-paxos"><span class="toc-section-number">3.5</span> Fast Paxos</a></li>
+<li><a href="#egalitarian-paxos"><span class="toc-section-number">3.6</span> Egalitarian Paxos</a></li>
+<li><a href="#zab"><span class="toc-section-number">3.7</span> Zab</a></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
 <ul>
@@ -219,16 +220,21 @@
 <h2 data-number="3.3"><span class="header-section-number">3.3</span> Paxos</h2>
 <p>Paxos is a protocol for implementing consensus in an asynchronous distributed system assuming crash faults. Modeled as <em>proposers</em>, <em>acceptors</em>, and <em>learners</em>, and consists of 2 main phases, <span class="math inline">\(Prepare\)</span> and <span class="math inline">\(Accept\)</span>. Proposers, which each own a disjoint set of a ballot space, propose values in one of their designated ballots, and send a <span class="math inline">\(Prepare(b)\)</span> message for this ballot to a quorum of acceptors. Acceptors will respond to a <span class="math inline">\(Prepare(b)\)</span> message if it is newer than the latest ballot they know about. A propoers, hearing a quorum of <span class="math inline">\(Prepare\)</span> responses, then sends out an <span class="math inline">\(Accept(b,v)\)</span> message for that ballot, where <span class="math inline">\(v\)</span> is chosen either as the value with the highest ballot it hear about in <span class="math inline">\(Prepare\)</span> phase, or as any value the proposer desires. Acceptors accept a value via an <span class="math inline">\(Accept\)</span> message if the ballot is not older than their own latest known ballot. A value is committed at a ballot <span class="math inline">\(b\)</span> if a quorum of acceptors have accepted that value at <span class="math inline">\(b\)</span>.</p>
 </section>
-<section id="fast-paxos" class="level2" data-number="3.4">
-<h2 data-number="3.4"><span class="header-section-number">3.4</span> Fast Paxos</h2>
+<section id="vertical-paxos" class="level2" data-number="3.4">
+<h2 data-number="3.4"><span class="header-section-number">3.4</span> Vertical Paxos</h2>
+<p>The classic consensus problem for Paxos is defined on a fixed set of <span class="math inline">\(n\)</span> processes. In practice, though, as nodes fail over time we may need to remove them from the system and add in new ones, via <em>reconfiguration</em>. In standard “horizontal” Paxos algorithms, like the approach described in <span class="citation" data-cites="lamport2001paxos">(<a href="#ref-lamport2001paxos" role="doc-biblioref">Lamport 2001</a>)</span>, the set of servers is made a part of the state machine state, and special “reconfiguration" comands on the state machine modify this set of servers. If the set of servers can change, though, then there needs to be some way of determining which set of servers implement what instances of the consensus algorithm. In one of Lamport’s original suggested approaches, we can allow a configuration command at instance <span class="math inline">\(i\)</span> to take effect at instance <span class="math inline">\(i + \alpha\)</span>. So, we can propose commands up to <span class="math inline">\(\alpha\)</span> slots after the reconfiguration, but no further, until we know whether the reconfiguration committed, so that we are sure we know the correct set of servers to consider.</p>
+<p>In the above, “horizontal” Paxos approach, configurations change across Paxos instances, in accordance with the <em>horizontal</em> reconfiguration commands. <em>Vertical Paxos</em> <span class="citation" data-cites="lamport2009vertical">(<a href="#ref-lamport2009vertical" role="doc-biblioref">Lamport, Malkhi, and Zhou 2009</a>)</span> differs in that it allows for reconfiguration <em>across Paxos ballots</em>, even within the same instance. This is the “vertical” notion i.e. if you imagine instances as moving horizontally and Paxos ballots per instance laid out vertically. In the Vertical Paxos, they basically assume the existence of an external master that stores the configuration state across ballots, which itself can be implemented using state machine replication. Essentially, when a reconfiguration occurs in Vertical Paxos, the new configuratino becomes active right away, and the previous configuration remains active only for storing old information, and the new one accepts new commands.When the state of the previous configuration has been transferred to the new configuration, the new leader of the new config tells the master this is done, and the master can inform all future leaders that it no longer needs to contact the old configuration i.e., it deactivates the old config. This is essentially a kind of explicit management of state transfer and deactivation from old configs to new configs, albeit one that relies on a separate external master. So, in some sense, it still doesn’t fix the underlying problem of a state machine reconfiguration itself, but arguably has a clearer separation of concerns.</p>
+</section>
+<section id="fast-paxos" class="level2" data-number="3.5">
+<h2 data-number="3.5"><span class="header-section-number">3.5</span> Fast Paxos</h2>
 <p>Classic Paxos takes 2 round trips to get a value committed (1 for the <span class="math inline">\(Prepare\)</span> phase and 1 for the <span class="math inline">\(Commit\)</span> phase). How could we do better than this? Fast Paxos <span class="citation" data-cites="lamport2006fast">(<a href="#ref-lamport2006fast" role="doc-biblioref">Lamport 2006</a>)</span> makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.</p>
 </section>
-<section id="egalitarian-paxos" class="level2" data-number="3.5">
-<h2 data-number="3.5"><span class="header-section-number">3.5</span> Egalitarian Paxos</h2>
+<section id="egalitarian-paxos" class="level2" data-number="3.6">
+<h2 data-number="3.6"><span class="header-section-number">3.6</span> Egalitarian Paxos</h2>
 <p>Egalitarian Paxos (EPaxos) <span class="citation" data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru" role="doc-biblioref">Moraru, Andersen, and Kaminsky 2013</a>)</span> goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.</p>
 </section>
-<section id="zab" class="level2" data-number="3.6">
-<h2 data-number="3.6"><span class="header-section-number">3.6</span> Zab</h2>
+<section id="zab" class="level2" data-number="3.7">
+<h2 data-number="3.7"><span class="header-section-number">3.7</span> Zab</h2>
 <p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini 2011</a>; <a href="#ref-2008zabsimple" role="doc-biblioref">Reed and Junqueira 2008</a>)</span> is a crash-recovery atomic broadcast algorithm used in Apache Zookeeper. The protocol consists of two main modes: <em>broadcast</em> and <em>recovery</em>.</p>
 <p>In a stable system, it should be in broadcast mode, where a single leader is broadcasting transaction messages to a quorum of synchronized followers, until the leader fails or it no longer has a quorum of followers. Leaders will broadcast a proposal for a message to be delivered, and before doing this will assign a monotonically increasing unique id, the <em>zxid</em>. Delivered messages will be ordered by their zxids. When a leader receives ACKs from a quorum, the leader will broadcast a <span class="smallcaps">COMMIT</span> message and deliver the message locally.</p>
 <p>When the service starts or a leader fails, the system enters into recovery mode. Recovery and leader election is needed to ensure liveness in the face of leader failure. In a standard implementation zxids are 64-bit numbers where the lower 32 bits are a simple counter, and the higher order 32 bits are the epoch. The epoch is incremented by a new leader to something greater than the highest epoch it has seen, and then the counter is reset to zero. If the leader election protocol guarantees that the new leader has the highest proposal number in a quorum of servers, a newly elected leader will also have all committed messages.</p>
@@ -357,11 +363,17 @@ Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span> <em>ACM Tr
 <div id="ref-2011zab" class="csl-entry" role="doc-biblioentry">
 Junqueira, Flavio P., Benjamin C. Reed, and Marco Serafini. 2011. <span>“Zab: High-Performance Broadcast for Primary-Backup Systems.”</span> In <em>Proceedings of the 2011 IEEE/IFIP 41st International Conference on Dependable Systems&amp;networks</em>, 245–56. DSN ’11. USA: IEEE Computer Society. <a href="https://doi.org/10.1109/DSN.2011.5958223">https://doi.org/10.1109/DSN.2011.5958223</a>.
 </div>
+<div id="ref-lamport2001paxos" class="csl-entry" role="doc-biblioentry">
+Lamport, Leslie. 2001. <span>“Paxos Made Simple.”</span> <em>ACM SIGACT News (Distributed Computing Column) 32, 4 (Whole Number 121, December 2001)</em>, 51–58.
+</div>
 <div id="ref-lamport2006fast" class="csl-entry" role="doc-biblioentry">
-Lamport, Leslie. 2006. <span>“Fast Paxos.”</span> <em>Distributed Computing</em> 19: 79–103. <a href="https://www.microsoft.com/en-us/research/publication/fast-paxos/">https://www.microsoft.com/en-us/research/publication/fast-paxos/</a>.
+———. 2006. <span>“Fast Paxos.”</span> <em>Distributed Computing</em> 19: 79–103. <a href="https://www.microsoft.com/en-us/research/publication/fast-paxos/">https://www.microsoft.com/en-us/research/publication/fast-paxos/</a>.
 </div>
 <div id="ref-2011lamport" class="csl-entry" role="doc-biblioentry">
 ———. 2011. <span>“Byzantizing Paxos by Refinement.”</span> In <em>Proceedings of the 25th International Conference on Distributed Computing</em>, 211–24. DISC’11. Berlin, Heidelberg: Springer-Verlag.
+</div>
+<div id="ref-lamport2009vertical" class="csl-entry" role="doc-biblioentry">
+Lamport, Leslie, Dahlia Malkhi, and Lidong Zhou. 2009. <span>“Vertical Paxos and Primary-Backup Replication.”</span> In <em>Proceedings of the 28th ACM Symposium on Principles of Distributed Computing</em>, 312–13.
 </div>
 <div id="ref-1982lamportshostak" class="csl-entry" role="doc-biblioentry">
 Lamport, Leslie, Robert Shostak, and Marshall Pease. 1982. <span>“<span>The Byzantine Generals Problem</span>.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 4 (3): 382–401. <a href="https://doi.org/10.1145/357172.357176">https://doi.org/10.1145/357172.357176</a>.

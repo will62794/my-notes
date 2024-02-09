@@ -72,7 +72,10 @@
 <li><a href="#interpolation">Interpolation</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#ic3pdr"><span class="toc-section-number">3</span> IC3/PDR</a></li>
+<li><a href="#ic3pdr"><span class="toc-section-number">3</span> IC3/PDR</a>
+<ul>
+<li><a href="#safety-and-counterexamples-to-induction"><span class="toc-section-number">3.1</span> Safety and Counterexamples to Induction</a></li>
+</ul></li>
 <li><a href="#bibliography">References</a></li>
 </ul>
 </nav>
@@ -256,6 +259,8 @@
 <section id="ic3pdr" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span> IC3/PDR</h1>
 <p>IC3/PDR <span class="citation" data-cites="bradley2011sat">(<a href="#ref-bradley2011sat" role="doc-biblioref">Aaron R. Bradley 2011</a>)</span> uses a SAT solver to make simple induction queries, from which it generates counterexamples to induction (CTIs) that it then generalizes into strengthening lemmas. Furthermore, it makes uses of previously accumulated lemmas to make the approach “incremental” i.e. it can check for inductiveness of a candidate lemma in the context of previously discovered lemmas. Some of the foundational ideas for this approach go back to some earlier work of Manna-Bradley <span class="citation" data-cites="2007bradleymannasafety">(<a href="#ref-2007bradleymannasafety" role="doc-biblioref">Aaron R. Bradley and Manna 2007</a>)</span>.</p>
+<section id="safety-and-counterexamples-to-induction" class="level2" data-number="3.1">
+<h2 data-number="3.1"><span class="header-section-number">3.1</span> Safety and Counterexamples to Induction</h2>
 <p>Note some basic facts about inductive invariants and counterexamples to induction. If a property <span class="math inline">\(S\)</span> is a true invariant of your system, but is not inductive, then there will exist some CTIs i.e. states that start in <span class="math inline">\(S\)</span> but leave <span class="math inline">\(S\)</span> via some state transition.</p>
 <div class="center">
 <p><img src="diagrams/inductive_inv1/inductive_inv1.001.png" alt="image" /></p>
@@ -264,6 +269,7 @@
 <div class="center">
 <p><img src="diagrams/inductive_inv1/inductive_inv1.002.png" alt="image" /></p>
 </div>
+</section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>

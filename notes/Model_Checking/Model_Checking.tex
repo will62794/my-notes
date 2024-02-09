@@ -230,6 +230,8 @@ By this, we can know that $P$ is implied by the initial condition and by the fir
 
 IC3/PDR \cite{bradley2011sat} uses a SAT solver to make simple induction queries, from which it generates counterexamples to induction (CTIs) that it then generalizes into strengthening lemmas. Furthermore, it makes uses of previously accumulated lemmas to make the approach ``incremental'' i.e. it can check for inductiveness of a candidate lemma in the context of previously discovered lemmas. Some of the foundational ideas for this approach go back to some earlier work of Manna-Bradley \cite{2007bradleymannasafety}.
 
+\subsection{Safety and Counterexamples to Induction}
+
 Note some basic facts about inductive invariants and counterexamples to induction. If a property $S$ is a true invariant of your system, but is not inductive, then there will exist some CTIs i.e. states that start in $S$ but leave $S$ via some state transition.
 
 \begin{center}

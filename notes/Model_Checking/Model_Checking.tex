@@ -34,17 +34,17 @@ and, if $K \nvDash \upvarphi$, returning a counterexample. In the basic scenario
 
 There are a variety of temporal logics that have been used to reason about properties of programs/systems. A high level overview is shown in the relationship diagram below, where CTL* is one of the most expressive logics (encompassing both CTL and LTL).
 \begin{center}
-    \includegraphics[scale=0.3]{images/temp-logics.png}
+    \includegraphics[scale=0.3]{diagrams/temp-logics.png}
 \end{center}
 In practice, I don't think it's that important to worry much about the finer distinctions between the various logics, since typically I am more concerned with how to express a desired correctness property (e.g. for which LTL may often be sufficient). Nevertheless, it is good to have a general view of the classification hierarchy to understand the landscape (and since various papers may choose to express/formalize things in different choices of logics).
 
 The below diagram also shows the relationship between LTL, CTL, and CTL*. Namely, that LTL and CTL are not directly comparable, and CTL* subsumes them both.
 \begin{center}
-    \includegraphics[scale=0.2]{images/Expressive-Power-of-LTL-CTL-and-CTL.png}   
+    \includegraphics[scale=0.2]{diagrams/Expressive-Power-of-LTL-CTL-and-CTL.png}   
 \end{center}
 The following diagram \cite{Clarke2018ch1} also provides a good overview of common varieties of temporal logic properties and their counterexample characterizations.
 \begin{center}
-    \includegraphics[scale=0.18]{images/common_ctl_ltl_formulas.png}
+    \includegraphics[scale=0.18]{diagrams/common_ctl_ltl_formulas.png}
 \end{center}
 
 \subsection*{CTL Model Checking}
@@ -56,7 +56,7 @@ For \textit{computation tree logic} (CTL), there is a model-checking algorithm w
 For \textit{linear temporal logic} (LTL) it is the case that any counterexample to a property $\psi$ is w.l.o.g. restricted to have a ``lasso'' shape $v\cdot w^{\omega}$ i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) \cite{1983wolpervardi}. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. Note that the ``lasso''-ness of LTL counterexamples is exploited in certain model checking approaches e.g. some liveness to safety reductions \cite{BIERE2002160}.
 
 \begin{center}
-    \includegraphics[scale=0.3]{images/ltl-lasso.png}
+    \includegraphics[scale=0.3]{diagrams/ltl-lasso.png}
 \end{center}
 
 There is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula \cite{1985pnuelilich}. This is done by translating an LTL specification $\psi$ into a B{\"u}chi automata $B_{\psi}$ over the alphabet $2^A$ (where $A$ is the set of atomic propositions) such that for all Kripke structures $K$ and infinite paths $\pi$, the infinite word $L(\pi)$ is accepted by $B_{\psi}$ iff $\pi$ is a counterexample of $\psi$ in $K$. The size of the automaton $B_{\psi}$, though, can be exponential in the length of the formula $\psi$. 
@@ -117,11 +117,11 @@ The second condition states that for every transition of the ``smaller'' (i.e. m
 \end{align*}
 For example, consider the concrete Kripke structure $M$, modeling a mutual exclusion program where its atomic propositions $AP=\{N_1,T_1,C_1,N_2,T_2,C_2,F_0\}$:
 \begin{center}
-    \includegraphics[scale=0.35]{images/concrete-mutex.png}
+    \includegraphics[scale=0.35]{diagrams/concrete-mutex.png}
 \end{center}
 and then an abstraction of this structure, $M_1$, with atomic propositions $AP_1=\{C_1,C_2,F_0\}$:
 \begin{center}
-    \includegraphics[scale=0.35]{images/abstract-mutex.png}
+    \includegraphics[scale=0.35]{diagrams/abstract-mutex.png}
 \end{center}
 This abstraction basically only tracks whether a particular process is in the critical section or not, but ignores all other information. Note that $AP_1 \subseteq AP$. A simulation relation $H \subseteq S \times S_1$ from $M$ to $M_1$ can then be defined as 
 \begin{align*}
@@ -147,13 +147,13 @@ Regardless of how we choose our abstraction, our abstract model $\widehat{M}$ ge
 
 For example consider the following ``traffic light'' model and a simple abstraction of it
 \begin{center}
-    \includegraphics[scale=0.35]{images/cegar1.png}
+    \includegraphics[scale=0.35]{diagrams/cegar1.png}
 \end{center}
 If we wanted to check the universal CTL property $\textbf{AGAF}(IsRed)$ (i.e. along all paths, $IsRed$ holds infinitely often), this clearly holds in the concrete traffic light model, but fails in the abstract model. When an abstract counterexample does not correspond to any concrete counterexample, we call it \textit{spurious}.
 
 Consider another example of a spurious counterexample, shown as follows:
 \begin{center}
-    \includegraphics[scale=0.40]{images/cegar2.png}
+    \includegraphics[scale=0.40]{diagrams/cegar2.png}
 \end{center}
 in this case, reachability of state 11 is not preserved by the abstraction. That is, it is not reachable in the lower level system, but it is reachable in the abstract system (consisting of abstract states $\{a,b,c,d\}$).
 
@@ -207,11 +207,11 @@ Slghtly subsequent work by McMillan \cite{2003satinterp} (appeared in \textit{CA
 
 The standard bounded model checking unrolling is a constraint of the following basic form:
 \begin{center}
-    \includegraphics[scale=0.38]{images/bmc.png}
+    \includegraphics[scale=0.38]{diagrams/bmc.png}
 \end{center}
 The idea of the interpolation based approach is to partition the path constraint into two sets $A$ and $B$:
 \begin{center}
-    \includegraphics[scale=0.38]{images/bmc-interpolant.png}   
+    \includegraphics[scale=0.38]{diagrams/bmc-interpolant.png}   
 \end{center}
 Then, if we produce a proof of unsatisfiability of the whole unrolling constraint, we derive an interpolant $P$ of the pair $(A,B)$, where the common variables of $A$ and $B$ are exactly those variables representing state $s_1$, in the sample diagram above. Note that an interpolant $P$ for two formulas $A,B$ is one such that 
 \begin{itemize}
@@ -233,14 +233,14 @@ IC3/PDR \cite{bradley2011sat} uses a SAT solver to make simple induction queries
 Note some basic facts about inductive invariants and counterexamples to induction. If a property $S$ is a true invariant of your system, but is not inductive, then there will exist some CTIs i.e. states that start in $S$ but leave $S$ via some state transition.
 
 \begin{center}
-    \includegraphics[scale=0.15]{images/inductive_inv1/inductive_inv1.001.png}
+    \includegraphics[scale=0.15]{diagrams/inductive_inv1/inductive_inv1.001.png}
 \end{center}
 
-In the case where $S$ is not a true invariant of your system, but the initial states satisfy $S$, then there must be some CTI of $S$ that starts in $S \wedge Reach$ and transitions to a state in $Reach \wedge \neg S$. That is, it transitions to a reachable state that violates the invariant. There may be other CTIs of $S$ that simply start in an unreachable state within $S$ and leave $S$ as in the prior ``safe'' case. But, in the unsafe case, we can imagine the $CTI^*$ state as being one to find if we actually want to discover the bug in this system. If we find this CTI, then we can discover the full buggy trace via backwards reachability. We can alternatively think of this through the lens of simple bug-finding via backwards reachability i.e., start from states in $\neg S$ and try to find paths from there that lead back to the initial states.
+In the case where $S$ is not a true invariant of your system (meaning your system violates $S$), but the initial states satisfy $S$, then there must be some CTI of $S$ that starts in $S \wedge Reach$ and transitions to a state in $Reach \wedge \neg S$ (i.e., reaches a bad state). There may be other CTIs of $S$ that simply start in an unreachable state within $S$ and leave $S$ as in the prior ``safe'' case. But, in the unsafe case, we can imagine the $CTI^*$ state as being one to find if we actually want to discover the bug in this system. And we know that if we found the bad state that is actually reachable from $Init$, then there must be a backwards path from that state back to $Init$. If we try to refine $S$ by eliminating each $CTI^*$ in this path, then we should eventually end up with a ``CTI'' that is an initial state. That is, we've refined $S$ to cut out all non-initial states of the buggy path. We can alternatively think of this through the lens of simple bug-finding via backwards reachability i.e., start from states in $\neg S$ and try to find paths from there that lead back to the initial states.
 
 \begin{center}
-    % \includegraphics[scale=0.15,page=2]{images/inductive_inv1.pdf}
-    \includegraphics[scale=0.15]{images/inductive_inv1/inductive_inv1.002.png}
+    % \includegraphics[scale=0.15,page=2]{diagrams/inductive_inv1.pdf}
+    \includegraphics[scale=0.15]{diagrams/inductive_inv1/inductive_inv1.002.png}
 \end{center}
 
 \bibliographystyle{alpha}

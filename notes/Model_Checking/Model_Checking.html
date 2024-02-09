@@ -82,16 +82,16 @@
 <h1 data-number="1"><span class="header-section-number">1</span> Temporal Logic Model Checking</h1>
 <p>There are a variety of temporal logics that have been used to reason about properties of programs/systems. A high level overview is shown in the relationship diagram below, where CTL* is one of the most expressive logics (encompassing both CTL and LTL).</p>
 <div class="center">
-<p><img src="images/temp-logics.png" alt="image" /></p>
+<p><img src="diagrams/temp-logics.png" alt="image" /></p>
 </div>
 <p>In practice, I don’t think it’s that important to worry much about the finer distinctions between the various logics, since typically I am more concerned with how to express a desired correctness property (e.g. for which LTL may often be sufficient). Nevertheless, it is good to have a general view of the classification hierarchy to understand the landscape (and since various papers may choose to express/formalize things in different choices of logics).</p>
 <p>The below diagram also shows the relationship between LTL, CTL, and CTL*. Namely, that LTL and CTL are not directly comparable, and CTL* subsumes them both.</p>
 <div class="center">
-<p><img src="images/Expressive-Power-of-LTL-CTL-and-CTL.png" alt="image" /></p>
+<p><img src="diagrams/Expressive-Power-of-LTL-CTL-and-CTL.png" alt="image" /></p>
 </div>
 <p>The following diagram <span class="citation" data-cites="Clarke2018ch1">(<a href="#ref-Clarke2018ch1" role="doc-biblioref">Edmund M. Clarke, Henzinger, and Veith 2018</a>)</span> also provides a good overview of common varieties of temporal logic properties and their counterexample characterizations.</p>
 <div class="center">
-<p><img src="images/common_ctl_ltl_formulas.png" alt="image" /></p>
+<p><img src="diagrams/common_ctl_ltl_formulas.png" alt="image" /></p>
 </div>
 <section id="ctl-model-checking" class="level2 unnumbered">
 <h2 class="unnumbered">CTL Model Checking</h2>
@@ -101,7 +101,7 @@
 <h2 class="unnumbered">LTL Model Checking</h2>
 <p>For <em>linear temporal logic</em> (LTL) it is the case that any counterexample to a property <span class="math inline">\(\psi\)</span> is w.l.o.g. restricted to have a “lasso” shape <span class="math inline">\(v\cdot w^{\omega}\)</span> i.e., an initial path (prefix) followed by an infinitely repeated finite path (cycle) <span class="citation" data-cites="1983wolpervardi">(<a href="#ref-1983wolpervardi" role="doc-biblioref">Wolper, Vardi, and Sistla 1983</a>)</span>. Certain LTL properties have even simpler counterexamples e.g. safety properties always have finite paths as counterexamples. Note that the “lasso”-ness of LTL counterexamples is exploited in certain model checking approaches e.g. some liveness to safety reductions <span class="citation" data-cites="BIERE2002160">(<a href="#ref-BIERE2002160" role="doc-biblioref">Biere, Artho, and Schuppan 2002a</a>)</span>.</p>
 <div class="center">
-<p><img src="images/ltl-lasso.png" alt="image" /></p>
+<p><img src="diagrams/ltl-lasso.png" alt="image" /></p>
 </div>
 <p>There is an LTL model checking algorithm whose running time depends linearly on the size of the Kripke structure and exponentially on the length of the LTL formula <span class="citation" data-cites="1985pnuelilich">(<a href="#ref-1985pnuelilich" role="doc-biblioref">Lichtenstein and Pnueli 1985</a>)</span>. This is done by translating an LTL specification <span class="math inline">\(\psi\)</span> into a B<span>ü</span>chi automata <span class="math inline">\(B_{\psi}\)</span> over the alphabet <span class="math inline">\(2^A\)</span> (where <span class="math inline">\(A\)</span> is the set of atomic propositions) such that for all Kripke structures <span class="math inline">\(K\)</span> and infinite paths <span class="math inline">\(\pi\)</span>, the infinite word <span class="math inline">\(L(\pi)\)</span> is accepted by <span class="math inline">\(B_{\psi}\)</span> iff <span class="math inline">\(\pi\)</span> is a counterexample of <span class="math inline">\(\psi\)</span> in <span class="math inline">\(K\)</span>. The size of the automaton <span class="math inline">\(B_{\psi}\)</span>, though, can be exponential in the length of the formula <span class="math inline">\(\psi\)</span>.</p>
 <p>More precisely, we translate the negation of our property <span class="math inline">\(\neg \psi\)</span> into a Buchi automaton, and then consider the product of this automaton with our original system <span class="math inline">\(K \times B_{\neg \psi}\)</span>. The problem then reduces to checking whether there are any accepting runs in <span class="math inline">\(K \times B_{\neg \psi}\)</span>. Recall that an accepting run in a (deterministic) Buchi automaton is any run that visits an accepting state infinitely often. A standard algorithm for checking existence of an accepting run consists of</p>
@@ -163,11 +163,11 @@
 <p>The second condition states that for every transition of the “smaller” (i.e. more concrete) system <span class="math inline">\(M_1\)</span>, there must exist a corresponding transition in the larger system <span class="math inline">\(M_2\)</span>. We say that <span class="math inline">\(M_1\)</span> <em>is simulated by</em> <span class="math inline">\(M_2\)</span> (or <span class="math inline">\(M_2\)</span> <em>simulates</em> <span class="math inline">\(M_1\)</span>), denoted <span class="math inline">\(M_1 \leq M_2\)</span>, if there exists a simulation relation <span class="math inline">\(H\)</span> from <span class="math inline">\(M_1\)</span> to <span class="math inline">\(M_2\)</span> such that <span class="math display">\[\begin{aligned}
     \forall s_1 \in I_1 : (\exists s_2 \in I_2 : H(s_1,s_2))\end{aligned}\]</span> For example, consider the concrete Kripke structure <span class="math inline">\(M\)</span>, modeling a mutual exclusion program where its atomic propositions <span class="math inline">\(AP=\{N_1,T_1,C_1,N_2,T_2,C_2,F_0\}\)</span>:</p>
 <div class="center">
-<p><img src="images/concrete-mutex.png" alt="image" /></p>
+<p><img src="diagrams/concrete-mutex.png" alt="image" /></p>
 </div>
 <p>and then an abstraction of this structure, <span class="math inline">\(M_1\)</span>, with atomic propositions <span class="math inline">\(AP_1=\{C_1,C_2,F_0\}\)</span>:</p>
 <div class="center">
-<p><img src="images/abstract-mutex.png" alt="image" /></p>
+<p><img src="diagrams/abstract-mutex.png" alt="image" /></p>
 </div>
 <p>This abstraction basically only tracks whether a particular process is in the critical section or not, but ignores all other information. Note that <span class="math inline">\(AP_1 \subseteq AP\)</span>. A simulation relation <span class="math inline">\(H \subseteq S \times S_1\)</span> from <span class="math inline">\(M\)</span> to <span class="math inline">\(M_1\)</span> can then be defined as <span class="math display">\[\begin{aligned}
     H = \left\lbrace (s_1, a_1), (s_2, a_1), (s_3, a_1), (s_4, a_2), (s_5, a_1), (s_6, a_3), (s_7, a_2), (s_8, a_3) \right\rbrace\end{aligned}\]</span></p>
@@ -190,12 +190,12 @@
 <p>Regardless of how we choose our abstraction, our abstract model <span class="math inline">\(\widehat{M}\)</span> generally contains less information than the concrete model <span class="math inline">\(M\)</span>, and so model checking <span class="math inline">\(\widehat{M}\)</span> may produce incorrect results. If a universal property is true in <span class="math inline">\(\widehat{M}\)</span> then it is also true in <span class="math inline">\(M\)</span>, but if the abstract model produces an error, the concrete model may still be correct.</p>
 <p>For example consider the following “traffic light” model and a simple abstraction of it</p>
 <div class="center">
-<p><img src="images/cegar1.png" alt="image" /></p>
+<p><img src="diagrams/cegar1.png" alt="image" /></p>
 </div>
 <p>If we wanted to check the universal CTL property <span class="math inline">\(\textbf{AGAF}(IsRed)\)</span> (i.e. along all paths, <span class="math inline">\(IsRed\)</span> holds infinitely often), this clearly holds in the concrete traffic light model, but fails in the abstract model. When an abstract counterexample does not correspond to any concrete counterexample, we call it <em>spurious</em>.</p>
 <p>Consider another example of a spurious counterexample, shown as follows:</p>
 <div class="center">
-<p><img src="images/cegar2.png" alt="image" /></p>
+<p><img src="diagrams/cegar2.png" alt="image" /></p>
 </div>
 <p>in this case, reachability of state 11 is not preserved by the abstraction. That is, it is not reachable in the lower level system, but it is reachable in the abstract system (consisting of abstract states <span class="math inline">\(\{a,b,c,d\}\)</span>).</p>
 <p>The framework of <em>counterexample-guided abstraction refinement (CEGAR)</em> deals with this issue. The main steps of CEGAR are as follows:</p>
@@ -234,11 +234,11 @@
 <p>Slghtly subsequent work by McMillan <span class="citation" data-cites="2003satinterp">(<a href="#ref-2003satinterp" role="doc-biblioref">K. L. McMillan 2003</a>)</span> (appeared in <em>CAV 2003</em>, July) presented an extension of this approach that makes use of <em>interpolation</em> for doing abstraction with a SAT solver. Essentially this uses a similar bounded model checking approach and then extracts an <em>interpolant</em> from a bounded unsatisfiability proof to compute an abstraction.</p>
 <p>The standard bounded model checking unrolling is a constraint of the following basic form:</p>
 <div class="center">
-<p><img src="images/bmc.png" alt="image" /></p>
+<p><img src="diagrams/bmc.png" alt="image" /></p>
 </div>
 <p>The idea of the interpolation based approach is to partition the path constraint into two sets <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>:</p>
 <div class="center">
-<p><img src="images/bmc-interpolant.png" alt="image" /></p>
+<p><img src="diagrams/bmc-interpolant.png" alt="image" /></p>
 </div>
 <p>Then, if we produce a proof of unsatisfiability of the whole unrolling constraint, we derive an interpolant <span class="math inline">\(P\)</span> of the pair <span class="math inline">\((A,B)\)</span>, where the common variables of <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are exactly those variables representing state <span class="math inline">\(s_1\)</span>, in the sample diagram above. Note that an interpolant <span class="math inline">\(P\)</span> for two formulas <span class="math inline">\(A,B\)</span> is one such that</p>
 <ul>
@@ -258,11 +258,11 @@
 <p>IC3/PDR <span class="citation" data-cites="bradley2011sat">(<a href="#ref-bradley2011sat" role="doc-biblioref">Aaron R. Bradley 2011</a>)</span> uses a SAT solver to make simple induction queries, from which it generates counterexamples to induction (CTIs) that it then generalizes into strengthening lemmas. Furthermore, it makes uses of previously accumulated lemmas to make the approach “incremental” i.e. it can check for inductiveness of a candidate lemma in the context of previously discovered lemmas. Some of the foundational ideas for this approach go back to some earlier work of Manna-Bradley <span class="citation" data-cites="2007bradleymannasafety">(<a href="#ref-2007bradleymannasafety" role="doc-biblioref">Aaron R. Bradley and Manna 2007</a>)</span>.</p>
 <p>Note some basic facts about inductive invariants and counterexamples to induction. If a property <span class="math inline">\(S\)</span> is a true invariant of your system, but is not inductive, then there will exist some CTIs i.e. states that start in <span class="math inline">\(S\)</span> but leave <span class="math inline">\(S\)</span> via some state transition.</p>
 <div class="center">
-<p><img src="images/inductive_inv1/inductive_inv1.001.png" alt="image" /></p>
+<p><img src="diagrams/inductive_inv1/inductive_inv1.001.png" alt="image" /></p>
 </div>
-<p>In the case where <span class="math inline">\(S\)</span> is not a true invariant of your system, but the initial states satisfy <span class="math inline">\(S\)</span>, then there must be some CTI of <span class="math inline">\(S\)</span> that starts in <span class="math inline">\(S \wedge Reach\)</span> and transitions to a state in <span class="math inline">\(Reach \wedge \neg S\)</span>. That is, it transitions to a reachable state that violates the invariant. There may be other CTIs of <span class="math inline">\(S\)</span> that simply start in an unreachable state within <span class="math inline">\(S\)</span> and leave <span class="math inline">\(S\)</span> as in the prior “safe” case. But, in the unsafe case, we can imagine the <span class="math inline">\(CTI^*\)</span> state as being one to find if we actually want to discover the bug in this system. If we find this CTI, then we can discover the full buggy trace via backwards reachability. We can alternatively think of this through the lens of simple bug-finding via backwards reachability i.e., start from states in <span class="math inline">\(\neg S\)</span> and try to find paths from there that lead back to the initial states.</p>
+<p>In the case where <span class="math inline">\(S\)</span> is not a true invariant of your system (meaning your system violates <span class="math inline">\(S\)</span>), but the initial states satisfy <span class="math inline">\(S\)</span>, then there must be some CTI of <span class="math inline">\(S\)</span> that starts in <span class="math inline">\(S \wedge Reach\)</span> and transitions to a state in <span class="math inline">\(Reach \wedge \neg S\)</span> (i.e., reaches a bad state). There may be other CTIs of <span class="math inline">\(S\)</span> that simply start in an unreachable state within <span class="math inline">\(S\)</span> and leave <span class="math inline">\(S\)</span> as in the prior “safe” case. But, in the unsafe case, we can imagine the <span class="math inline">\(CTI^*\)</span> state as being one to find if we actually want to discover the bug in this system. And we know that if we found the bad state that is actually reachable from <span class="math inline">\(Init\)</span>, then there must be a backwards path from that state back to <span class="math inline">\(Init\)</span>. If we try to refine <span class="math inline">\(S\)</span> by eliminating each <span class="math inline">\(CTI^*\)</span> in this path, then we should eventually end up with a “CTI” that is an initial state. That is, we’ve refined <span class="math inline">\(S\)</span> to cut out all non-initial states of the buggy path. We can alternatively think of this through the lens of simple bug-finding via backwards reachability i.e., start from states in <span class="math inline">\(\neg S\)</span> and try to find paths from there that lead back to the initial states.</p>
 <div class="center">
-<p><img src="images/inductive_inv1/inductive_inv1.002.png" alt="image" /></p>
+<p><img src="diagrams/inductive_inv1/inductive_inv1.002.png" alt="image" /></p>
 </div>
 </section>
 <section id="bibliography" class="level1 unnumbered">

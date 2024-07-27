@@ -10,16 +10,24 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
   </style>
   <link rel="stylesheet" href="../../style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <header id="title-block-header">
@@ -28,12 +36,22 @@
 <p class="author">William Schultz</p>
 </header>
 <ul>
-<li><p><strong>Conjunctive normal form (CNF)</strong>: a conjunction of disjunctions. More precisely, a conjunction of <em>clauses</em>, where a clause is a disjunction of literals e.g. <span class="math display">\[\begin{aligned}
+<li><p><strong>Conjunctive normal form (CNF)</strong>: a conjunction of
+disjunctions. More precisely, a conjunction of <em>clauses</em>, where a
+clause is a disjunction of literals e.g. <span
+class="math display">\[\begin{aligned}
         (a \vee b) \wedge (b \vee \neg c) \wedge (a \vee d)
-    \end{aligned}\]</span> Also called <em>product of sums</em> form.</p></li>
-<li><p><strong>Disjunctive normal form (DNF)</strong>: a disjunction of conjunctions. Also described as a disjunction of <em>cubes</em>, where a cube is a conjunction of literals. e.g. <span class="math display">\[\begin{aligned}
+    
+\end{aligned}\]</span> Also called <em>product of sums</em>
+form.</p></li>
+<li><p><strong>Disjunctive normal form (DNF)</strong>: a disjunction of
+conjunctions. Also described as a disjunction of <em>cubes</em>, where a
+cube is a conjunction of literals. e.g. <span
+class="math display">\[\begin{aligned}
         (a \wedge b) \vee (b \wedge \neg c) \vee (a \wedge d)
-    \end{aligned}\]</span> Also called <em>sum of products</em> form.</p></li>
+    
+\end{aligned}\]</span> Also called <em>sum of products</em>
+form.</p></li>
 </ul>
 </body>
 </html>

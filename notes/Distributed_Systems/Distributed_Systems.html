@@ -10,15 +10,25 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
+      margin-bottom: 0em;
     }
-    .hanging div.csl-entry {
+    .hanging-indent div.csl-entry {
       margin-left:2em;
       text-indent:-2em;
     }
@@ -32,13 +42,12 @@
     }
     div.csl-indent {
       margin-left: 2em;
-    }
-  </style>
+    }  </style>
   <link rel="stylesheet" href="../../style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <header id="title-block-header">
@@ -48,356 +57,1107 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#system-models"><span class="toc-section-number">1</span> System Models</a></li>
-<li><a href="#fault-tolerance"><span class="toc-section-number">2</span> Fault Tolerance</a></li>
-<li><a href="#consensus"><span class="toc-section-number">3</span> Consensus</a>
+<li><a href="#system-models" id="toc-system-models"><span
+class="toc-section-number">1</span> System Models</a></li>
+<li><a href="#fault-tolerance" id="toc-fault-tolerance"><span
+class="toc-section-number">2</span> Fault Tolerance</a></li>
+<li><a href="#consensus" id="toc-consensus"><span
+class="toc-section-number">3</span> Consensus</a>
 <ul>
-<li><a href="#shared-memory-consensus-lock-based"><span class="toc-section-number">3.1</span> Shared Memory Consensus: Lock-based</a></li>
-<li><a href="#shared-memory-consensus-lock-less"><span class="toc-section-number">3.2</span> Shared Memory Consensus: Lock-less</a>
+<li><a href="#shared-memory-consensus-lock-based"
+id="toc-shared-memory-consensus-lock-based"><span
+class="toc-section-number">3.1</span> Shared Memory Consensus:
+Lock-based</a></li>
+<li><a href="#shared-memory-consensus-lock-less"
+id="toc-shared-memory-consensus-lock-less"><span
+class="toc-section-number">3.2</span> Shared Memory Consensus:
+Lock-less</a>
 <ul>
-<li><a href="#trivial-solution-compare-and-swap-cas"><span class="toc-section-number">3.2.1</span> Trivial Solution: Compare and Swap (CAS)</a></li>
-<li><a href="#generalizable-solution"><span class="toc-section-number">3.2.2</span> Generalizable Solution</a></li>
+<li><a href="#trivial-solution-compare-and-swap-cas"
+id="toc-trivial-solution-compare-and-swap-cas"><span
+class="toc-section-number">3.2.1</span> Trivial Solution: Compare and
+Swap (CAS)</a></li>
+<li><a href="#generalizable-solution"
+id="toc-generalizable-solution"><span
+class="toc-section-number">3.2.2</span> Generalizable Solution</a></li>
 </ul></li>
-<li><a href="#paxos"><span class="toc-section-number">3.3</span> Paxos</a></li>
-<li><a href="#vertical-paxos"><span class="toc-section-number">3.4</span> Vertical Paxos</a></li>
-<li><a href="#fast-paxos"><span class="toc-section-number">3.5</span> Fast Paxos</a></li>
-<li><a href="#egalitarian-paxos"><span class="toc-section-number">3.6</span> Egalitarian Paxos</a></li>
-<li><a href="#zab"><span class="toc-section-number">3.7</span> Zab</a></li>
+<li><a href="#paxos" id="toc-paxos"><span
+class="toc-section-number">3.3</span> Paxos</a></li>
+<li><a href="#vertical-paxos" id="toc-vertical-paxos"><span
+class="toc-section-number">3.4</span> Vertical Paxos</a></li>
+<li><a href="#fast-paxos" id="toc-fast-paxos"><span
+class="toc-section-number">3.5</span> Fast Paxos</a></li>
+<li><a href="#egalitarian-paxos" id="toc-egalitarian-paxos"><span
+class="toc-section-number">3.6</span> Egalitarian Paxos</a></li>
+<li><a href="#zab" id="toc-zab"><span
+class="toc-section-number">3.7</span> Zab</a></li>
 </ul></li>
-<li><a href="#byzantine-fault-tolerance"><span class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
+<li><a href="#byzantine-fault-tolerance"
+id="toc-byzantine-fault-tolerance"><span
+class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
 <ul>
-<li><a href="#model"><span class="toc-section-number">4.1</span> Model</a></li>
-<li><a href="#intuitions-and-algorithm"><span class="toc-section-number">4.2</span> Intuitions and Algorithm</a></li>
-<li><a href="#from-classic-paxos-to-byzantine">From Classic Paxos to Byzantine</a></li>
-<li><a href="#notes"><span class="toc-section-number">4.3</span> Notes</a></li>
+<li><a href="#model" id="toc-model"><span
+class="toc-section-number">4.1</span> Model</a></li>
+<li><a href="#intuitions-and-algorithm"
+id="toc-intuitions-and-algorithm"><span
+class="toc-section-number">4.2</span> Intuitions and Algorithm</a></li>
+<li><a href="#from-classic-paxos-to-byzantine"
+id="toc-from-classic-paxos-to-byzantine">From Classic Paxos to
+Byzantine</a></li>
+<li><a href="#notes" id="toc-notes"><span
+class="toc-section-number">4.3</span> Notes</a></li>
 </ul></li>
-<li><a href="#blockchain-and-cryptocurrency"><span class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
+<li><a href="#blockchain-and-cryptocurrency"
+id="toc-blockchain-and-cryptocurrency"><span
+class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
 <ul>
-<li><a href="#bitcoin"><span class="toc-section-number">5.1</span> Bitcoin</a></li>
-<li><a href="#ethereum"><span class="toc-section-number">5.2</span> Ethereum</a>
+<li><a href="#bitcoin" id="toc-bitcoin"><span
+class="toc-section-number">5.1</span> Bitcoin</a></li>
+<li><a href="#ethereum" id="toc-ethereum"><span
+class="toc-section-number">5.2</span> Ethereum</a>
 <ul>
-<li><a href="#messages-and-transactions"><span class="toc-section-number">5.2.1</span> Messages and Transactions</a></li>
+<li><a href="#messages-and-transactions"
+id="toc-messages-and-transactions"><span
+class="toc-section-number">5.2.1</span> Messages and
+Transactions</a></li>
 </ul></li>
-<li><a href="#blockchain-oracles"><span class="toc-section-number">5.3</span> Blockchain Oracles</a></li>
+<li><a href="#blockchain-oracles" id="toc-blockchain-oracles"><span
+class="toc-section-number">5.3</span> Blockchain Oracles</a></li>
 </ul></li>
-<li><a href="#bibliography">References</a></li>
+<li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
 </nav>
 <section id="system-models" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> System Models</h1>
+<h1 data-number="1"><span class="header-section-number">1</span> System
+Models</h1>
 <ul>
-<li><p>In a <strong>synchronous</strong> message passing system, there exists some known finite bound <span class="math inline">\(\Delta\)</span> on message delays. That is, for any message sent, an adversary can delay its delivery by at most <span class="math inline">\(\Delta\)</span>. So, every process that sends messages at time <span class="math inline">\(t\)</span> gets them delivered by time <span class="math inline">\(t+\Delta\)</span>. i.e., the whole system runs in lockstep, marching forward in perfectly synchronous rounds. For example, <span class="citation" data-cites="2018abrahamsyncbyz">(<a href="#ref-2018abrahamsyncbyz" role="doc-biblioref">Abraham et al. 2019</a>)</span> provides a standard (modern) description of the synchronous model:</p>
+<li><p>In a <strong>synchronous</strong> message passing system, there
+exists some known finite bound <span
+class="math inline">\(\Delta\)</span> on message delays. That is, for
+any message sent, an adversary can delay its delivery by at most <span
+class="math inline">\(\Delta\)</span>. So, every process that sends
+messages at time <span class="math inline">\(t\)</span> gets them
+delivered by time <span class="math inline">\(t+\Delta\)</span>. i.e.,
+the whole system runs in lockstep, marching forward in perfectly
+synchronous rounds. For example, <span class="citation"
+data-cites="2018abrahamsyncbyz">(<a href="#ref-2018abrahamsyncbyz"
+role="doc-biblioref">Abraham et al. 2019</a>)</span> provides a standard
+(modern) description of the synchronous model:</p>
 <blockquote>
-<p>If an honest party <span class="math inline">\(i\)</span> sends a message to another honest party <span class="math inline">\(j\)</span> at the beginning of a round, the message is guaranteed to reach by the end of that round. We describe the protocol assuming lock-step execution, i.e., parties enter and exit each round simultaneously. Later...we will present a clock synchronization protocol to bootstrap lock-step execution from bounded message delay.</p>
+<p>If an honest party <span class="math inline">\(i\)</span> sends a
+message to another honest party <span class="math inline">\(j\)</span>
+at the beginning of a round, the message is guaranteed to reach by the
+end of that round. We describe the protocol assuming lock-step
+execution, i.e., parties enter and exit each round simultaneously.
+Later...we will present a clock synchronization protocol to bootstrap
+lock-step execution from bounded message delay.</p>
 </blockquote></li>
-<li><p>In a fully <strong>asynchronous</strong> model, there is no upper bound on the delay for a message to be delivered, but we do assume that the delay is some finite value (e.g. chosen by an adversary). So, even though the message delay may be some unknown/unbounded quantity, we do assume that every message eventually gets delivered, even if the delay is unknown a priori.</p>
-<p>The nature of asynchronous networks also implies that there is no way to have a perfect failure detector in a fully asynchronous system, since you can’t distinguish between a failed/stopped process and one whose messages are just taking a long time to get delivered.</p></li>
-<li><p>The <strong>partial synchrony</strong> model aims to find a middle ground between the two above models. The assumption is that there exists some known finite time bound <span class="math inline">\(\Delta\)</span> and a special event called GST (global stabilization time) such that:</p>
+<li><p>In a fully <strong>asynchronous</strong> model, there is no upper
+bound on the delay for a message to be delivered, but we do assume that
+the delay is some finite value (e.g. chosen by an adversary). So, even
+though the message delay may be some unknown/unbounded quantity, we do
+assume that every message eventually gets delivered, even if the delay
+is unknown a priori.</p>
+<p>The nature of asynchronous networks also implies that there is no way
+to have a perfect failure detector in a fully asynchronous system, since
+you can’t distinguish between a failed/stopped process and one whose
+messages are just taking a long time to get delivered.</p></li>
+<li><p>The <strong>partial synchrony</strong> model aims to find a
+middle ground between the two above models. The assumption is that there
+exists some known finite time bound <span
+class="math inline">\(\Delta\)</span> and a special event called GST
+(global stabilization time) such that:</p>
 <ul>
-<li><p>The adversary must cause the GST event to eventually happen after some unknown finite time.</p></li>
-<li><p>Any message sent at time <span class="math inline">\(x\)</span> must be delivered by <span class="math inline">\(\Delta + max(x, GST)\)</span>. That is, after the GST, messages are delivered within the known finite time bound <span class="math inline">\(\Delta\)</span> (i.e. the system has “reverted" to synchrony).</p></li>
+<li><p>The adversary must cause the GST event to eventually happen after
+some unknown finite time.</p></li>
+<li><p>Any message sent at time <span class="math inline">\(x\)</span>
+must be delivered by <span class="math inline">\(\Delta + max(x,
+GST)\)</span>. That is, after the GST, messages are delivered within the
+known finite time bound <span class="math inline">\(\Delta\)</span>
+(i.e. the system has “reverted" to synchrony).</p></li>
 </ul></li>
 </ul>
-<p><em>What are the fundamental differences between the synchronous and asynchronous models, and what exactly makes the latter harder?</em></p>
+<p><em>What are the fundamental differences between the synchronous and
+asynchronous models, and what exactly makes the latter harder?</em></p>
 </section>
 <section id="fault-tolerance" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Fault Tolerance</h1>
-<p>There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of <span class="math inline">\(f\)</span> nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any “work” we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least <span class="math inline">\(f+1\)</span> nodes, so that there is always at least one non-faulty node with the data we need to access.</p>
-<p>This seems to imply that having <span class="math inline">\(f+1\)</span> nodes might be sufficient for a protocol to be fault tolerant. But, this doesn’t satisfy a progress requirement. That is, if we now need to write everything down to <span class="math inline">\(f+1\)</span> nodes, then failure of <span class="math inline">\(f\)</span> out of <span class="math inline">\(f+1\)</span> nodes would clearly stall our protocol, since it can’t do any work safely. So, our additional requirement is that both:</p>
+<h1 data-number="2"><span class="header-section-number">2</span> Fault
+Tolerance</h1>
+<p>There are some fundamental requirements to establish bounds for fault
+tolerance in an omission fault model. If an arbitrary set of <span
+class="math inline">\(f\)</span> nodes can fail by stopping at any time,
+then this means that if we want a protocol that makes progress, we would
+need to ensure that any “work” we do (e.g. executing operations, writing
+down data, etc.) is made sufficiently redundant so that it can be
+accessed even in the case of maximum node failure. So, this implies we
+need to write all data to at least <span
+class="math inline">\(f+1\)</span> nodes, so that there is always at
+least one non-faulty node with the data we need to access.</p>
+<p>This seems to imply that having <span
+class="math inline">\(f+1\)</span> nodes might be sufficient for a
+protocol to be fault tolerant. But, this doesn’t satisfy a progress
+requirement. That is, if we now need to write everything down to <span
+class="math inline">\(f+1\)</span> nodes, then failure of <span
+class="math inline">\(f\)</span> out of <span
+class="math inline">\(f+1\)</span> nodes would clearly stall our
+protocol, since it can’t do any work safely. So, our additional
+requirement is that both:</p>
 <ol type="1">
-<li><p>Write any work down to <span class="math inline">\(f+1\)</span> nodes.</p></li>
-<li><p>Always have <span class="math inline">\(f+1\)</span> non-faulty nodes available that we can write work down on.</p></li>
+<li><p>Write any work down to <span class="math inline">\(f+1\)</span>
+nodes.</p></li>
+<li><p>Always have <span class="math inline">\(f+1\)</span> non-faulty
+nodes available that we can write work down on.</p></li>
 </ol>
-<p>Thus, this naturally gives us a total node requirement of <span class="math display">\[\begin{aligned}
-    n = (f+1) + f = 2f + 1\end{aligned}\]</span> That is, even in the case of <span class="math inline">\(f\)</span> maximum node failures, we will always have <span class="math inline">\(f+1\)</span> nodes available to us to write down our work, allowing us to make progress.</p>
+<p>Thus, this naturally gives us a total node requirement of <span
+class="math display">\[\begin{aligned}
+    n = (f+1) + f = 2f + 1
+\end{aligned}\]</span> That is, even in the case of <span
+class="math inline">\(f\)</span> maximum node failures, we will always
+have <span class="math inline">\(f+1\)</span> nodes available to us to
+write down our work, allowing us to make progress.</p>
 </section>
 <section id="consensus" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Consensus</h1>
-<p>The problem of <em>consensus</em> in a distributed system is to get a set of separate nodes to agree on a single value. That is, if one node marks a value as chosen, no other node can ever mark a different value as chosen. To understand the constraints of how we might solve this problem, we can start by thinking about this problem in a simpler setting e.g. a single (non-distributed) node. For an individual node/thread, solving consensus is trivial, since that node/thread can just write into a single register and then never change its decision. But, even when we introduce multiple concurrent clients (e.g. threads), the problem is nontrivial.</p>
-<section id="shared-memory-consensus-lock-based" class="level2" data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span> Shared Memory Consensus: Lock-based</h2>
-<p>We assume we have a single register which represents our consensus “object", and we have multiple threads that can access the register. That is, they can read or write a value to the register atomically. If we have a locking primitive available, then we can solve the single register consensus problem easily. Each thread just acquires a global lock before it tries to do anything, reads the register to check if it has already been written to, and if it has, then do nothing, and if it hasn’t, then go ahead and write whatever value you want. It is obvious to see that this upholds the basic correctness properties of consensus.</p>
+<h1 data-number="3"><span class="header-section-number">3</span>
+Consensus</h1>
+<p>The problem of <em>consensus</em> in a distributed system is to get a
+set of separate nodes to agree on a single value. That is, if one node
+marks a value as chosen, no other node can ever mark a different value
+as chosen. To understand the constraints of how we might solve this
+problem, we can start by thinking about this problem in a simpler
+setting e.g. a single (non-distributed) node. For an individual
+node/thread, solving consensus is trivial, since that node/thread can
+just write into a single register and then never change its decision.
+But, even when we introduce multiple concurrent clients (e.g. threads),
+the problem is nontrivial.</p>
+<section id="shared-memory-consensus-lock-based" class="level2"
+data-number="3.1">
+<h2 data-number="3.1"><span class="header-section-number">3.1</span>
+Shared Memory Consensus: Lock-based</h2>
+<p>We assume we have a single register which represents our consensus
+“object", and we have multiple threads that can access the register.
+That is, they can read or write a value to the register atomically. If
+we have a locking primitive available, then we can solve the single
+register consensus problem easily. Each thread just acquires a global
+lock before it tries to do anything, reads the register to check if it
+has already been written to, and if it has, then do nothing, and if it
+hasn’t, then go ahead and write whatever value you want. It is obvious
+to see that this upholds the basic correctness properties of
+consensus.</p>
 </section>
-<section id="shared-memory-consensus-lock-less" class="level2" data-number="3.2">
-<h2 data-number="3.2"><span class="header-section-number">3.2</span> Shared Memory Consensus: Lock-less</h2>
-<p>Now, what if we want to consider solving the above problem without locks? And why would we need do do this? Well, first, we can imagine that if we eventually want a solution that generalizes to the distributed setting, we won’t be able to rely on locks as a fundamental mutual exclusion primitive, since a global lock primitive won’t exist in a distributed setting. Additionally, locks necessarily present a potential impediment to system progress, if we assume that threads can fail or run slowly. That is, if locks can be taken unilaterally by some thread and only released by that thread, this presents potential liveness issues if that thread fails to make progress for some time and other nodes cannot proceed. So, coming up with a lock-less solution to the consensus problem seems a reasonable/desirable goal (isn’t there a trivial solution to this, though, in shared memory setting?).</p>
-<section id="trivial-solution-compare-and-swap-cas" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1"><span class="header-section-number">3.2.1</span> Trivial Solution: Compare and Swap (CAS)</h3>
-<p>First, a trivial consensus algorithm for a single register in the shared memory context is just to use compare&amp;swap (CAS) when attempting to update the register. Each process just runs <span class="math inline">\(CAS(X, \bot, v)\)</span> to update the register <span class="math inline">\(X\)</span> to value <span class="math inline">\(v\)</span> only if it hasn’t been set, where <span class="math inline">\(\bot\)</span> represents the empty/unset register value. The first writer always wins and consensus is achieved. See this described briefly in Theorem 5 of <span class="citation" data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync" role="doc-biblioref">Herlihy 1991</a>)</span>, which establishes that CAS register has an infinite consensus number. But isn’t this kind of cheating? Like, don’t we want to figure out a way to do consensus with weaker forms of atomic primitives? Also, if we move to a truly distributed/fault-tolerant setting, we can’t necessarily assume we have a global register which we can just CAS easily like this?</p>
+<section id="shared-memory-consensus-lock-less" class="level2"
+data-number="3.2">
+<h2 data-number="3.2"><span class="header-section-number">3.2</span>
+Shared Memory Consensus: Lock-less</h2>
+<p>Now, what if we want to consider solving the above problem without
+locks? And why would we need do do this? Well, first, we can imagine
+that if we eventually want a solution that generalizes to the
+distributed setting, we won’t be able to rely on locks as a fundamental
+mutual exclusion primitive, since a global lock primitive won’t exist in
+a distributed setting. Additionally, locks necessarily present a
+potential impediment to system progress, if we assume that threads can
+fail or run slowly. That is, if locks can be taken unilaterally by some
+thread and only released by that thread, this presents potential
+liveness issues if that thread fails to make progress for some time and
+other nodes cannot proceed. So, coming up with a lock-less solution to
+the consensus problem seems a reasonable/desirable goal (isn’t there a
+trivial solution to this, though, in shared memory setting?).</p>
+<section id="trivial-solution-compare-and-swap-cas" class="level3"
+data-number="3.2.1">
+<h3 data-number="3.2.1"><span class="header-section-number">3.2.1</span>
+Trivial Solution: Compare and Swap (CAS)</h3>
+<p>First, a trivial consensus algorithm for a single register in the
+shared memory context is just to use compare&amp;swap (CAS) when
+attempting to update the register. Each process just runs <span
+class="math inline">\(CAS(X, \bot, v)\)</span> to update the register
+<span class="math inline">\(X\)</span> to value <span
+class="math inline">\(v\)</span> only if it hasn’t been set, where <span
+class="math inline">\(\bot\)</span> represents the empty/unset register
+value. The first writer always wins and consensus is achieved. See this
+described briefly in Theorem 5 of <span class="citation"
+data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync"
+role="doc-biblioref">Herlihy 1991</a>)</span>, which establishes that
+CAS register has an infinite consensus number. But isn’t this kind of
+cheating? Like, don’t we want to figure out a way to do consensus with
+weaker forms of atomic primitives? Also, if we move to a truly
+distributed/fault-tolerant setting, we can’t necessarily assume we have
+a global register which we can just CAS easily like this?</p>
 <section id="remark-on-cas" class="level4" data-number="3.2.1.1">
-<h4 data-number="3.2.1.1"><span class="header-section-number">3.2.1.1</span> Remark on CAS</h4>
-<p>Note that <em>compare&amp;swap</em> primitive is kind of just implementing “lock like" mutual exclusion at a lower level i.e. for register <code>X</code></p>
+<h4 data-number="3.2.1.1"><span
+class="header-section-number">3.2.1.1</span> Remark on CAS</h4>
+<p>Note that <em>compare&amp;swap</em> primitive is kind of just
+implementing “lock like" mutual exclusion at a lower level i.e. for
+register <code>X</code></p>
 <pre><code>    CAS(X, old, new):
         if X == old:
             X := new
             return true
         return false</code></pre>
-<p>That is, it basically allows you to do a read and a write atomically, as if you were doing it under a “virtual" lock. It’s just that in practice, this “lock" isn’t explicit and failure while holding a lock isn’t an issue, since the operation is truly atomic, and if such a failure occurs, the whole operation would be aborted and this kind of “virtual" lock automatically released.</p>
+<p>That is, it basically allows you to do a read and a write atomically,
+as if you were doing it under a “virtual" lock. It’s just that in
+practice, this “lock" isn’t explicit and failure while holding a lock
+isn’t an issue, since the operation is truly atomic, and if such a
+failure occurs, the whole operation would be aborted and this kind of
+“virtual" lock automatically released.</p>
 </section>
 </section>
 <section id="generalizable-solution" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2"><span class="header-section-number">3.2.2</span> Generalizable Solution</h3>
-<p>Although the CAS solution works trivially in a single node setting, ultimately we want to build up to a solution that actually works in a distributed setting. We could argue, though, that in a single machine setting, if you have a CAS primitive, then consensus is always trivially solved, as long as you assume that the CAS register itself doesn’t "fail". Part of the tricky part is that if we want to have true fault tolerance, we will probably want to assume that a whole machine (including such a CAS register) may fial, so we want to distribute across multiple machines, which means that, for fault tolerance, we necessarily can’t rely on writing to just one machine. So, we are going to necessarily give up the atomicity provided to us by a CAS primitive, Thus, we basically need to re-implement a CAS primitive across a truly distributed set of storage nodes. To do this, we can think more precisely about the requirements of consensus even for the lock-based or CAS solutions, and see how to satisfy them even for the distributed case.</p>
-<p>If we think about the fundamental requirements of consensus in this “single register” model, it boils down to a simple high level requirement that threads must satisfy:</p>
+<h3 data-number="3.2.2"><span class="header-section-number">3.2.2</span>
+Generalizable Solution</h3>
+<p>Although the CAS solution works trivially in a single node setting,
+ultimately we want to build up to a solution that actually works in a
+distributed setting. We could argue, though, that in a single machine
+setting, if you have a CAS primitive, then consensus is always trivially
+solved, as long as you assume that the CAS register itself doesn’t
+"fail". Part of the tricky part is that if we want to have true fault
+tolerance, we will probably want to assume that a whole machine
+(including such a CAS register) may fial, so we want to distribute
+across multiple machines, which means that, for fault tolerance, we
+necessarily can’t rely on writing to just one machine. So, we are going
+to necessarily give up the atomicity provided to us by a CAS primitive,
+Thus, we basically need to re-implement a CAS primitive across a truly
+distributed set of storage nodes. To do this, we can think more
+precisely about the requirements of consensus even for the lock-based or
+CAS solutions, and see how to satisfy them even for the distributed
+case.</p>
+<p>If we think about the fundamental requirements of consensus in this
+“single register” model, it boils down to a simple high level
+requirement that threads must satisfy:</p>
 <blockquote>
-<p>R1. If a thread writes a value <span class="math inline">\(v\)</span> to the register, then it should not differ from the most recently written value.</p>
+<p>R1. If a thread writes a value <span class="math inline">\(v\)</span>
+to the register, then it should not differ from the most recently
+written value.</p>
 </blockquote>
-<p>This is the very basic, fundamental requirement, simply stating that whenever somebody tries to write to the register they better not overwrite an already existing, different value in the register. In order to start working out a lock-less solution to the problem, let’s consider how the lock-based solution satisfies this above requirement.</p>
-<p>In the lock-based solution we can think about every thread as executing a simple request/transaction, that consists of the following steps:</p>
+<p>This is the very basic, fundamental requirement, simply stating that
+whenever somebody tries to write to the register they better not
+overwrite an already existing, different value in the register. In order
+to start working out a lock-less solution to the problem, let’s consider
+how the lock-based solution satisfies this above requirement.</p>
+<p>In the lock-based solution we can think about every thread as
+executing a simple request/transaction, that consists of the following
+steps:</p>
 <pre><code>    acquire(lock)
     if read(X) is not set:
         write(X, v)
     release(lock)</code></pre>
-<p>where <code>lock</code> is the global lock shared by all threads, and <code>X</code> represents our register object, and <code>v</code> is some arbitrary value the thread chooses to write. How does such a procedure satisfy the above requirement R1? Well, first, the locking mechanism ensures that all operations are explicitly/globally ordered with respect to each other i.e. their order is dynamically assigned based on the order of lock acquisition. Based on this, it is clear then, that</p>
+<p>where <code>lock</code> is the global lock shared by all threads, and
+<code>X</code> represents our register object, and <code>v</code> is
+some arbitrary value the thread chooses to write. How does such a
+procedure satisfy the above requirement R1? Well, first, the locking
+mechanism ensures that all operations are explicitly/globally ordered
+with respect to each other i.e. their order is dynamically assigned
+based on the order of lock acquisition. Based on this, it is clear then,
+that</p>
 <ol>
-<li><p>Reads by transaction <span class="math inline">\(T\)</span> read the value written by the most recent transaction ordered earlier than <span class="math inline">\(T\)</span>.</p></li>
-<li><p>After a transaction <span class="math inline">\(T\)</span> that is currently holding the lock completes its read, no future writes will ever be made by transactions ordered earlier <span class="math inline">\(T\)</span>.</p></li>
+<li><p>Reads by transaction <span class="math inline">\(T\)</span> read
+the value written by the most recent transaction ordered earlier than
+<span class="math inline">\(T\)</span>.</p></li>
+<li><p>After a transaction <span class="math inline">\(T\)</span> that
+is currently holding the lock completes its read, no future writes will
+ever be made by transactions ordered earlier <span
+class="math inline">\(T\)</span>.</p></li>
 </ol>
-<p>Note that (C2) is an important but subtle condition that is required for safety. Simply reading the most recently written value is not sufficient to ensure correctness, since this doesn’t say anything about writes that may occur <em>after</em> the read but <em>before</em> the subsequent write of the transaction. In other words, you need to protect against concurrent transaction writes that would invalidate the results of your read.</p>
-<p>Ok, so let’s try to take these ideas and turn them into a generalizable solution. Note that the core requirements above are essentially the same for a lock based or CAS based single node solution. The key properties above are always essentially enforced the underlying atomicity of either a lock-based or CAS based solution. One main idea is that there is an implicit order/sequence assigned to all transactions in the lock-based approach. We might say this ordering is “implicit" or “on demand" because transactions don’t really get ordered until they try to go ahead and acquire a lock. At that point, we can imagine them being implicitly assigned some sequence number in a global sequence of transactions based on the order of their lock acquisition. So, if we don’t want to rely on locks, but we know that this global ordering notion works for a lock-based solution, can we try to develop an ordering mechanism that doesn’t rely on locks?</p>
-<p>Well, the naive approach is to basically just pre-assign global, totally ordered sequence numbers to all transactions. There might be a variety of schemes for doing this, but if we’re still in a single machine context, we could imagine simply having a global atomic counter that hands out sequence numbers to transactions before they start. Alternatively, we could hand out disjoint, evenly distributed sets of sequence numbers to each thread at system initialization, that they can draw from whenever they want to start a new transaction. For simplicity, we can kind of ignore the details of how such an ordering assignment scheme works, but we can assume that there is some way to assign uniquely global, totally ordered sequence numbers to different transactions (note that Paxos similarly does this in a similar manner, by pre-assigning disjoint sets of proposal ids to to each proposer).</p>
-<p>If we now assume that all transactions are tagged with a unique, totally ordered sequence number, we can try to use this to build a complete, lock-less solution to the single register consensus problem. As shown above, each thread can still execute a similar procedure as before, but it will do so without acquisition/release of locks and with a bit of extra checking related to their sequence numbers. As we said above, all that threads need to ensure are conditions (C1) and (C2). Let’s consider them independently, starting with C2 first.</p>
+<p>Note that (C2) is an important but subtle condition that is required
+for safety. Simply reading the most recently written value is not
+sufficient to ensure correctness, since this doesn’t say anything about
+writes that may occur <em>after</em> the read but <em>before</em> the
+subsequent write of the transaction. In other words, you need to protect
+against concurrent transaction writes that would invalidate the results
+of your read.</p>
+<p>Ok, so let’s try to take these ideas and turn them into a
+generalizable solution. Note that the core requirements above are
+essentially the same for a lock based or CAS based single node solution.
+The key properties above are always essentially enforced the underlying
+atomicity of either a lock-based or CAS based solution. One main idea is
+that there is an implicit order/sequence assigned to all transactions in
+the lock-based approach. We might say this ordering is “implicit" or “on
+demand" because transactions don’t really get ordered until they try to
+go ahead and acquire a lock. At that point, we can imagine them being
+implicitly assigned some sequence number in a global sequence of
+transactions based on the order of their lock acquisition. So, if we
+don’t want to rely on locks, but we know that this global ordering
+notion works for a lock-based solution, can we try to develop an
+ordering mechanism that doesn’t rely on locks?</p>
+<p>Well, the naive approach is to basically just pre-assign global,
+totally ordered sequence numbers to all transactions. There might be a
+variety of schemes for doing this, but if we’re still in a single
+machine context, we could imagine simply having a global atomic counter
+that hands out sequence numbers to transactions before they start.
+Alternatively, we could hand out disjoint, evenly distributed sets of
+sequence numbers to each thread at system initialization, that they can
+draw from whenever they want to start a new transaction. For simplicity,
+we can kind of ignore the details of how such an ordering assignment
+scheme works, but we can assume that there is some way to assign
+uniquely global, totally ordered sequence numbers to different
+transactions (note that Paxos similarly does this in a similar manner,
+by pre-assigning disjoint sets of proposal ids to to each proposer).</p>
+<p>If we now assume that all transactions are tagged with a unique,
+totally ordered sequence number, we can try to use this to build a
+complete, lock-less solution to the single register consensus problem.
+As shown above, each thread can still execute a similar procedure as
+before, but it will do so without acquisition/release of locks and with
+a bit of extra checking related to their sequence numbers. As we said
+above, all that threads need to ensure are conditions (C1) and (C2).
+Let’s consider them independently, starting with C2 first.</p>
 <ul>
-<li><p>(C2) This condition is fairly straightforward to handle. Whenever transaction <span class="math inline">\(T\)</span> with sequence number <span class="math inline">\(n\)</span> does a read, it can tag the register with sequence number <span class="math inline">\(n\)</span>. Then, subsequent writes from transactions in sequence numbers <span class="math inline">\(k\)</span> can check their sequence number against <span class="math inline">\(n\)</span>. If <span class="math inline">\(k &lt; n\)</span> then we can prevent the write from occurring, and if <span class="math inline">\(k  \geq n\)</span>, then we can allow the write to succeed. This clearly ensures that once a read occurs by transaction in sequence number <span class="math inline">\(n\)</span>, no future writes can be made to the register by transactions ordered <span class="math inline">\(&lt; n\)</span>.</p></li>
-<li><p>(C1) This condition is a bit more tricky, since it is complicated by the fact that we no longer assume a global serialization order between transaction operations as we did in the lock-based solution. For example, if we make a fundamental assumption that transaction operations may be always be interleaved in arbitrary orders (based on the fact that we have no global locking/mutex primitive), how can we possibly satisfy C1 in a case like the following,</p>
+<li><p>(C2) This condition is fairly straightforward to handle. Whenever
+transaction <span class="math inline">\(T\)</span> with sequence number
+<span class="math inline">\(n\)</span> does a read, it can tag the
+register with sequence number <span class="math inline">\(n\)</span>.
+Then, subsequent writes from transactions in sequence numbers <span
+class="math inline">\(k\)</span> can check their sequence number against
+<span class="math inline">\(n\)</span>. If <span class="math inline">\(k
+&lt; n\)</span> then we can prevent the write from occurring, and if
+<span class="math inline">\(k  \geq n\)</span>, then we can allow the
+write to succeed. This clearly ensures that once a read occurs by
+transaction in sequence number <span class="math inline">\(n\)</span>,
+no future writes can be made to the register by transactions ordered
+<span class="math inline">\(&lt; n\)</span>.</p></li>
+<li><p>(C1) This condition is a bit more tricky, since it is complicated
+by the fact that we no longer assume a global serialization order
+between transaction operations as we did in the lock-based solution. For
+example, if we make a fundamental assumption that transaction operations
+may be always be interleaved in arbitrary orders (based on the fact that
+we have no global locking/mutex primitive), how can we possibly satisfy
+C1 in a case like the following,</p>
 <pre><code>        read:2(X)
         write:1(X, v)</code></pre>
-<p>where <code>op:seqno</code> indicates that <code>op</code> is an operation from transaction with sequence number <code>seqno</code>? That is, how can we ever enforce that a read from transaction at sequence number <span class="math inline">\(n\)</span> will necessarily see the writes from transactions at sequence numbers <span class="math inline">\(&lt; n\)</span>, if it can’t forcibly protect against such transactions doing writes after the transaction in <span class="math inline">\(n\)</span> does its read? Well, we can’t really be sure, if we make the fundamental concurrency/interleaving assumption above. So, this is where our solution to dealing with C2 comes into play. Instead of trying to ensure C1 exactly, we just explicitly prevent any future writes that would violate it. If some writes have already occurred in sequence numbers <span class="math inline">\(&lt; n\)</span>, then we will obviously read their effects when we read at transaction <span class="math inline">\(n\)</span>, but then after we read at <span class="math inline">\(n\)</span>, we just force the system to never execute a write at a transaction number <span class="math inline">\(&lt; n\)</span> in the future. Note also that we aren’t really impairing ourselves unnecessarily here. That is, once a transaction in sequence number <span class="math inline">\(n\)</span> has started, we make the implicit assumption that it “overrules” any transactions in earlier sequence numbers, so there’s not really any point in letting an earlier transaction go ahread and write when a higher transaction number has already started anyway. So, we can view it as acceptable to just prevent/discard these “stale” writes anyway.</p></li>
+<p>where <code>op:seqno</code> indicates that <code>op</code> is an
+operation from transaction with sequence number <code>seqno</code>? That
+is, how can we ever enforce that a read from transaction at sequence
+number <span class="math inline">\(n\)</span> will necessarily see the
+writes from transactions at sequence numbers <span
+class="math inline">\(&lt; n\)</span>, if it can’t forcibly protect
+against such transactions doing writes after the transaction in <span
+class="math inline">\(n\)</span> does its read? Well, we can’t really be
+sure, if we make the fundamental concurrency/interleaving assumption
+above. So, this is where our solution to dealing with C2 comes into
+play. Instead of trying to ensure C1 exactly, we just explicitly prevent
+any future writes that would violate it. If some writes have already
+occurred in sequence numbers <span class="math inline">\(&lt;
+n\)</span>, then we will obviously read their effects when we read at
+transaction <span class="math inline">\(n\)</span>, but then after we
+read at <span class="math inline">\(n\)</span>, we just force the system
+to never execute a write at a transaction number <span
+class="math inline">\(&lt; n\)</span> in the future. Note also that we
+aren’t really impairing ourselves unnecessarily here. That is, once a
+transaction in sequence number <span class="math inline">\(n\)</span>
+has started, we make the implicit assumption that it “overrules” any
+transactions in earlier sequence numbers, so there’s not really any
+point in letting an earlier transaction go ahread and write when a
+higher transaction number has already started anyway. So, we can view it
+as acceptable to just prevent/discard these “stale” writes
+anyway.</p></li>
 </ul>
-<p>Ok, so now that we worked out how to ensure the two important correctness conditions above, we get to a final, lock-less procedure for each thread that looks like the following, where we now assume that alongside the register there also sits a “version" number register <code>V</code> that can also be written and read by threads. (TODO: really this should be the distributed implementation, where storage registers now live on each ndoe, and we write to them tagged with version numbers to implement the CAS op.) Note that really, at its core, we should be able to see Paxos/consensus as simply implementing the following bit of atomic code:</p>
+<p>Ok, so now that we worked out how to ensure the two important
+correctness conditions above, we get to a final, lock-less procedure for
+each thread that looks like the following, where we now assume that
+alongside the register there also sits a “version" number register
+<code>V</code> that can also be written and read by threads. (TODO:
+really this should be the distributed implementation, where storage
+registers now live on each ndoe, and we write to them tagged with
+version numbers to implement the CAS op.) Note that really, at its core,
+we should be able to see Paxos/consensus as simply implementing the
+following bit of atomic code:</p>
 <pre><code>    if read(X) is set:
         return
     write(X, v)</code></pre>
-<p>With a CAS primitive on a single machine this is trivial, but if you want true fault tolerance you’re going to necessarily have to distribue your storage of the written value across multiple machines, and therefore you lose out on the fundamental atomicity provided by the CAS primitive to do the read-write transaction above atomically. So, you re-implement this in a distributed setting by basically first deconstructing the basic properties that such a transaction satisfies that are sufficient for correctness, and then just re-implement these in a distributed fashion. And basically, these properties are pretty much just the standard properties you get from serialized transactions of the above form i.e. firstly that all transactions are implicitly assigned a global, totally ordered serialization order and (1) a read observes the value of the most recent write and (2) once a transaction is in progress, no transactions ordered earlier than it can do any more writes. This is basically all that is needed to ensure safety of a CAS based consensus procedure, and this is essentially the exact same conditions that you need to satisfy in a distributed variant of this (i.e. Paxos). To enforce ordering you use pre-assigned sequence numbers, and then you just tag all your operations with your sequence number and behave appropriately to ensure that you don’t violate the above 2 conditions at any time. For example, if you see that a transaction in a higher sequence number has started doing operations, then you need to prevent yourself from doing any writes to ensure you don’t violate (2). And, when you do a read, if you see written values in some various sequence numbers, then you need make sure you read the value in the highest sequence number. Note that it should be perfetly fine to abort if you see some previously written values in lower sequence numbers, too, but I think you want to be optimistic in cases where earlier writes were only "partially" completed, which is something that can happen in a distributed setting that doesn’t exist in the world of single node CAS. So, this is one other thing that changes a bit fundamentally in the distributed vs single node CAS setting.</p>
+<p>With a CAS primitive on a single machine this is trivial, but if you
+want true fault tolerance you’re going to necessarily have to distribue
+your storage of the written value across multiple machines, and
+therefore you lose out on the fundamental atomicity provided by the CAS
+primitive to do the read-write transaction above atomically. So, you
+re-implement this in a distributed setting by basically first
+deconstructing the basic properties that such a transaction satisfies
+that are sufficient for correctness, and then just re-implement these in
+a distributed fashion. And basically, these properties are pretty much
+just the standard properties you get from serialized transactions of the
+above form i.e. firstly that all transactions are implicitly assigned a
+global, totally ordered serialization order and (1) a read observes the
+value of the most recent write and (2) once a transaction is in
+progress, no transactions ordered earlier than it can do any more
+writes. This is basically all that is needed to ensure safety of a CAS
+based consensus procedure, and this is essentially the exact same
+conditions that you need to satisfy in a distributed variant of this
+(i.e. Paxos). To enforce ordering you use pre-assigned sequence numbers,
+and then you just tag all your operations with your sequence number and
+behave appropriately to ensure that you don’t violate the above 2
+conditions at any time. For example, if you see that a transaction in a
+higher sequence number has started doing operations, then you need to
+prevent yourself from doing any writes to ensure you don’t violate (2).
+And, when you do a read, if you see written values in some various
+sequence numbers, then you need make sure you read the value in the
+highest sequence number. Note that it should be perfetly fine to abort
+if you see some previously written values in lower sequence numbers,
+too, but I think you want to be optimistic in cases where earlier writes
+were only "partially" completed, which is something that can happen in a
+distributed setting that doesn’t exist in the world of single node CAS.
+So, this is one other thing that changes a bit fundamentally in the
+distributed vs single node CAS setting.</p>
 <pre><code>    // Procedure for transaction with sequence number N.
     if read(V) &gt; N:
         return
     write(V, N)
     if read(X) is not set:
         write(X, v)</code></pre>
-<p>But what if we can’t atomically read and write the version number register? (TODO...) Perhaps <span class="citation" data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync" role="doc-biblioref">Herlihy 1991</a>)</span> is the reference I’m looking for here. Note one of their main claims:</p>
+<p>But what if we can’t atomically read and write the version number
+register? (TODO...) Perhaps <span class="citation"
+data-cites="1991waitfreesync">(<a href="#ref-1991waitfreesync"
+role="doc-biblioref">Herlihy 1991</a>)</span> is the reference I’m
+looking for here. Note one of their main claims:</p>
 <blockquote>
-<p>From a set of atomic registers, we show that it is impossible to construct a wait-free implementation of (1) common data types such as sets, queues, stacks, priority queues, or lists, (2) most if not all the classical synchronization primitives, such as <em>test&amp;set</em>, <em>compare&amp;swap</em>, and <em>fetch&amp;add</em>, and (3) such simple memory-to-memory operations as move or memory-to-memory swap.</p>
+<p>From a set of atomic registers, we show that it is impossible to
+construct a wait-free implementation of (1) common data types such as
+sets, queues, stacks, priority queues, or lists, (2) most if not all the
+classical synchronization primitives, such as <em>test&amp;set</em>,
+<em>compare&amp;swap</em>, and <em>fetch&amp;add</em>, and (3) such
+simple memory-to-memory operations as move or memory-to-memory swap.</p>
 </blockquote>
 <p>Note the following table of consensus numbers of some objects:</p>
 <div class="center">
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: center;">Consensus Number</th>
 <th style="text-align: center;">Object</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">read/write registers</td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">test&amp;set, swap, fetch&amp;add</td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">⋮</td>
 <td style="text-align: center;">⋮</td>
 </tr>
-<tr class="even">
-<td style="text-align: center;"><span class="math inline">\(2n-2\)</span></td>
-<td style="text-align: center;"><span class="math inline">\(n\)</span>-register assignment</td>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(2n-2\)</span></td>
+<td style="text-align: center;"><span
+class="math inline">\(n\)</span>-register assignment</td>
 </tr>
-<tr class="odd">
-<td style="text-align: center;"><span class="math inline">\(\infty\)</span></td>
+<tr>
+<td style="text-align: center;"><span
+class="math inline">\(\infty\)</span></td>
 <td style="text-align: center;">compare&amp;swap</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>See also <span class="citation" data-cites="1990aspnesherlihy">(<a href="#ref-1990aspnesherlihy" role="doc-biblioref">Aspnes and Herlihy 1990</a>)</span> as possibly relevant.</p>
-<p>(In Paxos phase 1b, do acceptors actually have to do some atomic read-write transaction in order to check if given proposal number is newer than their own...?)</p>
+<p>See also <span class="citation" data-cites="1990aspnesherlihy">(<a
+href="#ref-1990aspnesherlihy" role="doc-biblioref">Aspnes and Herlihy
+1990</a>)</span> as possibly relevant.</p>
+<p>(In Paxos phase 1b, do acceptors actually have to do some atomic
+read-write transaction in order to check if given proposal number is
+newer than their own...?)</p>
 </section>
 </section>
 <section id="paxos" class="level2" data-number="3.3">
-<h2 data-number="3.3"><span class="header-section-number">3.3</span> Paxos</h2>
-<p>Paxos is a protocol for implementing consensus in an asynchronous distributed system assuming crash faults. Modeled as <em>proposers</em>, <em>acceptors</em>, and <em>learners</em>, and consists of 2 main phases, <span class="math inline">\(Prepare\)</span> and <span class="math inline">\(Accept\)</span>. Proposers, which each own a disjoint set of a ballot space, propose values in one of their designated ballots, and send a <span class="math inline">\(Prepare(b)\)</span> message for this ballot to a quorum of acceptors. Acceptors will respond to a <span class="math inline">\(Prepare(b)\)</span> message if it is newer than the latest ballot they know about. A propoers, hearing a quorum of <span class="math inline">\(Prepare\)</span> responses, then sends out an <span class="math inline">\(Accept(b,v)\)</span> message for that ballot, where <span class="math inline">\(v\)</span> is chosen either as the value with the highest ballot it hear about in <span class="math inline">\(Prepare\)</span> phase, or as any value the proposer desires. Acceptors accept a value via an <span class="math inline">\(Accept\)</span> message if the ballot is not older than their own latest known ballot. A value is committed at a ballot <span class="math inline">\(b\)</span> if a quorum of acceptors have accepted that value at <span class="math inline">\(b\)</span>.</p>
+<h2 data-number="3.3"><span class="header-section-number">3.3</span>
+Paxos</h2>
+<p>Paxos is a protocol for implementing consensus in an asynchronous
+distributed system assuming crash faults. Modeled as <em>proposers</em>,
+<em>acceptors</em>, and <em>learners</em>, and consists of 2 main
+phases, <span class="math inline">\(Prepare\)</span> and <span
+class="math inline">\(Accept\)</span>. Proposers, which each own a
+disjoint set of a ballot space, propose values in one of their
+designated ballots, and send a <span
+class="math inline">\(Prepare(b)\)</span> message for this ballot to a
+quorum of acceptors. Acceptors will respond to a <span
+class="math inline">\(Prepare(b)\)</span> message if it is newer than
+the latest ballot they know about. A propoers, hearing a quorum of <span
+class="math inline">\(Prepare\)</span> responses, then sends out an
+<span class="math inline">\(Accept(b,v)\)</span> message for that
+ballot, where <span class="math inline">\(v\)</span> is chosen either as
+the value with the highest ballot it hear about in <span
+class="math inline">\(Prepare\)</span> phase, or as any value the
+proposer desires. Acceptors accept a value via an <span
+class="math inline">\(Accept\)</span> message if the ballot is not older
+than their own latest known ballot. A value is committed at a ballot
+<span class="math inline">\(b\)</span> if a quorum of acceptors have
+accepted that value at <span class="math inline">\(b\)</span>.</p>
 </section>
 <section id="vertical-paxos" class="level2" data-number="3.4">
-<h2 data-number="3.4"><span class="header-section-number">3.4</span> Vertical Paxos</h2>
-<p>The classic consensus problem for Paxos is defined on a fixed set of <span class="math inline">\(n\)</span> processes. In practice, though, as nodes fail over time we may need to remove them from the system and add in new ones, via <em>reconfiguration</em>. In standard “horizontal” Paxos algorithms, like the approach described in <span class="citation" data-cites="lamport2001paxos">(<a href="#ref-lamport2001paxos" role="doc-biblioref">Lamport 2001</a>)</span>, the set of servers is made a part of the state machine state, and special “reconfiguration" comands on the state machine modify this set of servers. If the set of servers can change, though, then there needs to be some way of determining which set of servers implement what instances of the consensus algorithm. In one of Lamport’s original suggested approaches, we can allow a configuration command at instance <span class="math inline">\(i\)</span> to take effect at instance <span class="math inline">\(i + \alpha\)</span>. So, we can propose commands up to <span class="math inline">\(\alpha\)</span> slots after the reconfiguration, but no further, until we know whether the reconfiguration committed, so that we are sure we know the correct set of servers to consider.</p>
-<p>In the above, “horizontal” Paxos approach, configurations change across Paxos instances, in accordance with the <em>horizontal</em> reconfiguration commands. <em>Vertical Paxos</em> <span class="citation" data-cites="lamport2009vertical">(<a href="#ref-lamport2009vertical" role="doc-biblioref">Lamport, Malkhi, and Zhou 2009</a>)</span> differs in that it allows for reconfiguration <em>across Paxos ballots</em>, even within the same instance. This is the “vertical” notion i.e. if you imagine instances as moving horizontally and Paxos ballots per instance laid out vertically. In the Vertical Paxos, they basically assume the existence of an external master that stores the configuration state across ballots, which itself can be implemented using state machine replication. Essentially, when a reconfiguration occurs in Vertical Paxos, the new configuratino becomes active right away, and the previous configuration remains active only for storing old information, and the new one accepts new commands.When the state of the previous configuration has been transferred to the new configuration, the new leader of the new config tells the master this is done, and the master can inform all future leaders that it no longer needs to contact the old configuration i.e., it deactivates the old config. This is essentially a kind of explicit management of state transfer and deactivation from old configs to new configs, albeit one that relies on a separate external master. So, in some sense, it still doesn’t fix the underlying problem of a state machine reconfiguration itself, but arguably has a clearer separation of concerns.</p>
+<h2 data-number="3.4"><span class="header-section-number">3.4</span>
+Vertical Paxos</h2>
+<p>The classic consensus problem for Paxos is defined on a fixed set of
+<span class="math inline">\(n\)</span> processes. In practice, though,
+as nodes fail over time we may need to remove them from the system and
+add in new ones, via <em>reconfiguration</em>. In standard “horizontal”
+Paxos algorithms, like the approach described in <span class="citation"
+data-cites="lamport2001paxos">(<a href="#ref-lamport2001paxos"
+role="doc-biblioref">Lamport 2001</a>)</span>, the set of servers is
+made a part of the state machine state, and special “reconfiguration"
+comands on the state machine modify this set of servers. If the set of
+servers can change, though, then there needs to be some way of
+determining which set of servers implement what instances of the
+consensus algorithm. In one of Lamport’s original suggested approaches,
+we can allow a configuration command at instance <span
+class="math inline">\(i\)</span> to take effect at instance <span
+class="math inline">\(i + \alpha\)</span>. So, we can propose commands
+up to <span class="math inline">\(\alpha\)</span> slots after the
+reconfiguration, but no further, until we know whether the
+reconfiguration committed, so that we are sure we know the correct set
+of servers to consider.</p>
+<p>In the above, “horizontal” Paxos approach, configurations change
+across Paxos instances, in accordance with the <em>horizontal</em>
+reconfiguration commands. <em>Vertical Paxos</em> <span class="citation"
+data-cites="lamport2009vertical">(<a href="#ref-lamport2009vertical"
+role="doc-biblioref">Lamport, Malkhi, and Zhou 2009</a>)</span> differs
+in that it allows for reconfiguration <em>across Paxos ballots</em>,
+even within the same instance. This is the “vertical” notion i.e. if you
+imagine instances as moving horizontally and Paxos ballots per instance
+laid out vertically. In the Vertical Paxos, they basically assume the
+existence of an external master that stores the configuration state
+across ballots, which itself can be implemented using state machine
+replication. Essentially, when a reconfiguration occurs in Vertical
+Paxos, the new configuratino becomes active right away, and the previous
+configuration remains active only for storing old information, and the
+new one accepts new commands.When the state of the previous
+configuration has been transferred to the new configuration, the new
+leader of the new config tells the master this is done, and the master
+can inform all future leaders that it no longer needs to contact the old
+configuration i.e., it deactivates the old config. This is essentially a
+kind of explicit management of state transfer and deactivation from old
+configs to new configs, albeit one that relies on a separate external
+master. So, in some sense, it still doesn’t fix the underlying problem
+of a state machine reconfiguration itself, but arguably has a clearer
+separation of concerns.</p>
 </section>
 <section id="fast-paxos" class="level2" data-number="3.5">
-<h2 data-number="3.5"><span class="header-section-number">3.5</span> Fast Paxos</h2>
-<p>Classic Paxos takes 2 round trips to get a value committed (1 for the <span class="math inline">\(Prepare\)</span> phase and 1 for the <span class="math inline">\(Commit\)</span> phase). How could we do better than this? Fast Paxos <span class="citation" data-cites="lamport2006fast">(<a href="#ref-lamport2006fast" role="doc-biblioref">Lamport 2006</a>)</span> makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.</p>
+<h2 data-number="3.5"><span class="header-section-number">3.5</span>
+Fast Paxos</h2>
+<p>Classic Paxos takes 2 round trips to get a value committed (1 for the
+<span class="math inline">\(Prepare\)</span> phase and 1 for the <span
+class="math inline">\(Commit\)</span> phase). How could we do better
+than this? Fast Paxos <span class="citation"
+data-cites="lamport2006fast">(<a href="#ref-lamport2006fast"
+role="doc-biblioref">Lamport 2006</a>)</span> makes this improvement by
+having clients send their proposals directly to acceptors, rather than
+going through proposers first. This also changes quorum requirements,
+though. TODO.</p>
 </section>
 <section id="egalitarian-paxos" class="level2" data-number="3.6">
-<h2 data-number="3.6"><span class="header-section-number">3.6</span> Egalitarian Paxos</h2>
-<p>Egalitarian Paxos (EPaxos) <span class="citation" data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru" role="doc-biblioref">Moraru, Andersen, and Kaminsky 2013</a>)</span> goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.</p>
+<h2 data-number="3.6"><span class="header-section-number">3.6</span>
+Egalitarian Paxos</h2>
+<p>Egalitarian Paxos (EPaxos) <span class="citation"
+data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru"
+role="doc-biblioref">Moraru, Andersen, and Kaminsky 2013</a>)</span>
+goes further by trying to achieve a leaderless scheme while also
+allowing for fast path commits. It relaxes notion of strict ordering
+between command slots by tracking only dependency between commands
+explicitly, and executing commands only when they are commmitted, and in
+accordance with this dependency order.</p>
 </section>
 <section id="zab" class="level2" data-number="3.7">
-<h2 data-number="3.7"><span class="header-section-number">3.7</span> Zab</h2>
-<p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini 2011</a>; <a href="#ref-2008zabsimple" role="doc-biblioref">Reed and Junqueira 2008</a>)</span> is a crash-recovery atomic broadcast algorithm used in Apache Zookeeper. The protocol consists of two main modes: <em>broadcast</em> and <em>recovery</em>.</p>
-<p>In a stable system, it should be in broadcast mode, where a single leader is broadcasting transaction messages to a quorum of synchronized followers, until the leader fails or it no longer has a quorum of followers. Leaders will broadcast a proposal for a message to be delivered, and before doing this will assign a monotonically increasing unique id, the <em>zxid</em>. Delivered messages will be ordered by their zxids. When a leader receives ACKs from a quorum, the leader will broadcast a <span class="smallcaps">COMMIT</span> message and deliver the message locally.</p>
-<p>When the service starts or a leader fails, the system enters into recovery mode. Recovery and leader election is needed to ensure liveness in the face of leader failure. In a standard implementation zxids are 64-bit numbers where the lower 32 bits are a simple counter, and the higher order 32 bits are the epoch. The epoch is incremented by a new leader to something greater than the highest epoch it has seen, and then the counter is reset to zero. If the leader election protocol guarantees that the new leader has the highest proposal number in a quorum of servers, a newly elected leader will also have all committed messages.</p>
+<h2 data-number="3.7"><span class="header-section-number">3.7</span>
+Zab</h2>
+<p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a
+href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini
+2011</a>; <a href="#ref-2008zabsimple" role="doc-biblioref">Reed and
+Junqueira 2008</a>)</span> is a crash-recovery atomic broadcast
+algorithm used in Apache Zookeeper. The protocol consists of two main
+modes: <em>broadcast</em> and <em>recovery</em>.</p>
+<p>In a stable system, it should be in broadcast mode, where a single
+leader is broadcasting transaction messages to a quorum of synchronized
+followers, until the leader fails or it no longer has a quorum of
+followers. Leaders will broadcast a proposal for a message to be
+delivered, and before doing this will assign a monotonically increasing
+unique id, the <em>zxid</em>. Delivered messages will be ordered by
+their zxids. When a leader receives ACKs from a quorum, the leader will
+broadcast a <span class="smallcaps">COMMIT</span> message and deliver
+the message locally.</p>
+<p>When the service starts or a leader fails, the system enters into
+recovery mode. Recovery and leader election is needed to ensure liveness
+in the face of leader failure. In a standard implementation zxids are
+64-bit numbers where the lower 32 bits are a simple counter, and the
+higher order 32 bits are the epoch. The epoch is incremented by a new
+leader to something greater than the highest epoch it has seen, and then
+the counter is reset to zero. If the leader election protocol guarantees
+that the new leader has the highest proposal number in a quorum of
+servers, a newly elected leader will also have all committed
+messages.</p>
 <div class="center">
 <p><img src="diagrams/zab-protocol-overview.png" alt="image" /></p>
 </div>
-<p>Can see a TLA+ formal specificaton of the high level Zab protocol <a href="https://github.com/apache/zookeeper/blob/248cc091d440659a819bdd44fe5b41a38321a929/zookeeper-specifications/protocol-spec/Zab.tla">here</a>, which is a part of the official Apache Zookeeper repo.</p>
+<p>Can see a TLA+ formal specificaton of the high level Zab protocol <a
+href="https://github.com/apache/zookeeper/blob/248cc091d440659a819bdd44fe5b41a38321a929/zookeeper-specifications/protocol-spec/Zab.tla">here</a>,
+which is a part of the official Apache Zookeeper repo.</p>
 </section>
 </section>
 <section id="byzantine-fault-tolerance" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Byzantine Fault Tolerance</h1>
-<p>The earliest explicit reference to <em>Byzantine</em> faults appeared in <span class="citation" data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span>, though earlier work had touched on the same problem without referring to it by that moniker <span class="citation" data-cites="1980peasereaching 1978sift">(<a href="#ref-1980peasereaching" role="doc-biblioref">Pease, Shostak, and Lamport 1980</a>; <a href="#ref-1978sift" role="doc-biblioref">Wensley et al. 1978</a>)</span>. They show in <span class="citation" data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span> that when using “oral” messages (i.e. non-signed) messages, a Byzantine agreement solution requires <span class="math inline">\(3f+1\)</span> processes, even in a synchronous communication model. They give an algorithm that solves the problem assuming <span class="math inline">\(n &gt; 3f+1\)</span>, and also show that if we allow for “written” (e.g. digitally signed) messages, then in the synchronous model Byzantine agreement can be achieved with only <span class="math inline">\(f+1\)</span> processes.</p>
+<h1 data-number="4"><span class="header-section-number">4</span>
+Byzantine Fault Tolerance</h1>
+<p>The earliest explicit reference to <em>Byzantine</em> faults appeared
+in <span class="citation" data-cites="1982lamportshostak">(<a
+href="#ref-1982lamportshostak" role="doc-biblioref">Lamport, Shostak,
+and Pease 1982</a>)</span>, though earlier work had touched on the same
+problem without referring to it by that moniker <span class="citation"
+data-cites="1980peasereaching 1978sift">(<a
+href="#ref-1980peasereaching" role="doc-biblioref">Pease, Shostak, and
+Lamport 1980</a>; <a href="#ref-1978sift" role="doc-biblioref">Wensley
+et al. 1978</a>)</span>. They show in <span class="citation"
+data-cites="1982lamportshostak">(<a href="#ref-1982lamportshostak"
+role="doc-biblioref">Lamport, Shostak, and Pease 1982</a>)</span> that
+when using “oral” messages (i.e. non-signed) messages, a Byzantine
+agreement solution requires <span class="math inline">\(3f+1\)</span>
+processes, even in a synchronous communication model. They give an
+algorithm that solves the problem assuming <span class="math inline">\(n
+&gt; 3f+1\)</span>, and also show that if we allow for “written” (e.g.
+digitally signed) messages, then in the synchronous model Byzantine
+agreement can be achieved with only <span
+class="math inline">\(f+1\)</span> processes.</p>
 <section id="model" class="level2" data-number="4.1">
-<h2 data-number="4.1"><span class="header-section-number">4.1</span> Model</h2>
-<p>The work on Practical Byzantine Fault Tolerance (PBFT) <span class="citation" data-cites="1999castropbft">(<a href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov 1999</a>)</span> considers an asynchronous distributed system where nodes are connected by a network which can fail to deliver messages, delay them, or deliver them out of order. Furthermore, it allows for <em>Byzantine</em> faults i.e., faulty nodes may behave arbitrarily, subject only to the above restrictions. This model does assume, however, cryptographic techniques that prevent spoofing and can detect corrupted messages. That is, Byzantine processes may send any arbitrary message, but we assume the identity of the sender of a message can be determined by the receiver <span class="citation" data-cites="2011lamport">(<a href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>. This can be achieved this with public-key signatures <span class="citation" data-cites="1978rivestcrypto">(<a href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
+<h2 data-number="4.1"><span class="header-section-number">4.1</span>
+Model</h2>
+<p>The work on Practical Byzantine Fault Tolerance (PBFT) <span
+class="citation" data-cites="1999castropbft">(<a
+href="#ref-1999castropbft" role="doc-biblioref">Castro and Liskov
+1999</a>)</span> considers an asynchronous distributed system where
+nodes are connected by a network which can fail to deliver messages,
+delay them, or deliver them out of order. Furthermore, it allows for
+<em>Byzantine</em> faults i.e., faulty nodes may behave arbitrarily,
+subject only to the above restrictions. This model does assume, however,
+cryptographic techniques that prevent spoofing and can detect corrupted
+messages. That is, Byzantine processes may send any arbitrary message,
+but we assume the identity of the sender of a message can be determined
+by the receiver <span class="citation" data-cites="2011lamport">(<a
+href="#ref-2011lamport" role="doc-biblioref">Lamport 2011</a>)</span>.
+This can be achieved this with public-key signatures <span
+class="citation" data-cites="1978rivestcrypto">(<a
+href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and
+Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
 </section>
 <section id="intuitions-and-algorithm" class="level2" data-number="4.2">
-<h2 data-number="4.2"><span class="header-section-number">4.2</span> Intuitions and Algorithm</h2>
-<p>If we assume a starting point of a classic 2-phase Paxos consensus approach, the following are some of the essential issues that arise and must be dealt with when we add in Byzantine faults:</p>
+<h2 data-number="4.2"><span class="header-section-number">4.2</span>
+Intuitions and Algorithm</h2>
+<p>If we assume a starting point of a classic 2-phase Paxos consensus
+approach, the following are some of the essential issues that arise and
+must be dealt with when we add in Byzantine faults:</p>
 <ol>
-<li><p><strong>Leader equivocation</strong>: if a leader is faulty (Byzantine), then it can trivially send two conflicting messages in the same view (i.e. with the same proposal number). This means that, for example, it could send out and accept messages with its own proposal number but with a different value to each replica. Then, we would end up with a quorum of replicas having accepted that proposal, but they all have different values, so which one is the true value to agree upon?</p></li>
-<li><p><strong>Wrong value adoption</strong>: A leader (faulty or not) that accepts a wrong value (i.e. not highest among previously) chosen can lead to safety violation as considered in the standard 2-phase Paxos model.</p></li>
+<li><p><strong>Leader equivocation</strong>: if a leader is faulty
+(Byzantine), then it can trivially send two conflicting messages in the
+same view (i.e. with the same proposal number). This means that, for
+example, it could send out and accept messages with its own proposal
+number but with a different value to each replica. Then, we would end up
+with a quorum of replicas having accepted that proposal, but they all
+have different values, so which one is the true value to agree
+upon?</p></li>
+<li><p><strong>Wrong value adoption</strong>: A leader (faulty or not)
+that accepts a wrong value (i.e. not highest among previously) chosen
+can lead to safety violation as considered in the standard 2-phase Paxos
+model.</p></li>
 </ol>
-<p>Need to have a way for honest acceptor to only accept values if they have actually have proof that</p>
+<p>Need to have a way for honest acceptor to only accept values if they
+have actually have proof that</p>
 <ul>
-<li><p>If a leader/proposer is Byzantine, we can imagine it as not being a “useful” participant of the protocol, in that it may only be trying to be malicious. And, we can’t control its behavior anyways, so we really need to worry about how acceptors can protect themselves against malicious leaders.</p></li>
-<li><p>Normally, without Byzantine faults, acceptors can assume any incoming messages from proposers are legit, and they can respond with promises or acceptances accordingly.</p></li>
-<li><p>With Byzantine faults, though, the info they would hear from a proposer can’t be trusted. So, can we force acceptors to somehow be more stringent in their acceptance of messages from proposers? In order to ensure they only actually accept messages from honest proposers?</p></li>
-<li><p>In essence, have proposers record the info they received from a large enough set of honest acceptors, in order to prove to an acceptor that this info was collected. Basically, let acceptors require that proposers prove to them that they collected info about prior acceptances from enough honest acceptors. Since we assume no forging possible we can have acceptors sign info accordingly in a way that proves they actually had a certain piece of info.</p></li>
-<li><p><strong>Point</strong>: Acceptors will only accept if they have proof in the accept message that <span class="math inline">\(X\)</span> number of honest acceptors stored a particular proposal.</p></li>
-<li><p>So, proposers first try to do their proposals by asking around acceptors, from which they receive promises. Then, the proposer sends out another round of “real” proposer</p></li>
+<li><p>If a leader/proposer is Byzantine, we can imagine it as not being
+a “useful” participant of the protocol, in that it may only be trying to
+be malicious. And, we can’t control its behavior anyways, so we really
+need to worry about how acceptors can protect themselves against
+malicious leaders.</p></li>
+<li><p>Normally, without Byzantine faults, acceptors can assume any
+incoming messages from proposers are legit, and they can respond with
+promises or acceptances accordingly.</p></li>
+<li><p>With Byzantine faults, though, the info they would hear from a
+proposer can’t be trusted. So, can we force acceptors to somehow be more
+stringent in their acceptance of messages from proposers? In order to
+ensure they only actually accept messages from honest
+proposers?</p></li>
+<li><p>In essence, have proposers record the info they received from a
+large enough set of honest acceptors, in order to prove to an acceptor
+that this info was collected. Basically, let acceptors require that
+proposers prove to them that they collected info about prior acceptances
+from enough honest acceptors. Since we assume no forging possible we can
+have acceptors sign info accordingly in a way that proves they actually
+had a certain piece of info.</p></li>
+<li><p><strong>Point</strong>: Acceptors will only accept if they have
+proof in the accept message that <span class="math inline">\(X\)</span>
+number of honest acceptors stored a particular proposal.</p></li>
+<li><p>So, proposers first try to do their proposals by asking around
+acceptors, from which they receive promises. Then, the proposer sends
+out another round of “real” proposer</p></li>
 </ul>
 <p>The essence of the algorithm is as follows:</p>
 <ol>
-<li><p>Primary sends a <span class="math inline">\(PrePrepare(value, p)\)</span> message for view/proposal number <span class="math inline">\(p\)</span>.</p></li>
-<li><p>Replica responds to the first <span class="math inline">\(PrePrepare\)</span> message it receives from a primary.</p></li>
-<li><p>Primary gathers <span class="math inline">\(PrePrepare\)</span> responses from <span class="math inline">\(n-f\)</span> replicas, and then sends <span class="math inline">\(Prepare(v, proof)\)</span> (note this message may be linear in size since it contains signed codes fro m up to <span class="math inline">\(n\)</span> nodes.)</p></li>
-<li><p>If a replica sees <span class="math inline">\(Prepare(value, p, proof)\)</span> and <span class="math inline">\(proof\)</span> contains <span class="math inline">\(n-f\)</span> valid signatures for <span class="math inline">\(PrePrepare(value, p)\)</span>, then it goes ahead and accepts.</p></li>
-<li><p>Primary then gathers <span class="math inline">\(n-f\)</span> <span class="math inline">\(Prepare\)</span> responses from replicas.</p></li>
+<li><p>Primary sends a <span class="math inline">\(PrePrepare(value,
+p)\)</span> message for view/proposal number <span
+class="math inline">\(p\)</span>.</p></li>
+<li><p>Replica responds to the first <span
+class="math inline">\(PrePrepare\)</span> message it receives from a
+primary.</p></li>
+<li><p>Primary gathers <span class="math inline">\(PrePrepare\)</span>
+responses from <span class="math inline">\(n-f\)</span> replicas, and
+then sends <span class="math inline">\(Prepare(v, proof)\)</span> (note
+this message may be linear in size since it contains signed codes fro m
+up to <span class="math inline">\(n\)</span> nodes.)</p></li>
+<li><p>If a replica sees <span class="math inline">\(Prepare(value, p,
+proof)\)</span> and <span class="math inline">\(proof\)</span> contains
+<span class="math inline">\(n-f\)</span> valid signatures for <span
+class="math inline">\(PrePrepare(value, p)\)</span>, then it goes ahead
+and accepts.</p></li>
+<li><p>Primary then gathers <span class="math inline">\(n-f\)</span>
+<span class="math inline">\(Prepare\)</span> responses from
+replicas.</p></li>
 </ol>
-<p>Note that since we assume a public key infrastructure (PKI) set up between nodes of the system, any node can securely verify that a message was signed by some another node.</p>
+<p>Note that since we assume a public key infrastructure (PKI) set up
+between nodes of the system, any node can securely verify that a message
+was signed by some another node.</p>
 </section>
 <section id="from-classic-paxos-to-byzantine" class="level2 unnumbered">
 <h2 class="unnumbered">From Classic Paxos to Byzantine</h2>
-<p>In Classic Paxos, we can think about <em>2a</em> messages being sent to acceptors as a record of the proposer gathering some information about that proposal in phase 1: namely, that a quorum of acceptors promised to prepare in that round/ballot, and never accept proposals from earlier rounds. In a Byzantine setting, we can’t rely on a proposer/leader as an aggregator of this information, since a Byzantine leader can lie about any of this info. So, fundamentally, to achieve the same guarantees that we need before executing <em>2a</em> messages in Classic Paxos, acceptors need to gather this information themselves, by simply broadcasting message queries to all other nodes and gathering responses.</p>
-<p>If an acceptor can gather enough responses (<span class="math inline">\(2f\)</span>) that other acceptors were prepared for a given proposal/round, then they can consider the proposal as accepted, and advance to learning/commit phase. If we assume at most <span class="math inline">\(f\)</span> failures and <span class="math inline">\(3f+1\)</span> acceptors, then if we get confirmation of <span class="math inline">\(2f+1\)</span> prepares, we know that...?</p>
+<p>In Classic Paxos, we can think about <em>2a</em> messages being sent
+to acceptors as a record of the proposer gathering some information
+about that proposal in phase 1: namely, that a quorum of acceptors
+promised to prepare in that round/ballot, and never accept proposals
+from earlier rounds. In a Byzantine setting, we can’t rely on a
+proposer/leader as an aggregator of this information, since a Byzantine
+leader can lie about any of this info. So, fundamentally, to achieve the
+same guarantees that we need before executing <em>2a</em> messages in
+Classic Paxos, acceptors need to gather this information themselves, by
+simply broadcasting message queries to all other nodes and gathering
+responses.</p>
+<p>If an acceptor can gather enough responses (<span
+class="math inline">\(2f\)</span>) that other acceptors were prepared
+for a given proposal/round, then they can consider the proposal as
+accepted, and advance to learning/commit phase. If we assume at most
+<span class="math inline">\(f\)</span> failures and <span
+class="math inline">\(3f+1\)</span> acceptors, then if we get
+confirmation of <span class="math inline">\(2f+1\)</span> prepares, we
+know that...?</p>
 </section>
 <section id="notes" class="level2" data-number="4.3">
-<h2 data-number="4.3"><span class="header-section-number">4.3</span> Notes</h2>
+<h2 data-number="4.3"><span class="header-section-number">4.3</span>
+Notes</h2>
 <ul>
-<li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any 2 quorums with <span class="math inline">\(n-f = 2f+1\)</span> nodes, we are guaranteed they intersect in at least <span class="math inline">\(f+1\)</span> nodes (just draw a picture). Note that if you talk to at least <span class="math inline">\(f+1\)</span> nodes then you are sure you are in contact with at least one non-faulty (non-Byzantine) node.</p></li>
+<li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any
+2 quorums with <span class="math inline">\(n-f = 2f+1\)</span> nodes, we
+are guaranteed they intersect in at least <span
+class="math inline">\(f+1\)</span> nodes (just draw a picture). Note
+that if you talk to at least <span class="math inline">\(f+1\)</span>
+nodes then you are sure you are in contact with at least one non-faulty
+(non-Byzantine) node.</p></li>
 </ul>
 </section>
 </section>
-<section id="blockchain-and-cryptocurrency" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Blockchain and Cryptocurrency</h1>
-<p>Decentralized currency have beomce a popular peer to peer consensus systems that operate under significantly different assumptions and fault models than previous systems.</p>
+<section id="blockchain-and-cryptocurrency" class="level1"
+data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span>
+Blockchain and Cryptocurrency</h1>
+<p>Decentralized currency have beomce a popular peer to peer consensus
+systems that operate under significantly different assumptions and fault
+models than previous systems.</p>
 <section id="bitcoin" class="level2" data-number="5.1">
-<h2 data-number="5.1"><span class="header-section-number">5.1</span> Bitcoin</h2>
-<p>Bitcoin <span class="citation" data-cites="nakamoto2009bitcoin">(<a href="#ref-nakamoto2009bitcoin" role="doc-biblioref">Nakamoto 2009</a>)</span> is the first widely used decentralized cryptocurrency. Nodes participate in a peer-to-peer network that implements a distributed ledger which records all transactions between parties, which can be uniquely identified using cryptogaphic keys (e.g. RSA private keys). The ledger can be viewed as a type of database, consisting of a series of blocks that record transactions on the database. The current state of the database can be considered as the state of the ledger after applying all transactions in the ledger.</p>
-<p>Generally, we can view our current (or most any) money system as, more or less, a big old database. As Buterin states in <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span>:</p>
+<h2 data-number="5.1"><span class="header-section-number">5.1</span>
+Bitcoin</h2>
+<p>Bitcoin <span class="citation" data-cites="nakamoto2009bitcoin">(<a
+href="#ref-nakamoto2009bitcoin" role="doc-biblioref">Nakamoto
+2009</a>)</span> is the first widely used decentralized cryptocurrency.
+Nodes participate in a peer-to-peer network that implements a
+distributed ledger which records all transactions between parties, which
+can be uniquely identified using cryptogaphic keys (e.g. RSA private
+keys). The ledger can be viewed as a type of database, consisting of a
+series of blocks that record transactions on the database. The current
+state of the database can be considered as the state of the ledger after
+applying all transactions in the ledger.</p>
+<p>Generally, we can view our current (or most any) money system as,
+more or less, a big old database. As Buterin states in <span
+class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013"
+role="doc-biblioref">Buterin 2014</a>)</span>:</p>
 <blockquote>
-<p>…all a currency, or token systen, fundamentally is is a database with one operation: subtract X units from A and give X units to B, with the proviso that:</p>
+<p>…all a currency, or token systen, fundamentally is is a database with
+one operation: subtract X units from A and give X units to B, with the
+proviso that:</p>
 <ol type="1">
 <li><p>A had at least X units before the transaction.</p></li>
 <li><p>The transaction is approved by A.</p></li>
 </ol>
 </blockquote>
-<p>Every user/client of the database can have an account in this database, which records the current amount of money in their account (i.e. “wallet”). Transactions are then executed by atomically transferring money from one account to another, by deducting some amount <span class="math inline">\(X\)</span> from user <span class="math inline">\(A\)</span>’s account and adding <span class="math inline">\(X\)</span> to user <span class="math inline">\(B\)</span>’s account, with the restriction that <span class="math inline">\(A\)</span> cannot send <span class="math inline">\(X\)</span> dollars to some other account if it does not have at least <span class="math inline">\(X\)</span> dollars. And, the transaction that completes between two accounts must occur atomically (consistently), before any other transactions take place. That is, we can think about all transactions as being serialized into a big list of transactions, which make up the <em>ledger</em> or <em>history</em> of the database. More generally, we can also consider this ledger itself as the current state of the database, since this state can always be computed by simply applying all transactions from the beginning of the ledger. We also might assume that there may be some special entries in this ledger that put new money into circulation by giving it to some account without requiring it to be transferred from an existing account.</p>
-<p>If you try to build a money system on this decentralized ledger/database model, you have the obvious initial problem of how we update the database consistently and safely without the use of some central trusted authority. We can imagine that everyone has a copy of the full ledger, and can choose to make arbitrary updates to it locally e.g. even ones that break the <em>no double spending</em> consistency property i.e., people could arbitrarily choose to spend money they don’t have, breaking property 1 above. Additionally, we can assume that each party in the network can be uniquely identified by some cryptographic signing scheme e.g., each by their unique, private RSA key. They can mark a transaction between themselves, party <span class="math inline">\(A\)</span> and another user, party <span class="math inline">\(B\)</span>, by referring to the public key of <span class="math inline">\(B\)</span> and signing the transaction with <span class="math inline">\(A\)</span>’s private key. Based on this, other parties can then verify that <span class="math inline">\(A\)</span> was indeed the one who sent some money to <span class="math inline">\(B\)</span>.</p>
-<p>If everyone is updating their forks of the ledger independently, though, each with some potentially unsafe transactions, how do we enforce safety in a distributed fashion? Well, we must assume that there are at least some amount of honest nodes in the network that want to do good i.e., they are actually honest in wanting to only make sure that valid chains are kept in the system. Under this assumption, we can then use some mechanism that allows the honest agents to “outvote” the bad players when deciding on the correctness of the ledger. This can be implemented with the <em>proof of work</em> concept.</p>
-<p>Basically, we imagine appending a special <em>nonce</em> to each transaction, such that the original transaction concatenated with this nonce makes up the full transaction that goes into the chain. In order for a transaction be valid, though, we require some property of the hashed block be true that is computationally hard to invert. For example, by requiring that the SHA-256 hash of the original block plus the nonce starts with some number of zero bits. If this property holds true, then the transaction/block is considered valid, and this means fiddling with the data of the transaction would be computationally hard, since you would have to re-solve for a valid nonce. So, this implicitly ensures that votes are given to those with CPU power, and so if enough CPUs are “honest”, then we have a good guarantee that honest nodes will win out in selecting the true ledger.</p>
+<p>Every user/client of the database can have an account in this
+database, which records the current amount of money in their account
+(i.e. “wallet”). Transactions are then executed by atomically
+transferring money from one account to another, by deducting some amount
+<span class="math inline">\(X\)</span> from user <span
+class="math inline">\(A\)</span>’s account and adding <span
+class="math inline">\(X\)</span> to user <span
+class="math inline">\(B\)</span>’s account, with the restriction that
+<span class="math inline">\(A\)</span> cannot send <span
+class="math inline">\(X\)</span> dollars to some other account if it
+does not have at least <span class="math inline">\(X\)</span> dollars.
+And, the transaction that completes between two accounts must occur
+atomically (consistently), before any other transactions take place.
+That is, we can think about all transactions as being serialized into a
+big list of transactions, which make up the <em>ledger</em> or
+<em>history</em> of the database. More generally, we can also consider
+this ledger itself as the current state of the database, since this
+state can always be computed by simply applying all transactions from
+the beginning of the ledger. We also might assume that there may be some
+special entries in this ledger that put new money into circulation by
+giving it to some account without requiring it to be transferred from an
+existing account.</p>
+<p>If you try to build a money system on this decentralized
+ledger/database model, you have the obvious initial problem of how we
+update the database consistently and safely without the use of some
+central trusted authority. We can imagine that everyone has a copy of
+the full ledger, and can choose to make arbitrary updates to it locally
+e.g. even ones that break the <em>no double spending</em> consistency
+property i.e., people could arbitrarily choose to spend money they don’t
+have, breaking property 1 above. Additionally, we can assume that each
+party in the network can be uniquely identified by some cryptographic
+signing scheme e.g., each by their unique, private RSA key. They can
+mark a transaction between themselves, party <span
+class="math inline">\(A\)</span> and another user, party <span
+class="math inline">\(B\)</span>, by referring to the public key of
+<span class="math inline">\(B\)</span> and signing the transaction with
+<span class="math inline">\(A\)</span>’s private key. Based on this,
+other parties can then verify that <span
+class="math inline">\(A\)</span> was indeed the one who sent some money
+to <span class="math inline">\(B\)</span>.</p>
+<p>If everyone is updating their forks of the ledger independently,
+though, each with some potentially unsafe transactions, how do we
+enforce safety in a distributed fashion? Well, we must assume that there
+are at least some amount of honest nodes in the network that want to do
+good i.e., they are actually honest in wanting to only make sure that
+valid chains are kept in the system. Under this assumption, we can then
+use some mechanism that allows the honest agents to “outvote” the bad
+players when deciding on the correctness of the ledger. This can be
+implemented with the <em>proof of work</em> concept.</p>
+<p>Basically, we imagine appending a special <em>nonce</em> to each
+transaction, such that the original transaction concatenated with this
+nonce makes up the full transaction that goes into the chain. In order
+for a transaction be valid, though, we require some property of the
+hashed block be true that is computationally hard to invert. For
+example, by requiring that the SHA-256 hash of the original block plus
+the nonce starts with some number of zero bits. If this property holds
+true, then the transaction/block is considered valid, and this means
+fiddling with the data of the transaction would be computationally hard,
+since you would have to re-solve for a valid nonce. So, this implicitly
+ensures that votes are given to those with CPU power, and so if enough
+CPUs are “honest”, then we have a good guarantee that honest nodes will
+win out in selecting the true ledger.</p>
 <div class="center">
-<p><img src="diagrams/blockchain_diagrams/blockchain_diagrams.001.png" alt="image" /></p>
+<p><img src="diagrams/blockchain_diagrams/blockchain_diagrams.001.png"
+alt="image" /></p>
 </div>
-<p>In order to make a block “valid”, you have to sign it with a special hash that is based on the block’s content, and is computationally hard to come up with. This is the <em>proof of work</em>. So, if you’ve sent out a valid block with a valid proof of work, it means you must have spent some amount of computational work on creating this block. This serves as the kind of “voting” power, allowing the larger pool of computational resources in the network to outvote any minority of bad actors, since, on average, this larger pool will win out in creating valid blocks and extending their chain.</p>
+<p>In order to make a block “valid”, you have to sign it with a special
+hash that is based on the block’s content, and is computationally hard
+to come up with. This is the <em>proof of work</em>. So, if you’ve sent
+out a valid block with a valid proof of work, it means you must have
+spent some amount of computational work on creating this block. This
+serves as the kind of “voting” power, allowing the larger pool of
+computational resources in the network to outvote any minority of bad
+actors, since, on average, this larger pool will win out in creating
+valid blocks and extending their chain.</p>
 </section>
 <section id="ethereum" class="level2" data-number="5.2">
-<h2 data-number="5.2"><span class="header-section-number">5.2</span> Ethereum</h2>
-<p>Ethereum, originally published in a whitepaper <span class="citation" data-cites="Buterin2013">(<a href="#ref-Buterin2013" role="doc-biblioref">Buterin 2014</a>)</span> in 2014 by Vitalik Buterin, is a newer alternative to Bitcoin that is based on similar ideas and goals. Most notably, it introduces an explicit way to implement <em>smart contracts</em> within the Ethereum blockchain, which allows for more elaborate financial contracts and transactions to be carried out between parties in the system. This can be viewed as a kind of generalization of the basic banking <em>state transition model</em> of Bitcoin, that only allowed users to send value between each other without more complex contractual logic determining rules on how value can flow between parties.</p>
-<p>In Ethereum, the global system state is made up of objects called <em>accounts</em>, which are each identified by a 20-byte address. <em>Transactions</em> are direct transfers of value and information between accounts. An Ethereum account contains four fields:</p>
+<h2 data-number="5.2"><span class="header-section-number">5.2</span>
+Ethereum</h2>
+<p>Ethereum, originally published in a whitepaper <span class="citation"
+data-cites="Buterin2013">(<a href="#ref-Buterin2013"
+role="doc-biblioref">Buterin 2014</a>)</span> in 2014 by Vitalik
+Buterin, is a newer alternative to Bitcoin that is based on similar
+ideas and goals. Most notably, it introduces an explicit way to
+implement <em>smart contracts</em> within the Ethereum blockchain, which
+allows for more elaborate financial contracts and transactions to be
+carried out between parties in the system. This can be viewed as a kind
+of generalization of the basic banking <em>state transition model</em>
+of Bitcoin, that only allowed users to send value between each other
+without more complex contractual logic determining rules on how value
+can flow between parties.</p>
+<p>In Ethereum, the global system state is made up of objects called
+<em>accounts</em>, which are each identified by a 20-byte address.
+<em>Transactions</em> are direct transfers of value and information
+between accounts. An Ethereum account contains four fields:</p>
 <ol type="1">
-<li><p><strong>nonce</strong>: a counter to ensure transactions are processed once.</p></li>
-<li><p><strong>ether balance</strong>: the current balance of the account.</p></li>
+<li><p><strong>nonce</strong>: a counter to ensure transactions are
+processed once.</p></li>
+<li><p><strong>ether balance</strong>: the current balance of the
+account.</p></li>
 <li><p><strong>contract code</strong>: if present.</p></li>
 <li><p><strong>storage</strong>: which is empty by default.</p></li>
 </ol>
 <p>and there two different types of accounts:</p>
 <ul>
-<li><p><strong>Externally owned accounts</strong>: controlled by private keys. These accounts have no code, and you can send messages from such an account by creating and signing a transaction.</p></li>
-<li><p><strong>Contract accounts</strong>: controlled by their contract code. In these accounts, every time the contract account receives a <em>message</em> its code activates, allowing it to read and write to internal storage, send other messages, or create new contracts.</p></li>
+<li><p><strong>Externally owned accounts</strong>: controlled by private
+keys. These accounts have no code, and you can send messages from such
+an account by creating and signing a transaction.</p></li>
+<li><p><strong>Contract accounts</strong>: controlled by their contract
+code. In these accounts, every time the contract account receives a
+<em>message</em> its code activates, allowing it to read and write to
+internal storage, send other messages, or create new contracts.</p></li>
 </ul>
-<section id="messages-and-transactions" class="level3" data-number="5.2.1">
-<h3 data-number="5.2.1"><span class="header-section-number">5.2.1</span> Messages and Transactions</h3>
-<p>A <em>message</em> in Ethereum is similar to a “transaction" in Bitcoin, but differs in that an Ethereum message can be created either by an external entity or by a contract, whereas a Bitcoin transaction can only be created externally. There is also an explicit option for Ethereum messages to contain data. Finally, the recipient of an Ethereum message, if it is a contract account, has the option to return a response, which means that Ethereum messages also encompass the concept of functions.</p>
-<p><em>Transactions</em> in Ethereum contain the recipient of the message, a signature identifying the sender, the amount of ether and the data to send, as well as two values called <em>STARTGAS</em> and <em>GASPRICE</em>. To prevent exponential blowup and infinite loops in execution of contract code, each transaction is required to set a limit to how many computational steps of code execution it can spawn, including both the initial message and any additional messages that get spawned during execution. <em>STARTGAS</em> is the limit on computational steps, and <em>GASPRICE</em> is the fee to pay to the miner per computational step.</p>
+<section id="messages-and-transactions" class="level3"
+data-number="5.2.1">
+<h3 data-number="5.2.1"><span class="header-section-number">5.2.1</span>
+Messages and Transactions</h3>
+<p>A <em>message</em> in Ethereum is similar to a “transaction" in
+Bitcoin, but differs in that an Ethereum message can be created either
+by an external entity or by a contract, whereas a Bitcoin transaction
+can only be created externally. There is also an explicit option for
+Ethereum messages to contain data. Finally, the recipient of an Ethereum
+message, if it is a contract account, has the option to return a
+response, which means that Ethereum messages also encompass the concept
+of functions.</p>
+<p><em>Transactions</em> in Ethereum contain the recipient of the
+message, a signature identifying the sender, the amount of ether and the
+data to send, as well as two values called <em>STARTGAS</em> and
+<em>GASPRICE</em>. To prevent exponential blowup and infinite loops in
+execution of contract code, each transaction is required to set a limit
+to how many computational steps of code execution it can spawn,
+including both the initial message and any additional messages that get
+spawned during execution. <em>STARTGAS</em> is the limit on
+computational steps, and <em>GASPRICE</em> is the fee to pay to the
+miner per computational step.</p>
 </section>
 </section>
 <section id="blockchain-oracles" class="level2" data-number="5.3">
-<h2 data-number="5.3"><span class="header-section-number">5.3</span> Blockchain Oracles</h2>
-<p>Although smart contracts allow for secure, decentralized policies to be implemented within a blockchain network (e.g. in Ethereum) it is often the case that these contracts may want to use data sources that come from the outside wordl (e.g. stock stickers, weather, etc.). Mechanisms are needed for pulling in this data in a secure fashion, so that the security of the underlying contract is not compromised in cases where the external data source may also be compromised. A <em>blockchain oracle</em> <span class="citation" data-cites="2016towncrier breidenbach2021chainlink">(<a href="#ref-2016towncrier" role="doc-biblioref">Zhang et al. 2016</a>; <a href="#ref-breidenbach2021chainlink" role="doc-biblioref">Breidenbach et al. 2021</a>)</span> is a third party service that connects a smart contract with the outside world, in an effort to address this issue.</p>
-<p>Some of these oracle systems <span class="citation" data-cites="2016towncrier">(<a href="#ref-2016towncrier" role="doc-biblioref">Zhang et al. 2016</a>)</span> rely on running partially inside trusted execution environments, like Intel SGX.</p>
+<h2 data-number="5.3"><span class="header-section-number">5.3</span>
+Blockchain Oracles</h2>
+<p>Although smart contracts allow for secure, decentralized policies to
+be implemented within a blockchain network (e.g. in Ethereum) it is
+often the case that these contracts may want to use data sources that
+come from the outside wordl (e.g. stock stickers, weather, etc.).
+Mechanisms are needed for pulling in this data in a secure fashion, so
+that the security of the underlying contract is not compromised in cases
+where the external data source may also be compromised. A <em>blockchain
+oracle</em> <span class="citation"
+data-cites="2016towncrier breidenbach2021chainlink">(<a
+href="#ref-2016towncrier" role="doc-biblioref">Zhang et al. 2016</a>; <a
+href="#ref-breidenbach2021chainlink" role="doc-biblioref">Breidenbach et
+al. 2021</a>)</span> is a third party service that connects a smart
+contract with the outside world, in an effort to address this issue.</p>
+<p>Some of these oracle systems <span class="citation"
+data-cites="2016towncrier">(<a href="#ref-2016towncrier"
+role="doc-biblioref">Zhang et al. 2016</a>)</span> rely on running
+partially inside trusted execution environments, like Intel SGX.</p>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-2018abrahamsyncbyz" class="csl-entry" role="doc-biblioentry">
-Abraham, Ittai, Srinivas Devadas, Danny Dolev, Kartik Nayak, and Ling Ren. 2019. <span>“Synchronous Byzantine Agreement with Expected o(1) Rounds, Expected Communication, and Optimal Resilience.”</span> In <em>Financial Cryptography and Data Security: 23rd International Conference, FC 2019, Frigate Bay, St. Kitts and Nevis, February 18–22, 2019, Revised Selected Papers</em>, 320–34. Berlin, Heidelberg: Springer-Verlag. <a href="https://doi.org/10.1007/978-3-030-32101-7_20">https://doi.org/10.1007/978-3-030-32101-7_20</a>.
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-2018abrahamsyncbyz" class="csl-entry" role="listitem">
+Abraham, Ittai, Srinivas Devadas, Danny Dolev, Kartik Nayak, and Ling
+Ren. 2019. <span>“Synchronous Byzantine Agreement with Expected o(1)
+Rounds, Expected Communication, and Optimal Resilience.”</span> In
+<em>Financial Cryptography and Data Security: 23rd International
+Conference, FC 2019, Frigate Bay, St. Kitts and Nevis, February 18–22,
+2019, Revised Selected Papers</em>, 320–34. Berlin, Heidelberg:
+Springer-Verlag. <a
+href="https://doi.org/10.1007/978-3-030-32101-7_20">https://doi.org/10.1007/978-3-030-32101-7_20</a>.
 </div>
-<div id="ref-1990aspnesherlihy" class="csl-entry" role="doc-biblioentry">
-Aspnes, James, and M. Herlihy. 1990. <span>“Fast Randomized Consensus Using Shared Memory.”</span> <em>J. Algorithms</em> 11 (3): 441–61. <a href="https://doi.org/10.1016/0196-6774(90)90021-6">https://doi.org/10.1016/0196-6774(90)90021-6</a>.
+<div id="ref-1990aspnesherlihy" class="csl-entry" role="listitem">
+Aspnes, James, and M. Herlihy. 1990. <span>“Fast Randomized Consensus
+Using Shared Memory.”</span> <em>J. Algorithms</em> 11 (3): 441–61. <a
+href="https://doi.org/10.1016/0196-6774(90)90021-6">https://doi.org/10.1016/0196-6774(90)90021-6</a>.
 </div>
-<div id="ref-breidenbach2021chainlink" class="csl-entry" role="doc-biblioentry">
-Breidenbach, Lorenz, Christian Cachin, Benedict Chan, Alex Coventry, Steve Ellis, Ari Juels, Farinaz Koushanfar, et al. 2021. <span>“Chainlink 2.0: Next Steps in the Evolution of Decentralized Oracle Networks.”</span> <em>Chainlink Labs</em> 1: 1–136.
+<div id="ref-breidenbach2021chainlink" class="csl-entry"
+role="listitem">
+Breidenbach, Lorenz, Christian Cachin, Benedict Chan, Alex Coventry,
+Steve Ellis, Ari Juels, Farinaz Koushanfar, et al. 2021.
+<span>“Chainlink 2.0: Next Steps in the Evolution of Decentralized
+Oracle Networks.”</span> <em>Chainlink Labs</em> 1: 1–136.
 </div>
-<div id="ref-Buterin2013" class="csl-entry" role="doc-biblioentry">
-Buterin, Vitalik. 2014. <span>“<span>Ethereum White Paper: A Next Generation Smart Contract &amp; Decentralized Application Platform</span>.”</span> <a href="https://ethereum.org/whitepaper">https://ethereum.org/whitepaper</a>.
+<div id="ref-Buterin2013" class="csl-entry" role="listitem">
+Buterin, Vitalik. 2014. <span>“<span>Ethereum White Paper: A Next
+Generation Smart Contract &amp; Decentralized Application
+Platform</span>.”</span> <a
+href="https://ethereum.org/whitepaper">https://ethereum.org/whitepaper</a>.
 </div>
-<div id="ref-1999castropbft" class="csl-entry" role="doc-biblioentry">
-Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA: USENIX Association.
+<div id="ref-1999castropbft" class="csl-entry" role="listitem">
+Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine
+Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on
+Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA:
+USENIX Association.
 </div>
-<div id="ref-1991waitfreesync" class="csl-entry" role="doc-biblioentry">
-Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 13 (1): 124–49. <a href="https://doi.org/10.1145/114005.102808">https://doi.org/10.1145/114005.102808</a>.
+<div id="ref-1991waitfreesync" class="csl-entry" role="listitem">
+Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span>
+<em>ACM Trans. Program. Lang. Syst.</em> 13 (1): 124–49. <a
+href="https://doi.org/10.1145/114005.102808">https://doi.org/10.1145/114005.102808</a>.
 </div>
-<div id="ref-2011zab" class="csl-entry" role="doc-biblioentry">
-Junqueira, Flavio P., Benjamin C. Reed, and Marco Serafini. 2011. <span>“Zab: High-Performance Broadcast for Primary-Backup Systems.”</span> In <em>Proceedings of the 2011 IEEE/IFIP 41st International Conference on Dependable Systems&amp;networks</em>, 245–56. DSN ’11. USA: IEEE Computer Society. <a href="https://doi.org/10.1109/DSN.2011.5958223">https://doi.org/10.1109/DSN.2011.5958223</a>.
+<div id="ref-2011zab" class="csl-entry" role="listitem">
+Junqueira, Flavio P., Benjamin C. Reed, and Marco Serafini. 2011.
+<span>“Zab: High-Performance Broadcast for Primary-Backup
+Systems.”</span> In <em>Proceedings of the 2011 IEEE/IFIP 41st
+International Conference on Dependable Systems&amp;networks</em>,
+245–56. DSN ’11. USA: IEEE Computer Society. <a
+href="https://doi.org/10.1109/DSN.2011.5958223">https://doi.org/10.1109/DSN.2011.5958223</a>.
 </div>
-<div id="ref-lamport2001paxos" class="csl-entry" role="doc-biblioentry">
-Lamport, Leslie. 2001. <span>“Paxos Made Simple.”</span> <em>ACM SIGACT News (Distributed Computing Column) 32, 4 (Whole Number 121, December 2001)</em>, 51–58.
+<div id="ref-lamport2001paxos" class="csl-entry" role="listitem">
+Lamport, Leslie. 2001. <span>“Paxos Made Simple.”</span> <em>ACM SIGACT
+News (Distributed Computing Column) 32, 4 (Whole Number 121, December
+2001)</em>, 51–58.
 </div>
-<div id="ref-lamport2006fast" class="csl-entry" role="doc-biblioentry">
-———. 2006. <span>“Fast Paxos.”</span> <em>Distributed Computing</em> 19: 79–103. <a href="https://www.microsoft.com/en-us/research/publication/fast-paxos/">https://www.microsoft.com/en-us/research/publication/fast-paxos/</a>.
+<div id="ref-lamport2006fast" class="csl-entry" role="listitem">
+———. 2006. <span>“Fast Paxos.”</span> <em>Distributed Computing</em> 19:
+79–103. <a
+href="https://www.microsoft.com/en-us/research/publication/fast-paxos/">https://www.microsoft.com/en-us/research/publication/fast-paxos/</a>.
 </div>
-<div id="ref-2011lamport" class="csl-entry" role="doc-biblioentry">
-———. 2011. <span>“Byzantizing Paxos by Refinement.”</span> In <em>Proceedings of the 25th International Conference on Distributed Computing</em>, 211–24. DISC’11. Berlin, Heidelberg: Springer-Verlag.
+<div id="ref-2011lamport" class="csl-entry" role="listitem">
+———. 2011. <span>“Byzantizing Paxos by Refinement.”</span> In
+<em>Proceedings of the 25th International Conference on Distributed
+Computing</em>, 211–24. DISC’11. Berlin, Heidelberg: Springer-Verlag.
 </div>
-<div id="ref-lamport2009vertical" class="csl-entry" role="doc-biblioentry">
-Lamport, Leslie, Dahlia Malkhi, and Lidong Zhou. 2009. <span>“Vertical Paxos and Primary-Backup Replication.”</span> In <em>Proceedings of the 28th ACM Symposium on Principles of Distributed Computing</em>, 312–13.
+<div id="ref-lamport2009vertical" class="csl-entry" role="listitem">
+Lamport, Leslie, Dahlia Malkhi, and Lidong Zhou. 2009. <span>“Vertical
+Paxos and Primary-Backup Replication.”</span> In <em>Proceedings of the
+28th ACM Symposium on Principles of Distributed Computing</em>, 312–13.
 </div>
-<div id="ref-1982lamportshostak" class="csl-entry" role="doc-biblioentry">
-Lamport, Leslie, Robert Shostak, and Marshall Pease. 1982. <span>“<span>The Byzantine Generals Problem</span>.”</span> <em>ACM Trans. Program. Lang. Syst.</em> 4 (3): 382–401. <a href="https://doi.org/10.1145/357172.357176">https://doi.org/10.1145/357172.357176</a>.
+<div id="ref-1982lamportshostak" class="csl-entry" role="listitem">
+Lamport, Leslie, Robert Shostak, and Marshall Pease. 1982.
+<span>“<span>The Byzantine Generals Problem</span>.”</span> <em>ACM
+Trans. Program. Lang. Syst.</em> 4 (3): 382–401. <a
+href="https://doi.org/10.1145/357172.357176">https://doi.org/10.1145/357172.357176</a>.
 </div>
-<div id="ref-2013epaxosmoraru" class="csl-entry" role="doc-biblioentry">
-Moraru, Iulian, David G. Andersen, and Michael Kaminsky. 2013. <span>“There Is More Consensus in Egalitarian Parliaments.”</span> In <em>Proceedings of the Twenty-Fourth ACM Symposium on Operating Systems Principles</em>, 358–72. SOSP ’13. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2517349.2517350">https://doi.org/10.1145/2517349.2517350</a>.
+<div id="ref-2013epaxosmoraru" class="csl-entry" role="listitem">
+Moraru, Iulian, David G. Andersen, and Michael Kaminsky. 2013.
+<span>“There Is More Consensus in Egalitarian Parliaments.”</span> In
+<em>Proceedings of the Twenty-Fourth ACM Symposium on Operating Systems
+Principles</em>, 358–72. SOSP ’13. New York, NY, USA: Association for
+Computing Machinery. <a
+href="https://doi.org/10.1145/2517349.2517350">https://doi.org/10.1145/2517349.2517350</a>.
 </div>
-<div id="ref-nakamoto2009bitcoin" class="csl-entry" role="doc-biblioentry">
-Nakamoto, Satoshi. 2009. <span>“Bitcoin: A Peer-to-Peer Electronic Cash System,”</span> May. <a href="http://www.bitcoin.org/bitcoin.pdf">http://www.bitcoin.org/bitcoin.pdf</a>.
+<div id="ref-nakamoto2009bitcoin" class="csl-entry" role="listitem">
+Nakamoto, Satoshi. 2009. <span>“Bitcoin: A Peer-to-Peer Electronic Cash
+System,”</span> May. <a
+href="http://www.bitcoin.org/bitcoin.pdf">http://www.bitcoin.org/bitcoin.pdf</a>.
 </div>
-<div id="ref-1980peasereaching" class="csl-entry" role="doc-biblioentry">
-Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.
+<div id="ref-1980peasereaching" class="csl-entry" role="listitem">
+Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement
+in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a
+href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.
 </div>
-<div id="ref-2008zabsimple" class="csl-entry" role="doc-biblioentry">
-Reed, Benjamin, and Flavio P. Junqueira. 2008. <span>“A Simple Totally Ordered Broadcast Protocol.”</span> In <em>Proceedings of the 2nd Workshop on Large-Scale Distributed Systems and Middleware</em>. LADIS ’08. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/1529974.1529978">https://doi.org/10.1145/1529974.1529978</a>.
+<div id="ref-2008zabsimple" class="csl-entry" role="listitem">
+Reed, Benjamin, and Flavio P. Junqueira. 2008. <span>“A Simple Totally
+Ordered Broadcast Protocol.”</span> In <em>Proceedings of the 2nd
+Workshop on Large-Scale Distributed Systems and Middleware</em>. LADIS
+’08. New York, NY, USA: Association for Computing Machinery. <a
+href="https://doi.org/10.1145/1529974.1529978">https://doi.org/10.1145/1529974.1529978</a>.
 </div>
-<div id="ref-1978rivestcrypto" class="csl-entry" role="doc-biblioentry">
-Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for Obtaining Digital Signatures and Public-Key Cryptosystems.”</span> <em>Commun. ACM</em> 21 (2): 120–26. <a href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.
+<div id="ref-1978rivestcrypto" class="csl-entry" role="listitem">
+Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for
+Obtaining Digital Signatures and Public-Key Cryptosystems.”</span>
+<em>Commun. ACM</em> 21 (2): 120–26. <a
+href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.
 </div>
-<div id="ref-1978sift" class="csl-entry" role="doc-biblioentry">
-Wensley, J. H., L. Lamport, J. Goldberg, M. W. Green, K. N. Levitt, P. M. Melliar-Smith, R. E. Shostak, and C. B. Weinstock. 1978. <span>“SIFT: Design and Analysis of a Fault-Tolerant Computer for Aircraft Control.”</span> <em>Proceedings of the IEEE</em> 66 (10): 1240–55. <a href="https://doi.org/10.1109/PROC.1978.11114">https://doi.org/10.1109/PROC.1978.11114</a>.
+<div id="ref-1978sift" class="csl-entry" role="listitem">
+Wensley, J. H., L. Lamport, J. Goldberg, M. W. Green, K. N. Levitt, P.
+M. Melliar-Smith, R. E. Shostak, and C. B. Weinstock. 1978. <span>“SIFT:
+Design and Analysis of a Fault-Tolerant Computer for Aircraft
+Control.”</span> <em>Proceedings of the IEEE</em> 66 (10): 1240–55. <a
+href="https://doi.org/10.1109/PROC.1978.11114">https://doi.org/10.1109/PROC.1978.11114</a>.
 </div>
-<div id="ref-2016towncrier" class="csl-entry" role="doc-biblioentry">
-Zhang, Fan, Ethan Cecchetti, Kyle Croman, Ari Juels, and Elaine Shi. 2016. <span>“Town Crier: An Authenticated Data Feed for Smart Contracts.”</span> In <em>Proceedings of the 2016 ACM SIGSAC Conference on Computer and Communications Security</em>, 270–82. CCS ’16. New York, NY, USA: Association for Computing Machinery. <a href="https://doi.org/10.1145/2976749.2978326">https://doi.org/10.1145/2976749.2978326</a>.
+<div id="ref-2016towncrier" class="csl-entry" role="listitem">
+Zhang, Fan, Ethan Cecchetti, Kyle Croman, Ari Juels, and Elaine Shi.
+2016. <span>“Town Crier: An Authenticated Data Feed for Smart
+Contracts.”</span> In <em>Proceedings of the 2016 ACM SIGSAC Conference
+on Computer and Communications Security</em>, 270–82. CCS ’16. New York,
+NY, USA: Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2976749.2978326">https://doi.org/10.1145/2976749.2978326</a>.
 </div>
 </div>
 </section>

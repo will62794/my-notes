@@ -5,42 +5,75 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="William Schultz" />
+  <meta name="dcterms.date" content="2024-07-26" />
   <title>Abstract Interpretation</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
   </style>
   <link rel="stylesheet" href="../../style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">Abstract Interpretation</h1>
 <p class="author">William Schultz</p>
+<p class="date">2024-07-26</p>
 </header>
-<p>If we want to analyze the behavior of a program, we typically perform some kind of <em>abstraction</em>. That is, we approximate the concrete semantics of the program in some way that is sufficient for analysis. <em>Abstract interpretation</em> provides a formal framework for defining and performing these types of program abstractions.</p>
+<p>If we want to analyze the behavior of a program, we typically perform
+some kind of <em>abstraction</em>. That is, we approximate the concrete
+semantics of the program in some way that is sufficient for analysis.
+<em>Abstract interpretation</em> provides a formal framework for
+defining and performing these types of program abstractions.</p>
 <p>An <em>abstraction domain</em> is defined as follows:</p>
 <ul>
-<li><p><span class="math inline">\(C\)</span> is a <em>concrete domain</em> i.e., a set of elements with an associated partial order <span class="math inline">\(\leq\)</span>.</p></li>
-<li><p><span class="math inline">\(A\)</span> is an <em>abstract domain</em> with associated partial order <span class="math inline">\(\sqsubseteq\)</span> (elements of <span class="math inline">\(A\)</span> form a lattice).</p></li>
+<li><p><span class="math inline">\(C\)</span> is a <em>concrete
+domain</em> i.e., a set of elements with an associated partial order
+<span class="math inline">\(\leq\)</span>.</p></li>
+<li><p><span class="math inline">\(A\)</span> is an <em>abstract
+domain</em> with associated partial order <span
+class="math inline">\(\sqsubseteq\)</span> (elements of <span
+class="math inline">\(A\)</span> form a lattice).</p></li>
 </ul>
 <p>We then define mappings between these two sets:</p>
 <ul>
-<li><p><span class="math inline">\(\gamma : A \rightarrow C\)</span>: A <strong>concretization function</strong> that maps abstract values to sets of concrete elements.</p></li>
-<li><p><span class="math inline">\(\alpha : C \rightarrow A\)</span>: An <strong>abstraction function</strong> that maps sets of concrete elements to the most precise value in the abstract domain.</p></li>
+<li><p><span class="math inline">\(\gamma : A \rightarrow C\)</span>: A
+<strong>concretization function</strong> that maps abstract values to
+sets of concrete elements.</p></li>
+<li><p><span class="math inline">\(\alpha : C \rightarrow A\)</span>: An
+<strong>abstraction function</strong> that maps sets of concrete
+elements to the most precise value in the abstract domain.</p></li>
 </ul>
-<p>where <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\gamma\)</span> must form a <em>Galois connection</em>. That is, they satisfy the following condition <span class="math display">\[\begin{aligned}
-    \forall c \in C, \forall a \in A : \alpha(x) \sqsubseteq a \Leftrightarrow c \sqsubseteq \gamma(a) \end{aligned}\]</span></p>
+<p>where <span class="math inline">\(\alpha\)</span> and <span
+class="math inline">\(\gamma\)</span> must form a <em>Galois
+connection</em>. That is, they satisfy the following condition <span
+class="math display">\[\begin{aligned}
+    \forall c \in C, \forall a \in A : \alpha(x) \sqsubseteq a
+\Leftrightarrow c \sqsubseteq \gamma(a)
+\end{aligned}\]</span></p>
 <div class="center">
 <p><img src="diagrams/diagrams.001.png" alt="image" /></p>
 </div>
-<p>Note that a <em>lattice</em> <span class="math inline">\(L=(S,\sqsubseteq)\)</span> is a partially ordered set where each pair of elements has a least upper bound (i.e. <em>join</em> <span class="math inline">\(\sqcup\)</span>) and a greatest lower bound (i.e. <em>meet</em>, <span class="math inline">\(\sqcap\)</span>).</p>
+<p>Note that a <em>lattice</em> <span
+class="math inline">\(L=(S,\sqsubseteq)\)</span> is a partially ordered
+set where each pair of elements has a least upper bound (i.e.
+<em>join</em> <span class="math inline">\(\sqcup\)</span>) and a
+greatest lower bound (i.e. <em>meet</em>, <span
+class="math inline">\(\sqcap\)</span>).</p>
 </body>
 </html>

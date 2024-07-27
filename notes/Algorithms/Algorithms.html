@@ -10,16 +10,24 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
   </style>
   <link rel="stylesheet" href="../../style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <header id="title-block-header">
@@ -29,52 +37,98 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#graph-search"><span class="toc-section-number">1</span> Graph Search</a>
+<li><a href="#graph-search" id="toc-graph-search"><span
+class="toc-section-number">1</span> Graph Search</a>
 <ul>
-<li><a href="#depth-first-search"><span class="toc-section-number">1.1</span> Depth-first search</a></li>
-<li><a href="#breadth-first-search"><span class="toc-section-number">1.2</span> Breadth-first search</a></li>
+<li><a href="#depth-first-search" id="toc-depth-first-search"><span
+class="toc-section-number">1.1</span> Depth-first search</a></li>
+<li><a href="#breadth-first-search" id="toc-breadth-first-search"><span
+class="toc-section-number">1.2</span> Breadth-first search</a></li>
 </ul></li>
-<li><a href="#dynamic-programming"><span class="toc-section-number">2</span> Dynamic Programming</a>
+<li><a href="#dynamic-programming" id="toc-dynamic-programming"><span
+class="toc-section-number">2</span> Dynamic Programming</a>
 <ul>
-<li><a href="#stair-climbing">Stair Climbing</a></li>
-<li><a href="#sec:subset-sum">Subset Sum</a>
+<li><a href="#stair-climbing" id="toc-stair-climbing">Stair
+Climbing</a></li>
+<li><a href="#sec:subset-sum" id="toc-sec:subset-sum">Subset Sum</a>
 <ul>
-<li><a href="#bottom-up-computation">Bottom Up Computation</a></li>
+<li><a href="#bottom-up-computation"
+id="toc-bottom-up-computation">Bottom Up Computation</a></li>
 </ul></li>
-<li><a href="#knapsack">Knapsack</a></li>
-<li><a href="#longest-increasing-subsequence">Longest Increasing Subsequence</a></li>
-<li><a href="#general-technique">General Technique</a></li>
+<li><a href="#knapsack" id="toc-knapsack">Knapsack</a></li>
+<li><a href="#longest-increasing-subsequence"
+id="toc-longest-increasing-subsequence">Longest Increasing
+Subsequence</a></li>
+<li><a href="#general-technique" id="toc-general-technique">General
+Technique</a></li>
 </ul></li>
-<li><a href="#problem-list">Problem List</a>
+<li><a href="#problem-list" id="toc-problem-list">Problem List</a>
 <ul>
-<li><a href="#string-compression">String Compression</a></li>
-<li><a href="#move-zeroes">Move Zeroes</a></li>
-<li><a href="#is-subsequence">Is Subsequence</a></li>
-<li><a href="#product-of-array-except-self">Product of Array Except Self</a></li>
-<li><a href="#increasing-triplet-subsequence">Increasing Triplet Subsequence</a></li>
-<li><a href="#difference-of-two-arrays">Difference of Two Arrays</a></li>
-<li><a href="#merge-strings-alternately">Merge Strings Alternately</a></li>
-<li><a href="#greatest-common-divisor-of-strings">Greatest Common Divisor of Strings</a></li>
-<li><a href="#are-two-strings-close">Are Two Strings Close</a></li>
-<li><a href="#kids-with-greatest-number-of-candies">Kids with Greatest Number of Candies</a></li>
-<li><a href="#merge-k-sorted-lists">Merge k Sorted Lists</a></li>
-<li><a href="#remove-duplicates-from-sorted-linked-list">Remove duplicates from sorted linked list</a></li>
-<li><a href="#intersection-of-two-linked-lists">Intersection of two linked lists</a></li>
-<li><a href="#reverse-linked-list">Reverse linked list</a></li>
-<li><a href="#add-two-binary-strings">Add two binary strings</a></li>
-<li><a href="#subsets-of-a-list">Subsets of a list</a></li>
+<li><a href="#string-compression" id="toc-string-compression">String
+Compression</a></li>
+<li><a href="#move-zeroes" id="toc-move-zeroes">Move Zeroes</a></li>
+<li><a href="#is-subsequence" id="toc-is-subsequence">Is
+Subsequence</a></li>
+<li><a href="#product-of-array-except-self"
+id="toc-product-of-array-except-self">Product of Array Except
+Self</a></li>
+<li><a href="#increasing-triplet-subsequence"
+id="toc-increasing-triplet-subsequence">Increasing Triplet
+Subsequence</a></li>
+<li><a href="#difference-of-two-arrays"
+id="toc-difference-of-two-arrays">Difference of Two Arrays</a></li>
+<li><a href="#merge-strings-alternately"
+id="toc-merge-strings-alternately">Merge Strings Alternately</a></li>
+<li><a href="#greatest-common-divisor-of-strings"
+id="toc-greatest-common-divisor-of-strings">Greatest Common Divisor of
+Strings</a></li>
+<li><a href="#are-two-strings-close" id="toc-are-two-strings-close">Are
+Two Strings Close</a></li>
+<li><a href="#kids-with-greatest-number-of-candies"
+id="toc-kids-with-greatest-number-of-candies">Kids with Greatest Number
+of Candies</a></li>
+<li><a href="#merge-k-sorted-lists" id="toc-merge-k-sorted-lists">Merge
+k Sorted Lists</a></li>
+<li><a href="#remove-duplicates-from-sorted-linked-list"
+id="toc-remove-duplicates-from-sorted-linked-list">Remove duplicates
+from sorted linked list</a></li>
+<li><a href="#intersection-of-two-linked-lists"
+id="toc-intersection-of-two-linked-lists">Intersection of two linked
+lists</a></li>
+<li><a href="#reverse-linked-list" id="toc-reverse-linked-list">Reverse
+linked list</a></li>
+<li><a href="#add-two-binary-strings"
+id="toc-add-two-binary-strings">Add two binary strings</a></li>
+<li><a href="#subsets-of-a-list" id="toc-subsets-of-a-list">Subsets of a
+list</a></li>
 </ul></li>
 </ul>
 </nav>
 <section id="graph-search" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Graph Search</h1>
-<p>We can think about a general graph search algorithm as consisting of an <em>visited</em> set of nodes and a <em>frontier</em> set of nodes. The goal is to eventually have the visited set equal to all nodes in the graph. The frontier is a set of nodes that we maintain along the way. Initially, we set the frontier to the starting node of the graph. It is unexplored but currently on our list of nodes that need to be explored i.e. it is on the frontier. We then pick a new node from the frontier set, mark it as explored, and do any other work we might need to do, and then take all of its neighbors and add them to the frontier set. In summary, our model is as follows:</p>
+<h1 data-number="1"><span class="header-section-number">1</span> Graph
+Search</h1>
+<p>We can think about a general graph search algorithm as consisting of
+an <em>visited</em> set of nodes and a <em>frontier</em> set of nodes.
+The goal is to eventually have the visited set equal to all nodes in the
+graph. The frontier is a set of nodes that we maintain along the way.
+Initially, we set the frontier to the starting node of the graph. It is
+unexplored but currently on our list of nodes that need to be explored
+i.e. it is on the frontier. We then pick a new node from the frontier
+set, mark it as explored, and do any other work we might need to do, and
+then take all of its neighbors and add them to the frontier set. In
+summary, our model is as follows:</p>
 <ul>
-<li><p><em>visited</em>: Set of nodes we have seen i.e., marked as visitied.</p></li>
-<li><p><em>frontier</em>: Set of nodes that we know about and know are reachable, but have not yet visited.</p></li>
+<li><p><em>visited</em>: Set of nodes we have seen i.e., marked as
+visitied.</p></li>
+<li><p><em>frontier</em>: Set of nodes that we know about and know are
+reachable, but have not yet visited.</p></li>
 </ul>
-<p>We can view BFS and DFS searches as simply variants of this model in terms of how they select the next nodes to visit out of the current <em>frontier</em> set.</p>
-<p>For example, consider two steps of a graph search progression, where blue nodes as visited and gray nodes as those in the frontier, and node K is the newly visited node below:</p>
+<p>We can view BFS and DFS searches as simply variants of this model in
+terms of how they select the next nodes to visit out of the current
+<em>frontier</em> set.</p>
+<p>For example, consider two steps of a graph search progression, where
+blue nodes as visited and gray nodes as those in the frontier, and node
+K is the newly visited node below:</p>
 <div class="center">
 <p><img src="diagrams/g3.png" alt="image" /></p>
 </div>
@@ -82,95 +136,280 @@
 <p><img src="diagrams/g4.png" alt="image" /></p>
 </div>
 <section id="depth-first-search" class="level2" data-number="1.1">
-<h2 data-number="1.1"><span class="header-section-number">1.1</span> Depth-first search</h2>
-<p>Depth-first search searches deeper in a graph before searching broader. Can do a basic recursive or iterative implementation. Iterative implementation uses a stack to keep track of the frontier nodes, so that we explore deeper nodes first. We can also implement depth first search in a way that lets us recover paths to a node, by storing parent pointers as we go.</p>
-<p>Note that if we want to explore a <em>tree</em>, or, more generally, any acyclic graph, then we can use a depth first search without checking whether we have already seen a previously <em>visited</em> node. Since, there are no cycles, the worst that will happen is we may mark a node as visited multiple times, but we should never get into a nonterminating loop in the search.</p>
+<h2 data-number="1.1"><span class="header-section-number">1.1</span>
+Depth-first search</h2>
+<p>Depth-first search searches deeper in a graph before searching
+broader. Can do a basic recursive or iterative implementation. Iterative
+implementation uses a stack to keep track of the frontier nodes, so that
+we explore deeper nodes first. We can also implement depth first search
+in a way that lets us recover paths to a node, by storing parent
+pointers as we go.</p>
+<p>Note that if we want to explore a <em>tree</em>, or, more generally,
+any acyclic graph, then we can use a depth first search without checking
+whether we have already seen a previously <em>visited</em> node. Since,
+there are no cycles, the worst that will happen is we may mark a node as
+visited multiple times, but we should never get into a nonterminating
+loop in the search.</p>
 </section>
 <section id="breadth-first-search" class="level2" data-number="1.2">
-<h2 data-number="1.2"><span class="header-section-number">1.2</span> Breadth-first search</h2>
-<p>Breadth-first search searches all closer nodes before searching farther nodes i.e. it progresses in “levels" of depth. Not a standard way to implement it recursively, but can use a queue to keep track of the frontier nodes.</p>
+<h2 data-number="1.2"><span class="header-section-number">1.2</span>
+Breadth-first search</h2>
+<p>Breadth-first search searches all closer nodes before searching
+farther nodes i.e. it progresses in “levels" of depth. Not a standard
+way to implement it recursively, but can use a queue to keep track of
+the frontier nodes.</p>
 </section>
 </section>
 <section id="dynamic-programming" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Dynamic Programming</h1>
-<p>There are 2 main components of a problem that make it amenable to a so-called “dynamic programming” (badly named) approach:</p>
+<h1 data-number="2"><span class="header-section-number">2</span> Dynamic
+Programming</h1>
+<p>There are 2 main components of a problem that make it amenable to a
+so-called “dynamic programming” (badly named) approach:</p>
 <ol>
-<li><p><strong>Optimal Substructure</strong>: A global solution can be described in terms of solutions to smaller “local” problems. In other words, it is possible to find a solution to a larger problem by solving smaller problems and combine them in an efficient way.</p></li>
-<li><p><strong>Overlapping Subproblems</strong>: The global problem can be broken down into smaller “local" sub-problems, and there is some overlap/redundancy between these subproblems, which is where you ideally get the efficiency speedup from.</p></li>
+<li><p><strong>Optimal Substructure</strong>: A global solution can be
+described in terms of solutions to smaller “local” problems. In other
+words, it is possible to find a solution to a larger problem by solving
+smaller problems and combine them in an efficient way.</p></li>
+<li><p><strong>Overlapping Subproblems</strong>: The global problem can
+be broken down into smaller “local" sub-problems, and there is some
+overlap/redundancy between these subproblems, which is where you ideally
+get the efficiency speedup from.</p></li>
 </ol>
-<p>Note that either (1) and (2), in isolation, don’t necessarily permit an efficient, dynamic programming based approach to a problem. For example, we can consider <em>divide and conquer</em> type approaches as satisfying the <em>optimal substructure</em> property, but don’t necessarily satisfy the <em>overlapping subproblems</em> property. For example, merge sort solves smaller subproblems (subsequences of an original list) and then merges them into a larger solution. But, in general, these smaller sorting problems cannot be expected to actually overlap at all.</p>
+<p>Note that either (1) and (2), in isolation, don’t necessarily permit
+an efficient, dynamic programming based approach to a problem. For
+example, we can consider <em>divide and conquer</em> type approaches as
+satisfying the <em>optimal substructure</em> property, but don’t
+necessarily satisfy the <em>overlapping subproblems</em> property. For
+example, merge sort solves smaller subproblems (subsequences of an
+original list) and then merges them into a larger solution. But, in
+general, these smaller sorting problems cannot be expected to actually
+overlap at all.</p>
 <p>Examples of problems with efficient DP approaches:</p>
 <ol>
-<li><p><strong>Fibonacci</strong>: Compute the <span class="math inline">\(n\)</span>-th Fibonacci number.</p></li>
-<li><p><strong>Subset Sum</strong>: Given a set (multi-set) <span class="math inline">\(S\)</span> of integers and a target sum <span class="math inline">\(k\)</span>, determine if there is a subset of <span class="math inline">\(X \subseteq S\)</span> such that the sum of integers in <span class="math inline">\(X\)</span> equals <span class="math inline">\(k\)</span>.</p></li>
-<li><p><strong>Knapsack</strong>: Given a set of <span class="math inline">\(n\)</span> items, each with a weight <span class="math inline">\(w_i\)</span> and values <span class="math inline">\(v_i\)</span>, find a subset of items that fits in a knapsack of capacity <span class="math inline">\(B\)</span> and maximizes the overall value of included items.</p></li>
-<li><p><strong>Weighted Interval Scheduling</strong>: Given a set of intervals <span class="math inline">\((s_i,e_i, W_i)\)</span> represent as start and end times <span class="math inline">\(s_i\)</span> and <span class="math inline">\(e_i\)</span>, respectively, and weight <span class="math inline">\(W_i\)</span>, determine the maximum weight set of non-overlapping intervals.</p></li>
-<li><p><strong>Minimum Edit Distance</strong>: Given two strings <span class="math inline">\(S\)</span> and <span class="math inline">\(T\)</span> over some alphabet of characters <span class="math inline">\(\Sigma\)</span>, determine the minimum number of insertions or deletions needed to transform <span class="math inline">\(S\)</span> to <span class="math inline">\(T\)</span>.</p></li>
-<li><p><strong>Matrix Chain Multiplication</strong>: Given a sequence of matrices, determine the most efficient order in which to multiple them</p></li>
+<li><p><strong>Fibonacci</strong>: Compute the <span
+class="math inline">\(n\)</span>-th Fibonacci number.</p></li>
+<li><p><strong>Subset Sum</strong>: Given a set (multi-set) <span
+class="math inline">\(S\)</span> of integers and a target sum <span
+class="math inline">\(k\)</span>, determine if there is a subset of
+<span class="math inline">\(X \subseteq S\)</span> such that the sum of
+integers in <span class="math inline">\(X\)</span> equals <span
+class="math inline">\(k\)</span>.</p></li>
+<li><p><strong>Knapsack</strong>: Given a set of <span
+class="math inline">\(n\)</span> items, each with a weight <span
+class="math inline">\(w_i\)</span> and values <span
+class="math inline">\(v_i\)</span>, find a subset of items that fits in
+a knapsack of capacity <span class="math inline">\(B\)</span> and
+maximizes the overall value of included items.</p></li>
+<li><p><strong>Weighted Interval Scheduling</strong>: Given a set of
+intervals <span class="math inline">\((s_i,e_i, W_i)\)</span> represent
+as start and end times <span class="math inline">\(s_i\)</span> and
+<span class="math inline">\(e_i\)</span>, respectively, and weight <span
+class="math inline">\(W_i\)</span>, determine the maximum weight set of
+non-overlapping intervals.</p></li>
+<li><p><strong>Minimum Edit Distance</strong>: Given two strings <span
+class="math inline">\(S\)</span> and <span
+class="math inline">\(T\)</span> over some alphabet of characters <span
+class="math inline">\(\Sigma\)</span>, determine the minimum number of
+insertions or deletions needed to transform <span
+class="math inline">\(S\)</span> to <span
+class="math inline">\(T\)</span>.</p></li>
+<li><p><strong>Matrix Chain Multiplication</strong>: Given a sequence of
+matrices, determine the most efficient order in which to multiple
+them</p></li>
 </ol>
-<p>Can also look at some problems as having solution that can be built by a sequence of choices of which elements to add to the solution. This also allows for a more unified view in some cases between a greedy approach and a DP approach. For example, in the <em>Subset Sum</em> problem, we can imagine a strategy where we build a solution by picking new elements from the original set to add to our output solution. We might take some kind of greedy approach where we, for example, pick the next smallest value and add it to our output. Clearly, the issue with the greedy approach in this problem is that it can get “stuck”, with no next choices that allow the solution to be rectified, even if a solution does exist.</p>
+<p>Can also look at some problems as having solution that can be built
+by a sequence of choices of which elements to add to the solution. This
+also allows for a more unified view in some cases between a greedy
+approach and a DP approach. For example, in the <em>Subset Sum</em>
+problem, we can imagine a strategy where we build a solution by picking
+new elements from the original set to add to our output solution. We
+might take some kind of greedy approach where we, for example, pick the
+next smallest value and add it to our output. Clearly, the issue with
+the greedy approach in this problem is that it can get “stuck”, with no
+next choices that allow the solution to be rectified, even if a solution
+does exist.</p>
 <section id="stair-climbing" class="level2 unnumbered">
 <h2 class="unnumbered">Stair Climbing</h2>
-<p>This is an example of a somewhat simpler DP problem but is good to practice the basics. We are given a staircase, which can be represented as simply a sequence of <span class="math inline">\(n\)</span> steps, each with an associated cost. You can start at either the 0th or 1st step, and at each step you pay the cost of the current step and take either 1 or 2 steps up. Given these rules, you want to find the path up the stairs with minimal overall cost. This problem has a simple recursive breakdown that is simpler in character to other path finding problems, where the overall minimum cost solution can be represented in terms minimum cost solution to smaller paths of the original problem. Basically, if we say <span class="math inline">\(\mathit{MinCost}(i)\)</span> is the minimum cost solution starting from step index <span class="math inline">\(i\)</span>, then we can represent this solution recursively as <span class="math display">\[\begin{aligned}
-    \mathit{MinCost}(i) = cost(i) + \mathit{Min}(\mathit{MinCost}(i+1), \mathit{MinCost}(i+2))\end{aligned}\]</span> while also accounting for the base case where <span class="math inline">\(i &gt; n\)</span>, in which case this means we’ve reached the top and can return cost 0.</p>
-<p>If we expand the above recursion naively, though, it will contain an exponential number of calls, though there are many shared subproblems, similar to Fibonacci.</p>
+<p>This is an example of a somewhat simpler DP problem but is good to
+practice the basics. We are given a staircase, which can be represented
+as simply a sequence of <span class="math inline">\(n\)</span> steps,
+each with an associated cost. You can start at either the 0th or 1st
+step, and at each step you pay the cost of the current step and take
+either 1 or 2 steps up. Given these rules, you want to find the path up
+the stairs with minimal overall cost. This problem has a simple
+recursive breakdown that is simpler in character to other path finding
+problems, where the overall minimum cost solution can be represented in
+terms minimum cost solution to smaller paths of the original problem.
+Basically, if we say <span
+class="math inline">\(\mathit{MinCost}(i)\)</span> is the minimum cost
+solution starting from step index <span
+class="math inline">\(i\)</span>, then we can represent this solution
+recursively as <span class="math display">\[\begin{aligned}
+    \mathit{MinCost}(i) = cost(i) + \mathit{Min}(\mathit{MinCost}(i+1),
+\mathit{MinCost}(i+2))
+\end{aligned}\]</span> while also accounting for the base case where
+<span class="math inline">\(i &gt; n\)</span>, in which case this means
+we’ve reached the top and can return cost 0.</p>
+<p>If we expand the above recursion naively, though, it will contain an
+exponential number of calls, though there are many shared subproblems,
+similar to Fibonacci.</p>
 <div class="center">
 <p><img src="diagrams/stairs_tree.png" alt="image" /></p>
 </div>
-<p>One simple approach here is to memoize solutions as we go, avoiding the exponential work blowup.</p>
+<p>One simple approach here is to memoize solutions as we go, avoiding
+the exponential work blowup.</p>
 </section>
 <section id="sec:subset-sum" class="level2 unnumbered">
 <h2 class="unnumbered">Subset Sum</h2>
-<p>To understand the idea behind approach for <strong>Subset Sum</strong>, can think about each element of the given list of <span class="math inline">\(n\)</span> integers <span class="math inline">\(S=\{a_1,\dots,a_n\}\)</span>. If we wanted to come up with a naive recursive solution, we could imagine the decision tree for building all subsets of <span class="math inline">\(S\)</span>, where each branch point represents whether we include that element or not in the subset. This is one way to simply generate all possible subsets of a given set. Within this tree, though, at each node, we can imagine we are dealing with a subset of the original set, based on the subset (e.g. suffix) of elements that we have not made a choice about including or excluding. Along with this, we can imagine that each node of the tree also has associated with it the “remaining target” amount, which is the target minus the sum of elements included based on this decision path in the tree. Now, even though this tree naively has size (i.e, width) exponential in the number of elements, there are actually a limited number of unique problems to solve in this tree, so there is sufficient overlap between them to make this efficient.</p>
-<p>The recursive formulation of subset sum can then be formulated as follows, where <span class="math inline">\(SS(i,T)\)</span> represents the solution to subset sum for suffix <span class="math inline">\(S[i..]\)</span> and target value <span class="math inline">\(T\)</span>: <span class="math display">\[\begin{aligned}
-    SS(i, T) = SS(i+1, T-S[i]) \vee SS(i+1, T)\end{aligned}\]</span> representing the two possible decision branches (i.e. include element <span class="math inline">\(i\)</span> or don’t include it). We can then compute this recursive formulation efficiently by caching/memoizing results to <span class="math inline">\(SS(i,T)\)</span> subproblems as we go.</p>
+<p>To understand the idea behind approach for <strong>Subset
+Sum</strong>, can think about each element of the given list of <span
+class="math inline">\(n\)</span> integers <span
+class="math inline">\(S=\{a_1,\dots,a_n\}\)</span>. If we wanted to come
+up with a naive recursive solution, we could imagine the decision tree
+for building all subsets of <span class="math inline">\(S\)</span>,
+where each branch point represents whether we include that element or
+not in the subset. This is one way to simply generate all possible
+subsets of a given set. Within this tree, though, at each node, we can
+imagine we are dealing with a subset of the original set, based on the
+subset (e.g. suffix) of elements that we have not made a choice about
+including or excluding. Along with this, we can imagine that each node
+of the tree also has associated with it the “remaining target” amount,
+which is the target minus the sum of elements included based on this
+decision path in the tree. Now, even though this tree naively has size
+(i.e, width) exponential in the number of elements, there are actually a
+limited number of unique problems to solve in this tree, so there is
+sufficient overlap between them to make this efficient.</p>
+<p>The recursive formulation of subset sum can then be formulated as
+follows, where <span class="math inline">\(SS(i,T)\)</span> represents
+the solution to subset sum for suffix <span
+class="math inline">\(S[i..]\)</span> and target value <span
+class="math inline">\(T\)</span>: <span
+class="math display">\[\begin{aligned}
+    SS(i, T) = SS(i+1, T-S[i]) \vee SS(i+1, T)
+\end{aligned}\]</span> representing the two possible decision branches
+(i.e. include element <span class="math inline">\(i\)</span> or don’t
+include it). We can then compute this recursive formulation efficiently
+by caching/memoizing results to <span
+class="math inline">\(SS(i,T)\)</span> subproblems as we go.</p>
 <section id="bottom-up-computation" class="level3 unnumbered">
 <h3 class="unnumbered">Bottom Up Computation</h3>
-<p>Note that many problems of this character can be computed in either a “top down” or “bottom up” fashion. In our recursive formulation, we are formulating this top-down, since we are starting with larger problems and breaking them down into smaller ones, and we can deal with overlapping subproblems by caching/memoizing as we go. In a bottom up approach, we can build a table of subproblems potentially starting with smaller ones first. For example, in the subset sum problem, we can build a <span class="math inline">\(n \times T\)</span> table <span class="math inline">\(M\)</span> where entry <span class="math inline">\(M[k][t]\)</span> represents the solution to problem with target sum <span class="math inline">\(t\)</span> and suffix <span class="math inline">\(S[k..]\)</span> of elements starting from index <span class="math inline">\(k\)</span> from the original array.</p>
-<p>We know from our recursive formulation above that <span class="math display">\[\begin{aligned}
-    M[k][t] = M[k+1][t-S[k]] \vee M[k+1][t]\end{aligned}\]</span> so we can use this to iteratively compute the entries in the table until we arrive at the solution to the top level problem.</p>
-<p>Note, however, that in some cases computing such a table is actually be slightly wasteful/unnecessary, even if it may still have good asymptotic complexity. That is, when we go top down, we can typically compute exactly the tree of subproblems that are actually needed for solving the top level problem. When going bottom up in this tabular fashion, though, we may actually end up computing solutions to some additional, unused subproblems, that are technically never used to compute the overall solution.</p>
-<p>For example, here is a full recursion/decision tree for a subset sum computed for <span class="math display">\[S=\{1,2,3,5,9\},T=18\]</span></p>
+<p>Note that many problems of this character can be computed in either a
+“top down” or “bottom up” fashion. In our recursive formulation, we are
+formulating this top-down, since we are starting with larger problems
+and breaking them down into smaller ones, and we can deal with
+overlapping subproblems by caching/memoizing as we go. In a bottom up
+approach, we can build a table of subproblems potentially starting with
+smaller ones first. For example, in the subset sum problem, we can build
+a <span class="math inline">\(n \times T\)</span> table <span
+class="math inline">\(M\)</span> where entry <span
+class="math inline">\(M[k][t]\)</span> represents the solution to
+problem with target sum <span class="math inline">\(t\)</span> and
+suffix <span class="math inline">\(S[k..]\)</span> of elements starting
+from index <span class="math inline">\(k\)</span> from the original
+array.</p>
+<p>We know from our recursive formulation above that <span
+class="math display">\[\begin{aligned}
+    M[k][t] = M[k+1][t-S[k]] \vee M[k+1][t]
+\end{aligned}\]</span> so we can use this to iteratively compute the
+entries in the table until we arrive at the solution to the top level
+problem.</p>
+<p>Note, however, that in some cases computing such a table is actually
+be slightly wasteful/unnecessary, even if it may still have good
+asymptotic complexity. That is, when we go top down, we can typically
+compute exactly the tree of subproblems that are actually needed for
+solving the top level problem. When going bottom up in this tabular
+fashion, though, we may actually end up computing solutions to some
+additional, unused subproblems, that are technically never used to
+compute the overall solution.</p>
+<p>For example, here is a full recursion/decision tree for a subset sum
+computed for <span
+class="math display">\[S=\{1,2,3,5,9\},T=18\]</span></p>
 <div class="center">
 <p><img src="diagrams/subset_sum_tree.png" alt="image" /></p>
 </div>
-<p>and then we can look at the same tree but with identical subproblem nodes merged into one, illustrating the redundancy in subproblems:</p>
+<p>and then we can look at the same tree but with identical subproblem
+nodes merged into one, illustrating the redundancy in subproblems:</p>
 <div class="center">
 <p><img src="diagrams/subset_sum_tree_opt.png" alt="image" /></p>
 </div>
-<p>In a bottom up approach, we would, instead of generating the subproblems in this tree explicitly, just start at the “leaf" level of this tree, compute the answers to those subproblems, and then work our way up to the top, combining solutions to smaller subproblems as we go. Note, though, that in the bottom row, for example, we never encounter a <span class="math inline">\((\{9\},6)\)</span> subproblem, even though it may be computed in the bottom up approach.</p>
+<p>In a bottom up approach, we would, instead of generating the
+subproblems in this tree explicitly, just start at the “leaf" level of
+this tree, compute the answers to those subproblems, and then work our
+way up to the top, combining solutions to smaller subproblems as we go.
+Note, though, that in the bottom row, for example, we never encounter a
+<span class="math inline">\((\{9\},6)\)</span> subproblem, even though
+it may be computed in the bottom up approach.</p>
 </section>
 </section>
 <section id="knapsack" class="level2 unnumbered">
 <h2 class="unnumbered">Knapsack</h2>
-<p>0-1 Knapsack is very similar to Subset Sum i.e., we have to determine if there exists a subset of <span class="math inline">\(n\)</span> given items with corresponding weights and values <span class="math inline">\((w_i,v_i)\)</span>, that remains under our given capacity and maximizes the sum of the chosen item values. Indeed, we can think of <strong>Subset Sum</strong> as a special case of the knapsack problem, where the values and weights of each element are the same. As in <strong>Subset Sum</strong> case, we can imagine a solution search tree where we either include or exclude the first element, and the subproblems we recurse on are basically the rest of the elements with a capacity reduced by that of our first element, or the rest of the elements with the original capacity. Again, this tree might grow exponentially, but, if our capacity is <span class="math inline">\(C\)</span>, we actually only have at most <span class="math inline">\(C\)</span> unique possible capacities, and at most <span class="math inline">\(n\)</span> suffixes of elements. Note also that the minor difference from Subset Sum is that, when we combine solutions to recursive subproblems, we want to take the maximum solution (since this is an optimization problem variant), rather than just taking the disjunction. So, the recursive formulation is as follows <span class="math display">\[\begin{aligned}
-    &amp;\textsc{Knapsack}(S,C,i) = 
+<p>0-1 Knapsack is very similar to Subset Sum i.e., we have to determine
+if there exists a subset of <span class="math inline">\(n\)</span> given
+items with corresponding weights and values <span
+class="math inline">\((w_i,v_i)\)</span>, that remains under our given
+capacity and maximizes the sum of the chosen item values. Indeed, we can
+think of <strong>Subset Sum</strong> as a special case of the knapsack
+problem, where the values and weights of each element are the same. As
+in <strong>Subset Sum</strong> case, we can imagine a solution search
+tree where we either include or exclude the first element, and the
+subproblems we recurse on are basically the rest of the elements with a
+capacity reduced by that of our first element, or the rest of the
+elements with the original capacity. Again, this tree might grow
+exponentially, but, if our capacity is <span
+class="math inline">\(C\)</span>, we actually only have at most <span
+class="math inline">\(C\)</span> unique possible capacities, and at most
+<span class="math inline">\(n\)</span> suffixes of elements. Note also
+that the minor difference from Subset Sum is that, when we combine
+solutions to recursive subproblems, we want to take the maximum solution
+(since this is an optimization problem variant), rather than just taking
+the disjunction. So, the recursive formulation is as follows <span
+class="math display">\[\begin{aligned}
+    &amp;\textsc{Knapsack}(S,C,i) =
     \begin{cases}
         \textsc{Knapsack}(S,C, i-1) \text{ if } (C-w_i) \leq 0 \\
         Max
         \begin{cases}
-            v_1 + \textsc{Knapsack}(S,C-w_i,i-1) \text{ if } (C-w_i) &gt; 0 \\
+            v_1 + \textsc{Knapsack}(S,C-w_i,i-1) \text{ if } (C-w_i)
+&gt; 0 \\
             \textsc{Knapsack}(S,C,i-1) \\
         \end{cases}
-    \end{cases}\\\end{aligned}\]</span></p>
+    \end{cases}\\
+\end{aligned}\]</span></p>
 </section>
 <section id="longest-increasing-subsequence" class="level2 unnumbered">
 <h2 class="unnumbered">Longest Increasing Subsequence</h2>
 <ul>
-<li><p><strong>Problem</strong>: Given an array of size <span class="math inline">\(n\)</span>, find the length of the longest increasing subsequence i.e., the longest possible subsequence in which the elements of the subsequence are sorted in increasing order.</p></li>
-<li><p><strong>Solution Idea</strong>: If we consider any increasing subsequence, we can always naturally extend it with an earlier, smaller element in the array. So, if we have a longest possible subsequence for a suffix of our original array, we should be able to potentially extend it with with an earlier element that is smaller than the minimum element of this subsequence. (TODO: Think more about the above reasoning?)</p></li>
+<li><p><strong>Problem</strong>: Given an array of size <span
+class="math inline">\(n\)</span>, find the length of the longest
+increasing subsequence i.e., the longest possible subsequence in which
+the elements of the subsequence are sorted in increasing order.</p></li>
+<li><p><strong>Solution Idea</strong>: If we consider any increasing
+subsequence, we can always naturally extend it with an earlier, smaller
+element in the array. So, if we have a longest possible subsequence for
+a suffix of our original array, we should be able to potentially extend
+it with with an earlier element that is smaller than the minimum element
+of this subsequence. (TODO: Think more about the above
+reasoning?)</p></li>
 </ul>
 </section>
 <section id="general-technique" class="level2 unnumbered">
 <h2 class="unnumbered">General Technique</h2>
-<p>Overall, one high-level, general approach to solving problems amenable to a dynamic programming can be viewed as follows:</p>
+<p>Overall, one high-level, general approach to solving problems
+amenable to a dynamic programming can be viewed as follows:</p>
 <ol>
 <li><p>Is it a decision or optimization problem?</p></li>
-<li><p>Define the recursive formulation of the problem i.e., how you would define the solution to a larger problem in terms of smaller subproblems. (i.e. <em>optimal substructure</em>)</p></li>
-<li><p>Identify any sharing between subproblems. (i.e. <em>overlapping subproblems</em>)</p></li>
-<li><p>Decide on an implementation strategy: top-down or bottom up.</p></li>
+<li><p>Define the recursive formulation of the problem i.e., how you
+would define the solution to a larger problem in terms of smaller
+subproblems. (i.e. <em>optimal substructure</em>)</p></li>
+<li><p>Identify any sharing between subproblems. (i.e. <em>overlapping
+subproblems</em>)</p></li>
+<li><p>Decide on an implementation strategy: top-down or bottom
+up.</p></li>
 </ol>
-<p>N.B. <em>It is important to remember to first formulate the problem abstractly in terms of the inductive/recursive structure, then think about it in terms of how substructure is shared in a DAG, and only then worry about coding strategies.</em></p>
+<p>N.B. <em>It is important to remember to first formulate the problem
+abstractly in terms of the inductive/recursive structure, then think
+about it in terms of how substructure is shared in a DAG, and only then
+worry about coding strategies.</em></p>
 </section>
 </section>
 <section id="problem-list" class="level1 unnumbered">
@@ -178,88 +417,166 @@
 <section id="string-compression" class="level3 unnumbered">
 <h3 class="unnumbered">String Compression</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given an array of characters, compress the string by replacing repeated consecutvie characters by that character follower by the number of times it appears. Do this compression pass in place.</p></li>
-<li><p><strong>Solution Idea</strong>: Each string will get compressed into a string of size <span class="math inline">\(leq\)</span> itself, so we can process character groups from left to right, recording the beginning and end of a consecutive character group, and its size. We can keep track of an index in the array of where to place the next compressed string, and move this along as we go overwriting lower parts of the array while continuing to process upper parts.</p></li>
+<li><p><strong>Problem</strong>: Given an array of characters, compress
+the string by replacing repeated consecutvie characters by that
+character follower by the number of times it appears. Do this
+compression pass in place.</p></li>
+<li><p><strong>Solution Idea</strong>: Each string will get compressed
+into a string of size <span class="math inline">\(leq\)</span> itself,
+so we can process character groups from left to right, recording the
+beginning and end of a consecutive character group, and its size. We can
+keep track of an index in the array of where to place the next
+compressed string, and move this along as we go overwriting lower parts
+of the array while continuing to process upper parts.</p></li>
 </ul>
 </section>
 <section id="move-zeroes" class="level3 unnumbered">
 <h3 class="unnumbered">Move Zeroes</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given an array of integers, move all zeroes in the array to the end of the array, while maintaining the relative order of the non-zero elements.</p></li>
-<li><p><strong>Solution Idea</strong>: TODO. How to do this in-place, and with the optimal number of operations?</p></li>
+<li><p><strong>Problem</strong>: Given an array of integers, move all
+zeroes in the array to the end of the array, while maintaining the
+relative order of the non-zero elements.</p></li>
+<li><p><strong>Solution Idea</strong>: TODO. How to do this in-place,
+and with the optimal number of operations?</p></li>
 </ul>
 </section>
 <section id="is-subsequence" class="level3 unnumbered">
 <h3 class="unnumbered">Is Subsequence</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given a string <span class="math inline">\(s\)</span> and string <span class="math inline">\(t\)</span>, determine if <span class="math inline">\(s\)</span> appears as a subsequence of <span class="math inline">\(t\)</span>.</p></li>
-<li><p><strong>Solution Idea</strong>: Idea is to scan forward in both strings, maintaining a current pointer in both. When characters match, you can move forward both poitners, and when they don’t match, you can move forward the pointer in <span class="math inline">\(t\)</span> (we can assume <span class="math inline">\(t\)</span> is longer than <span class="math inline">\(s\)</span>). After we reach the end of <span class="math inline">\(t\)</span> with the pointer, if <span class="math inline">\(s\)</span> was truly a subsequence in <span class="math inline">\(t\)</span>, we should have matched it with its appropriate matching characters in <span class="math inline">\(t\)</span>. So, if the <span class="math inline">\(s\)</span> pointer had not reached the end of <span class="math inline">\(s\)</span> after we finish scanning <span class="math inline">\(t\)</span>, then such a subsequence must not have existed. Otherwise, if we scan past the end of <span class="math inline">\(s\)</span>, then we have found <span class="math inline">\(s\)</span> as a valid subsequence in <span class="math inline">\(t\)</span>.</p></li>
+<li><p><strong>Problem</strong>: Given a string <span
+class="math inline">\(s\)</span> and string <span
+class="math inline">\(t\)</span>, determine if <span
+class="math inline">\(s\)</span> appears as a subsequence of <span
+class="math inline">\(t\)</span>.</p></li>
+<li><p><strong>Solution Idea</strong>: Idea is to scan forward in both
+strings, maintaining a current pointer in both. When characters match,
+you can move forward both poitners, and when they don’t match, you can
+move forward the pointer in <span class="math inline">\(t\)</span> (we
+can assume <span class="math inline">\(t\)</span> is longer than <span
+class="math inline">\(s\)</span>). After we reach the end of <span
+class="math inline">\(t\)</span> with the pointer, if <span
+class="math inline">\(s\)</span> was truly a subsequence in <span
+class="math inline">\(t\)</span>, we should have matched it with its
+appropriate matching characters in <span
+class="math inline">\(t\)</span>. So, if the <span
+class="math inline">\(s\)</span> pointer had not reached the end of
+<span class="math inline">\(s\)</span> after we finish scanning <span
+class="math inline">\(t\)</span>, then such a subsequence must not have
+existed. Otherwise, if we scan past the end of <span
+class="math inline">\(s\)</span>, then we have found <span
+class="math inline">\(s\)</span> as a valid subsequence in <span
+class="math inline">\(t\)</span>.</p></li>
 </ul>
 </section>
 <section id="product-of-array-except-self" class="level3 unnumbered">
 <h3 class="unnumbered">Product of Array Except Self</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given an array of integers, <span class="math inline">\(S\)</span>, compute an output array <span class="math inline">\(A\)</span> such that <span class="math inline">\(A[i]\)</span> is equal to the product of all integers in <span class="math inline">\(S\)</span> excluding <span class="math inline">\(S[i]\)</span>.</p></li>
-<li><p><strong>Solution Idea</strong>: The naive solution is to go over every index <span class="math inline">\(i\)</span> in <span class="math inline">\(S\)</span> and compute the product of all other indices in <span class="math inline">\(S\)</span> and set <span class="math inline">\(A[i]\)</span> equal to this product. The downside is that this is not so efficient, since it takes <span class="math inline">\(O(n^2)\)</span> time in the worst case, if <span class="math inline">\(n\)</span> is the length of the input array <span class="math inline">\(S\)</span>. The key goal is to see if we can somehow do this more efficiently.</p>
-<p>One way to think about this is to consider the multiplications we are doing in the brute force solution e.g. if we have an array <span class="math inline">\(S=\{1,2,3,4\}\)</span> and we consider the multiplications being done at each index: <span class="math display">\[\begin{aligned}
-        i=0 : \, \, (\phantom{1 \cdot} 2 \cdot 3 \cdot 4) \\ 
+<li><p><strong>Problem</strong>: Given an array of integers, <span
+class="math inline">\(S\)</span>, compute an output array <span
+class="math inline">\(A\)</span> such that <span
+class="math inline">\(A[i]\)</span> is equal to the product of all
+integers in <span class="math inline">\(S\)</span> excluding <span
+class="math inline">\(S[i]\)</span>.</p></li>
+<li><p><strong>Solution Idea</strong>: The naive solution is to go over
+every index <span class="math inline">\(i\)</span> in <span
+class="math inline">\(S\)</span> and compute the product of all other
+indices in <span class="math inline">\(S\)</span> and set <span
+class="math inline">\(A[i]\)</span> equal to this product. The downside
+is that this is not so efficient, since it takes <span
+class="math inline">\(O(n^2)\)</span> time in the worst case, if <span
+class="math inline">\(n\)</span> is the length of the input array <span
+class="math inline">\(S\)</span>. The key goal is to see if we can
+somehow do this more efficiently.</p>
+<p>One way to think about this is to consider the multiplications we are
+doing in the brute force solution e.g. if we have an array <span
+class="math inline">\(S=\{1,2,3,4\}\)</span> and we consider the
+multiplications being done at each index: <span
+class="math display">\[\begin{aligned}
+        i=0 : \, \, (\phantom{1 \cdot} 2 \cdot 3 \cdot 4) \\
         i=1 : \, \, (1 \phantom{1 \cdot} \cdot 3 \cdot 4) \\
         i=2 : \, \, (1 \cdot 2 \phantom{1 \cdot} \cdot 4) \\
         i=3 : \, \, (1 \cdot 2 \cdot 3 \phantom{1 \cdot})
-    \end{aligned}\]</span> It seems like we are doing some repeated work across this set of different multiplications. For example, the multiplication pair <span class="math inline">\(2 \cdot 3\)</span> occurs at index <span class="math inline">\(0\)</span> and index <span class="math inline">\(3\)</span>, and the pair <span class="math inline">\(1 \cdot 3\)</span> occurs at indices <span class="math inline">\(1\)</span> and <span class="math inline">\(3\)</span>. This would seem to imply that we only need to do these sub-multiplications once, and can then cache the results each time we need them.</p>
-<p>More generally, we can actually observe that each index in the output array can be represented more succintly as a product of a <em>prefix</em> and <em>suffix</em> of the input array. And, each of these prefixes and suffixes are, then, naturally nested subproblems relative to each other, so if we compute the product of one prefix, we can compute the product of the next larger prefix without re-computing the whole prefix product from scratch. So, the essential idea is that if we can go through, in linear time, and compute these prefix and suffix products for each index of the input array, then we can go again and compute the values for each index of the output array with one scan, by simply multiplying the appropriate prefix and suffix product together.</p>
+    
+\end{aligned}\]</span> It seems like we are doing some repeated work
+across this set of different multiplications. For example, the
+multiplication pair <span class="math inline">\(2 \cdot 3\)</span>
+occurs at index <span class="math inline">\(0\)</span> and index <span
+class="math inline">\(3\)</span>, and the pair <span
+class="math inline">\(1 \cdot 3\)</span> occurs at indices <span
+class="math inline">\(1\)</span> and <span
+class="math inline">\(3\)</span>. This would seem to imply that we only
+need to do these sub-multiplications once, and can then cache the
+results each time we need them.</p>
+<p>More generally, we can actually observe that each index in the output
+array can be represented more succintly as a product of a
+<em>prefix</em> and <em>suffix</em> of the input array. And, each of
+these prefixes and suffixes are, then, naturally nested subproblems
+relative to each other, so if we compute the product of one prefix, we
+can compute the product of the next larger prefix without re-computing
+the whole prefix product from scratch. So, the essential idea is that if
+we can go through, in linear time, and compute these prefix and suffix
+products for each index of the input array, then we can go again and
+compute the values for each index of the output array with one scan, by
+simply multiplying the appropriate prefix and suffix product
+together.</p>
 <div class="center">
 <table>
 <thead>
-<tr class="header">
+<tr>
 <th style="text-align: center;"></th>
 <th style="text-align: center;"></th>
 <th style="text-align: center;"></th>
 <th style="text-align: center;"></th>
 <th style="text-align: center;"></th>
-<th style="text-align: center;">(prefix) <span class="math inline">\(\cdot\)</span> (suffix)</th>
+<th style="text-align: center;">(prefix) <span
+class="math inline">\(\cdot\)</span> (suffix)</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">5</td>
-<td style="text-align: center;">= <span class="math inline">\((2 \cdot 3 \cdot 4 \cdot 5)\)</span></td>
+<td style="text-align: center;">= <span class="math inline">\((2 \cdot 3
+\cdot 4 \cdot 5)\)</span></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">5</td>
-<td style="text-align: center;">= <span class="math inline">\((1) \cdot (3 \cdot 4 \cdot 5)\)</span></td>
+<td style="text-align: center;">= <span class="math inline">\((1) \cdot
+(3 \cdot 4 \cdot 5)\)</span></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">5</td>
-<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2) \cdot  (4 \cdot 5)\)</span></td>
+<td style="text-align: center;">= <span class="math inline">\((1 \cdot
+2) \cdot  (4 \cdot 5)\)</span></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">-</td>
 <td style="text-align: center;">5</td>
-<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2 \cdot 3) \cdot (5)\)</span></td>
+<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2
+\cdot 3) \cdot (5)\)</span></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: center;">1</td>
 <td style="text-align: center;">2</td>
 <td style="text-align: center;">3</td>
 <td style="text-align: center;">4</td>
 <td style="text-align: center;">-</td>
-<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2 \cdot 3 \cdot 4)\)</span></td>
+<td style="text-align: center;">= <span class="math inline">\((1 \cdot 2
+\cdot 3 \cdot 4)\)</span></td>
 </tr>
 </tbody>
 </table>
@@ -269,120 +586,337 @@
 <section id="increasing-triplet-subsequence" class="level3 unnumbered">
 <h3 class="unnumbered">Increasing Triplet Subsequence</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given an integer array <span class="math inline">\(nums\)</span>, return <em>true</em> if there exists a triple of indices <span class="math inline">\(i,j,k\)</span> such that <span class="math inline">\(i &lt; j &lt; k\)</span> and <span class="math inline">\(nums[i] &lt; nums[j] &lt; nums[k]\)</span>.</p></li>
-<li><p><strong>Solution Idea</strong>: A brute force way to compute this would be to loop over all indices <span class="math inline">\(i\)</span>, and, for each, first search for <span class="math inline">\(j &gt; i\)</span> such that <span class="math inline">\(nums[j] &gt; nums[i]\)</span>. If found, then start from <span class="math inline">\(j\)</span> and search for <span class="math inline">\(k &gt; j\)</span> such that <span class="math inline">\(nums[k] &gt; nums[j]\)</span>. Actually, what is the worst case running time of this solution? In the worst, case, I think this would be <span class="math inline">\(O(n^3)\)</span>, since for each index, we may need to search <span class="math inline">\(n\)</span> other indices, and we are doing this both for <span class="math inline">\(j\)</span> w.r.t <span class="math inline">\(i\)</span> and <span class="math inline">\(k\)</span> w.r.t <span class="math inline">\(j\)</span>, in the worst case.</p>
-<p>Ok, note a key insight: for <em>any</em> valid increasing triplet subsequence, there must also be such a valid triplet that includes the smallest (and second smallest) element of the array. So, we can utilize this insight to maintain only a conservative lower bound for the possible triplet subsequences i.e., we really only need to maintain the two smallest elements in order to check for possible triplet subsequences. Essentially, checking for a triplet subsequence with some <span class="math inline">\(i,j,k\)</span> for which there exists an <span class="math inline">\(i&#39; &lt; i\)</span> s.t. <span class="math inline">\(nums[i&#39;] &lt; nums[i]\)</span> is actually wasteful, if we’ve already checked it for <span class="math inline">\((i&#39;,j,k)\)</span>.</p></li>
-<li><p><strong>Ohter Notes</strong>: Think about how this problem relates to the more general problem of finding the <em>longest</em> increasing subsequence in such an array.</p>
+<li><p><strong>Problem</strong>: Given an integer array <span
+class="math inline">\(nums\)</span>, return <em>true</em> if there
+exists a triple of indices <span class="math inline">\(i,j,k\)</span>
+such that <span class="math inline">\(i &lt; j &lt; k\)</span> and <span
+class="math inline">\(nums[i] &lt; nums[j] &lt;
+nums[k]\)</span>.</p></li>
+<li><p><strong>Solution Idea</strong>: A brute force way to compute this
+would be to loop over all indices <span
+class="math inline">\(i\)</span>, and, for each, first search for <span
+class="math inline">\(j &gt; i\)</span> such that <span
+class="math inline">\(nums[j] &gt; nums[i]\)</span>. If found, then
+start from <span class="math inline">\(j\)</span> and search for <span
+class="math inline">\(k &gt; j\)</span> such that <span
+class="math inline">\(nums[k] &gt; nums[j]\)</span>. Actually, what is
+the worst case running time of this solution? In the worst, case, I
+think this would be <span class="math inline">\(O(n^3)\)</span>, since
+for each index, we may need to search <span
+class="math inline">\(n\)</span> other indices, and we are doing this
+both for <span class="math inline">\(j\)</span> w.r.t <span
+class="math inline">\(i\)</span> and <span
+class="math inline">\(k\)</span> w.r.t <span
+class="math inline">\(j\)</span>, in the worst case.</p>
+<p>Ok, note a key insight: for <em>any</em> valid increasing triplet
+subsequence, there must also be such a valid triplet that includes the
+smallest (and second smallest) element of the array. So, we can utilize
+this insight to maintain only a conservative lower bound for the
+possible triplet subsequences i.e., we really only need to maintain the
+two smallest elements in order to check for possible triplet
+subsequences. Essentially, checking for a triplet subsequence with some
+<span class="math inline">\(i,j,k\)</span> for which there exists an
+<span class="math inline">\(i&#39; &lt; i\)</span> s.t. <span
+class="math inline">\(nums[i&#39;] &lt; nums[i]\)</span> is actually
+wasteful, if we’ve already checked it for <span
+class="math inline">\((i&#39;,j,k)\)</span>.</p></li>
+<li><p><strong>Ohter Notes</strong>: Think about how this problem
+relates to the more general problem of finding the <em>longest</em>
+increasing subsequence in such an array.</p>
 <div class="center">
-<p><img src="diagrams/algorithms_notes_diagrams/algorithms_notes_diagrams.002.png" alt="image" /></p>
+<p><img
+src="diagrams/algorithms_notes_diagrams/algorithms_notes_diagrams.002.png"
+alt="image" /></p>
 </div></li>
 </ul>
 </section>
 <section id="difference-of-two-arrays" class="level3 unnumbered">
 <h3 class="unnumbered">Difference of Two Arrays</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given two integer arrays <span class="math inline">\(S_1\)</span> and <span class="math inline">\(S_2\)</span>, return sets <span class="math inline">\(U_1,U_2\)</span> where <span class="math inline">\(U_1\)</span> is the set of distinct integers in <span class="math inline">\(S_1\)</span> and not in <span class="math inline">\(S_2\)</span>, and <span class="math inline">\(U_2\)</span> is the set of distinct integers in <span class="math inline">\(S_2\)</span> and not in <span class="math inline">\(S_1\)</span>.</p></li>
+<li><p><strong>Problem</strong>: Given two integer arrays <span
+class="math inline">\(S_1\)</span> and <span
+class="math inline">\(S_2\)</span>, return sets <span
+class="math inline">\(U_1,U_2\)</span> where <span
+class="math inline">\(U_1\)</span> is the set of distinct integers in
+<span class="math inline">\(S_1\)</span> and not in <span
+class="math inline">\(S_2\)</span>, and <span
+class="math inline">\(U_2\)</span> is the set of distinct integers in
+<span class="math inline">\(S_2\)</span> and not in <span
+class="math inline">\(S_1\)</span>.</p></li>
 </ul>
 </section>
 <section id="merge-strings-alternately" class="level3 unnumbered">
 <h3 class="unnumbered">Merge Strings Alternately</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given two strings <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span>, merge them into one string <span class="math inline">\(S\)</span> such that the output string <span class="math inline">\(S\)</span> interleaves the characters of <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span> alternately. If one string is longer than the other, then we append the remaining characters of that string to the end of the output string.</p></li>
+<li><p><strong>Problem</strong>: Given two strings <span
+class="math inline">\(s_1\)</span> and <span
+class="math inline">\(s_2\)</span>, merge them into one string <span
+class="math inline">\(S\)</span> such that the output string <span
+class="math inline">\(S\)</span> interleaves the characters of <span
+class="math inline">\(s_1\)</span> and <span
+class="math inline">\(s_2\)</span> alternately. If one string is longer
+than the other, then we append the remaining characters of that string
+to the end of the output string.</p></li>
 </ul>
 </section>
-<section id="greatest-common-divisor-of-strings" class="level3 unnumbered">
+<section id="greatest-common-divisor-of-strings"
+class="level3 unnumbered">
 <h3 class="unnumbered">Greatest Common Divisor of Strings</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given two strings <span class="math inline">\(s\)</span> and <span class="math inline">\(t\)</span>, we say that <span class="math inline">\(t\)</span> “divides” <span class="math inline">\(s\)</span> if <span class="math inline">\(s = t + t + \dots + t\)</span>. That is, <span class="math inline">\(s\)</span> consists of <span class="math inline">\(t\)</span> concateneated with itself 1 or more times. Given two strings <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span>, we want to find the greatest common divisor <span class="math inline">\(x\)</span> between <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span>. That is, the largest string <span class="math inline">\(x\)</span> such that <span class="math inline">\(x\)</span> divides <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span>.</p></li>
-<li><p><strong>Solution Idea</strong>: An insightful way to look at this problem is to view it as a variant of Euclid’s algorithm for computing the GCD of two numbers. It is helpful to understand the underlying principle that Euclid’s algorithm is based on. Namely, that if you have two numbers <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, and <span class="math inline">\(B &gt; A\)</span>, then if we consider the "overhang" of <span class="math inline">\(B\)</span> with respect to <span class="math inline">\(A\)</span>, then the common factors between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> must be the same as those between <span class="math inline">\(A\)</span> and this “overhang”. This is essentially the basis of Euclid’s algorithm i.e. we then reduce the problem by looking for greatest common divisors between <span class="math inline">\(B\)</span> and the “overhang”, and continue this process.</p>
+<li><p><strong>Problem</strong>: Given two strings <span
+class="math inline">\(s\)</span> and <span
+class="math inline">\(t\)</span>, we say that <span
+class="math inline">\(t\)</span> “divides” <span
+class="math inline">\(s\)</span> if <span class="math inline">\(s = t +
+t + \dots + t\)</span>. That is, <span class="math inline">\(s\)</span>
+consists of <span class="math inline">\(t\)</span> concateneated with
+itself 1 or more times. Given two strings <span
+class="math inline">\(s_1\)</span> and <span
+class="math inline">\(s_2\)</span>, we want to find the greatest common
+divisor <span class="math inline">\(x\)</span> between <span
+class="math inline">\(s_1\)</span> and <span
+class="math inline">\(s_2\)</span>. That is, the largest string <span
+class="math inline">\(x\)</span> such that <span
+class="math inline">\(x\)</span> divides <span
+class="math inline">\(s_1\)</span> and <span
+class="math inline">\(s_2\)</span>.</p></li>
+<li><p><strong>Solution Idea</strong>: An insightful way to look at this
+problem is to view it as a variant of Euclid’s algorithm for computing
+the GCD of two numbers. It is helpful to understand the underlying
+principle that Euclid’s algorithm is based on. Namely, that if you have
+two numbers <span class="math inline">\(A\)</span> and <span
+class="math inline">\(B\)</span>, and <span class="math inline">\(B &gt;
+A\)</span>, then if we consider the "overhang" of <span
+class="math inline">\(B\)</span> with respect to <span
+class="math inline">\(A\)</span>, then the common factors between <span
+class="math inline">\(A\)</span> and <span
+class="math inline">\(B\)</span> must be the same as those between <span
+class="math inline">\(A\)</span> and this “overhang”. This is
+essentially the basis of Euclid’s algorithm i.e. we then reduce the
+problem by looking for greatest common divisors between <span
+class="math inline">\(B\)</span> and the “overhang”, and continue this
+process.</p>
 <div class="center">
-<p><img src="diagrams/algorithms_notes_diagrams/algorithms_notes_diagrams.001.png" alt="image" /></p>
+<p><img
+src="diagrams/algorithms_notes_diagrams/algorithms_notes_diagrams.001.png"
+alt="image" /></p>
 </div>
-<p>We can apply a very similar idea to this string based problem. We can think of strings as potentially constructed of smaller atomic “factors", as numbers are, but with one difference, which is that they are not necessarily built up from concatenations of uniform atomic units, as numbers are inherently required to be. So, for example, if we applied Euclid’s algorithm naively to a case like <span class="math display">\[\begin{aligned}
+<p>We can apply a very similar idea to this string based problem. We can
+think of strings as potentially constructed of smaller atomic “factors",
+as numbers are, but with one difference, which is that they are not
+necessarily built up from concatenations of uniform atomic units, as
+numbers are inherently required to be. So, for example, if we applied
+Euclid’s algorithm naively to a case like <span
+class="math display">\[\begin{aligned}
         A &amp;= ABAB \\
         B &amp;= ABCCAB
-    \end{aligned}\]</span> we might take the overhang <span class="math inline">\(B\)</span> as <span class="math inline">\(AB\)</span> and then go forward comparing it again to <span class="math inline">\(A=ABAB\)</span>, and end up where we think their greatest common divisor is <span class="math inline">\(AB\)</span>. But, this is clearly wrong since <span class="math inline">\(B\)</span> is not actually composed of concatenations of <span class="math inline">\(AB\)</span>. We can work around this by checking, when we take the overhang value, if the remaining section of <span class="math inline">\(B\)</span> is actually composed of the same factors as the overhang. For example consider this other example: <span class="math display">\[\begin{aligned}
+    
+\end{aligned}\]</span> we might take the overhang <span
+class="math inline">\(B\)</span> as <span
+class="math inline">\(AB\)</span> and then go forward comparing it again
+to <span class="math inline">\(A=ABAB\)</span>, and end up where we
+think their greatest common divisor is <span
+class="math inline">\(AB\)</span>. But, this is clearly wrong since
+<span class="math inline">\(B\)</span> is not actually composed of
+concatenations of <span class="math inline">\(AB\)</span>. We can work
+around this by checking, when we take the overhang value, if the
+remaining section of <span class="math inline">\(B\)</span> is actually
+composed of the same factors as the overhang. For example consider this
+other example: <span class="math display">\[\begin{aligned}
         A &amp;= AB \\
         B &amp;= ABABABAB
-    \end{aligned}\]</span> The overhang of <span class="math inline">\(B\)</span> is <span class="math inline">\(ABABAB\)</span>, <span class="math inline">\(B\)</span> is not a concatenation of, but the overhang is a concatenation of the remaining prefix of <span class="math inline">\(B\)</span>.</p>
+    
+\end{aligned}\]</span> The overhang of <span
+class="math inline">\(B\)</span> is <span
+class="math inline">\(ABABAB\)</span>, <span
+class="math inline">\(B\)</span> is not a concatenation of, but the
+overhang is a concatenation of the remaining prefix of <span
+class="math inline">\(B\)</span>.</p>
 <p>TODO: Clarify this explanation a bit more crisply.</p></li>
 </ul>
 </section>
 <section id="are-two-strings-close" class="level3 unnumbered">
 <h3 class="unnumbered">Are Two Strings Close</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given two strings <span class="math inline">\(s_1\)</span> and <span class="math inline">\(s_2\)</span>, we have to determine if these strings are “close”. Closeness is defined as whether <span class="math inline">\(s_1\)</span> can be transformed into <span class="math inline">\(s_2\)</span> by 2 possible types of operations:</p>
+<li><p><strong>Problem</strong>: Given two strings <span
+class="math inline">\(s_1\)</span> and <span
+class="math inline">\(s_2\)</span>, we have to determine if these
+strings are “close”. Closeness is defined as whether <span
+class="math inline">\(s_1\)</span> can be transformed into <span
+class="math inline">\(s_2\)</span> by 2 possible types of
+operations:</p>
 <ul>
-<li><p><span class="math inline">\(Op_1\)</span>, any two characters of <span class="math inline">\(s_1\)</span> can be swapped in position.</p></li>
-<li><p><span class="math inline">\(Op_2\)</span>, any two character types in <span class="math inline">\(s_1\)</span> can be replaced swapped with each other e.g. in <span class="math inline">\(aabbb\)</span>, we can swap <span class="math inline">\(a \leftrightarrow b\)</span> to get <span class="math inline">\(bbaaa\)</span>.</p></li>
+<li><p><span class="math inline">\(Op_1\)</span>, any two characters of
+<span class="math inline">\(s_1\)</span> can be swapped in
+position.</p></li>
+<li><p><span class="math inline">\(Op_2\)</span>, any two character
+types in <span class="math inline">\(s_1\)</span> can be replaced
+swapped with each other e.g. in <span
+class="math inline">\(aabbb\)</span>, we can swap <span
+class="math inline">\(a \leftrightarrow b\)</span> to get <span
+class="math inline">\(bbaaa\)</span>.</p></li>
 </ul></li>
-<li><p><strong>Solution Idea</strong>: The essential idea here is to observe a few key facts about the conditions under which operations can be performed to transform strings into one another.</p>
+<li><p><strong>Solution Idea</strong>: The essential idea here is to
+observe a few key facts about the conditions under which operations can
+be performed to transform strings into one another.</p>
 <ul>
-<li><p>First, if strings are not the same length, then one can’t be transformed into the other, since no operations change the length of a string.</p></li>
-<li><p>Then, we can see if they have the exact same set and count of characters. If they do, then they can easily be transformed merely by sequence of <span class="math inline">\(Op_1\)</span> operations, since we only need to re-arrange characters.</p></li>
-<li><p>Next, we can see if their character <em>sets</em> (not necessarily counts) are the same. If they aren’t, then again, there is no possible way to transform one string into the other, since no operations actually change the character set of a string.</p></li>
-<li><p>If the character sets are the same and the overall set of character counts is also the same, then this means we can similarly swap characters via <span class="math inline">\(Op_2\)</span> in some sequence to get matching character sets and counts, from which point we can then just apply a further sequence of <span class="math inline">\(Op_1\)</span>.</p></li>
+<li><p>First, if strings are not the same length, then one can’t be
+transformed into the other, since no operations change the length of a
+string.</p></li>
+<li><p>Then, we can see if they have the exact same set and count of
+characters. If they do, then they can easily be transformed merely by
+sequence of <span class="math inline">\(Op_1\)</span> operations, since
+we only need to re-arrange characters.</p></li>
+<li><p>Next, we can see if their character <em>sets</em> (not
+necessarily counts) are the same. If they aren’t, then again, there is
+no possible way to transform one string into the other, since no
+operations actually change the character set of a string.</p></li>
+<li><p>If the character sets are the same and the overall set of
+character counts is also the same, then this means we can similarly swap
+characters via <span class="math inline">\(Op_2\)</span> in some
+sequence to get matching character sets and counts, from which point we
+can then just apply a further sequence of <span
+class="math inline">\(Op_1\)</span>.</p></li>
 </ul></li>
 </ul>
 </section>
-<section id="kids-with-greatest-number-of-candies" class="level3 unnumbered">
+<section id="kids-with-greatest-number-of-candies"
+class="level3 unnumbered">
 <h3 class="unnumbered">Kids with Greatest Number of Candies</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given array of kids with some number of candies, and number of extra candides, compute whehter each kid would have max candies after receiving the number of extra candies you have.</p></li>
+<li><p><strong>Problem</strong>: Given array of kids with some number of
+candies, and number of extra candides, compute whehter each kid would
+have max candies after receiving the number of extra candies you
+have.</p></li>
 </ul>
 </section>
 <section id="merge-k-sorted-lists" class="level3 unnumbered">
 <h3 class="unnumbered">Merge k Sorted Lists</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given a set of <span class="math inline">\(k\)</span> linked lists, each which are individually sorted in ascending order, merge all <span class="math inline">\(k\)</span> lists into one sorted list.</p></li>
-<li><p><strong>Solution Idea</strong>: The basic approach is to essentially just perform the <em>merge</em> step of merge-sort. That is, if we are given a set of already sorted lists, we can merge them all into one sorted lists by repeatedly popping the smallest element from the remaining, non-empty lists and appending it to the output list.</p></li>
+<li><p><strong>Problem</strong>: Given a set of <span
+class="math inline">\(k\)</span> linked lists, each which are
+individually sorted in ascending order, merge all <span
+class="math inline">\(k\)</span> lists into one sorted list.</p></li>
+<li><p><strong>Solution Idea</strong>: The basic approach is to
+essentially just perform the <em>merge</em> step of merge-sort. That is,
+if we are given a set of already sorted lists, we can merge them all
+into one sorted lists by repeatedly popping the smallest element from
+the remaining, non-empty lists and appending it to the output
+list.</p></li>
 <li><p><strong>Key Concepts</strong>:</p>
 <ul>
-<li><p><span style="color: blue"><em><strong>Mergesort Merging</strong></em></span></p></li>
-<li><p><span style="color: blue"><em><strong>Linked List Manipulation</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Mergesort
+Merging</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List
+Manipulation</strong></em></span></p></li>
 </ul>
-<p>The essence of the solution is very straightforward as long as you know and understand the ideas behind mergesort i.e. knowing the core idea that you can merge a set of already sorted lists by incrementally choosing the smallest element from each.</p></li>
+<p>The essence of the solution is very straightforward as long as you
+know and understand the ideas behind mergesort i.e. knowing the core
+idea that you can merge a set of already sorted lists by incrementally
+choosing the smallest element from each.</p></li>
 </ul>
 </section>
-<section id="remove-duplicates-from-sorted-linked-list" class="level3 unnumbered">
+<section id="remove-duplicates-from-sorted-linked-list"
+class="level3 unnumbered">
 <h3 class="unnumbered">Remove duplicates from sorted linked list</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given a sorted linked list, remove any duplicates from the list.</p></li>
-<li><p><strong>Solution Idea</strong>: Iterate through the linked list, but at each node look ahead to see how many nodes in front of you contain an identical value to your own. Update your current “next" pointer to point to the first node after this block of identical nodes in front of you. Since the list is sorted, you know that any duplicates of the current value must be directly in front of you.</p></li>
+<li><p><strong>Problem</strong>: Given a sorted linked list, remove any
+duplicates from the list.</p></li>
+<li><p><strong>Solution Idea</strong>: Iterate through the linked list,
+but at each node look ahead to see how many nodes in front of you
+contain an identical value to your own. Update your current “next"
+pointer to point to the first node after this block of identical nodes
+in front of you. Since the list is sorted, you know that any duplicates
+of the current value must be directly in front of you.</p></li>
 <li><p><strong>Key Concepts</strong>:</p>
 <ul>
-<li><p><span style="color: blue"><em><strong>Linked List Traversal</strong></em></span></p></li>
-<li><p><span style="color: blue"><em><strong>Linked List Deletion</strong></em></span></p></li>
-<li><p><span style="color: blue"><em><strong>Duplicate Detection by Sorting</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List
+Traversal</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List
+Deletion</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Duplicate Detection by
+Sorting</strong></em></span></p></li>
 </ul>
-<p>The underlying insight in the solution is to recognize that sorting a list can be used an easy mechanism for detecting duplicates. That is, in a sorted list, all duplicates of a particular item will always appear in contiguous “blocks". Once you recognize this fact, then implementing the solution mostly requires a standard application of linked list iteration and linked list item deletion. Namely, that to delete an item <span class="math inline">\(n_2\)</span> from a linked list that appears in a list as <span class="math inline">\(n1 \rightarrow n_2 \rightarrow n_3\)</span>, you simply update the “next" pointer of <span class="math inline">\(n_1\)</span> to point to <span class="math inline">\(n_3\)</span> instead of <span class="math inline">\(n_2\)</span>. Recall that a basic linked list node is a <span class="math inline">\(LinkedListNode(val, next)\)</span> structure, where <span class="math inline">\(val\)</span> is the value of that node, and <span class="math inline">\(next\)</span> is a pointer to the next item in the list.</p></li>
+<p>The underlying insight in the solution is to recognize that sorting a
+list can be used an easy mechanism for detecting duplicates. That is, in
+a sorted list, all duplicates of a particular item will always appear in
+contiguous “blocks". Once you recognize this fact, then implementing the
+solution mostly requires a standard application of linked list iteration
+and linked list item deletion. Namely, that to delete an item <span
+class="math inline">\(n_2\)</span> from a linked list that appears in a
+list as <span class="math inline">\(n1 \rightarrow n_2 \rightarrow
+n_3\)</span>, you simply update the “next" pointer of <span
+class="math inline">\(n_1\)</span> to point to <span
+class="math inline">\(n_3\)</span> instead of <span
+class="math inline">\(n_2\)</span>. Recall that a basic linked list node
+is a <span class="math inline">\(LinkedListNode(val, next)\)</span>
+structure, where <span class="math inline">\(val\)</span> is the value
+of that node, and <span class="math inline">\(next\)</span> is a pointer
+to the next item in the list.</p></li>
 </ul>
 </section>
-<section id="intersection-of-two-linked-lists" class="level3 unnumbered">
+<section id="intersection-of-two-linked-lists"
+class="level3 unnumbered">
 <h3 class="unnumbered">Intersection of two linked lists</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given two singly linked lists, return the node at which the two lists intersect. If they have no intersection, then return <em>null</em>.</p></li>
-<li><p><strong>Solution Idea</strong>: This is similar to a <em>lowest common ancestor</em> problem. One approach is to walk backwards to the root from one of the lists and keep track of all nodes seen along the way. Then, walk backwards from the other list and check for the first node you hit that was already seen, and that node should be the intersection point. Note that this uses <span class="math inline">\(O(n)\)</span> space, if <span class="math inline">\(n\)</span> the upper bound on the size of the linked lists.</p>
-<p>It’s also possible to do it without using any extra space by using a cleverer 2 pointer approach with a bit of counting. If we walk back to the root in both lists we can record the longer of the two. Then, from this we know the difference in length between the two lists, <span class="math inline">\(diff\)</span>. So, we can walk backwards by <span class="math inline">\(diff\)</span> pointers in the longer list, and then walk forwards from there in both lists at the same time, until we hit a point where both pointers are pointing to the same node.</p></li>
+<li><p><strong>Problem</strong>: Given two singly linked lists, return
+the node at which the two lists intersect. If they have no intersection,
+then return <em>null</em>.</p></li>
+<li><p><strong>Solution Idea</strong>: This is similar to a <em>lowest
+common ancestor</em> problem. One approach is to walk backwards to the
+root from one of the lists and keep track of all nodes seen along the
+way. Then, walk backwards from the other list and check for the first
+node you hit that was already seen, and that node should be the
+intersection point. Note that this uses <span
+class="math inline">\(O(n)\)</span> space, if <span
+class="math inline">\(n\)</span> the upper bound on the size of the
+linked lists.</p>
+<p>It’s also possible to do it without using any extra space by using a
+cleverer 2 pointer approach with a bit of counting. If we walk back to
+the root in both lists we can record the longer of the two. Then, from
+this we know the difference in length between the two lists, <span
+class="math inline">\(diff\)</span>. So, we can walk backwards by <span
+class="math inline">\(diff\)</span> pointers in the longer list, and
+then walk forwards from there in both lists at the same time, until we
+hit a point where both pointers are pointing to the same node.</p></li>
 <li><p><strong>Key Concepts</strong>:</p>
 <ul>
-<li><p><span style="color: blue"><em><strong>Linked List Traversal</strong></em></span></p></li>
-<li><p><span style="color: blue"><em><strong>Lowest Common Ancestor (?)</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List
+Traversal</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Lowest Common Ancestor
+(?)</strong></em></span></p></li>
 </ul></li>
 </ul>
 </section>
 <section id="reverse-linked-list" class="level3 unnumbered">
 <h3 class="unnumbered">Reverse linked list</h3>
 <ul>
-<li><p><strong>Problem</strong>: Given a singly linked list, reverse the list.</p></li>
-<li><p><strong>Solution Idea</strong>: Iterate over the list and at each node, re-arrange the <em>next</em> pointer so it now points to the previous node rather than the next node. <span class="math display">\[\begin{aligned}
-    None \rightarrow a \rightarrow b \rightarrow c\end{aligned}\]</span> If <span class="math inline">\(curr=a\)</span> and <span class="math inline">\(curr.next = b\)</span>, then to do the reversal we want to end up with <span class="math inline">\(a.next = None\)</span> and then step forward, ending up with <span class="math inline">\(curr=b\)</span>. So, at each step of the traversal, we keep track of hte previous item we looked at, so that we can reverse the pointer of the current node to point to it. We also need to save a reference to the next node before we update it.</p></li>
+<li><p><strong>Problem</strong>: Given a singly linked list, reverse the
+list.</p></li>
+<li><p><strong>Solution Idea</strong>: Iterate over the list and at each
+node, re-arrange the <em>next</em> pointer so it now points to the
+previous node rather than the next node. <span
+class="math display">\[\begin{aligned}
+    None \rightarrow a \rightarrow b \rightarrow c
+\end{aligned}\]</span> If <span class="math inline">\(curr=a\)</span>
+and <span class="math inline">\(curr.next = b\)</span>, then to do the
+reversal we want to end up with <span class="math inline">\(a.next =
+None\)</span> and then step forward, ending up with <span
+class="math inline">\(curr=b\)</span>. So, at each step of the
+traversal, we keep track of hte previous item we looked at, so that we
+can reverse the pointer of the current node to point to it. We also need
+to save a reference to the next node before we update it.</p></li>
 <li><p><strong>Key Concepts</strong>:</p>
 <ul>
-<li><p><span style="color: blue"><em><strong>Linked List Traversal</strong></em></span></p></li>
-<li><p><span style="color: blue"><em><strong>Pointer Swapping (?)</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Linked List
+Traversal</strong></em></span></p></li>
+<li><p><span style="color: blue"><em><strong>Pointer Swapping
+(?)</strong></em></span></p></li>
 </ul>
-<p>Need to have a solid grasp of how to traverse a linked list, but also need to have good confidence in how to update points in a few steps (similar to how we swap variables), without overwriting the info we need to continue.</p></li>
+<p>Need to have a solid grasp of how to traverse a linked list, but also
+need to have good confidence in how to update points in a few steps
+(similar to how we swap variables), without overwriting the info we need
+to continue.</p></li>
 </ul>
 </section>
 <section id="add-two-binary-strings" class="level3 unnumbered">

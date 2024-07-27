@@ -10,15 +10,25 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
+      margin-bottom: 0em;
     }
-    .hanging div.csl-entry {
+    .hanging-indent div.csl-entry {
       margin-left:2em;
       text-indent:-2em;
     }
@@ -32,13 +42,12 @@
     }
     div.csl-indent {
       margin-left: 2em;
-    }
-  </style>
+    }  </style>
   <link rel="stylesheet" href="../../style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <header id="title-block-header">
@@ -48,194 +57,423 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#overview-what-is-a-computer"><span class="toc-section-number">1</span> Overview: What is a computer?</a></li>
-<li><a href="#instructions-language-of-the-computer"><span class="toc-section-number">2</span> Instructions: Language of the Computer</a>
+<li><a href="#overview-what-is-a-computer"
+id="toc-overview-what-is-a-computer"><span
+class="toc-section-number">1</span> Overview: What is a
+computer?</a></li>
+<li><a href="#instructions-language-of-the-computer"
+id="toc-instructions-language-of-the-computer"><span
+class="toc-section-number">2</span> Instructions: Language of the
+Computer</a>
 <ul>
-<li><a href="#instructions-for-making-decisions"><span class="toc-section-number">2.1</span> Instructions for Making Decisions</a></li>
+<li><a href="#instructions-for-making-decisions"
+id="toc-instructions-for-making-decisions"><span
+class="toc-section-number">2.1</span> Instructions for Making
+Decisions</a></li>
 </ul></li>
-<li><a href="#arithmetic-for-computers"><span class="toc-section-number">3</span> Arithmetic for Computers</a></li>
-<li><a href="#the-processor"><span class="toc-section-number">4</span> The Processor</a>
+<li><a href="#arithmetic-for-computers"
+id="toc-arithmetic-for-computers"><span
+class="toc-section-number">3</span> Arithmetic for Computers</a></li>
+<li><a href="#the-processor" id="toc-the-processor"><span
+class="toc-section-number">4</span> The Processor</a>
 <ul>
-<li><a href="#logic-design-conventions"><span class="toc-section-number">4.1</span> Logic Design Conventions</a></li>
-<li><a href="#pipelining"><span class="toc-section-number">4.2</span> Pipelining</a></li>
+<li><a href="#logic-design-conventions"
+id="toc-logic-design-conventions"><span
+class="toc-section-number">4.1</span> Logic Design Conventions</a></li>
+<li><a href="#pipelining" id="toc-pipelining"><span
+class="toc-section-number">4.2</span> Pipelining</a></li>
 </ul></li>
-<li><a href="#the-memory-hierarchy"><span class="toc-section-number">5</span> The Memory Hierarchy</a>
+<li><a href="#the-memory-hierarchy" id="toc-the-memory-hierarchy"><span
+class="toc-section-number">5</span> The Memory Hierarchy</a>
 <ul>
-<li><a href="#cache-basics"><span class="toc-section-number">5.1</span> Cache Basics</a>
+<li><a href="#cache-basics" id="toc-cache-basics"><span
+class="toc-section-number">5.1</span> Cache Basics</a>
 <ul>
-<li><a href="#set-associative-caches">Set Associative Caches</a></li>
+<li><a href="#set-associative-caches"
+id="toc-set-associative-caches">Set Associative Caches</a></li>
 </ul></li>
-<li><a href="#parallelism-and-memory-cache-coherence"><span class="toc-section-number">5.2</span> Parallelism and Memory: Cache Coherence</a>
+<li><a href="#parallelism-and-memory-cache-coherence"
+id="toc-parallelism-and-memory-cache-coherence"><span
+class="toc-section-number">5.2</span> Parallelism and Memory: Cache
+Coherence</a>
 <ul>
-<li><a href="#basic-schemes-for-enforcing-coherence">Basic Schemes for Enforcing Coherence</a></li>
+<li><a href="#basic-schemes-for-enforcing-coherence"
+id="toc-basic-schemes-for-enforcing-coherence">Basic Schemes for
+Enforcing Coherence</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#virtual-memory"><span class="toc-section-number">6</span> Virtual Memory</a>
+<li><a href="#virtual-memory" id="toc-virtual-memory"><span
+class="toc-section-number">6</span> Virtual Memory</a>
 <ul>
-<li><a href="#making-address-translation-fast-the-tlb"><span class="toc-section-number">6.1</span> Making Address Translation Fast: the TLB</a></li>
+<li><a href="#making-address-translation-fast-the-tlb"
+id="toc-making-address-translation-fast-the-tlb"><span
+class="toc-section-number">6.1</span> Making Address Translation Fast:
+the TLB</a></li>
 </ul></li>
-<li><a href="#hardware-description-languages"><span class="toc-section-number">7</span> Hardware Description Languages</a>
+<li><a href="#hardware-description-languages"
+id="toc-hardware-description-languages"><span
+class="toc-section-number">7</span> Hardware Description Languages</a>
 <ul>
-<li><a href="#verilog">Verilog</a></li>
+<li><a href="#verilog" id="toc-verilog">Verilog</a></li>
 </ul></li>
-<li><a href="#bibliography">References</a></li>
+<li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
 </nav>
-<section id="overview-what-is-a-computer" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Overview: What is a computer?</h1>
-<p>At a high level, any computer can be viewed as consisting of the following abstract components:</p>
+<section id="overview-what-is-a-computer" class="level1"
+data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span>
+Overview: What is a computer?</h1>
+<p>At a high level, any computer can be viewed as consisting of the
+following abstract components:</p>
 <ol>
 <li><p><strong>Input</strong></p></li>
 <li><p><strong>Output</strong></p></li>
 <li><p><strong>Memory</strong></p></li>
 <li><p><strong>Processor</strong> = (Datapath + Control)</p></li>
 </ol>
-<p>The processor can be viewed as consisting of two distinct sub-components: <em>Datapath</em> is the hardware responsible for performing all required operations (e.g. ALU, registers, internal buses), and <em>Control</em> is the hardware that tells the datapath what to do e.g. in terms of switching, operation selection, data movement between ALU components, etc. <span class="citation" data-cites="2011fourthcomporgdesign">(<a href="#ref-2011fourthcomporgdesign" role="doc-biblioref">Patterson and Hennessy 2011</a>)</span>.</p>
-<p>As a concrete example, below is a photograph of the quad-core AMD Barcelona processor chip, originally shipped in 2007, with overlaid diagram describing the various subcomponents.</p>
+<p>The processor can be viewed as consisting of two distinct
+sub-components: <em>Datapath</em> is the hardware responsible for
+performing all required operations (e.g. ALU, registers, internal
+buses), and <em>Control</em> is the hardware that tells the datapath
+what to do e.g. in terms of switching, operation selection, data
+movement between ALU components, etc. <span class="citation"
+data-cites="2011fourthcomporgdesign">(<a
+href="#ref-2011fourthcomporgdesign" role="doc-biblioref">Patterson and
+Hennessy 2011</a>)</span>.</p>
+<p>As a concrete example, below is a photograph of the quad-core AMD
+Barcelona processor chip, originally shipped in 2007, with overlaid
+diagram describing the various subcomponents.</p>
 <div class="center">
 <p><img src="images/amd_barcelona_die.png" alt="image" /></p>
 </div>
 </section>
-<section id="instructions-language-of-the-computer" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Instructions: Language of the Computer</h1>
-<p>To command a computer you must speak its language. The words of a computer language are called <em>instructions</em>, and its vocabulary called an <em>instruction set</em>. The <em>stored-program concept</em> is the idea that instructions and data of many types can be stored in a computer’s memory as numbers.</p>
-<section id="instructions-for-making-decisions" class="level2" data-number="2.1">
-<h2 data-number="2.1"><span class="header-section-number">2.1</span> Instructions for Making Decisions</h2>
-<p><em>Conditional branch</em> instructions are analogous to <code>if</code> and <code>goto</code> statements in a programming language e.g. the following “branch if equal” instruction</p>
+<section id="instructions-language-of-the-computer" class="level1"
+data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span>
+Instructions: Language of the Computer</h1>
+<p>To command a computer you must speak its language. The words of a
+computer language are called <em>instructions</em>, and its vocabulary
+called an <em>instruction set</em>. The <em>stored-program concept</em>
+is the idea that instructions and data of many types can be stored in a
+computer’s memory as numbers.</p>
+<section id="instructions-for-making-decisions" class="level2"
+data-number="2.1">
+<h2 data-number="2.1"><span class="header-section-number">2.1</span>
+Instructions for Making Decisions</h2>
+<p><em>Conditional branch</em> instructions are analogous to
+<code>if</code> and <code>goto</code> statements in a programming
+language e.g. the following “branch if equal” instruction</p>
 <div class="center">
 <p><code>beq register1, register2, L1</code></p>
 </div>
-<p>goes to the statement labeled <code>L1</code> if the value in <code>register1</code> and <code>register2</code> are equal.</p>
+<p>goes to the statement labeled <code>L1</code> if the value in
+<code>register1</code> and <code>register2</code> are equal.</p>
 </section>
 </section>
 <section id="arithmetic-for-computers" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Arithmetic for Computers</h1>
-<p>Addition, substraction, multiplication, division, floating point, ALU, etc.</p>
+<h1 data-number="3"><span class="header-section-number">3</span>
+Arithmetic for Computers</h1>
+<p>Addition, substraction, multiplication, division, floating point,
+ALU, etc.</p>
 </section>
 <section id="the-processor" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> The Processor</h1>
-<p>To understand the basics of a processor implementation, we can look at the construction of the datapath and control path for an implementation of the <a href="https://en.wikipedia.org/wiki/MIPS_architecture">MIPS instruction set</a>. This includes a subset of the core MIPS instruction set:</p>
+<h1 data-number="4"><span class="header-section-number">4</span> The
+Processor</h1>
+<p>To understand the basics of a processor implementation, we can look
+at the construction of the datapath and control path for an
+implementation of the <a
+href="https://en.wikipedia.org/wiki/MIPS_architecture">MIPS instruction
+set</a>. This includes a subset of the core MIPS instruction set:</p>
 <ul>
-<li><p>The memory reference instructions load word (<code>lw</code>) and store word (<code>sw</code>)</p></li>
-<li><p>The arithmetic-logical instructions <code>add</code>,<code>sub</code>,<code>AND</code>,<code>OR</code>, and <code>slt</code></p></li>
-<li><p>The instructions branch equal (<code>beq</code>) and jump(<code>j</code>)</p></li>
+<li><p>The memory reference instructions load word (<code>lw</code>) and
+store word (<code>sw</code>)</p></li>
+<li><p>The arithmetic-logical instructions
+<code>add</code>,<code>sub</code>,<code>AND</code>,<code>OR</code>, and
+<code>slt</code></p></li>
+<li><p>The instructions branch equal (<code>beq</code>) and
+jump(<code>j</code>)</p></li>
 </ul>
-<p>Overall, much of what needs to be done to implement these instructions is the same regardless of the exact class of instruction. For every instruction, the first two steps are identical:</p>
+<p>Overall, much of what needs to be done to implement these
+instructions is the same regardless of the exact class of instruction.
+For every instruction, the first two steps are identical:</p>
 <ol>
-<li><p>Send the program counter (PC) to the memory that contains the code and fetch the instruction from that memory.</p></li>
-<li><p>Read one or two registers, using fields of the instruction to select the registers to read.</p></li>
+<li><p>Send the program counter (PC) to the memory that contains the
+code and fetch the instruction from that memory.</p></li>
+<li><p>Read one or two registers, using fields of the instruction to
+select the registers to read.</p></li>
 </ol>
-<p>For example, the diagram below shows a high level, abstract outline of a MIPS processor implementation.</p>
+<p>For example, the diagram below shows a high level, abstract outline
+of a MIPS processor implementation.</p>
 <div class="center">
 <p><img src="images/mips_processor_high_level.png" alt="image" /></p>
 </div>
 <section id="logic-design-conventions" class="level2" data-number="4.1">
-<h2 data-number="4.1"><span class="header-section-number">4.1</span> Logic Design Conventions</h2>
-<p>Note that the datapath elements of a MIPS implementation consists of two different type of logic elements:</p>
+<h2 data-number="4.1"><span class="header-section-number">4.1</span>
+Logic Design Conventions</h2>
+<p>Note that the datapath elements of a MIPS implementation consists of
+two different type of logic elements:</p>
 <ul>
-<li><p><strong>Combinational</strong>: elements that operate on data values, where their outputs always depend only on the current inputs (i.e. think of them as implementing pure functions)</p></li>
-<li><p><strong>Sequential</strong>: elements that contain some internal <em>state</em>. These elements have at least two inputs and one output, where the inputs are:</p>
+<li><p><strong>Combinational</strong>: elements that operate on data
+values, where their outputs always depend only on the current inputs
+(i.e. think of them as implementing pure functions)</p></li>
+<li><p><strong>Sequential</strong>: elements that contain some internal
+<em>state</em>. These elements have at least two inputs and one output,
+where the inputs are:</p>
 <ol>
 <li><p>The data value to be written.</p></li>
 <li><p>The clock.</p></li>
 </ol>
-<p>The output from a sequential logic component provides the value that was written in an earlier clock cycle.</p></li>
+<p>The output from a sequential logic component provides the value that
+was written in an earlier clock cycle.</p></li>
 </ul>
-<p>A <em>clocking methodology</em> defines when signals can be read and when they can be written. We can assume an <em>edge-triggered clocking</em> methodology, which means that any values stored in a sequential logic element are updated only on a clock edge.</p>
-<p>Since state (i.e. sequential) elements are the only ones that can store values, any collection of combinational logic must have its inputs come from a set of state elements and its outputs written into a set of state elements The inputs are values that were written in a previous clock cycle, while the outputs are values that can be used in a following clock cycle.</p>
+<p>A <em>clocking methodology</em> defines when signals can be read and
+when they can be written. We can assume an <em>edge-triggered
+clocking</em> methodology, which means that any values stored in a
+sequential logic element are updated only on a clock edge.</p>
+<p>Since state (i.e. sequential) elements are the only ones that can
+store values, any collection of combinational logic must have its inputs
+come from a set of state elements and its outputs written into a set of
+state elements The inputs are values that were written in a previous
+clock cycle, while the outputs are values that can be used in a
+following clock cycle.</p>
 </section>
 <section id="pipelining" class="level2" data-number="4.2">
-<h2 data-number="4.2"><span class="header-section-number">4.2</span> Pipelining</h2>
+<h2 data-number="4.2"><span class="header-section-number">4.2</span>
+Pipelining</h2>
 <p>MIPS instruction execution classically takes five steps:</p>
 <ol>
 <li><p><strong>Fetch</strong> instruction from memory.</p></li>
-<li><p><strong>Read</strong> registers while <strong>decoding</strong> the instruction.</p></li>
-<li><p><strong>Execute</strong> the operation to calculate an address.</p></li>
+<li><p><strong>Read</strong> registers while <strong>decoding</strong>
+the instruction.</p></li>
+<li><p><strong>Execute</strong> the operation to calculate an
+address.</p></li>
 <li><p>Access an operand in data <strong>memory</strong>.</p></li>
 <li><p><strong>Write</strong> the result into a register.</p></li>
 </ol>
 </section>
 </section>
 <section id="the-memory-hierarchy" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> The Memory Hierarchy</h1>
-<p>In an ideal world, we would have an infinitely large and fast memory for our computer, but this is not feasible in practice, since fast memory is costly. So, instead, we simulate the illusion of an infinite memory by using a <em>memory hierarchy</em>. That is, a progressively larger and slower series of caches that serve as memory for the processor.</p>
+<h1 data-number="5"><span class="header-section-number">5</span> The
+Memory Hierarchy</h1>
+<p>In an ideal world, we would have an infinitely large and fast memory
+for our computer, but this is not feasible in practice, since fast
+memory is costly. So, instead, we simulate the illusion of an infinite
+memory by using a <em>memory hierarchy</em>. That is, a progressively
+larger and slower series of caches that serve as memory for the
+processor.</p>
 <div class="center">
 <p><img src="images/memory_levels.png" alt="image" /></p>
 </div>
-<p>Note that the <em>principle of locality</em> underlies the way that programs operate. That is, the assumption is that programs access a relatively small portion of their address space at any instant of time. There are two different types of locality:</p>
+<p>Note that the <em>principle of locality</em> underlies the way that
+programs operate. That is, the assumption is that programs access a
+relatively small portion of their address space at any instant of time.
+There are two different types of locality:</p>
 <ul>
-<li><p><strong>Temporal locality</strong>: if an item is referenced at some point in time, it is likely to be referenced again soon.</p></li>
-<li><p><strong>Spatial locality</strong>: if an item is referenced, other items that are nearby are likely to be referenced soon.</p></li>
+<li><p><strong>Temporal locality</strong>: if an item is referenced at
+some point in time, it is likely to be referenced again soon.</p></li>
+<li><p><strong>Spatial locality</strong>: if an item is referenced,
+other items that are nearby are likely to be referenced soon.</p></li>
 </ul>
-<p>We make use of this to construct the memory hierarchy from a series of <em>caches</em>, that get progressively faster and smaller as they get closer to the actual processor.</p>
-<p>A memory hierarchy may consist of multiple levels, but data is copied only between two adjacent levels at a time, so we can consider only two levels when describing the caching mechanisms. There is an <em>upper level</em> (faster and closer to the processor) and a <em>lower level</em>. The smallest unit of information that can be either present or absent from any cache level is typically referred to as a cache <em>block</em> or <em>line</em>.</p>
+<p>We make use of this to construct the memory hierarchy from a series
+of <em>caches</em>, that get progressively faster and smaller as they
+get closer to the actual processor.</p>
+<p>A memory hierarchy may consist of multiple levels, but data is copied
+only between two adjacent levels at a time, so we can consider only two
+levels when describing the caching mechanisms. There is an <em>upper
+level</em> (faster and closer to the processor) and a <em>lower
+level</em>. The smallest unit of information that can be either present
+or absent from any cache level is typically referred to as a cache
+<em>block</em> or <em>line</em>.</p>
 <div class="center">
 <p><img src="images/mem_2levels.png" alt="image" /></p>
 </div>
 <section id="cache-basics" class="level2" data-number="5.1">
-<h2 data-number="5.1"><span class="header-section-number">5.1</span> Cache Basics</h2>
-<p>In a basic scenario, we can imagine that a processor issues memory requests that are each one word (e.g. 32 bits) and the blocks in the cache are also one word. If a cache contains words <span class="math inline">\(X_1,\dots,X_{n-1}\)</span> prior to a request for a word <span class="math inline">\(X_n\)</span> not in the cache, then a cache miss occurs and <span class="math inline">\(X_n\)</span> is brought into the cache.</p>
-<p>When servicing a processor request, we need to know (1) is the data item in the cache and, if so, (2) how do we find it? The simplest approach is to simply map each word to a locatino in the cache based on its address, which is known as <em>direct mapping</em>. This is essentially a simple hash based addressing scheme. With this approach, however, there may be collisions in addresses that map to the same cache location, so we need to deal with this. One approach is to add a set of <em>tags</em> to the cache. Basically, for each cache entry, we add a tag that contains the bits of the address that were not included in the hash function, so that we can disambiguate between two addresses that may map to the same cache location. In practice we may also include a <em>valid</em> bit that tells whether a particular cached value is currently valid to use or not.</p>
+<h2 data-number="5.1"><span class="header-section-number">5.1</span>
+Cache Basics</h2>
+<p>In a basic scenario, we can imagine that a processor issues memory
+requests that are each one word (e.g. 32 bits) and the blocks in the
+cache are also one word. If a cache contains words <span
+class="math inline">\(X_1,\dots,X_{n-1}\)</span> prior to a request for
+a word <span class="math inline">\(X_n\)</span> not in the cache, then a
+cache miss occurs and <span class="math inline">\(X_n\)</span> is
+brought into the cache.</p>
+<p>When servicing a processor request, we need to know (1) is the data
+item in the cache and, if so, (2) how do we find it? The simplest
+approach is to simply map each word to a locatino in the cache based on
+its address, which is known as <em>direct mapping</em>. This is
+essentially a simple hash based addressing scheme. With this approach,
+however, there may be collisions in addresses that map to the same cache
+location, so we need to deal with this. One approach is to add a set of
+<em>tags</em> to the cache. Basically, for each cache entry, we add a
+tag that contains the bits of the address that were not included in the
+hash function, so that we can disambiguate between two addresses that
+may map to the same cache location. In practice we may also include a
+<em>valid</em> bit that tells whether a particular cached value is
+currently valid to use or not.</p>
 <section id="set-associative-caches" class="level3 unnumbered">
 <h3 class="unnumbered">Set Associative Caches</h3>
-<p>An alternative to the direct mapping approach is to make the cache <em>set associative</em>. So, instead of giving every address exactly one location in the cache, we give it <span class="math inline">\(n\)</span> possible locations, which we call <span class="math inline">\(n\)</span>-way set associative. If the cache can hold <span class="math inline">\(m\)</span> entries then a <span class="math inline">\(m\)</span>-way set associative cache is also referred to as <em>fully associative</em>. In this other extreme, it means that a block can be placed anywhere in the cache, but then comes with the tradeoff that finding a block is more expensive, since we may need to search through every block to find it.</p>
+<p>An alternative to the direct mapping approach is to make the cache
+<em>set associative</em>. So, instead of giving every address exactly
+one location in the cache, we give it <span
+class="math inline">\(n\)</span> possible locations, which we call <span
+class="math inline">\(n\)</span>-way set associative. If the cache can
+hold <span class="math inline">\(m\)</span> entries then a <span
+class="math inline">\(m\)</span>-way set associative cache is also
+referred to as <em>fully associative</em>. In this other extreme, it
+means that a block can be placed anywhere in the cache, but then comes
+with the tradeoff that finding a block is more expensive, since we may
+need to search through every block to find it.</p>
 <div class="center">
 <p><img src="images/cache_assoc.png" alt="image" /></p>
 </div>
-<p>Note that allowing for more potential locations for a block can decrease contention for blocks, since if there are only a few unused blocks, a new request is then free to pick any unused block. This is in contrast to a direct mapped scheme, where choice of block is completely determined by the address mapping function. Also, in an associative cache, we have a choice of where to place the new block, so potentially a choice of which block to kick out of the cache. The most commonly used scheme is <em>least recently used</em> (LRU) i.e. we remove blocks that were unused for the longest time.</p>
+<p>Note that allowing for more potential locations for a block can
+decrease contention for blocks, since if there are only a few unused
+blocks, a new request is then free to pick any unused block. This is in
+contrast to a direct mapped scheme, where choice of block is completely
+determined by the address mapping function. Also, in an associative
+cache, we have a choice of where to place the new block, so potentially
+a choice of which block to kick out of the cache. The most commonly used
+scheme is <em>least recently used</em> (LRU) i.e. we remove blocks that
+were unused for the longest time.</p>
 </section>
 </section>
-<section id="parallelism-and-memory-cache-coherence" class="level2" data-number="5.2">
-<h2 data-number="5.2"><span class="header-section-number">5.2</span> Parallelism and Memory: Cache Coherence</h2>
-<p>For multicore processors, multiple processors likely operate on a common physical address space. If different processors have their own caches, though, then this means that the view of memory held by different processors may be mismatched i.e. two processors see different values for a given memory location. This issue is generally referred to as the <em>cache coherence problem</em>.</p>
-<p>Informally, we might want to define a memory system as being coherent if any read of a data item returns the most recently written value of that data item. This is a bit too simplistic, though, and this definition contains two different aspects of memory system behavior. The first, <em>coherence</em>, defines <em>what values</em> can be returned by a read. The second, called <em>consistency</em>, determines <em>when</em> a written value will be returned by a read. Considering coherence first, we say that a memory system is coherent if</p>
+<section id="parallelism-and-memory-cache-coherence" class="level2"
+data-number="5.2">
+<h2 data-number="5.2"><span class="header-section-number">5.2</span>
+Parallelism and Memory: Cache Coherence</h2>
+<p>For multicore processors, multiple processors likely operate on a
+common physical address space. If different processors have their own
+caches, though, then this means that the view of memory held by
+different processors may be mismatched i.e. two processors see different
+values for a given memory location. This issue is generally referred to
+as the <em>cache coherence problem</em>.</p>
+<p>Informally, we might want to define a memory system as being coherent
+if any read of a data item returns the most recently written value of
+that data item. This is a bit too simplistic, though, and this
+definition contains two different aspects of memory system behavior. The
+first, <em>coherence</em>, defines <em>what values</em> can be returned
+by a read. The second, called <em>consistency</em>, determines
+<em>when</em> a written value will be returned by a read. Considering
+coherence first, we say that a memory system is coherent if</p>
 <ol>
-<li><p>A read by processor <span class="math inline">\(P\)</span> to a location <span class="math inline">\(X\)</span> that follows a write by <span class="math inline">\(P\)</span> to <span class="math inline">\(X\)</span>, with no writes of <span class="math inline">\(X\)</span> by another processor occurring between the write and the read by <span class="math inline">\(P\)</span>, always returns the value written by <span class="math inline">\(P\)</span>.</p></li>
-<li><p>A read by a processor <span class="math inline">\(P_1\)</span> to a location <span class="math inline">\(X\)</span> that follows a write by another processor <span class="math inline">\(P_2\)</span> to <span class="math inline">\(X\)</span> returns the value written by <span class="math inline">\(P_2\)</span> if the read and write are “sufficiently separated" in time and no other writes to <span class="math inline">\(X\)</span> occurred between the two accesses.</p></li>
-<li><p>Writes to the same location are <em>serialized</em>. That is, two writes to the same location by any two processors are seen in the same order by all processors.</p></li>
+<li><p>A read by processor <span class="math inline">\(P\)</span> to a
+location <span class="math inline">\(X\)</span> that follows a write by
+<span class="math inline">\(P\)</span> to <span
+class="math inline">\(X\)</span>, with no writes of <span
+class="math inline">\(X\)</span> by another processor occurring between
+the write and the read by <span class="math inline">\(P\)</span>, always
+returns the value written by <span
+class="math inline">\(P\)</span>.</p></li>
+<li><p>A read by a processor <span class="math inline">\(P_1\)</span> to
+a location <span class="math inline">\(X\)</span> that follows a write
+by another processor <span class="math inline">\(P_2\)</span> to <span
+class="math inline">\(X\)</span> returns the value written by <span
+class="math inline">\(P_2\)</span> if the read and write are
+“sufficiently separated" in time and no other writes to <span
+class="math inline">\(X\)</span> occurred between the two
+accesses.</p></li>
+<li><p>Writes to the same location are <em>serialized</em>. That is, two
+writes to the same location by any two processors are seen in the same
+order by all processors.</p></li>
 </ol>
-<p>The first property establishes a basic local ordering property for each processor i.e. it is what we would expect to hold true for a uniprocessor system. The second property defines a notion of what it means for multiple processors to have a coherent view of memory i.e. processors should observe the most recent effects of writes by other processors. The third property, <em>write serialization</em>, is also required, to ensure that all processors observe writes to a particular memory address in the same order.</p>
-<section id="basic-schemes-for-enforcing-coherence" class="level3 unnumbered">
+<p>The first property establishes a basic local ordering property for
+each processor i.e. it is what we would expect to hold true for a
+uniprocessor system. The second property defines a notion of what it
+means for multiple processors to have a coherent view of memory i.e.
+processors should observe the most recent effects of writes by other
+processors. The third property, <em>write serialization</em>, is also
+required, to ensure that all processors observe writes to a particular
+memory address in the same order.</p>
+<section id="basic-schemes-for-enforcing-coherence"
+class="level3 unnumbered">
 <h3 class="unnumbered">Basic Schemes for Enforcing Coherence</h3>
-<p>In a cache coherent multiprocessor, the caches provide both <em>migration</em> and <em>replication</em> of shared data items:</p>
+<p>In a cache coherent multiprocessor, the caches provide both
+<em>migration</em> and <em>replication</em> of shared data items:</p>
 <ul>
-<li><p><em>Migration</em>: A data item can be moved to a local cache and used there in a transparent fashion.</p></li>
-<li><p><em>Replication</em>: When shared data are being simultaneously read, the caches make a copy of the data item in the local cache. This reduces latency of access and contention for a read shared data item.</p></li>
+<li><p><em>Migration</em>: A data item can be moved to a local cache and
+used there in a transparent fashion.</p></li>
+<li><p><em>Replication</em>: When shared data are being simultaneously
+read, the caches make a copy of the data item in the local cache. This
+reduces latency of access and contention for a read shared data
+item.</p></li>
 </ul>
-<p>The protocols to maintain coherence for multiple processors are <em>cache coherence protocols</em>.</p>
-<p>TODO: <em>Snooping</em> vs. <em>directory-based</em> cache coherence protocols.</p>
+<p>The protocols to maintain coherence for multiple processors are
+<em>cache coherence protocols</em>.</p>
+<p>TODO: <em>Snooping</em> vs. <em>directory-based</em> cache coherence
+protocols.</p>
 </section>
 </section>
 </section>
 <section id="virtual-memory" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Virtual Memory</h1>
-<p>In the same sense of smaller memory units acting as caches for main memory, we can also view main memory as acting as a “cache” for external storage: this technique is known <em>virtual memory</em>. The motivations for virtual memory were historically twofold:</p>
+<h1 data-number="6"><span class="header-section-number">6</span> Virtual
+Memory</h1>
+<p>In the same sense of smaller memory units acting as caches for main
+memory, we can also view main memory as acting as a “cache” for external
+storage: this technique is known <em>virtual memory</em>. The
+motivations for virtual memory were historically twofold:</p>
 <ol>
-<li><p>Eliminate the programming burdens of only having access to a limited amount of main memory.</p></li>
-<li><p>Allow safe and efficient <em>sharing</em> of memory between multiple programs.</p></li>
+<li><p>Eliminate the programming burdens of only having access to a
+limited amount of main memory.</p></li>
+<li><p>Allow safe and efficient <em>sharing</em> of memory between
+multiple programs.</p></li>
 </ol>
-<p>The latter is the more important consideration in modern systems (since main memory units have gotten quite large). We would like to compile programs such that they use their own <em>address space</em> i.e. a separate range of memory locations accessible only to that program. Virtual memory implements the translation of a program’s address space to <em>physical addresses</em>.</p>
-<p>Concepts between virtual memory and caches are essentially the same, but things carry different naming conventions for historical reasons.</p>
+<p>The latter is the more important consideration in modern systems
+(since main memory units have gotten quite large). We would like to
+compile programs such that they use their own <em>address space</em>
+i.e. a separate range of memory locations accessible only to that
+program. Virtual memory implements the translation of a program’s
+address space to <em>physical addresses</em>.</p>
+<p>Concepts between virtual memory and caches are essentially the same,
+but things carry different naming conventions for historical
+reasons.</p>
 <ul>
 <li><p><em>page</em>: a virtual memory block</p></li>
 <li><p><em>page fault</em>: virtual memory miss</p></li>
 </ul>
-<p>With virtual memory, the processor produces a <em>virtual address</em>, which is translated through a combo of hardware + software into a <em>physical address</em>, which can be used to access main memory. This process is called <em>address translation</em>. It’s just another cache!</p>
-<section id="making-address-translation-fast-the-tlb" class="level2" data-number="6.1">
-<h2 data-number="6.1"><span class="header-section-number">6.1</span> Making Address Translation Fast: the TLB</h2>
-<p>When a translation for a virtual page number is used, it will probably be needed again in th near future. So, modern processors include a special cache that keeps track of recent translations. Typically this cache is called the <em>translation-lookaside buffer (TLB)</em>, but it would really be more appropriate to just call it a <em>translation cache</em>.</p>
+<p>With virtual memory, the processor produces a <em>virtual
+address</em>, which is translated through a combo of hardware + software
+into a <em>physical address</em>, which can be used to access main
+memory. This process is called <em>address translation</em>. It’s just
+another cache!</p>
+<section id="making-address-translation-fast-the-tlb" class="level2"
+data-number="6.1">
+<h2 data-number="6.1"><span class="header-section-number">6.1</span>
+Making Address Translation Fast: the TLB</h2>
+<p>When a translation for a virtual page number is used, it will
+probably be needed again in th near future. So, modern processors
+include a special cache that keeps track of recent translations.
+Typically this cache is called the <em>translation-lookaside buffer
+(TLB)</em>, but it would really be more appropriate to just call it a
+<em>translation cache</em>.</p>
 </section>
 </section>
-<section id="hardware-description-languages" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Hardware Description Languages</h1>
-<p><em>Hardware description languages (HDLs)</em> are languages for describing digital circuits at a higher level of abstraction, rather than directly describing every logic gate and their exact placement, connections, etc.</p>
+<section id="hardware-description-languages" class="level1"
+data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span>
+Hardware Description Languages</h1>
+<p><em>Hardware description languages (HDLs)</em> are languages for
+describing digital circuits at a higher level of abstraction, rather
+than directly describing every logic gate and their exact placement,
+connections, etc.</p>
 <section id="verilog" class="level2 unnumbered">
 <h2 class="unnumbered">Verilog</h2>
-<p><em>Verilog</em> is one of the most common HDLs, and it can be used to define both combinational and sequential circuits. As a simple example, we can describe a simple combinational circuit in Verilog as a <em>module</em>. For example, the following describes a circuit with one <em>input</em> and one <em>output</em>, where the output is the negation of the input.</p>
+<p><em>Verilog</em> is one of the most common HDLs, and it can be used
+to define both combinational and sequential circuits. As a simple
+example, we can describe a simple combinational circuit in Verilog as a
+<em>module</em>. For example, the following describes a circuit with one
+<em>input</em> and one <em>output</em>, where the output is the negation
+of the input.</p>
 <pre><code>    module top_module(input a, output b);
         assign b = !a;
     endmodule</code></pre>
-<p>When circuits become more complex, we can also declare <em>wires</em>, which are like internal connections that are not externally visible outside of the module. For example, the following declares an internal wire that takes on the negation of the input <code>a</code>, and this wire is then fed (i.e. connected to) the output. For this simple example the wire doesn’t really serve a necessary purpose, but with larger circuits wires can help to decompose more complex bits of logic.</p>
+<p>When circuits become more complex, we can also declare
+<em>wires</em>, which are like internal connections that are not
+externally visible outside of the module. For example, the following
+declares an internal wire that takes on the negation of the input
+<code>a</code>, and this wire is then fed (i.e. connected to) the
+output. For this simple example the wire doesn’t really serve a
+necessary purpose, but with larger circuits wires can help to decompose
+more complex bits of logic.</p>
 <pre><code>    module top_module(input a, output b);
         wire w1; // wire declaration.
         assign w1 = !a;
@@ -243,21 +481,36 @@
     endmodule</code></pre>
 <section id="vectors" class="level4 unnumbered">
 <h4 class="unnumbered">Vectors</h4>
-<p>Vectors in Verilog are used to group related signals using one name to make things more convenient. For example, declaring <code>wire [7:0] w;</code> declares an 8-bit vector named <code>w</code> that is functionally equivalent to having 8 separate writes.</p>
-<p>Note how the declaration of a vector places the dimensions before the name. But, note that the <em>part select</em> (i.e. accessing a particular entry in the vector) has the dimensions <em>after</em> the vector name e.g.</p>
+<p>Vectors in Verilog are used to group related signals using one name
+to make things more convenient. For example, declaring
+<code>wire [7:0] w;</code> declares an 8-bit vector named <code>w</code>
+that is functionally equivalent to having 8 separate writes.</p>
+<p>Note how the declaration of a vector places the dimensions before the
+name. But, note that the <em>part select</em> (i.e. accessing a
+particular entry in the vector) has the dimensions <em>after</em> the
+vector name e.g.</p>
 <pre><code>    wire [99:0] w; // declare 100 element vector.
     assign out = w[3]; // part select one bit of the vector.</code></pre>
 <p>More generally, the syntax for declaring vectors is as follows:</p>
 <pre><code>    type [high:low] vector_name;</code></pre>
-<p>where <code>type</code> specifies the datatype of the vector (typically <code>wire</code> or <code>reg</code>). Note that the <em>endianness</em> of a vector is whether the least significant bit has a lower index (little endian <code>[3:0]</code>) or a higher index (big endian <code>[0:3]</code>). Once a vector is declared with a particular endianness, it must always be used the same way.</p>
+<p>where <code>type</code> specifies the datatype of the vector
+(typically <code>wire</code> or <code>reg</code>). Note that the
+<em>endianness</em> of a vector is whether the least significant bit has
+a lower index (little endian <code>[3:0]</code>) or a higher index (big
+endian <code>[0:3]</code>). Once a vector is declared with a particular
+endianness, it must always be used the same way.</p>
 </section>
 </section>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-2011fourthcomporgdesign" class="csl-entry" role="doc-biblioentry">
-Patterson, David A., and John L. Hennessy. 2011. <em>Computer Organization and Design, Revised Fourth Edition, Fourth Edition: The Hardware/Software Interface</em>. 4th ed. San Francisco, CA, USA: Morgan Kaufmann Publishers Inc.
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-2011fourthcomporgdesign" class="csl-entry" role="listitem">
+Patterson, David A., and John L. Hennessy. 2011. <em>Computer
+Organization and Design, Revised Fourth Edition, Fourth Edition: The
+Hardware/Software Interface</em>. 4th ed. San Francisco, CA, USA: Morgan
+Kaufmann Publishers Inc.
 </div>
 </div>
 </section>

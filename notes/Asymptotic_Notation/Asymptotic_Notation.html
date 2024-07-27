@@ -10,15 +10,25 @@
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for citations */
     div.csl-bib-body { }
     div.csl-entry {
       clear: both;
+      margin-bottom: 0em;
     }
-    .hanging div.csl-entry {
+    .hanging-indent div.csl-entry {
       margin-left:2em;
       text-indent:-2em;
     }
@@ -32,13 +42,12 @@
     }
     div.csl-indent {
       margin-left: 2em;
-    }
-  </style>
+    }  </style>
   <link rel="stylesheet" href="../../style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
 </head>
 <body>
 <header id="title-block-header">
@@ -48,56 +57,149 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#basic-asymptotic-notation">Basic Asymptotic Notation</a></li>
-<li><a href="#additional-notation">Additional Notation</a></li>
-<li><a href="#bibliography">References</a></li>
+<li><a href="#basic-asymptotic-notation"
+id="toc-basic-asymptotic-notation">Basic Asymptotic Notation</a></li>
+<li><a href="#additional-notation"
+id="toc-additional-notation">Additional Notation</a></li>
+<li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
 </nav>
-<p>If we want to describe the runtime of a Turing machine (i.e. a program), we describe it based on the size of the input. That is, how does the runtime scale as the input size scales. If we were to look at the performance on a single input, it would be difficult to compare one Turing machine against another since its specific runtime could be affected by many other factors e.g. speed of the machine running the program, etc. So, we look at the <em>asymptotic</em> behavior of the machine. That is, how does its performance scale as input sizes get very large. The notations below describes the asymptotic behavior of a function <span class="math inline">\(f(n)\)</span> in terms of a function <span class="math inline">\(g(n)\)</span>. In the case of describing the runtime of a Turing machine, <span class="math inline">\(f\)</span> typically represents the runtime (i.e. the number of steps taken) of a machine as a function of the input size, <span class="math inline">\(n\)</span>.</p>
+<p>If we want to describe the runtime of a Turing machine (i.e. a
+program), we describe it based on the size of the input. That is, how
+does the runtime scale as the input size scales. If we were to look at
+the performance on a single input, it would be difficult to compare one
+Turing machine against another since its specific runtime could be
+affected by many other factors e.g. speed of the machine running the
+program, etc. So, we look at the <em>asymptotic</em> behavior of the
+machine. That is, how does its performance scale as input sizes get very
+large. The notations below describes the asymptotic behavior of a
+function <span class="math inline">\(f(n)\)</span> in terms of a
+function <span class="math inline">\(g(n)\)</span>. In the case of
+describing the runtime of a Turing machine, <span
+class="math inline">\(f\)</span> typically represents the runtime (i.e.
+the number of steps taken) of a machine as a function of the input size,
+<span class="math inline">\(n\)</span>.</p>
 <section id="basic-asymptotic-notation" class="level1 unnumbered">
 <h1 class="unnumbered">Basic Asymptotic Notation</h1>
-<p>For the notations listed below, the <span class="math inline">\(\in\)</span> and <span class="math inline">\(=\)</span> symbols are, in practice, often used interchangeably, even though the former is technically correct. For example, <span class="math inline">\(O(g(n))\)</span> describes an entire family of functions (i.e. all functions asymptotically bounded above by <span class="math inline">\(g\)</span>), so saying <span class="math inline">\(f = O(g(n))\)</span> is really an abuse of notation. Writing <span class="math inline">\(f \in O(g(n))\)</span> is more precise. See <span class="citation" data-cites="graham1989concrete">(<a href="#ref-graham1989concrete" role="doc-biblioref">Graham, Knuth, and Patashnik 1994</a>)</span> for a good treatment of asymptotic notation.</p>
+<p>For the notations listed below, the <span
+class="math inline">\(\in\)</span> and <span
+class="math inline">\(=\)</span> symbols are, in practice, often used
+interchangeably, even though the former is technically correct. For
+example, <span class="math inline">\(O(g(n))\)</span> describes an
+entire family of functions (i.e. all functions asymptotically bounded
+above by <span class="math inline">\(g\)</span>), so saying <span
+class="math inline">\(f = O(g(n))\)</span> is really an abuse of
+notation. Writing <span class="math inline">\(f \in O(g(n))\)</span> is
+more precise. See <span class="citation"
+data-cites="graham1989concrete">(<a href="#ref-graham1989concrete"
+role="doc-biblioref">Graham, Knuth, and Patashnik 1994</a>)</span> for a
+good treatment of asymptotic notation.</p>
 <ul>
-<li><p><strong>(<span class="math inline">\(O\)</span>) Big O (Upper Bound, analogous to <span class="math inline">\(\leq\)</span>)</strong> <span class="math display">\[\begin{aligned}
+<li><p><strong>(<span class="math inline">\(O\)</span>) Big O (Upper
+Bound, analogous to <span class="math inline">\(\leq\)</span>)</strong>
+<span class="math display">\[\begin{aligned}
         f(n) &amp;= O(g(n)) \\
-        f(n) &amp;= \mathcal{O}(g(n)) \, \, \quad (\textit{alternate notation})
-    \end{aligned}\]</span> Establishes an upper bound. Formally, <span class="math inline">\(\exists c &gt; 0\)</span> such that as <span class="math inline">\(n\)</span> approaches <span class="math inline">\(\infty\)</span>, <span class="math inline">\(f(n) \leq c*g(n)\)</span>. That is, <span class="math inline">\(f\)</span> is bounded above by <span class="math inline">\(g\)</span>, within some constant factor, as <span class="math inline">\(n\)</span> approaches infinity.</p></li>
-<li><p><strong>(<span class="math inline">\(\Omega\)</span>) Big Omega (Lower Bound, analogous to <span class="math inline">\(\geq\)</span>)</strong> <span class="math display">\[\begin{aligned}
+        f(n) &amp;= \mathcal{O}(g(n)) \, \, \quad (\textit{alternate
+notation})
+    
+\end{aligned}\]</span> Establishes an upper bound. Formally, <span
+class="math inline">\(\exists c &gt; 0\)</span> such that as <span
+class="math inline">\(n\)</span> approaches <span
+class="math inline">\(\infty\)</span>, <span class="math inline">\(f(n)
+\leq c*g(n)\)</span>. That is, <span class="math inline">\(f\)</span> is
+bounded above by <span class="math inline">\(g\)</span>, within some
+constant factor, as <span class="math inline">\(n\)</span> approaches
+infinity.</p></li>
+<li><p><strong>(<span class="math inline">\(\Omega\)</span>) Big Omega
+(Lower Bound, analogous to <span
+class="math inline">\(\geq\)</span>)</strong> <span
+class="math display">\[\begin{aligned}
         f(n) = \Omega(g(n))
-    \end{aligned}\]</span> Establishes a lower bound i.e. best case complexity. More formally, <span class="math inline">\(\exists c &gt; 0\)</span> such that as <span class="math inline">\(n\)</span> approaches <span class="math inline">\(\infty\)</span>, <span class="math inline">\(f(n) \geq c*g(n)\)</span>. That is, <span class="math inline">\(f\)</span> is bounded below by <span class="math inline">\(g\)</span>, within some constant factor, as <span class="math inline">\(n\)</span> approaches infinity.</p></li>
-<li><p><strong>(<span class="math inline">\(\Theta\)</span>) Big Theta (analogous to <span class="math inline">\(\approx\)</span>)</strong> <span class="math display">\[\begin{aligned}
+    
+\end{aligned}\]</span> Establishes a lower bound i.e. best case
+complexity. More formally, <span class="math inline">\(\exists c &gt;
+0\)</span> such that as <span class="math inline">\(n\)</span>
+approaches <span class="math inline">\(\infty\)</span>, <span
+class="math inline">\(f(n) \geq c*g(n)\)</span>. That is, <span
+class="math inline">\(f\)</span> is bounded below by <span
+class="math inline">\(g\)</span>, within some constant factor, as <span
+class="math inline">\(n\)</span> approaches infinity.</p></li>
+<li><p><strong>(<span class="math inline">\(\Theta\)</span>) Big Theta
+(analogous to <span class="math inline">\(\approx\)</span>)</strong>
+<span class="math display">\[\begin{aligned}
         f(n) = \Theta(g(n))
-    \end{aligned}\]</span></p>
-<p><span class="math inline">\(f\)</span> is bounded asymptotically both above and below by <span class="math inline">\(g(n)\)</span>. That is, <span class="math inline">\(f = O(g(n))\)</span> and <span class="math inline">\(f = \Omega(g(n))\)</span>.</p></li>
-<li><p><strong>(<span class="math inline">\(o\)</span>) Small O (analogous to <span class="math inline">\(&lt;\)</span>)</strong> <span class="math display">\[\begin{aligned}
+    
+\end{aligned}\]</span></p>
+<p><span class="math inline">\(f\)</span> is bounded asymptotically both
+above and below by <span class="math inline">\(g(n)\)</span>. That is,
+<span class="math inline">\(f = O(g(n))\)</span> and <span
+class="math inline">\(f = \Omega(g(n))\)</span>.</p></li>
+<li><p><strong>(<span class="math inline">\(o\)</span>) Small O
+(analogous to <span class="math inline">\(&lt;\)</span>)</strong> <span
+class="math display">\[\begin{aligned}
         f(n) = o(g(n))
-    \end{aligned}\]</span></p>
-<p><span class="math inline">\(f\)</span> is dominated by <span class="math inline">\(g\)</span> asymptotically. Can think of this as a variant of Big O notation but saying something stronger i.e. <span class="math inline">\(f = o(g(n))\)</span> implies <span class="math inline">\(f = O(g(n))\)</span>. The function <span class="math inline">\(f\)</span> is not only bounded above by <span class="math inline">\(g\)</span> but is dominated by <span class="math inline">\(g\)</span>. In other words, <span class="math inline">\(f\)</span>’s asymptotic growth is strictly less than <span class="math inline">\(g\)</span>’s growth. Formally, we can state this by saying that <span class="math inline">\(\forall c &gt; 0\)</span>, as <span class="math inline">\(n\)</span> goes to infinity, <span class="math inline">\(f(n) \leq c*g(n)\)</span>. As a concrete example, <span class="math inline">\(x^2 \in o(x^3)\)</span>.</p></li>
-<li><p><strong>(<span class="math inline">\(\omega\)</span>) Small Omega (analogous to <span class="math inline">\(&gt;\)</span>)</strong> <span class="math display">\[\begin{aligned}
+    
+\end{aligned}\]</span></p>
+<p><span class="math inline">\(f\)</span> is dominated by <span
+class="math inline">\(g\)</span> asymptotically. Can think of this as a
+variant of Big O notation but saying something stronger i.e. <span
+class="math inline">\(f = o(g(n))\)</span> implies <span
+class="math inline">\(f = O(g(n))\)</span>. The function <span
+class="math inline">\(f\)</span> is not only bounded above by <span
+class="math inline">\(g\)</span> but is dominated by <span
+class="math inline">\(g\)</span>. In other words, <span
+class="math inline">\(f\)</span>’s asymptotic growth is strictly less
+than <span class="math inline">\(g\)</span>’s growth. Formally, we can
+state this by saying that <span class="math inline">\(\forall c &gt;
+0\)</span>, as <span class="math inline">\(n\)</span> goes to infinity,
+<span class="math inline">\(f(n) \leq c*g(n)\)</span>. As a concrete
+example, <span class="math inline">\(x^2 \in o(x^3)\)</span>.</p></li>
+<li><p><strong>(<span class="math inline">\(\omega\)</span>) Small Omega
+(analogous to <span class="math inline">\(&gt;\)</span>)</strong> <span
+class="math display">\[\begin{aligned}
         f(n) \in \omega(g(n))
-    \end{aligned}\]</span> <span class="math inline">\(f\)</span> dominates <span class="math inline">\(g\)</span> asymptotically. Similar to <span class="math inline">\(o(g(n))\)</span> but establishes a strict lower bound. It is a stronger statement than <span class="math inline">\(f = \Omega(g(n))\)</span>, saying that <span class="math inline">\(f\)</span>’s asymptotic growth is strictly greater than <span class="math inline">\(g\)</span>’s.</p></li>
+    
+\end{aligned}\]</span> <span class="math inline">\(f\)</span> dominates
+<span class="math inline">\(g\)</span> asymptotically. Similar to <span
+class="math inline">\(o(g(n))\)</span> but establishes a strict lower
+bound. It is a stronger statement than <span class="math inline">\(f =
+\Omega(g(n))\)</span>, saying that <span
+class="math inline">\(f\)</span>’s asymptotic growth is strictly greater
+than <span class="math inline">\(g\)</span>’s.</p></li>
 </ul>
 </section>
 <section id="additional-notation" class="level1 unnumbered">
 <h1 class="unnumbered">Additional Notation</h1>
-<p>In addition to the above standard notations, there are some additional common asymptotic notations:</p>
+<p>In addition to the above standard notations, there are some
+additional common asymptotic notations:</p>
 <ul>
 <li><p><span class="math inline">\(f(n) = \text{poly}(g(n))\)</span></p>
 <p>This is equivalent to <span class="math display">\[\begin{aligned}
         f(n) = g(n)^{O(1)}
-    \end{aligned}\]</span> which basically means that <span class="math inline">\(f\)</span> is bounded above by <span class="math inline">\(g\)</span> to some constant power.</p></li>
+    
+\end{aligned}\]</span> which basically means that <span
+class="math inline">\(f\)</span> is bounded above by <span
+class="math inline">\(g\)</span> to some constant power.</p></li>
 <li><p><span class="math inline">\(f(n) = \tilde{O}(g(n))\)</span></p>
 <p>This is equivalent to <span class="math display">\[\begin{aligned}
         f(n) &amp;= g(n) \cdot \text{poly}(\log(g(n))) \\
         &amp;= O(g(n) \cdot \log^ {O(1)}(g(n)) )
-    \end{aligned}\]</span> which is basically just like saying that <span class="math inline">\(f\)</span> is nearly the same as <span class="math inline">\(g\)</span> but with some extra factor that is logarithmic in <span class="math inline">\(g\)</span>.</p></li>
+    
+\end{aligned}\]</span> which is basically just like saying that <span
+class="math inline">\(f\)</span> is nearly the same as <span
+class="math inline">\(g\)</span> but with some extra factor that is
+logarithmic in <span class="math inline">\(g\)</span>.</p></li>
 </ul>
 </section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
-<div id="ref-graham1989concrete" class="csl-entry" role="doc-biblioentry">
-Graham, Ronald L., Donald E. Knuth, and Oren Patashnik. 1994. <em><span class="nocase">Concrete Mathematics: A Foundation for Computer Science</span></em>. 2nd ed. USA: Addison-Wesley Longman Publishing Co., Inc.
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-graham1989concrete" class="csl-entry" role="listitem">
+Graham, Ronald L., Donald E. Knuth, and Oren Patashnik. 1994. <em><span
+class="nocase">Concrete Mathematics: A Foundation for Computer
+Science</span></em>. 2nd ed. USA: Addison-Wesley Longman Publishing Co.,
+Inc.
 </div>
 </div>
 </section>

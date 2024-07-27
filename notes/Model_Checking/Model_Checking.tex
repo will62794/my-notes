@@ -230,7 +230,7 @@ By this, we can know that $P$ is implied by the initial condition and by the fir
 
 For concurrent systems, it is often the case orderings between \textit{independent} transitions in the system are mostly irrelevant to the property being verified. Typically we can define some kind of "dependence" relation between actions of a system which expresses this notion.
 
-Intuitively, we can view this as determining whether two actions, $A_1$ and $A_2$, ``interfere" with each other. If we think about these actions as more or less guarded commands, this interference could mean that writes by one actino can "affect" the other. 
+Intuitively, we can view this as determining whether two actions, $A_1$ and $A_2$, ``interfere" with each other. If we think about these actions as more or less guarded commands, this interference could mean that writes by one action can "affect" the other. 
 More accurately, we can imagine that writes by $A_1$ either affect enabledness/disablement of $A_2$'s precondition/guard, or it affects variables which $A_2$ uses to compute the values of its writes. We can formalize these notions into a \textit{dependency} condition between $A_1$ and $A_2$. That is, $A_2$ is independent from $A_1$ if:
 
 \begin{itemize}

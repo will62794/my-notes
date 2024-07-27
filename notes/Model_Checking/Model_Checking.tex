@@ -234,12 +234,12 @@ Intuitively, we can view this as determining whether two actions, $A_1$ and $A_2
 More accurately, we can imagine that writes by $A_1$ either affect enabledness/disablement of $A_2$'s precondition/guard, or it affects variables which $A_2$ uses to compute the values of its writes. We can formalize these notions into a \textit{dependency} condition between $A_1$ and $A_2$. That is, $A_2$ is independent from $A_1$ if:
 
 \begin{itemize}
-    \item \textbf{Enabledness}: From any state, 
+    \item \textbf{Enabledness}: For any states $s$ and $s'$, 
     \begin{itemize}
-        \item $Enabled(A_2) \wedge A_1 \Rightarrow Enabled(A_2)$ \quad ($A_1$ cannot disable $A_2$)
-        \item $\neg Enabled(A_2) \wedge A_1 \Rightarrow \neg Enabled(A_2)$ \quad ($A_2$ cannot enable $A_1$)
+        \item $\phantom{\neg}Enabled(s, A_2) \wedge A_1(s, s') \Rightarrow \phantom{\neg}Enabled(s',A_2)$ \quad ($A_1$ cannot disable $A_2$)
+        \item $\neg Enabled(s, A_2) \wedge A_1(s, s') \Rightarrow \neg Enabled(s', A_2)$ \quad ($A_1$ cannot enable $A_2$)
     \end{itemize}
-    \item \textbf{Commutativity}: From any state, if $Enabled(A_1) \wedge Enabled(A_2)$, if we take an $A_1$ step $s \overset{A_1}{\rightarrow} s'$, the update expressions of $A_2$ in $s'$ are the same as from $s$. In other words, the modifications to the variables updated by $A_2$ will be the same whether they are applied starting from $s$ or $s'$.
+    \item \textbf{Commutativity}: From any state $s$, if $Enabled(s, A_1) \wedge Enabled(s, A_2)$, if we take an $A_1$ step $s \overset{A_1}{\rightarrow} s'$, the update expressions of $A_2$ in $s'$ are the same as from $s$. In other words, the modifications to the variables updated by $A_2$ will be the same whether they are applied starting from $s$ or $s'$.
 \end{itemize}
 Note that this dependency relation doesn't necessarily have to be symmetric e.g. $A_1$ might depend on $A_2$, but not vice versa e.g, imagine that $A_2$ writes to some variable that is only read by $A_1$, and $A_1$ doesn't interact with any other variables read/written by $A_2$.
 

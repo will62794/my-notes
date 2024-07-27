@@ -677,19 +677,23 @@ class="math inline">\(A_2\)</span>. That is, <span
 class="math inline">\(A_2\)</span> is independent from <span
 class="math inline">\(A_1\)</span> if:</p>
 <ul>
-<li><p><strong>Enabledness</strong>: From any state,</p>
+<li><p><strong>Enabledness</strong>: For any states <span
+class="math inline">\(s\)</span> and <span
+class="math inline">\(s&#39;\)</span>,</p>
 <ul>
-<li><p><span class="math inline">\(Enabled(A_2) \wedge A_1 \Rightarrow
-Enabled(A_2)\)</span> (<span class="math inline">\(A_1\)</span> cannot
-disable <span class="math inline">\(A_2\)</span>)</p></li>
-<li><p><span class="math inline">\(\neg Enabled(A_2) \wedge A_1
-\Rightarrow \neg Enabled(A_2)\)</span> (<span
-class="math inline">\(A_2\)</span> cannot enable <span
-class="math inline">\(A_1\)</span>)</p></li>
+<li><p><span class="math inline">\(\phantom{\neg}Enabled(s, A_2) \wedge
+A_1(s, s&#39;) \Rightarrow \phantom{\neg}Enabled(s&#39;,A_2)\)</span>
+(<span class="math inline">\(A_1\)</span> cannot disable <span
+class="math inline">\(A_2\)</span>)</p></li>
+<li><p><span class="math inline">\(\neg Enabled(s, A_2) \wedge A_1(s,
+s&#39;) \Rightarrow \neg Enabled(s&#39;, A_2)\)</span> (<span
+class="math inline">\(A_1\)</span> cannot enable <span
+class="math inline">\(A_2\)</span>)</p></li>
 </ul></li>
-<li><p><strong>Commutativity</strong>: From any state, if <span
-class="math inline">\(Enabled(A_1) \wedge Enabled(A_2)\)</span>, if we
-take an <span class="math inline">\(A_1\)</span> step <span
+<li><p><strong>Commutativity</strong>: From any state <span
+class="math inline">\(s\)</span>, if <span
+class="math inline">\(Enabled(s, A_1) \wedge Enabled(s, A_2)\)</span>,
+if we take an <span class="math inline">\(A_1\)</span> step <span
 class="math inline">\(s \overset{A_1}{\rightarrow} s&#39;\)</span>, the
 update expressions of <span class="math inline">\(A_2\)</span> in <span
 class="math inline">\(s&#39;\)</span> are the same as from <span

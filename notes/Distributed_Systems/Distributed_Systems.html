@@ -60,68 +60,71 @@
 class="toc-section-number">1</span> System Models</a></li>
 <li><a href="#fault-tolerance" id="toc-fault-tolerance"><span
 class="toc-section-number">2</span> Fault Tolerance</a></li>
+<li><a href="#distributed-transactions"
+id="toc-distributed-transactions"><span
+class="toc-section-number">3</span> Distributed Transactions</a></li>
 <li><a href="#consensus" id="toc-consensus"><span
-class="toc-section-number">3</span> Consensus</a>
+class="toc-section-number">4</span> Consensus</a>
 <ul>
 <li><a href="#shared-memory-consensus-lock-based"
 id="toc-shared-memory-consensus-lock-based"><span
-class="toc-section-number">3.1</span> Shared Memory Consensus:
+class="toc-section-number">4.1</span> Shared Memory Consensus:
 Lock-based</a></li>
 <li><a href="#shared-memory-consensus-lock-less"
 id="toc-shared-memory-consensus-lock-less"><span
-class="toc-section-number">3.2</span> Shared Memory Consensus:
+class="toc-section-number">4.2</span> Shared Memory Consensus:
 Lock-less</a>
 <ul>
 <li><a href="#trivial-solution-compare-and-swap-cas"
 id="toc-trivial-solution-compare-and-swap-cas"><span
-class="toc-section-number">3.2.1</span> Trivial Solution: Compare and
+class="toc-section-number">4.2.1</span> Trivial Solution: Compare and
 Swap (CAS)</a></li>
 <li><a href="#generalizable-solution"
 id="toc-generalizable-solution"><span
-class="toc-section-number">3.2.2</span> Generalizable Solution</a></li>
+class="toc-section-number">4.2.2</span> Generalizable Solution</a></li>
 </ul></li>
 <li><a href="#paxos" id="toc-paxos"><span
-class="toc-section-number">3.3</span> Paxos</a></li>
+class="toc-section-number">4.3</span> Paxos</a></li>
 <li><a href="#vertical-paxos" id="toc-vertical-paxos"><span
-class="toc-section-number">3.4</span> Vertical Paxos</a></li>
+class="toc-section-number">4.4</span> Vertical Paxos</a></li>
 <li><a href="#fast-paxos" id="toc-fast-paxos"><span
-class="toc-section-number">3.5</span> Fast Paxos</a></li>
+class="toc-section-number">4.5</span> Fast Paxos</a></li>
 <li><a href="#egalitarian-paxos" id="toc-egalitarian-paxos"><span
-class="toc-section-number">3.6</span> Egalitarian Paxos</a></li>
+class="toc-section-number">4.6</span> Egalitarian Paxos</a></li>
 <li><a href="#zab" id="toc-zab"><span
-class="toc-section-number">3.7</span> Zab</a></li>
+class="toc-section-number">4.7</span> Zab</a></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"
 id="toc-byzantine-fault-tolerance"><span
-class="toc-section-number">4</span> Byzantine Fault Tolerance</a>
+class="toc-section-number">5</span> Byzantine Fault Tolerance</a>
 <ul>
 <li><a href="#model" id="toc-model"><span
-class="toc-section-number">4.1</span> Model</a></li>
+class="toc-section-number">5.1</span> Model</a></li>
 <li><a href="#intuitions-and-algorithm"
 id="toc-intuitions-and-algorithm"><span
-class="toc-section-number">4.2</span> Intuitions and Algorithm</a></li>
+class="toc-section-number">5.2</span> Intuitions and Algorithm</a></li>
 <li><a href="#from-classic-paxos-to-byzantine"
 id="toc-from-classic-paxos-to-byzantine">From Classic Paxos to
 Byzantine</a></li>
 <li><a href="#notes" id="toc-notes"><span
-class="toc-section-number">4.3</span> Notes</a></li>
+class="toc-section-number">5.3</span> Notes</a></li>
 </ul></li>
 <li><a href="#blockchain-and-cryptocurrency"
 id="toc-blockchain-and-cryptocurrency"><span
-class="toc-section-number">5</span> Blockchain and Cryptocurrency</a>
+class="toc-section-number">6</span> Blockchain and Cryptocurrency</a>
 <ul>
 <li><a href="#bitcoin" id="toc-bitcoin"><span
-class="toc-section-number">5.1</span> Bitcoin</a></li>
+class="toc-section-number">6.1</span> Bitcoin</a></li>
 <li><a href="#ethereum" id="toc-ethereum"><span
-class="toc-section-number">5.2</span> Ethereum</a>
+class="toc-section-number">6.2</span> Ethereum</a>
 <ul>
 <li><a href="#messages-and-transactions"
 id="toc-messages-and-transactions"><span
-class="toc-section-number">5.2.1</span> Messages and
+class="toc-section-number">6.2.1</span> Messages and
 Transactions</a></li>
 </ul></li>
 <li><a href="#blockchain-oracles" id="toc-blockchain-oracles"><span
-class="toc-section-number">5.3</span> Blockchain Oracles</a></li>
+class="toc-section-number">6.3</span> Blockchain Oracles</a></li>
 </ul></li>
 <li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
@@ -215,8 +218,15 @@ class="math inline">\(f\)</span> maximum node failures, we will always
 have <span class="math inline">\(f+1\)</span> nodes available to us to
 write down our work, allowing us to make progress.</p>
 </section>
-<section id="consensus" class="level1" data-number="3">
+<section id="distributed-transactions" class="level1" data-number="3">
 <h1 data-number="3"><span class="header-section-number">3</span>
+Distributed Transactions</h1>
+<p>In order to achieve ACID guarantess of classic database systems in
+distributed setting, we typically rely on some kind of distributed
+transaction commit protocol (e.g. two-phase commit). TODO.</p>
+</section>
+<section id="consensus" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span>
 Consensus</h1>
 <p>The problem of <em>consensus</em> in a distributed system is to get a
 set of separate nodes to agree on a single value. That is, if one node
@@ -229,8 +239,8 @@ just write into a single register and then never change its decision.
 But, even when we introduce multiple concurrent clients (e.g. threads),
 the problem is nontrivial.</p>
 <section id="shared-memory-consensus-lock-based" class="level2"
-data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span>
+data-number="4.1">
+<h2 data-number="4.1"><span class="header-section-number">4.1</span>
 Shared Memory Consensus: Lock-based</h2>
 <p>We assume we have a single register which represents our consensus
 “object", and we have multiple threads that can access the register.
@@ -244,8 +254,8 @@ to see that this upholds the basic correctness properties of
 consensus.</p>
 </section>
 <section id="shared-memory-consensus-lock-less" class="level2"
-data-number="3.2">
-<h2 data-number="3.2"><span class="header-section-number">3.2</span>
+data-number="4.2">
+<h2 data-number="4.2"><span class="header-section-number">4.2</span>
 Shared Memory Consensus: Lock-less</h2>
 <p>Now, what if we want to consider solving the above problem without
 locks? And why would we need do do this? Well, first, we can imagine
@@ -261,8 +271,8 @@ other nodes cannot proceed. So, coming up with a lock-less solution to
 the consensus problem seems a reasonable/desirable goal (isn’t there a
 trivial solution to this, though, in shared memory setting?).</p>
 <section id="trivial-solution-compare-and-swap-cas" class="level3"
-data-number="3.2.1">
-<h3 data-number="3.2.1"><span class="header-section-number">3.2.1</span>
+data-number="4.2.1">
+<h3 data-number="4.2.1"><span class="header-section-number">4.2.1</span>
 Trivial Solution: Compare and Swap (CAS)</h3>
 <p>First, a trivial consensus algorithm for a single register in the
 shared memory context is just to use compare&amp;swap (CAS) when
@@ -280,9 +290,9 @@ cheating? Like, don’t we want to figure out a way to do consensus with
 weaker forms of atomic primitives? Also, if we move to a truly
 distributed/fault-tolerant setting, we can’t necessarily assume we have
 a global register which we can just CAS easily like this?</p>
-<section id="remark-on-cas" class="level4" data-number="3.2.1.1">
-<h4 data-number="3.2.1.1"><span
-class="header-section-number">3.2.1.1</span> Remark on CAS</h4>
+<section id="remark-on-cas" class="level4" data-number="4.2.1.1">
+<h4 data-number="4.2.1.1"><span
+class="header-section-number">4.2.1.1</span> Remark on CAS</h4>
 <p>Note that <em>compare&amp;swap</em> primitive is kind of just
 implementing “lock like" mutual exclusion at a lower level i.e. for
 register <code>X</code></p>
@@ -299,8 +309,8 @@ failure occurs, the whole operation would be aborted and this kind of
 “virtual" lock automatically released.</p>
 </section>
 </section>
-<section id="generalizable-solution" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2"><span class="header-section-number">3.2.2</span>
+<section id="generalizable-solution" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2"><span class="header-section-number">4.2.2</span>
 Generalizable Solution</h3>
 <p>Although the CAS solution works trivially in a single node setting,
 ultimately we want to build up to a solution that actually works in a
@@ -555,8 +565,8 @@ read-write transaction in order to check if given proposal number is
 newer than their own...?)</p>
 </section>
 </section>
-<section id="paxos" class="level2" data-number="3.3">
-<h2 data-number="3.3"><span class="header-section-number">3.3</span>
+<section id="paxos" class="level2" data-number="4.3">
+<h2 data-number="4.3"><span class="header-section-number">4.3</span>
 Paxos</h2>
 <p>Paxos is a protocol for implementing consensus in an asynchronous
 distributed system assuming crash faults. Modeled as <em>proposers</em>,
@@ -580,8 +590,8 @@ than their own latest known ballot. A value is committed at a ballot
 <span class="math inline">\(b\)</span> if a quorum of acceptors have
 accepted that value at <span class="math inline">\(b\)</span>.</p>
 </section>
-<section id="vertical-paxos" class="level2" data-number="3.4">
-<h2 data-number="3.4"><span class="header-section-number">3.4</span>
+<section id="vertical-paxos" class="level2" data-number="4.4">
+<h2 data-number="4.4"><span class="header-section-number">4.4</span>
 Vertical Paxos</h2>
 <p>The classic consensus problem for Paxos is defined on a fixed set of
 <span class="math inline">\(n\)</span> processes. In practice, though,
@@ -627,8 +637,8 @@ master. So, in some sense, it still doesn’t fix the underlying problem
 of a state machine reconfiguration itself, but arguably has a clearer
 separation of concerns.</p>
 </section>
-<section id="fast-paxos" class="level2" data-number="3.5">
-<h2 data-number="3.5"><span class="header-section-number">3.5</span>
+<section id="fast-paxos" class="level2" data-number="4.5">
+<h2 data-number="4.5"><span class="header-section-number">4.5</span>
 Fast Paxos</h2>
 <p>Classic Paxos takes 2 round trips to get a value committed (1 for the
 <span class="math inline">\(Prepare\)</span> phase and 1 for the <span
@@ -640,8 +650,8 @@ having clients send their proposals directly to acceptors, rather than
 going through proposers first. This also changes quorum requirements,
 though. TODO.</p>
 </section>
-<section id="egalitarian-paxos" class="level2" data-number="3.6">
-<h2 data-number="3.6"><span class="header-section-number">3.6</span>
+<section id="egalitarian-paxos" class="level2" data-number="4.6">
+<h2 data-number="4.6"><span class="header-section-number">4.6</span>
 Egalitarian Paxos</h2>
 <p>Egalitarian Paxos (EPaxos) <span class="citation"
 data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru"
@@ -652,8 +662,8 @@ between command slots by tracking only dependency between commands
 explicitly, and executing commands only when they are commmitted, and in
 accordance with this dependency order.</p>
 </section>
-<section id="zab" class="level2" data-number="3.7">
-<h2 data-number="3.7"><span class="header-section-number">3.7</span>
+<section id="zab" class="level2" data-number="4.7">
+<h2 data-number="4.7"><span class="header-section-number">4.7</span>
 Zab</h2>
 <p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a
 href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini
@@ -688,8 +698,8 @@ href="https://github.com/apache/zookeeper/blob/248cc091d440659a819bdd44fe5b41a38
 which is a part of the official Apache Zookeeper repo.</p>
 </section>
 </section>
-<section id="byzantine-fault-tolerance" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span>
+<section id="byzantine-fault-tolerance" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span>
 Byzantine Fault Tolerance</h1>
 <p>The earliest explicit reference to <em>Byzantine</em> faults appeared
 in <span class="citation" data-cites="1982lamportshostak">(<a
@@ -710,8 +720,8 @@ algorithm that solves the problem assuming <span class="math inline">\(n
 digitally signed) messages, then in the synchronous model Byzantine
 agreement can be achieved with only <span
 class="math inline">\(f+1\)</span> processes.</p>
-<section id="model" class="level2" data-number="4.1">
-<h2 data-number="4.1"><span class="header-section-number">4.1</span>
+<section id="model" class="level2" data-number="5.1">
+<h2 data-number="5.1"><span class="header-section-number">5.1</span>
 Model</h2>
 <p>The work on Practical Byzantine Fault Tolerance (PBFT) <span
 class="citation" data-cites="1999castropbft">(<a
@@ -731,8 +741,8 @@ class="citation" data-cites="1978rivestcrypto">(<a
 href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and
 Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
 </section>
-<section id="intuitions-and-algorithm" class="level2" data-number="4.2">
-<h2 data-number="4.2"><span class="header-section-number">4.2</span>
+<section id="intuitions-and-algorithm" class="level2" data-number="5.2">
+<h2 data-number="5.2"><span class="header-section-number">5.2</span>
 Intuitions and Algorithm</h2>
 <p>If we assume a starting point of a classic 2-phase Paxos consensus
 approach, the following are some of the essential issues that arise and
@@ -829,8 +839,8 @@ class="math inline">\(3f+1\)</span> acceptors, then if we get
 confirmation of <span class="math inline">\(2f+1\)</span> prepares, we
 know that...?</p>
 </section>
-<section id="notes" class="level2" data-number="4.3">
-<h2 data-number="4.3"><span class="header-section-number">4.3</span>
+<section id="notes" class="level2" data-number="5.3">
+<h2 data-number="5.3"><span class="header-section-number">5.3</span>
 Notes</h2>
 <ul>
 <li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any
@@ -844,14 +854,14 @@ nodes then you are sure you are in contact with at least one non-faulty
 </section>
 </section>
 <section id="blockchain-and-cryptocurrency" class="level1"
-data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span>
+data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span>
 Blockchain and Cryptocurrency</h1>
 <p>Decentralized currency have beomce a popular peer to peer consensus
 systems that operate under significantly different assumptions and fault
 models than previous systems.</p>
-<section id="bitcoin" class="level2" data-number="5.1">
-<h2 data-number="5.1"><span class="header-section-number">5.1</span>
+<section id="bitcoin" class="level2" data-number="6.1">
+<h2 data-number="6.1"><span class="header-section-number">6.1</span>
 Bitcoin</h2>
 <p>Bitcoin <span class="citation" data-cites="nakamoto2009bitcoin">(<a
 href="#ref-nakamoto2009bitcoin" role="doc-biblioref">Nakamoto
@@ -952,8 +962,8 @@ computational resources in the network to outvote any minority of bad
 actors, since, on average, this larger pool will win out in creating
 valid blocks and extending their chain.</p>
 </section>
-<section id="ethereum" class="level2" data-number="5.2">
-<h2 data-number="5.2"><span class="header-section-number">5.2</span>
+<section id="ethereum" class="level2" data-number="6.2">
+<h2 data-number="6.2"><span class="header-section-number">6.2</span>
 Ethereum</h2>
 <p>Ethereum, originally published in a whitepaper <span class="citation"
 data-cites="Buterin2013">(<a href="#ref-Buterin2013"
@@ -990,8 +1000,8 @@ code. In these accounts, every time the contract account receives a
 internal storage, send other messages, or create new contracts.</p></li>
 </ul>
 <section id="messages-and-transactions" class="level3"
-data-number="5.2.1">
-<h3 data-number="5.2.1"><span class="header-section-number">5.2.1</span>
+data-number="6.2.1">
+<h3 data-number="6.2.1"><span class="header-section-number">6.2.1</span>
 Messages and Transactions</h3>
 <p>A <em>message</em> in Ethereum is similar to a “transaction" in
 Bitcoin, but differs in that an Ethereum message can be created either
@@ -1013,8 +1023,8 @@ computational steps, and <em>GASPRICE</em> is the fee to pay to the
 miner per computational step.</p>
 </section>
 </section>
-<section id="blockchain-oracles" class="level2" data-number="5.3">
-<h2 data-number="5.3"><span class="header-section-number">5.3</span>
+<section id="blockchain-oracles" class="level2" data-number="6.3">
+<h2 data-number="6.3"><span class="header-section-number">6.3</span>
 Blockchain Oracles</h2>
 <p>Although smart contracts allow for secure, decentralized policies to
 be implemented within a blockchain network (e.g. in Ethereum) it is

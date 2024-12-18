@@ -61,6 +61,10 @@ Thus, this naturally gives us a total node requirement of
 \end{align*}
 That is, even in the case of $f$ maximum node failures, we will always have $f+1$ nodes available to us to write down our work, allowing us to make progress.
 
+\section{Distributed Transactions}
+
+In order to achieve ACID guarantess of classic database systems in distributed setting, we typically rely on some kind of distributed transaction commit protocol (e.g. two-phase commit). TODO.
+
 \section{Consensus}
 
 The problem of \textit{consensus} in a distributed system is to get a set of separate nodes to agree on a single value. That is, if one node marks a value as chosen, no other node can ever mark a different value as chosen. To understand the constraints of how we might solve this problem, we can start by thinking about this problem in a simpler setting e.g. a single (non-distributed) node. For an individual node/thread, solving consensus is trivial, since that node/thread can just write into a single register and then never change its decision. But, even when we introduce multiple concurrent clients (e.g. threads), the problem is nontrivial. 

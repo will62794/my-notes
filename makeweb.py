@@ -60,7 +60,9 @@ def make_papers_pages(paper_notes):
 def make_index_page_html(notes, title="Notes", papers_page=False, subdir="notes"):
     out_html = "<html>\n"
     out_html += "<head>\n"
-    out_html += "<link rel='stylesheet' href='/style.css' />\n"
+    out_html += "<link rel='stylesheet' href='./style.css' />\n"
+    out_html += "<link rel='stylesheet' href='../../style.css' />\n"
+    out_html += "<link rel='stylesheet' href='../../../style.css' />\n"
     out_html += "<title>My Notes</title>\n"
     out_html += '<link rel="icon" type="image/x-icon" href="favicon.ico">\n'
     out_html += "<head/>\n"

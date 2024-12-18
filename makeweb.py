@@ -10,9 +10,8 @@ from datetime import datetime
 
 PAPERS_DIR = "notes/Papers"
 
-def pandoc_cmd(notename, subdir="notes"):
+def pandoc_cmd(notename, subdir="notes", css_file="../../style.css"):
     # Specify the CSS file relative to the note location.
-    css_file = "/style.css"
     math_engine = "mathjax"
     pdoc_args = [
         f"{subdir}/{notename}/{notename}.tex",
@@ -52,7 +51,7 @@ def make_papers_pages(paper_notes):
         # mod_str = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S')
         # print("last modified:", mod_str)
         # TODO: Include last modified date in HTML output of note.
-        cmd = pandoc_cmd(note, subdir=PAPERS_DIR)
+        cmd = pandoc_cmd(note, subdir=PAPERS_DIR, css_file="../../../style.css")
         print(cmd)
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
         out = proc.stdout.read().decode(sys.stdout.encoding)

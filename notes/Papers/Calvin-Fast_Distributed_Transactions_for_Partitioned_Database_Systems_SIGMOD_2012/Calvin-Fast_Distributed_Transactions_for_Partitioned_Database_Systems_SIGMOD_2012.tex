@@ -18,7 +18,16 @@ for Partitioned Database Systems (SIGMOD 2012)}
 \maketitle
 
 
-Calvin \cite{2012calvin} is a transactions system that makes use of determinism for scheduling transactions to avoid cost of distributed commit.
+Calvin \cite{2012calvin} is a transactions system that makes use of determinism for scheduling transactions to avoid cost of distributed commit. Basically, it takes advantage of the observation that if you statically schedule transactions, this can be done to avoid conflicts, so you can avoid the cost of two-phase commit, since in general a commit protocol is playing the role of sequencing transactions on the fly, which may lead to conflicts and therefore aborts, which need to be handled during transaction commit. If you schedule things upfront to avoid such conflicts, you can bypass the distributed commit protocol costs.
+
+The Calvin architecture splits up the transaction system into 3 layers:
+\begin{itemize}
+    \item \textbf{Sequencing Layer}: Responsible for processing transaction inputs and placing them into a ordered global transaction sequence. This will define the serial order of transactions that each replica will respect during application.
+    \item \textbf{Scheduling Layer}: Orchestrates the actual execution of transactions (possibly parallelized) to ensure serial equivalence with the ordering determined by the sequencing layer.
+    \item \textbf{Storage Layer}: Handles physical data layout, and the scheduling layer will execute the actual transactions against this storage layer.
+\end{itemize}
+
+Other downside of Calvin is that it requires transactions to be expressed as one-shot/stored procedures, in order for locking/serialization analysis to be done upfront. That is, the full read/write sets for each transaction must be known ahead of time. Conversational transactions are not supported.
 
 \bibliographystyle{alpha} 
 \bibliography{../../../references.bib}

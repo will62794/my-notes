@@ -58,7 +58,34 @@ Database Systems (SIGMOD 2012)</h1>
 <p>Calvin <span class="citation" data-cites="2012calvin">(<a
 href="#ref-2012calvin" role="doc-biblioref">Thomson et al.
 2012</a>)</span> is a transactions system that makes use of determinism
-for scheduling transactions to avoid cost of distributed commit.</p>
+for scheduling transactions to avoid cost of distributed commit.
+Basically, it takes advantage of the observation that if you statically
+schedule transactions, this can be done to avoid conflicts, so you can
+avoid the cost of two-phase commit, since in general a commit protocol
+is playing the role of sequencing transactions on the fly, which may
+lead to conflicts and therefore aborts, which need to be handled during
+transaction commit. If you schedule things upfront to avoid such
+conflicts, you can bypass the distributed commit protocol costs.</p>
+<p>The Calvin architecture splits up the transaction system into 3
+layers:</p>
+<ul>
+<li><p><strong>Sequencing Layer</strong>: Responsible for processing
+transaction inputs and placing them into a ordered global transaction
+sequence. This will define the serial order of transactions that each
+replica will respect during application.</p></li>
+<li><p><strong>Scheduling Layer</strong>: Orchestrates the actual
+execution of transactions (possibly parallelized) to ensure serial
+equivalence with the ordering determined by the sequencing
+layer.</p></li>
+<li><p><strong>Storage Layer</strong>: Handles physical data layout, and
+the scheduling layer will execute the actual transactions against this
+storage layer.</p></li>
+</ul>
+<p>Other downside of Calvin is that it requires transactions to be
+expressed as one-shot/stored procedures, in order for
+locking/serialization analysis to be done upfront. That is, the full
+read/write sets for each transaction must be known ahead of time.
+Conversational transactions are not supported.</p>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent"

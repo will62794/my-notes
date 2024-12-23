@@ -1,0 +1,29 @@
+\documentclass[11pt, oneside]{article}   	% use "amsart" instead of "article" for AMSLaTeX format
+\usepackage{geometry}                		% See geometry.pdf to learn the layout options. There are lots.
+\geometry{letterpaper}                   		% ... or a4paper or a5paper or ... 
+%\geometry{landscape}                		% Activate for rotated page geometry
+%\usepackage[parfill]{parskip}    		% Activate to begin paragraphs with an empty line rather than an indent
+\usepackage{graphicx}	
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+
+
+
+\title{MDCC: Multi-Data Center Consistency (EuroSys 2013)}
+\author{William Schultz}
+\begin{document}
+\maketitle
+
+
+MDCC \cite{2013mdcc} describes an optimistic commit protocol for geo-replicated transactions that does not require a master or static partitioning, and is strongly consistent with cost similar to eventually consistent protocols.
+
+It combines a bunch of tricks for optimizing commit latency, including ideas from Generalized Paxos, Fast Paxos. It only provides read committed isolation. Essentially, it (1) runs a \textit{per-record} Generalized Paxos instance and (2) ensures every prepare has been received by a fast quorum of replicas (3) disallows aborts for successfully prepared records and (4) piggybacks notifications of commit state on subsequent transactions. 
+
+\bibliographystyle{alpha} 
+\bibliography{../../../references.bib}
+
+
+\end{document}  

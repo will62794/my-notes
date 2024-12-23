@@ -5,7 +5,7 @@
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="William Schultz" />
-  <title>Calvin: Fast Distributed Transactions for Partitioned Database Systems (SIGMOD 2012)</title>
+  <title>MDCC: Multi-Data Center Consistency (EuroSys 2013)</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -42,12 +42,12 @@
     div.csl-indent {
       margin-left: 2em;
     }  </style>
-  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="../../../style.css" />
 </head>
 <body>
 <header id="title-block-header">
-<h1 class="title">Calvin: Fast Distributed Transactions for Partitioned
-Database Systems (SIGMOD 2012)</h1>
+<h1 class="title">MDCC: Multi-Data Center Consistency (EuroSys
+2013)</h1>
 <p class="author">William Schultz</p>
 </header>
 <nav id="TOC" role="doc-toc">
@@ -55,22 +55,29 @@ Database Systems (SIGMOD 2012)</h1>
 <li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
 </nav>
-<p>Calvin <span class="citation" data-cites="2012calvin">(<a
-href="#ref-2012calvin" role="doc-biblioref">Thomson et al.
-2012</a>)</span> is a transactions system that makes use of determinism
-for scheduling transactions to avoid cost of distributed commit.</p>
+<p>MDCC <span class="citation" data-cites="2013mdcc">(<a
+href="#ref-2013mdcc" role="doc-biblioref">Kraska et al. 2013</a>)</span>
+describes an optimistic commit protocol for geo-replicated transactions
+that does not require a master or static partitioning, and is strongly
+consistent with cost similar to eventually consistent protocols.</p>
+<p>It combines a bunch of tricks for optimizing commit latency,
+including ideas from Generalized Paxos, Fast Paxos. It only provides
+read committed isolation. Essentially, it (1) runs a <em>per-record</em>
+Generalized Paxos instance and (2) ensures every prepare has been
+received by a fast quorum of replicas (3) disallows aborts for
+successfully prepared records and (4) piggybacks notifications of commit
+state on subsequent transactions.</p>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent"
 data-entry-spacing="0" role="list">
-<div id="ref-2012calvin" class="csl-entry" role="listitem">
-Thomson, Alexander, Thaddeus Diamond, Shu-Chun Weng, Kun Ren, Philip
-Shao, and Daniel J. Abadi. 2012. <span>“Calvin: Fast Distributed
-Transactions for Partitioned Database Systems.”</span> In
-<em>Proceedings of the 2012 ACM SIGMOD International Conference on
-Management of Data</em>, 1–12. SIGMOD ’12. New York, NY, USA:
-Association for Computing Machinery. <a
-href="https://doi.org/10.1145/2213836.2213838">https://doi.org/10.1145/2213836.2213838</a>.
+<div id="ref-2013mdcc" class="csl-entry" role="listitem">
+Kraska, Tim, Gene Pang, Michael J. Franklin, Samuel Madden, and Alan
+Fekete. 2013. <span>“MDCC: Multi-Data Center Consistency.”</span> In
+<em>Proceedings of the 8th ACM European Conference on Computer
+Systems</em>, 113–26. EuroSys ’13. New York, NY, USA: Association for
+Computing Machinery. <a
+href="https://doi.org/10.1145/2465351.2465363">https://doi.org/10.1145/2465351.2465363</a>.
 </div>
 </div>
 </section>

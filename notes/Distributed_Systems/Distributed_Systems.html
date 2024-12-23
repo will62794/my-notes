@@ -223,7 +223,46 @@ write down our work, allowing us to make progress.</p>
 Distributed Transactions</h1>
 <p>In order to achieve ACID guarantess of classic database systems in
 distributed setting, we typically rely on some kind of distributed
-transaction commit protocol (e.g. two-phase commit). TODO.</p>
+transaction commit protocol (e.g. two-phase commit). The classic, gold
+standard approach for doing this in a distributed setting is to use some
+variant of two-phase commit protocol <span class="citation"
+data-cites="1986concurrency">(<a href="#ref-1986concurrency"
+role="doc-biblioref">Bernstein, Hadzilacos, and Goodman
+1986</a>)</span>. That is, we essentially ask multiple, separate
+partitions of the database data to <em>prepare</em> to commit their
+transactions (e.g. taking locks or marking the appropriate records)
+before we go ahead anc <em>commit</em>, if all partitions agreed.</p>
+<p>In modern distributed database systems, a common architecture was to
+horizontally scale data by partitioning (e.g. sharding) and vertically
+scale for fault tolerance by having each shard run some kind of
+replication or consensus protocol (e.g. Paxos). This is more or less the
+approach taken by systems like Google’s Spanner <span class="citation"
+data-cites="2012spanner">(<a href="#ref-2012spanner"
+role="doc-biblioref">Corbett et al. 2012</a>)</span>, which chunks up
+data into shards and runs a Paxos group/instance per-shard. Then, for
+running transactions across shards, it uses a variant of two-phase
+commit to run transactions at each shard that contains data involved in
+a transaction. This was also predated by related systems like Percolator
+<span class="citation" data-cites="2010percolator">(<a
+href="#ref-2010percolator" role="doc-biblioref">Peng and Dabek
+2010</a>)</span> and Megastore <span class="citation"
+data-cites="2011megastore">(<a href="#ref-2011megastore"
+role="doc-biblioref">Baker et al. 2011</a>)</span>.</p>
+<p>Further optimizations of these various distributed two-phase
+transaction commit protocols appeared in similar time period, including
+MDCC <span class="citation" data-cites="2013mdcc">(<a
+href="#ref-2013mdcc" role="doc-biblioref">Kraska et al. 2013</a>)</span>
+and TAPIR <span class="citation" data-cites="2015tapir">(<a
+href="#ref-2015tapir" role="doc-biblioref">I. Zhang et al.
+2015</a>)</span>. Approaches like Calvin <span class="citation"
+data-cites="2012calvin">(<a href="#ref-2012calvin"
+role="doc-biblioref">Thomson et al. 2012</a>)</span> take advantage of
+deterministic transaction scheduling to avoid the cost of full 2PC.
+Statically scheduling the transactions upfront at a <em>sequencer</em>
+process allows execution of transactions with guarantee of no conflicts,
+avoiding need for 2PC costs. This can often assume a one-shot
+transaction model, though, since a transaction’s full read/write sets
+are typically required in order to check conflicts when scheduling.</p>
 </section>
 <section id="consensus" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span>
@@ -1035,13 +1074,13 @@ that the security of the underlying contract is not compromised in cases
 where the external data source may also be compromised. A <em>blockchain
 oracle</em> <span class="citation"
 data-cites="2016towncrier breidenbach2021chainlink">(<a
-href="#ref-2016towncrier" role="doc-biblioref">Zhang et al. 2016</a>; <a
-href="#ref-breidenbach2021chainlink" role="doc-biblioref">Breidenbach et
-al. 2021</a>)</span> is a third party service that connects a smart
+href="#ref-2016towncrier" role="doc-biblioref">F. Zhang et al. 2016</a>;
+<a href="#ref-breidenbach2021chainlink" role="doc-biblioref">Breidenbach
+et al. 2021</a>)</span> is a third party service that connects a smart
 contract with the outside world, in an effort to address this issue.</p>
 <p>Some of these oracle systems <span class="citation"
 data-cites="2016towncrier">(<a href="#ref-2016towncrier"
-role="doc-biblioref">Zhang et al. 2016</a>)</span> rely on running
+role="doc-biblioref">F. Zhang et al. 2016</a>)</span> rely on running
 partially inside trusted execution environments, like Intel SGX.</p>
 </section>
 </section>
@@ -1064,6 +1103,19 @@ Aspnes, James, and M. Herlihy. 1990. <span>“Fast Randomized Consensus
 Using Shared Memory.”</span> <em>J. Algorithms</em> 11 (3): 441–61. <a
 href="https://doi.org/10.1016/0196-6774(90)90021-6">https://doi.org/10.1016/0196-6774(90)90021-6</a>.
 </div>
+<div id="ref-2011megastore" class="csl-entry" role="listitem">
+Baker, Jason, Chris Bond, James C. Corbett, JJ Furman, Andrey Khorlin,
+James Larson, Jean-Michel Leon, Yawei Li, Alexander Lloyd, and Vadim
+Yushprakh. 2011. <span>“Megastore: Providing Scalable, Highly Available
+Storage for Interactive Services.”</span> In <em>Conference on
+Innovative Data Systems Research (CIDR)</em>, 223–34. Asilomar,
+California.
+</div>
+<div id="ref-1986concurrency" class="csl-entry" role="listitem">
+Bernstein, Philip A, Vassos Hadzilacos, and Nathan Goodman. 1986.
+<em>Concurrency Control and Recovery in Database Systems</em>. USA:
+Addison-Wesley Longman Publishing Co., Inc.
+</div>
 <div id="ref-breidenbach2021chainlink" class="csl-entry"
 role="listitem">
 Breidenbach, Lorenz, Christian Cachin, Benedict Chan, Alex Coventry,
@@ -1083,6 +1135,13 @@ Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on
 Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA:
 USENIX Association.
 </div>
+<div id="ref-2012spanner" class="csl-entry" role="listitem">
+Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes,
+Christopher Frost, Jeffrey John Furman, Sanjay Ghemawat, et al. 2012.
+<span>“<span class="nocase">Spanner: Google’s Globally Distributed
+Database</span>.”</span> <em>ACM Transactions on Computer Systems
+(TOCS)</em> 31 (3): 1–22.
+</div>
 <div id="ref-1991waitfreesync" class="csl-entry" role="listitem">
 Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span>
 <em>ACM Trans. Program. Lang. Syst.</em> 13 (1): 124–49. <a
@@ -1095,6 +1154,14 @@ Systems.”</span> In <em>Proceedings of the 2011 IEEE/IFIP 41st
 International Conference on Dependable Systems&amp;networks</em>,
 245–56. DSN ’11. USA: IEEE Computer Society. <a
 href="https://doi.org/10.1109/DSN.2011.5958223">https://doi.org/10.1109/DSN.2011.5958223</a>.
+</div>
+<div id="ref-2013mdcc" class="csl-entry" role="listitem">
+Kraska, Tim, Gene Pang, Michael J. Franklin, Samuel Madden, and Alan
+Fekete. 2013. <span>“MDCC: Multi-Data Center Consistency.”</span> In
+<em>Proceedings of the 8th ACM European Conference on Computer
+Systems</em>, 113–26. EuroSys ’13. New York, NY, USA: Association for
+Computing Machinery. <a
+href="https://doi.org/10.1145/2465351.2465363">https://doi.org/10.1145/2465351.2465363</a>.
 </div>
 <div id="ref-lamport2001paxos" class="csl-entry" role="listitem">
 Lamport, Leslie. 2001. <span>“Paxos Made Simple.”</span> <em>ACM SIGACT
@@ -1140,6 +1207,12 @@ Pease, M., R. Shostak, and L. Lamport. 1980. <span>“Reaching Agreement
 in the Presence of Faults.”</span> <em>J. ACM</em> 27 (2): 228–34. <a
 href="https://doi.org/10.1145/322186.322188">https://doi.org/10.1145/322186.322188</a>.
 </div>
+<div id="ref-2010percolator" class="csl-entry" role="listitem">
+Peng, Daniel, and Frank Dabek. 2010. <span>“Large-Scale Incremental
+Processing Using Distributed Transactions and Notifications.”</span> In
+<em>Proceedings of the 9th USENIX Conference on Operating Systems Design
+and Implementation</em>, 251–64. OSDI’10. USA: USENIX Association.
+</div>
 <div id="ref-2008zabsimple" class="csl-entry" role="listitem">
 Reed, Benjamin, and Flavio P. Junqueira. 2008. <span>“A Simple Totally
 Ordered Broadcast Protocol.”</span> In <em>Proceedings of the 2nd
@@ -1152,6 +1225,15 @@ Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for
 Obtaining Digital Signatures and Public-Key Cryptosystems.”</span>
 <em>Commun. ACM</em> 21 (2): 120–26. <a
 href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.
+</div>
+<div id="ref-2012calvin" class="csl-entry" role="listitem">
+Thomson, Alexander, Thaddeus Diamond, Shu-Chun Weng, Kun Ren, Philip
+Shao, and Daniel J. Abadi. 2012. <span>“Calvin: Fast Distributed
+Transactions for Partitioned Database Systems.”</span> In
+<em>Proceedings of the 2012 ACM SIGMOD International Conference on
+Management of Data</em>, 1–12. SIGMOD ’12. New York, NY, USA:
+Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2213836.2213838">https://doi.org/10.1145/2213836.2213838</a>.
 </div>
 <div id="ref-1978sift" class="csl-entry" role="listitem">
 Wensley, J. H., L. Lamport, J. Goldberg, M. W. Green, K. N. Levitt, P.
@@ -1167,6 +1249,14 @@ Contracts.”</span> In <em>Proceedings of the 2016 ACM SIGSAC Conference
 on Computer and Communications Security</em>, 270–82. CCS ’16. New York,
 NY, USA: Association for Computing Machinery. <a
 href="https://doi.org/10.1145/2976749.2978326">https://doi.org/10.1145/2976749.2978326</a>.
+</div>
+<div id="ref-2015tapir" class="csl-entry" role="listitem">
+Zhang, Irene, Naveen Kr. Sharma, Adriana Szekeres, Arvind Krishnamurthy,
+and Dan R. K. Ports. 2015. <span>“Building Consistent Transactions with
+Inconsistent Replication.”</span> In <em>Proceedings of the 25th
+Symposium on Operating Systems Principles</em>, 263–78. SOSP ’15. New
+York, NY, USA: Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2815400.2815404">https://doi.org/10.1145/2815400.2815404</a>.
 </div>
 </div>
 </section>

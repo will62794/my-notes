@@ -62,7 +62,17 @@ class="toc-section-number">1</span> System Models</a></li>
 class="toc-section-number">2</span> Fault Tolerance</a></li>
 <li><a href="#distributed-transactions"
 id="toc-distributed-transactions"><span
-class="toc-section-number">3</span> Distributed Transactions</a></li>
+class="toc-section-number">3</span> Distributed Transactions</a>
+<ul>
+<li><a href="#optimizing-two-phase-commit"
+id="toc-optimizing-two-phase-commit"><span
+class="toc-section-number">3.1</span> Optimizing Two-Phase
+Commit</a></li>
+<li><a href="#deterministic-transaction-scheduling"
+id="toc-deterministic-transaction-scheduling"><span
+class="toc-section-number">3.2</span> Deterministic Transaction
+Scheduling</a></li>
+</ul></li>
 <li><a href="#consensus" id="toc-consensus"><span
 class="toc-section-number">4</span> Consensus</a>
 <ul>
@@ -231,7 +241,11 @@ role="doc-biblioref">Bernstein, Hadzilacos, and Goodman
 1986</a>)</span>. That is, we essentially ask multiple, separate
 partitions of the database data to <em>prepare</em> to commit their
 transactions (e.g. taking locks or marking the appropriate records)
-before we go ahead anc <em>commit</em>, if all partitions agreed.</p>
+before we go ahead and <em>commit</em>, if all partitions agree.</p>
+<section id="optimizing-two-phase-commit" class="level2"
+data-number="3.1">
+<h2 data-number="3.1"><span class="header-section-number">3.1</span>
+Optimizing Two-Phase Commit</h2>
 <p>In modern distributed database systems, a common architecture was to
 horizontally scale data by partitioning (e.g. sharding) and vertically
 scale for fault tolerance by having each shard run some kind of
@@ -248,13 +262,24 @@ href="#ref-2010percolator" role="doc-biblioref">Peng and Dabek
 2010</a>)</span> and Megastore <span class="citation"
 data-cites="2011megastore">(<a href="#ref-2011megastore"
 role="doc-biblioref">Baker et al. 2011</a>)</span>.</p>
-<p>Further optimizations of these various distributed two-phase
-transaction commit protocols appeared in similar time period, including
-MDCC <span class="citation" data-cites="2013mdcc">(<a
-href="#ref-2013mdcc" role="doc-biblioref">Kraska et al. 2013</a>)</span>
-and TAPIR <span class="citation" data-cites="2015tapir">(<a
-href="#ref-2015tapir" role="doc-biblioref">I. Zhang et al.
-2015</a>)</span>. Approaches like Calvin <span class="citation"
+<p>These approaches can incur high latency, though, since 2PC + Paxos
+replication incurs a lot of round trips to commit a transaction.
+Optimizations of these various distributed two-phase transaction commit
+protocols appeared in similar time period, including MDCC <span
+class="citation" data-cites="2013mdcc">(<a href="#ref-2013mdcc"
+role="doc-biblioref">Kraska et al. 2013</a>)</span> and TAPIR <span
+class="citation" data-cites="2015tapir">(<a href="#ref-2015tapir"
+role="doc-biblioref">I. Zhang et al. 2015</a>)</span>. Unanimous 2PC
+<span class="citation" data-cites="2024unanimous2pc">(<a
+href="#ref-2024unanimous2pc" role="doc-biblioref">Jensen et al.
+2024</a>)</span> is a more recent approach that also gives a good
+overview of optimized commit protocols in this theme.</p>
+</section>
+<section id="deterministic-transaction-scheduling" class="level2"
+data-number="3.2">
+<h2 data-number="3.2"><span class="header-section-number">3.2</span>
+Deterministic Transaction Scheduling</h2>
+<p>Approaches like Calvin <span class="citation"
 data-cites="2012calvin">(<a href="#ref-2012calvin"
 role="doc-biblioref">Thomson et al. 2012</a>)</span> take advantage of
 deterministic transaction scheduling to avoid the cost of full 2PC.
@@ -263,6 +288,7 @@ process allows execution of transactions with guarantee of no conflicts,
 avoiding need for 2PC costs. This can often assume a one-shot
 transaction model, though, since a transaction’s full read/write sets
 are typically required in order to check conflicts when scheduling.</p>
+</section>
 </section>
 <section id="consensus" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span>
@@ -1146,6 +1172,14 @@ Database</span>.”</span> <em>ACM Transactions on Computer Systems
 Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span>
 <em>ACM Trans. Program. Lang. Syst.</em> 13 (1): 124–49. <a
 href="https://doi.org/10.1145/114005.102808">https://doi.org/10.1145/114005.102808</a>.
+</div>
+<div id="ref-2024unanimous2pc" class="csl-entry" role="listitem">
+Jensen, Chris, Heidi Howard, Antonios Katsarakis, and Richard Mortier.
+2024. <span>“Unanimous 2PC: Fault-Tolerant Distributed Transactions Can
+Be Fast and Simple.”</span> In <em>Proceedings of the 11th Workshop on
+Principles and Practice of Consistency for Distributed Data</em>, 44–57.
+PaPoC ’24. New York, NY, USA: Association for Computing Machinery. <a
+href="https://doi.org/10.1145/3642976.3653035">https://doi.org/10.1145/3642976.3653035</a>.
 </div>
 <div id="ref-2011zab" class="csl-entry" role="listitem">
 Junqueira, Flavio P., Benjamin C. Reed, and Marco Serafini. 2011.

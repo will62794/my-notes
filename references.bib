@@ -1243,3 +1243,20 @@ series = {OSDI'10}
   location = {Asilomar, California},
   abstract = {Megastore is a storage system developed to meet the requirements of today's interactive online services. Megastore blends the scalability of a NoSQL datastore with the convenience of a traditional RDBMS in a novel way, and provides both strong consistency guarantees and high availability. We provide fully serializable ACID semantics within fine-grained partitions of data. This partitioning allows us to synchronously replicate each write across a wide area network with reasonable latency and support seamless failover between datacenters.}
 }
+@inproceedings{2024unanimous2pc,
+author = {Jensen, Chris and Howard, Heidi and Katsarakis, Antonios and Mortier, Richard},
+title = {Unanimous 2PC: Fault-tolerant Distributed Transactions Can be Fast and Simple},
+year = {2024},
+isbn = {9798400705441},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3642976.3653035},
+doi = {10.1145/3642976.3653035},
+abstract = {Distributed transactional datastores are pivotal in supporting the needs of modern applications and services. Datastores rely on distributed transactional protocols to tolerate faults while also aiming for strong consistency and high performance. State-of-the-art transactional protocols, such as FaRM, provide a lock-free execution phase, thus improving performance and simplifying recovery. However, these protocols often come with lengthy and complicated commit phases, requiring multiple round-trips to commit a transaction (or additional replicas). This completely contrasts with the simplicity and efficiency of the traditional two-phase commit (2PC) protocol, which can commit a transaction after a single round-trip, albeit lacking fault tolerance.To address the limitations of both approaches, we introduce U2PC, a novel 2PC variant that combines simplicity, efficiency, and fault tolerance. U2PC frugally replicates data (f + 1) times to tolerate up to f faults with strong consistency. It offers a single round-trip commit after unanimous responses of all replicas of the involved shards and ensures safe recovery via an extra "pre-abort" round before aborting a transaction. Our verification in TLA+ confirms that U2PC achieves strict serializability and recovers safely. In short, U2PC ensures fault tolerance, optimizes performance for common scenarios, and offers uniform transaction handling.},
+booktitle = {Proceedings of the 11th Workshop on Principles and Practice of Consistency for Distributed Data},
+pages = {44–57},
+numpages = {14},
+keywords = {distributed transactions, 2PC, FastPaxos},
+location = {Athens, Greece},
+series = {PaPoC '24}
+}

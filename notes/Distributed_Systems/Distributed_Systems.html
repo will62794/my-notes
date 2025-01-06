@@ -58,85 +58,93 @@
 <ul>
 <li><a href="#system-models" id="toc-system-models"><span
 class="toc-section-number">1</span> System Models</a></li>
+<li><a href="#causality-and-clocks" id="toc-causality-and-clocks"><span
+class="toc-section-number">2</span> Causality and Clocks</a>
+<ul>
+<li><a href="#vector-clocks" id="toc-vector-clocks"><span
+class="toc-section-number">2.1</span> Vector Clocks</a></li>
+<li><a href="#lamport-clocks" id="toc-lamport-clocks"><span
+class="toc-section-number">2.2</span> Lamport Clocks</a></li>
+</ul></li>
 <li><a href="#fault-tolerance" id="toc-fault-tolerance"><span
-class="toc-section-number">2</span> Fault Tolerance</a></li>
+class="toc-section-number">3</span> Fault Tolerance</a></li>
 <li><a href="#distributed-transactions"
 id="toc-distributed-transactions"><span
-class="toc-section-number">3</span> Distributed Transactions</a>
+class="toc-section-number">4</span> Distributed Transactions</a>
 <ul>
 <li><a href="#optimizing-two-phase-commit"
 id="toc-optimizing-two-phase-commit"><span
-class="toc-section-number">3.1</span> Optimizing Two-Phase
+class="toc-section-number">4.1</span> Optimizing Two-Phase
 Commit</a></li>
 <li><a href="#deterministic-transaction-scheduling"
 id="toc-deterministic-transaction-scheduling"><span
-class="toc-section-number">3.2</span> Deterministic Transaction
+class="toc-section-number">4.2</span> Deterministic Transaction
 Scheduling</a></li>
 <li><a href="#isolation" id="toc-isolation"><span
-class="toc-section-number">3.3</span> Isolation</a></li>
+class="toc-section-number">4.3</span> Isolation</a></li>
 </ul></li>
 <li><a href="#consensus" id="toc-consensus"><span
-class="toc-section-number">4</span> Consensus</a>
+class="toc-section-number">5</span> Consensus</a>
 <ul>
 <li><a href="#shared-memory-consensus-lock-based"
 id="toc-shared-memory-consensus-lock-based"><span
-class="toc-section-number">4.1</span> Shared Memory Consensus:
+class="toc-section-number">5.1</span> Shared Memory Consensus:
 Lock-based</a></li>
 <li><a href="#shared-memory-consensus-lock-less"
 id="toc-shared-memory-consensus-lock-less"><span
-class="toc-section-number">4.2</span> Shared Memory Consensus:
+class="toc-section-number">5.2</span> Shared Memory Consensus:
 Lock-less</a>
 <ul>
 <li><a href="#trivial-solution-compare-and-swap-cas"
 id="toc-trivial-solution-compare-and-swap-cas"><span
-class="toc-section-number">4.2.1</span> Trivial Solution: Compare and
+class="toc-section-number">5.2.1</span> Trivial Solution: Compare and
 Swap (CAS)</a></li>
 <li><a href="#generalizable-solution"
 id="toc-generalizable-solution"><span
-class="toc-section-number">4.2.2</span> Generalizable Solution</a></li>
+class="toc-section-number">5.2.2</span> Generalizable Solution</a></li>
 </ul></li>
 <li><a href="#paxos" id="toc-paxos"><span
-class="toc-section-number">4.3</span> Paxos</a></li>
+class="toc-section-number">5.3</span> Paxos</a></li>
 <li><a href="#vertical-paxos" id="toc-vertical-paxos"><span
-class="toc-section-number">4.4</span> Vertical Paxos</a></li>
+class="toc-section-number">5.4</span> Vertical Paxos</a></li>
 <li><a href="#fast-paxos" id="toc-fast-paxos"><span
-class="toc-section-number">4.5</span> Fast Paxos</a></li>
+class="toc-section-number">5.5</span> Fast Paxos</a></li>
 <li><a href="#egalitarian-paxos" id="toc-egalitarian-paxos"><span
-class="toc-section-number">4.6</span> Egalitarian Paxos</a></li>
+class="toc-section-number">5.6</span> Egalitarian Paxos</a></li>
 <li><a href="#zab" id="toc-zab"><span
-class="toc-section-number">4.7</span> Zab</a></li>
+class="toc-section-number">5.7</span> Zab</a></li>
 </ul></li>
 <li><a href="#byzantine-fault-tolerance"
 id="toc-byzantine-fault-tolerance"><span
-class="toc-section-number">5</span> Byzantine Fault Tolerance</a>
+class="toc-section-number">6</span> Byzantine Fault Tolerance</a>
 <ul>
 <li><a href="#model" id="toc-model"><span
-class="toc-section-number">5.1</span> Model</a></li>
+class="toc-section-number">6.1</span> Model</a></li>
 <li><a href="#intuitions-and-algorithm"
 id="toc-intuitions-and-algorithm"><span
-class="toc-section-number">5.2</span> Intuitions and Algorithm</a></li>
+class="toc-section-number">6.2</span> Intuitions and Algorithm</a></li>
 <li><a href="#from-classic-paxos-to-byzantine"
 id="toc-from-classic-paxos-to-byzantine">From Classic Paxos to
 Byzantine</a></li>
 <li><a href="#notes" id="toc-notes"><span
-class="toc-section-number">5.3</span> Notes</a></li>
+class="toc-section-number">6.3</span> Notes</a></li>
 </ul></li>
 <li><a href="#blockchain-and-cryptocurrency"
 id="toc-blockchain-and-cryptocurrency"><span
-class="toc-section-number">6</span> Blockchain and Cryptocurrency</a>
+class="toc-section-number">7</span> Blockchain and Cryptocurrency</a>
 <ul>
 <li><a href="#bitcoin" id="toc-bitcoin"><span
-class="toc-section-number">6.1</span> Bitcoin</a></li>
+class="toc-section-number">7.1</span> Bitcoin</a></li>
 <li><a href="#ethereum" id="toc-ethereum"><span
-class="toc-section-number">6.2</span> Ethereum</a>
+class="toc-section-number">7.2</span> Ethereum</a>
 <ul>
 <li><a href="#messages-and-transactions"
 id="toc-messages-and-transactions"><span
-class="toc-section-number">6.2.1</span> Messages and
+class="toc-section-number">7.2.1</span> Messages and
 Transactions</a></li>
 </ul></li>
 <li><a href="#blockchain-oracles" id="toc-blockchain-oracles"><span
-class="toc-section-number">6.3</span> Blockchain Oracles</a></li>
+class="toc-section-number">7.3</span> Blockchain Oracles</a></li>
 </ul></li>
 <li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
@@ -194,8 +202,149 @@ known finite time bound <span class="math inline">\(\Delta\)</span>
 <p><em>What are the fundamental differences between the synchronous and
 asynchronous models, and what exactly makes the latter harder?</em></p>
 </section>
-<section id="fault-tolerance" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Fault
+<section id="causality-and-clocks" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span>
+Causality and Clocks</h1>
+<p>In general, we can view a distributed system as consisting of a set
+of <em>events</em> that occur over time at different physically located
+nodes in the system. If these nodes do not communicate, there is no
+natural way of ordering these events with respect to each other, aside
+from those events which occur locally on some node, which can be ordered
+with respect to each other in the natural way.</p>
+<p>When nodes can communicate, one natural way to order events is not
+using real-time, but using causal relationships between events. That is,
+we consider which set of events could <em>causally affect</em> a certain
+event. When sending a message between ndoes <span
+class="math inline">\(A\)</span> and <span
+class="math inline">\(B\)</span>, this establishes a causal dependency
+between events on those nodes i.e. events after the receipt of a message
+on <span class="math inline">\(B\)</span> could have been influenced by
+events on <span class="math inline">\(A\)</span> occurring at or before
+the sending of the message.</p>
+<p>One way to formalize this notion is through the framework of
+<em>causal histories</em> <span class="citation"
+data-cites="2016baqueroclocks">(<a href="#ref-2016baqueroclocks"
+role="doc-biblioref">Baquero and Preguiça 2016</a>)</span>.</p>
+<figure id="fig:baquero2">
+<img src="diagrams/baquero2.png" style="width:60.0%" />
+<figcaption>Causal history example.</figcaption>
+</figure>
+<p>That is, every local node executes events in order, tagging each
+event with its node id and a monotonically increasing logical timestamp.
+Each event in the system then keeps track of its current identity, but
+also its <em>causal history</em> i.e. the events that could have
+influenced it. For local node events, we can do this by simply
+<em>merging</em> the current event with the causal history of the
+previous event (e.g. a local event’s causal history always includes all
+previous events on that node). For distributed events, upon message
+receipt event <span class="math inline">\(m_r\)</span> for message send
+<span class="math inline">\(m_s\)</span>, we merge the causl history of
+<span class="math inline">\(m_s\)</span> with the causal history of<span
+class="math inline">\(m_r\)</span> to form the new causal history of
+<span class="math inline">\(m_r\)</span>. We can see this in Figure <a
+href="#fig:baquero2" data-reference-type="ref"
+data-reference="fig:baquero2">1</a> e.g. When node <span
+class="math inline">\(B\)</span> executes event <span
+class="math inline">\(b_2\)</span>, which is the receipt of a message
+from <span class="math inline">\(A\)</span>, its new causl history
+contains its existing causal history of <span
+class="math inline">\(\{b_1\}\)</span>, merged with the causal history
+of event <span class="math inline">\(a_2\)</span>, which is <span
+class="math inline">\(\{a_1, a_2\}\)</span>.</p>
+<p>In this model, to compare two events <span
+class="math inline">\(e_1\)</span> and <span
+class="math inline">\(e_2\)</span>, we can simply compare their causal
+histories directly. Specifically, we can say that <span
+class="math inline">\(e_1\)</span> causally precedes <span
+class="math inline">\(e_2\)</span> if and only if the causal history of
+<span class="math inline">\(H_{e_1}\)</span> is a strict subset of the
+causal history of <span class="math inline">\(H_{e_2}\)</span>, i.e.
+<span class="math inline">\(H_{e_1} \subsetneq H_{e_2}\)</span>. This
+makes sense, since, if <span class="math inline">\(e_1\)</span> could
+have causally influence <span class="math inline">\(e_2\)</span>, there
+must be some causal path leading from <span
+class="math inline">\(e_1\)</span> to <span
+class="math inline">\(e_2\)</span>, and, by the merging property of
+causal histories, this would imply that the causal history of <span
+class="math inline">\(e_1\)</span> ended up being merged into the causal
+history of <span class="math inline">\(e_2\)</span>. Note that this also
+allows us to definitively say whether <span
+class="math inline">\(e_1\)</span> and <span
+class="math inline">\(e_2\)</span> are <em>concurrent</em> i.e. neither
+causal history is a subset of the other iff they are concurrent i.e.
+there is no definitive causal relationship between them.</p>
+<section id="vector-clocks" class="level2" data-number="2.1">
+<h2 data-number="2.1"><span class="header-section-number">2.1</span>
+Vector Clocks</h2>
+<p>The above view of causality via causal histories is logically
+straightforward, but it could be costly in a system to maintain full
+sets of causal event histories and pass them around between nodes. A
+more efficient approach is to use <em>vector clocks</em> <span
+class="citation" data-cites="fidge1988timestamps">(<a
+href="#ref-fidge1988timestamps" role="doc-biblioref">Fidge
+1988</a>)</span>, which can be viewed as essentially a compact
+representation of causal histories. Basically, since we know that any
+event on a local node will always contain all previous events on that
+node in its causal history, we don’t need to store the full set of
+events in each causal history.</p>
+<p>Rather, we can simply store, for each node, the <em>newest</em> event
+that occurred on that node, giving us a <em>vector</em> of timestamps
+for each node that are stored and propagated between nodes.</p>
+<figure id="fig:baquero3">
+<img src="diagrams/baquero3-vector.png" style="width:60.0%" />
+<figcaption>Vector clocks example.</figcaption>
+</figure>
+<p>Then, we can translate the original rules for causal history merging
+into this compact representation. Basically, when a new local event
+occurs, we simply need to advance the timestamp counter for that node’s
+entry in the vector. And, when a message is sent between nodes, the
+“merging” oepration of the causal histories above simply becomes a
+<em>maximum</em> operation. That is, we take the element-wise maximum
+between the receiving node’s vector and the sending node’s vector, which
+gives us the new vector for the receiving node, after also incrementing
+the receiving node’s timestamp counter to account for the message
+receipt event. This is shown in Figure <a href="#fig:baquero2"
+data-reference-type="ref" data-reference="fig:baquero2">1</a>.</p>
+<p>With this vector clock representation, we can also translate the
+<em>subset</em> comparison check from the causal history formulation. We
+know that one time <span class="math inline">\(v_1\)</span> will
+causally precede <span class="math inline">\(v_2\)</span> iff all
+elements of in the vector <span class="math inline">\(v_1\)</span> are
+<span class="math inline">\(\leq\)</span> those of <span
+class="math inline">\(v_2\)</span>, <em>and</em> they are not equal
+(alternatively checked by seeing if at least one element of <span
+class="math inline">\(v_1\)</span> is strictly smaller). This allows us
+to view vector clocks as simply a compact representation of the natural,
+causal history formulation.</p>
+</section>
+<section id="lamport-clocks" class="level2" data-number="2.2">
+<h2 data-number="2.2"><span class="header-section-number">2.2</span>
+Lamport Clocks</h2>
+<p>Although Lamport clocks are sometimes presented as an earlier
+incarnation of logical timestamps, in some sense vector clocks are
+actually the more natural incarnation of this idea, since they can be
+viewed as described above as being directly derived the the underlying
+causal history framework. We can, however, consider other, more compact
+ways to order events across nodes. In general, we want an ordering
+system that respects the true causal ordering (as defined above with
+causal histories), but that doesn’t ever give us a firmly wrong answer
+about causal ordering of events. In essence, the true causal structure
+of a system is represented as the full acyclic graph, with all causal
+dependency edges between events.</p>
+<p>If we tag events only with a single logical timestamp, and ensure
+that events increment/update their timestamps in accordance with causal
+event order, we throw away node identity, but can still preserve some of
+the causal information between nodes. If two events are causally related
+<span class="math inline">\(a \rightarrow b\)</span>, then we know that
+the timestamp of <span class="math inline">\(a\)</span> will be strictly
+less than the timestamp of <span class="math inline">\(b\)</span>. But,
+the converse is not true, since we can have events that are concurrent,
+which will have the same timestamp.</p>
+<p>TODO: Some more notes here.</p>
+</section>
+</section>
+<section id="fault-tolerance" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Fault
 Tolerance</h1>
 <p>There are some fundamental requirements to establish bounds for fault
 tolerance in an omission fault model. If an arbitrary set of <span
@@ -230,8 +379,8 @@ class="math inline">\(f\)</span> maximum node failures, we will always
 have <span class="math inline">\(f+1\)</span> nodes available to us to
 write down our work, allowing us to make progress.</p>
 </section>
-<section id="distributed-transactions" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span>
+<section id="distributed-transactions" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span>
 Distributed Transactions</h1>
 <p>In order to achieve ACID guarantess of classic database systems in
 distributed setting, we typically rely on some kind of distributed
@@ -245,8 +394,8 @@ partitions of the database data to <em>prepare</em> to commit their
 transactions (e.g. taking locks or marking the appropriate records)
 before we go ahead and <em>commit</em>, if all partitions agree.</p>
 <section id="optimizing-two-phase-commit" class="level2"
-data-number="3.1">
-<h2 data-number="3.1"><span class="header-section-number">3.1</span>
+data-number="4.1">
+<h2 data-number="4.1"><span class="header-section-number">4.1</span>
 Optimizing Two-Phase Commit</h2>
 <p>In modern distributed database systems, a common architecture was to
 horizontally scale data by partitioning (e.g. sharding) and vertically
@@ -278,8 +427,8 @@ href="#ref-2024unanimous2pc" role="doc-biblioref">Jensen et al.
 overview of optimized commit protocols in this theme.</p>
 </section>
 <section id="deterministic-transaction-scheduling" class="level2"
-data-number="3.2">
-<h2 data-number="3.2"><span class="header-section-number">3.2</span>
+data-number="4.2">
+<h2 data-number="4.2"><span class="header-section-number">4.2</span>
 Deterministic Transaction Scheduling</h2>
 <p>Approaches like Calvin <span class="citation"
 data-cites="2012calvin">(<a href="#ref-2012calvin"
@@ -291,8 +440,8 @@ avoiding need for 2PC costs. This can often assume a one-shot
 transaction model, though, since a transaction’s full read/write sets
 are typically required in order to check conflicts when scheduling.</p>
 </section>
-<section id="isolation" class="level2" data-number="3.3">
-<h2 data-number="3.3"><span class="header-section-number">3.3</span>
+<section id="isolation" class="level2" data-number="4.3">
+<h2 data-number="4.3"><span class="header-section-number">4.3</span>
 Isolation</h2>
 <p>Classic database isolation levels have been re-examined and/or
 re-implemented in context of distributed transaction systems.
@@ -308,8 +457,8 @@ sites, as long as they don’t have any causal relationship to each
 other.</p>
 </section>
 </section>
-<section id="consensus" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span>
+<section id="consensus" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span>
 Consensus</h1>
 <p>The problem of <em>consensus</em> in a distributed system is to get a
 set of separate nodes to agree on a single value. That is, if one node
@@ -322,8 +471,8 @@ just write into a single register and then never change its decision.
 But, even when we introduce multiple concurrent clients (e.g. threads),
 the problem is nontrivial.</p>
 <section id="shared-memory-consensus-lock-based" class="level2"
-data-number="4.1">
-<h2 data-number="4.1"><span class="header-section-number">4.1</span>
+data-number="5.1">
+<h2 data-number="5.1"><span class="header-section-number">5.1</span>
 Shared Memory Consensus: Lock-based</h2>
 <p>We assume we have a single register which represents our consensus
 “object", and we have multiple threads that can access the register.
@@ -337,8 +486,8 @@ to see that this upholds the basic correctness properties of
 consensus.</p>
 </section>
 <section id="shared-memory-consensus-lock-less" class="level2"
-data-number="4.2">
-<h2 data-number="4.2"><span class="header-section-number">4.2</span>
+data-number="5.2">
+<h2 data-number="5.2"><span class="header-section-number">5.2</span>
 Shared Memory Consensus: Lock-less</h2>
 <p>Now, what if we want to consider solving the above problem without
 locks? And why would we need do do this? Well, first, we can imagine
@@ -354,8 +503,8 @@ other nodes cannot proceed. So, coming up with a lock-less solution to
 the consensus problem seems a reasonable/desirable goal (isn’t there a
 trivial solution to this, though, in shared memory setting?).</p>
 <section id="trivial-solution-compare-and-swap-cas" class="level3"
-data-number="4.2.1">
-<h3 data-number="4.2.1"><span class="header-section-number">4.2.1</span>
+data-number="5.2.1">
+<h3 data-number="5.2.1"><span class="header-section-number">5.2.1</span>
 Trivial Solution: Compare and Swap (CAS)</h3>
 <p>First, a trivial consensus algorithm for a single register in the
 shared memory context is just to use compare&amp;swap (CAS) when
@@ -373,9 +522,9 @@ cheating? Like, don’t we want to figure out a way to do consensus with
 weaker forms of atomic primitives? Also, if we move to a truly
 distributed/fault-tolerant setting, we can’t necessarily assume we have
 a global register which we can just CAS easily like this?</p>
-<section id="remark-on-cas" class="level4" data-number="4.2.1.1">
-<h4 data-number="4.2.1.1"><span
-class="header-section-number">4.2.1.1</span> Remark on CAS</h4>
+<section id="remark-on-cas" class="level4" data-number="5.2.1.1">
+<h4 data-number="5.2.1.1"><span
+class="header-section-number">5.2.1.1</span> Remark on CAS</h4>
 <p>Note that <em>compare&amp;swap</em> primitive is kind of just
 implementing “lock like" mutual exclusion at a lower level i.e. for
 register <code>X</code></p>
@@ -392,8 +541,8 @@ failure occurs, the whole operation would be aborted and this kind of
 “virtual" lock automatically released.</p>
 </section>
 </section>
-<section id="generalizable-solution" class="level3" data-number="4.2.2">
-<h3 data-number="4.2.2"><span class="header-section-number">4.2.2</span>
+<section id="generalizable-solution" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2"><span class="header-section-number">5.2.2</span>
 Generalizable Solution</h3>
 <p>Although the CAS solution works trivially in a single node setting,
 ultimately we want to build up to a solution that actually works in a
@@ -648,8 +797,8 @@ read-write transaction in order to check if given proposal number is
 newer than their own...?)</p>
 </section>
 </section>
-<section id="paxos" class="level2" data-number="4.3">
-<h2 data-number="4.3"><span class="header-section-number">4.3</span>
+<section id="paxos" class="level2" data-number="5.3">
+<h2 data-number="5.3"><span class="header-section-number">5.3</span>
 Paxos</h2>
 <p>Paxos is a protocol for implementing consensus in an asynchronous
 distributed system assuming crash faults. Modeled as <em>proposers</em>,
@@ -673,8 +822,8 @@ than their own latest known ballot. A value is committed at a ballot
 <span class="math inline">\(b\)</span> if a quorum of acceptors have
 accepted that value at <span class="math inline">\(b\)</span>.</p>
 </section>
-<section id="vertical-paxos" class="level2" data-number="4.4">
-<h2 data-number="4.4"><span class="header-section-number">4.4</span>
+<section id="vertical-paxos" class="level2" data-number="5.4">
+<h2 data-number="5.4"><span class="header-section-number">5.4</span>
 Vertical Paxos</h2>
 <p>The classic consensus problem for Paxos is defined on a fixed set of
 <span class="math inline">\(n\)</span> processes. In practice, though,
@@ -720,8 +869,8 @@ master. So, in some sense, it still doesn’t fix the underlying problem
 of a state machine reconfiguration itself, but arguably has a clearer
 separation of concerns.</p>
 </section>
-<section id="fast-paxos" class="level2" data-number="4.5">
-<h2 data-number="4.5"><span class="header-section-number">4.5</span>
+<section id="fast-paxos" class="level2" data-number="5.5">
+<h2 data-number="5.5"><span class="header-section-number">5.5</span>
 Fast Paxos</h2>
 <p>Classic Paxos takes 2 round trips to get a value committed (1 for the
 <span class="math inline">\(Prepare\)</span> phase and 1 for the <span
@@ -733,8 +882,8 @@ having clients send their proposals directly to acceptors, rather than
 going through proposers first. This also changes quorum requirements,
 though. TODO.</p>
 </section>
-<section id="egalitarian-paxos" class="level2" data-number="4.6">
-<h2 data-number="4.6"><span class="header-section-number">4.6</span>
+<section id="egalitarian-paxos" class="level2" data-number="5.6">
+<h2 data-number="5.6"><span class="header-section-number">5.6</span>
 Egalitarian Paxos</h2>
 <p>Egalitarian Paxos (EPaxos) <span class="citation"
 data-cites="2013epaxosmoraru">(<a href="#ref-2013epaxosmoraru"
@@ -745,8 +894,8 @@ between command slots by tracking only dependency between commands
 explicitly, and executing commands only when they are commmitted, and in
 accordance with this dependency order.</p>
 </section>
-<section id="zab" class="level2" data-number="4.7">
-<h2 data-number="4.7"><span class="header-section-number">4.7</span>
+<section id="zab" class="level2" data-number="5.7">
+<h2 data-number="5.7"><span class="header-section-number">5.7</span>
 Zab</h2>
 <p>Zab <span class="citation" data-cites="2011zab 2008zabsimple">(<a
 href="#ref-2011zab" role="doc-biblioref">Junqueira, Reed, and Serafini
@@ -781,8 +930,8 @@ href="https://github.com/apache/zookeeper/blob/248cc091d440659a819bdd44fe5b41a38
 which is a part of the official Apache Zookeeper repo.</p>
 </section>
 </section>
-<section id="byzantine-fault-tolerance" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span>
+<section id="byzantine-fault-tolerance" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span>
 Byzantine Fault Tolerance</h1>
 <p>The earliest explicit reference to <em>Byzantine</em> faults appeared
 in <span class="citation" data-cites="1982lamportshostak">(<a
@@ -803,8 +952,8 @@ algorithm that solves the problem assuming <span class="math inline">\(n
 digitally signed) messages, then in the synchronous model Byzantine
 agreement can be achieved with only <span
 class="math inline">\(f+1\)</span> processes.</p>
-<section id="model" class="level2" data-number="5.1">
-<h2 data-number="5.1"><span class="header-section-number">5.1</span>
+<section id="model" class="level2" data-number="6.1">
+<h2 data-number="6.1"><span class="header-section-number">6.1</span>
 Model</h2>
 <p>The work on Practical Byzantine Fault Tolerance (PBFT) <span
 class="citation" data-cites="1999castropbft">(<a
@@ -824,8 +973,8 @@ class="citation" data-cites="1978rivestcrypto">(<a
 href="#ref-1978rivestcrypto" role="doc-biblioref">Rivest, Shamir, and
 Adleman 1978</a>)</span>, message authentication codes (MACs), etc.</p>
 </section>
-<section id="intuitions-and-algorithm" class="level2" data-number="5.2">
-<h2 data-number="5.2"><span class="header-section-number">5.2</span>
+<section id="intuitions-and-algorithm" class="level2" data-number="6.2">
+<h2 data-number="6.2"><span class="header-section-number">6.2</span>
 Intuitions and Algorithm</h2>
 <p>If we assume a starting point of a classic 2-phase Paxos consensus
 approach, the following are some of the essential issues that arise and
@@ -922,8 +1071,8 @@ class="math inline">\(3f+1\)</span> acceptors, then if we get
 confirmation of <span class="math inline">\(2f+1\)</span> prepares, we
 know that...?</p>
 </section>
-<section id="notes" class="level2" data-number="5.3">
-<h2 data-number="5.3"><span class="header-section-number">5.3</span>
+<section id="notes" class="level2" data-number="6.3">
+<h2 data-number="6.3"><span class="header-section-number">6.3</span>
 Notes</h2>
 <ul>
 <li><p>Given <span class="math inline">\(n=3f+1\)</span> nodes, for any
@@ -937,14 +1086,14 @@ nodes then you are sure you are in contact with at least one non-faulty
 </section>
 </section>
 <section id="blockchain-and-cryptocurrency" class="level1"
-data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span>
+data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span>
 Blockchain and Cryptocurrency</h1>
 <p>Decentralized currency have beomce a popular peer to peer consensus
 systems that operate under significantly different assumptions and fault
 models than previous systems.</p>
-<section id="bitcoin" class="level2" data-number="6.1">
-<h2 data-number="6.1"><span class="header-section-number">6.1</span>
+<section id="bitcoin" class="level2" data-number="7.1">
+<h2 data-number="7.1"><span class="header-section-number">7.1</span>
 Bitcoin</h2>
 <p>Bitcoin <span class="citation" data-cites="nakamoto2009bitcoin">(<a
 href="#ref-nakamoto2009bitcoin" role="doc-biblioref">Nakamoto
@@ -1045,8 +1194,8 @@ computational resources in the network to outvote any minority of bad
 actors, since, on average, this larger pool will win out in creating
 valid blocks and extending their chain.</p>
 </section>
-<section id="ethereum" class="level2" data-number="6.2">
-<h2 data-number="6.2"><span class="header-section-number">6.2</span>
+<section id="ethereum" class="level2" data-number="7.2">
+<h2 data-number="7.2"><span class="header-section-number">7.2</span>
 Ethereum</h2>
 <p>Ethereum, originally published in a whitepaper <span class="citation"
 data-cites="Buterin2013">(<a href="#ref-Buterin2013"
@@ -1083,8 +1232,8 @@ code. In these accounts, every time the contract account receives a
 internal storage, send other messages, or create new contracts.</p></li>
 </ul>
 <section id="messages-and-transactions" class="level3"
-data-number="6.2.1">
-<h3 data-number="6.2.1"><span class="header-section-number">6.2.1</span>
+data-number="7.2.1">
+<h3 data-number="7.2.1"><span class="header-section-number">7.2.1</span>
 Messages and Transactions</h3>
 <p>A <em>message</em> in Ethereum is similar to a “transaction" in
 Bitcoin, but differs in that an Ethereum message can be created either
@@ -1106,8 +1255,8 @@ computational steps, and <em>GASPRICE</em> is the fee to pay to the
 miner per computational step.</p>
 </section>
 </section>
-<section id="blockchain-oracles" class="level2" data-number="6.3">
-<h2 data-number="6.3"><span class="header-section-number">6.3</span>
+<section id="blockchain-oracles" class="level2" data-number="7.3">
+<h2 data-number="7.3"><span class="header-section-number">7.3</span>
 Blockchain Oracles</h2>
 <p>Although smart contracts allow for secure, decentralized policies to
 be implemented within a blockchain network (e.g. in Ethereum) it is
@@ -1155,6 +1304,12 @@ Storage for Interactive Services.”</span> In <em>Conference on
 Innovative Data Systems Research (CIDR)</em>, 223–34. Asilomar,
 California.
 </div>
+<div id="ref-2016baqueroclocks" class="csl-entry" role="listitem">
+Baquero, Carlos, and Nuno Preguiça. 2016. <span>“Why Logical Clocks Are
+Easy: Sometimes All You Need Is the Right Language.”</span>
+<em>Queue</em> 14 (1): 53–69. <a
+href="https://doi.org/10.1145/2898442.2917756">https://doi.org/10.1145/2898442.2917756</a>.
+</div>
 <div id="ref-1986concurrency" class="csl-entry" role="listitem">
 Bernstein, Philip A, Vassos Hadzilacos, and Nathan Goodman. 1986.
 <em>Concurrency Control and Recovery in Database Systems</em>. USA:
@@ -1185,6 +1340,12 @@ Christopher Frost, Jeffrey John Furman, Sanjay Ghemawat, et al. 2012.
 <span>“<span class="nocase">Spanner: Google’s Globally Distributed
 Database</span>.”</span> <em>ACM Transactions on Computer Systems
 (TOCS)</em> 31 (3): 1–22.
+</div>
+<div id="ref-fidge1988timestamps" class="csl-entry" role="listitem">
+Fidge, C. J. 1988. <span>“Timestamps in Message-Passing Systems That
+Preserve the Partial Ordering.”</span> <em>Proceedings of the 11th
+Australian Computer Science Conference</em> 10 (1): 56–66. <a
+href="http://sky.scitech.qut.edu.au/~fidgec/Publications/fidge88a.pdf">http://sky.scitech.qut.edu.au/~fidgec/Publications/fidge88a.pdf</a>.
 </div>
 <div id="ref-1991waitfreesync" class="csl-entry" role="listitem">
 Herlihy, Maurice. 1991. <span>“Wait-Free Synchronization.”</span>

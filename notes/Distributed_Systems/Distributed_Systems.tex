@@ -46,6 +46,48 @@
 
 \textit{What are the fundamental differences between the synchronous and asynchronous models, and what exactly makes the latter harder?}
 
+\section{Causality and Clocks}
+
+In general, we can view a distributed system as consisting of a set of \textit{events} that occur over time at different physically located nodes in the system. If these nodes do not communicate, there is no natural way of ordering these events with respect to each other, aside from those events which occur locally on some node, which can be ordered with respect to each other in the natural way.
+
+When nodes can communicate, one natural way to order events is not using real-time, but using causal relationships between events. That is, we consider which set of events could \textit{causally affect} a certain event. When sending a message between ndoes $A$ and $B$, this establishes a causal dependency between events on those nodes i.e. events after the receipt of a message on $B$ could have been influenced by events on $A$ occurring at or before the sending of the message.
+
+One way to formalize this notion is through the framework of \textit{causal histories} \cite{2016baqueroclocks}. 
+\begin{figure}[h]
+    \label{fig:baquero2}
+    \centering
+    \includegraphics[width=0.6\textwidth]{diagrams/baquero2.png}
+    \caption{Causal history example.}
+\end{figure}
+That is, every local node executes events in order, tagging each event with its node id and a monotonically increasing logical timestamp. Each event in the system then keeps track of its current identity, but also its \textit{causal history} i.e. the events that could have influenced it. For local node events, we can do this by simply \textit{merging} the current event with the causal history of the previous event (e.g. a local event's causal history always includes all previous events on that node). For distributed events, upon message receipt event $m_r$ for message send $m_s$, we merge the causl history of $m_s$ with the causal history of$m_r$ to form the new causal history of $m_r$. We can see this in Figure \ref{fig:baquero2} e.g. When node $B$ executes event $b_2$, which is the receipt of a message from $A$, its new causl history contains its existing causal history of $\{b_1\}$, merged with the causal history of event $a_2$, which is $\{a_1, a_2\}$.
+
+In this model, to compare two events $e_1$ and $e_2$, we can simply compare their causal histories directly. Specifically, we can say that $e_1$ causally precedes $e_2$ if and only if the causal history of $H_{e_1}$ is a strict subset of the causal history of $H_{e_2}$, i.e. $H_{e_1} \subsetneq H_{e_2}$. This makes sense, since, if $e_1$ could have causally influence $e_2$, there must be some causal path leading from $e_1$ to $e_2$, and, by the merging property of causal histories, this would imply that the causal history of $e_1$ ended up being merged into the causal history of $e_2$. Note that this also allows us to definitively say whether $e_1$ and $e_2$ are \textit{concurrent} i.e. neither causal history is a subset of the other iff they are concurrent i.e. there is no definitive causal relationship between them.
+
+\subsection{Vector Clocks}
+
+The above view of causality via causal histories is logically straightforward, but it could be costly in a system to maintain full sets of causal event histories and pass them around between nodes. A more efficient approach is to use \textit{vector clocks} \cite{fidge1988timestamps}, which can be viewed as essentially a compact representation of causal histories. Basically, since we know that any event on a local node will always contain all previous events on that node in its causal history, we don't need to store the full set of events in each causal history. 
+
+Rather, we can simply store, for each node, the \textit{newest} event that occurred on that node, giving us a \textit{vector} of timestamps for each node that are stored and propagated between nodes.
+\begin{figure}[h]
+    \label{fig:baquero3}
+    \centering
+    \includegraphics[width=0.6\textwidth]{diagrams/baquero3-vector.png}
+    \caption{Vector clocks example.}
+\end{figure}
+Then, we can translate the original rules for causal history merging into this compact representation. Basically, when a new local event occurs, we simply need to advance the timestamp counter for that node's entry in the vector. And, when a message is sent between nodes, the ``merging'' oepration of the causal histories above simply becomes a \textit{maximum} operation. That is, we take the element-wise maximum between the receiving node's vector and the sending node's vector, which gives us the new vector for the receiving node, after also incrementing the receiving node's timestamp counter to account for the message receipt event. This is shown in Figure \ref{fig:baquero2}. 
+
+With this vector clock representation, we can also translate the \textit{subset} comparison check from the causal history formulation. We know that one time $v_1$ will causally precede $v_2$ iff all elements of in the vector $v_1$ are $\leq$ those of $v_2$, \textit{and} they are not equal (alternatively checked by seeing if at least one element of $v_1$ is strictly smaller). This allows us to view vector clocks as simply a compact representation of the natural, causal history formulation.
+
+\subsection{Lamport Clocks}
+
+Although Lamport clocks are sometimes presented as an earlier incarnation of logical timestamps, in some sense vector clocks are actually the more natural incarnation of this idea, since they can be viewed as described above as being directly derived the the underlying causal history framework. We can, however, consider other, more compact ways to order events across nodes. In general, we want an ordering system that respects the true causal ordering (as defined above with causal histories), but that doesn't ever give us a firmly wrong answer about causal ordering of events. In essence, the true causal structure of a system is represented as the full acyclic graph, with all causal dependency edges between events. 
+
+If we tag events only with a single logical timestamp, and ensure that events increment/update their timestamps in accordance with causal event order, we throw away node identity, but can still preserve some of the causal information between nodes. If two events are causally related $a \rightarrow b$, then we know that the timestamp of $a$ will be strictly less than the timestamp of $b$. But, the converse is not true, since we can have events that are concurrent, which will have the same timestamp.
+
+TODO: Some more notes here.
+
+% So, for example, if we have recorded an event at timestamp $t$, and want to be sure that another node knows about all events in this causal history, we 
+
 \section{Fault Tolerance}
 
 There are some fundamental requirements to establish bounds for fault tolerance in an omission fault model. If an arbitrary set of $f$ nodes can fail by stopping at any time, then this means that if we want a protocol that makes progress, we would need to ensure that any ``work'' we do (e.g. executing operations, writing down data, etc.) is made sufficiently redundant so that it can be accessed even in the case of maximum node failure. So, this implies we need to write all data to at least $f+1$ nodes, so that there is always at least one non-faulty node with the data we need to access. 

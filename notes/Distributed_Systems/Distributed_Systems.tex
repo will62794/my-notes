@@ -75,6 +75,10 @@ These approaches can incur high latency, though, since 2PC + Paxos replication i
 
 Approaches like Calvin \cite{2012calvin} take advantage of deterministic transaction scheduling to avoid the cost of full 2PC. Statically scheduling the transactions upfront at a \textit{sequencer} process allows execution of transactions with guarantee of no conflicts, avoiding need for 2PC costs. This can often assume a one-shot transaction model, though, since a transaction's full read/write sets are typically required in order to check conflicts when scheduling.
 
+\subsection{Isolation}
+
+Classic database isolation levels have been re-examined and/or re-implemented in context of distributed transaction systems. \textit{Parallel snapshot isolation} (PSI) \cite{2011walter} is one example of this. In the classical definition of \textit{snapshot isolation}, transactions must read from a snapshot that reflects a single global commit order of transactions, and transactions that write to the same key cannot run concurrently. PSI relaxes this by allowing transactions, for example, to commit in different orders at different geo-replicated sites, as long as they don't have any causal relationship to each other.
+
 \section{Consensus}
 
 The problem of \textit{consensus} in a distributed system is to get a set of separate nodes to agree on a single value. That is, if one node marks a value as chosen, no other node can ever mark a different value as chosen. To understand the constraints of how we might solve this problem, we can start by thinking about this problem in a simpler setting e.g. a single (non-distributed) node. For an individual node/thread, solving consensus is trivial, since that node/thread can just write into a single register and then never change its decision. But, even when we introduce multiple concurrent clients (e.g. threads), the problem is nontrivial. 

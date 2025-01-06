@@ -72,6 +72,8 @@ Commit</a></li>
 id="toc-deterministic-transaction-scheduling"><span
 class="toc-section-number">3.2</span> Deterministic Transaction
 Scheduling</a></li>
+<li><a href="#isolation" id="toc-isolation"><span
+class="toc-section-number">3.3</span> Isolation</a></li>
 </ul></li>
 <li><a href="#consensus" id="toc-consensus"><span
 class="toc-section-number">4</span> Consensus</a>
@@ -288,6 +290,22 @@ process allows execution of transactions with guarantee of no conflicts,
 avoiding need for 2PC costs. This can often assume a one-shot
 transaction model, though, since a transaction’s full read/write sets
 are typically required in order to check conflicts when scheduling.</p>
+</section>
+<section id="isolation" class="level2" data-number="3.3">
+<h2 data-number="3.3"><span class="header-section-number">3.3</span>
+Isolation</h2>
+<p>Classic database isolation levels have been re-examined and/or
+re-implemented in context of distributed transaction systems.
+<em>Parallel snapshot isolation</em> (PSI) <span class="citation"
+data-cites="2011walter">(<a href="#ref-2011walter"
+role="doc-biblioref">Sovran et al. 2011</a>)</span> is one example of
+this. In the classical definition of <em>snapshot isolation</em>,
+transactions must read from a snapshot that reflects a single global
+commit order of transactions, and transactions that write to the same
+key cannot run concurrently. PSI relaxes this by allowing transactions,
+for example, to commit in different orders at different geo-replicated
+sites, as long as they don’t have any causal relationship to each
+other.</p>
 </section>
 </section>
 <section id="consensus" class="level1" data-number="4">
@@ -1259,6 +1277,14 @@ Rivest, R. L., A. Shamir, and L. Adleman. 1978. <span>“A Method for
 Obtaining Digital Signatures and Public-Key Cryptosystems.”</span>
 <em>Commun. ACM</em> 21 (2): 120–26. <a
 href="https://doi.org/10.1145/359340.359342">https://doi.org/10.1145/359340.359342</a>.
+</div>
+<div id="ref-2011walter" class="csl-entry" role="listitem">
+Sovran, Yair, Russell Power, Marcos K. Aguilera, and Jinyang Li. 2011.
+<span>“Transactional Storage for Geo-Replicated Systems.”</span> In
+<em>Proceedings of the Twenty-Third ACM Symposium on Operating Systems
+Principles</em>, 385–400. SOSP ’11. New York, NY, USA: Association for
+Computing Machinery. <a
+href="https://doi.org/10.1145/2043556.2043592">https://doi.org/10.1145/2043556.2043592</a>.
 </div>
 <div id="ref-2012calvin" class="csl-entry" role="listitem">
 Thomson, Alexander, Thaddeus Diamond, Shu-Chun Weng, Kun Ren, Philip

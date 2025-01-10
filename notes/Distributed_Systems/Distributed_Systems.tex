@@ -125,14 +125,15 @@ Classic database isolation levels have been re-examined and/or re-implemented in
 
 Crooks' \cite{2017seeingcrooks} isolation model takes a \textit{client-centric} view, centering the isolation formalism around the client visible states that can be observed by a client. Essentially, it views any set of transactions as moving through a sequence of states (via an execution of those transactions) which produces some sequence of states, parts of which may or may not be observed by transactions in this execution.
 
-More formally, we say that for a set of transactions $\mathcal{T}$, an execution $e$ is a total order of those transactions, along with a set $S_e$ of states that can be produced by this execution of those transactions. For defining a given isolation level we then define a \textit{commit test}, $CT$ which basically defines validity conditions for each transaction in such an execution and its possible "read states" i.e. the set of states in the $S_e$ its operations could have read from. 
+More formally, we say that for a set of transactions $\mathcal{T}$, an execution $e$ is a total order of those transactions, along with a set $S_e$ of states that can be produced by this execution of those transactions. 
+\begin{align*}
+    s_0 \overset{T_1}{\longrightarrow} s_1 \overset{T_2}{\longrightarrow} s_2 \overset{T_3}{\longrightarrow} s_3 \overset{T_4}{\longrightarrow} s_4
+\end{align*}
+For defining a given isolation level we then define a \textit{commit test}, $CT$ which basically defines validity conditions for each transaction in such an execution and its possible "read states" i.e. the set of states in the $S_e$ its operations could have read from. 
 \begin{align*}
     \exists e : \forall T \in \mathcal{T} : CT(T,e)
 \end{align*}
 Note that the execution $e$ defines a total order on transactions (i.e. as if they were executed in some total order). But, this doesn't necessarily imply that a ``true'' or unique total order exists. 
-\begin{align*}
-    s_0 \overset{T_1}{\longrightarrow} s_1 \overset{T_2}{\longrightarrow} s_2 \overset{T_3}{\longrightarrow} s_3 \overset{T_4}{\longrightarrow} s_4
-\end{align*}
 
 For example, under serializability, the commit test says that there exists an execution $e$ such that for every transaction $T$ and its parent state $s_p$, the following holds: 
 \begin{align*}

@@ -81,7 +81,11 @@ id="toc-deterministic-transaction-scheduling"><span
 class="toc-section-number">4.2</span> Deterministic Transaction
 Scheduling</a></li>
 <li><a href="#isolation" id="toc-isolation"><span
-class="toc-section-number">4.3</span> Isolation</a></li>
+class="toc-section-number">4.3</span> Isolation</a>
+<ul>
+<li><a href="#state-based-model" id="toc-state-based-model"><span
+class="toc-section-number">4.3.1</span> State-Based Model</a></li>
+</ul></li>
 </ul></li>
 <li><a href="#consensus" id="toc-consensus"><span
 class="toc-section-number">5</span> Consensus</a>
@@ -455,6 +459,49 @@ key cannot run concurrently. PSI relaxes this by allowing transactions,
 for example, to commit in different orders at different geo-replicated
 sites, as long as they don’t have any causal relationship to each
 other.</p>
+<section id="state-based-model" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1"><span class="header-section-number">4.3.1</span>
+State-Based Model</h3>
+<p>Crooks’ <span class="citation" data-cites="2017seeingcrooks">(<a
+href="#ref-2017seeingcrooks" role="doc-biblioref">Crooks et al.
+2017</a>)</span> isolation model takes a <em>client-centric</em> view,
+centering the isolation formalism around the client visible states that
+can be observed by a client. Essentially, it views any set of
+transactions as moving through a sequence of states (via an execution of
+those transactions) which produces some sequence of states, parts of
+which may or may not be observed by transactions in this execution.</p>
+<p>More formally, we say that for a set of transactions <span
+class="math inline">\(\mathcal{T}\)</span>, an execution <span
+class="math inline">\(e\)</span> is a total order of those transactions,
+along with a set <span class="math inline">\(S_e\)</span> of states that
+can be produced by this execution of those transactions. For defining a
+given isolation level we then define a <em>commit test</em>, <span
+class="math inline">\(CT\)</span> which basically defines validity
+conditions for each transaction in such an execution and its possible
+"read states" i.e. the set of states in the <span
+class="math inline">\(S_e\)</span> its operations could have read from.
+<span class="math display">\[\begin{aligned}
+    \exists e : \forall T \in \mathcal{T} : CT(T,e)
+\end{aligned}\]</span> Note that the execution <span
+class="math inline">\(e\)</span> defines a total order on transactions
+(i.e. as if they were executed in some total order). But, this doesn’t
+necessarily imply that a “true” or unique total order exists.</p>
+<p>For example, under serializability, the commit test says that there
+exists an execution <span class="math inline">\(e\)</span> such taht for
+every transaction <span class="math inline">\(T\)</span> and its parent
+state <span class="math inline">\(s_p\)</span>, the following holds:
+<span class="math display">\[\begin{aligned}
+\textsc{COMPLETE}_e,T (s_p)
+\end{aligned}\]</span> That is, the parent state of <span
+class="math inline">\(T\)</span> is a complete state, meaning all reads
+in <span class="math inline">\(T\)</span> could have read from state
+<span class="math inline">\(s_p\)</span>. Clearly, though, if two
+transactions are not causally related (e.g. they read and write disjoint
+sets of keys), we could order them arbitrarily in any execution, so the
+total order of such a chosen execution may in fact be more
+concrete/prescriptive than necessary e.g. there may really only be a
+partial ordering between some transactions.</p>
+</section>
 </section>
 </section>
 <section id="consensus" class="level1" data-number="5">
@@ -1340,6 +1387,14 @@ Christopher Frost, Jeffrey John Furman, Sanjay Ghemawat, et al. 2012.
 <span>“<span class="nocase">Spanner: Google’s Globally Distributed
 Database</span>.”</span> <em>ACM Transactions on Computer Systems
 (TOCS)</em> 31 (3): 1–22.
+</div>
+<div id="ref-2017seeingcrooks" class="csl-entry" role="listitem">
+Crooks, Natacha, Youer Pu, Lorenzo Alvisi, and Allen Clement. 2017.
+<span>“Seeing Is Believing: A Client-Centric Specification of Database
+Isolation.”</span> In <em>Proceedings of the ACM Symposium on Principles
+of Distributed Computing</em>, 73–82. PODC ’17. New York, NY, USA:
+Association for Computing Machinery. <a
+href="https://doi.org/10.1145/3087801.3087802">https://doi.org/10.1145/3087801.3087802</a>.
 </div>
 <div id="ref-fidge1988timestamps" class="csl-entry" role="listitem">
 Fidge, C. J. 1988. <span>“Timestamps in Message-Passing Systems That

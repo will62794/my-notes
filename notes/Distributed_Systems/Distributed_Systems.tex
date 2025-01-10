@@ -121,6 +121,24 @@ Approaches like Calvin \cite{2012calvin} take advantage of deterministic transac
 
 Classic database isolation levels have been re-examined and/or re-implemented in context of distributed transaction systems. \textit{Parallel snapshot isolation} (PSI) \cite{2011walter} is one example of this. In the classical definition of \textit{snapshot isolation}, transactions must read from a snapshot that reflects a single global commit order of transactions, and transactions that write to the same key cannot run concurrently. PSI relaxes this by allowing transactions, for example, to commit in different orders at different geo-replicated sites, as long as they don't have any causal relationship to each other.
 
+\subsubsection{State-Based Model}
+
+Crooks' \cite{2017seeingcrooks} isolation model takes a \textit{client-centric} view, centering the isolation formalism around the client visible states that can be observed by a client. Essentially, it views any set of transactions as moving through a sequence of states (via an execution of those transactions) which produces some sequence of states, parts of which may or may not be observed by transactions in this execution.
+
+More formally, we say that for a set of transactions $\mathcal{T}$, an execution $e$ is a total order of those transactions, along with a set $S_e$ of states that can be produced by this execution of those transactions. For defining a given isolation level we then define a \textit{commit test}, $CT$ which basically defines validity conditions for each transaction in such an execution and its possible "read states" i.e. the set of states in the $S_e$ its operations could have read from. 
+\begin{align*}
+    \exists e : \forall T \in \mathcal{T} : CT(T,e)
+\end{align*}
+Note that the execution $e$ defines a total order on transactions (i.e. as if they were executed in some total order). But, this doesn't necessarily imply that a ``true'' or unique total order exists. 
+
+For example, under serializability, the commit test says that there exists an execution $e$ such taht for every transaction $T$ and its parent state $s_p$, the following holds: 
+\begin{align*}
+\textsc{COMPLETE}_e,T (s_p)
+\end{align*}
+That is, the parent state of $T$ is a complete state, meaning all reads in $T$ could have read from state $s_p$. Clearly, though, if two transactions are not causally related (e.g. they read and write disjoint sets of keys), we could order them arbitrarily in any execution, so the total order of such a chosen execution may in fact be more concrete/prescriptive than necessary e.g. there may really only be a partial ordering between some transactions.
+
+
+
 \section{Consensus}
 
 The problem of \textit{consensus} in a distributed system is to get a set of separate nodes to agree on a single value. That is, if one node marks a value as chosen, no other node can ever mark a different value as chosen. To understand the constraints of how we might solve this problem, we can start by thinking about this problem in a simpler setting e.g. a single (non-distributed) node. For an individual node/thread, solving consensus is trivial, since that node/thread can just write into a single register and then never change its decision. But, even when we introduce multiple concurrent clients (e.g. threads), the problem is nontrivial. 

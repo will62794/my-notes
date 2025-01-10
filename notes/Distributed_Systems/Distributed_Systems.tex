@@ -130,6 +130,9 @@ More formally, we say that for a set of transactions $\mathcal{T}$, an execution
     \exists e : \forall T \in \mathcal{T} : CT(T,e)
 \end{align*}
 Note that the execution $e$ defines a total order on transactions (i.e. as if they were executed in some total order). But, this doesn't necessarily imply that a ``true'' or unique total order exists. 
+\begin{align*}
+    s_0 \overset{T_1}{\longrightarrow} s_1 \overset{T_2}{\longrightarrow} s_2 \overset{T_3}{\longrightarrow} s_3 \overset{T_4}{\longrightarrow} s_4
+\end{align*}
 
 For example, under serializability, the commit test says that there exists an execution $e$ such that for every transaction $T$ and its parent state $s_p$, the following holds: 
 \begin{align*}

@@ -485,7 +485,12 @@ class="math inline">\(S_e\)</span> its operations could have read from.
 \end{aligned}\]</span> Note that the execution <span
 class="math inline">\(e\)</span> defines a total order on transactions
 (i.e. as if they were executed in some total order). But, this doesn’t
-necessarily imply that a “true” or unique total order exists.</p>
+necessarily imply that a “true” or unique total order exists. <span
+class="math display">\[\begin{aligned}
+    s_0 \overset{T_1}{\longrightarrow} s_1
+\overset{T_2}{\longrightarrow} s_2 \overset{T_3}{\longrightarrow} s_3
+\overset{T_4}{\longrightarrow} s_4
+\end{aligned}\]</span></p>
 <p>For example, under serializability, the commit test says that there
 exists an execution <span class="math inline">\(e\)</span> such that for
 every transaction <span class="math inline">\(T\)</span> and its parent

@@ -133,7 +133,7 @@ Note that the execution $e$ defines a total order on transactions (i.e. as if th
 
 For example, under serializability, the commit test says that there exists an execution $e$ such taht for every transaction $T$ and its parent state $s_p$, the following holds: 
 \begin{align*}
-\textsc{COMPLETE}_e,T (s_p)
+\text{\small COMPLETE}_{e,T} (s_p)
 \end{align*}
 That is, the parent state of $T$ is a complete state, meaning all reads in $T$ could have read from state $s_p$. Clearly, though, if two transactions are not causally related (e.g. they read and write disjoint sets of keys), we could order them arbitrarily in any execution, so the total order of such a chosen execution may in fact be more concrete/prescriptive than necessary e.g. there may really only be a partial ordering between some transactions.
 

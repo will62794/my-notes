@@ -160,6 +160,19 @@ Part of transaction isolation conditions are about determining
 \end{enumerate}
 If your answer to (1) involves defining valid states in terms of some sequential execution of committed transactions, then this seems to naturally imply you need some way of (1) ordering transactions and (2) ensuring that the values observed by transaction reads reflect this sequential ordering accurately.
 
+\subsubsection{Real Time Ordering}
+
+Note that in general, ordering for transactions within such a sequential execution \textit{need not match} the real time execution order of the transactions. In practice, many systems will give some guarantees about real time execution order and sequential execution by transactions but, for examlpe, we might have transactions execute non-concurrently as
+\begin{align*}
+    T_1 \rightarrow T_2 \textit{ (real time order)}
+\end{align*} 
+in real time order, but the database executes them in order 
+\begin{align*}
+    T_2 \rightarrow T_1 \textit{ (database execution order)}
+\end{align*}
+Within an isolation level, we may also choose to include restrictions on real time order, which is reasonalbe and we expect many implementations to obey this e.g. two non-concurrent transactions executed in some real time order should be expected to execute by the database in that order.
+
+\subsubsection{Parallel Snapshot Isolation}
 Note about parallel snapshot isolation (PSI) which seems really about relaxing isolation in \textit{replicated} systems i.e. could a secondary apply transactions in a different order than a primary. Question is whether database truly commits to a sequential execution of all transactions. This seems like a notable example of where it may not e.g. if two transactions are concurrent, their ordering across primaries/secondaries is allowed to be different?
 
 

@@ -89,6 +89,12 @@ class="toc-section-number">4.3.1</span> State-Based Model</a></li>
 id="toc-various-isolation-formalisms"><span
 class="toc-section-number">4.3.2</span> Various Isolation
 Formalisms</a></li>
+<li><a href="#real-time-ordering" id="toc-real-time-ordering"><span
+class="toc-section-number">4.3.3</span> Real Time Ordering</a></li>
+<li><a href="#parallel-snapshot-isolation"
+id="toc-parallel-snapshot-isolation"><span
+class="toc-section-number">4.3.4</span> Parallel Snapshot
+Isolation</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#consensus" id="toc-consensus"><span
@@ -570,6 +576,30 @@ sequential execution of committed transactions, then this seems to
 naturally imply you need some way of (1) ordering transactions and (2)
 ensuring that the values observed by transaction reads reflect this
 sequential ordering accurately.</p>
+</section>
+<section id="real-time-ordering" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3"><span class="header-section-number">4.3.3</span>
+Real Time Ordering</h3>
+<p>Note that in general, ordering for transactions within such a
+sequential execution <em>need not match</em> the real time execution
+order of the transactions. In practice, many systems will give some
+guarantees about real time execution order and sequential execution by
+transactions but, for examlpe, we might have transactions execute
+non-concurrently as <span class="math display">\[\begin{aligned}
+    T_1 \rightarrow T_2 \textit{ (real time order)}
+\end{aligned}\]</span> in real time order, but the database executes
+them in order <span class="math display">\[\begin{aligned}
+    T_2 \rightarrow T_1 \textit{ (database execution order)}
+\end{aligned}\]</span> Within an isolation level, we may also choose to
+include restrictions on real time order, which is reasonalbe and we
+expect many implementations to obey this e.g. two non-concurrent
+transactions executed in some real time order should be expected to
+execute by the database in that order.</p>
+</section>
+<section id="parallel-snapshot-isolation" class="level3"
+data-number="4.3.4">
+<h3 data-number="4.3.4"><span class="header-section-number">4.3.4</span>
+Parallel Snapshot Isolation</h3>
 <p>Note about parallel snapshot isolation (PSI) which seems really about
 relaxing isolation in <em>replicated</em> systems i.e. could a secondary
 apply transactions in a different order than a primary. Question is

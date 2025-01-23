@@ -142,6 +142,24 @@ For example, under serializability, the commit test says that there exists an ex
 That is, the parent state of $T$ is a complete state, meaning all reads in $T$ could have read from state $s_p$. Clearly, though, if two transactions are not causally related (e.g. they read and write disjoint sets of keys), we could order them arbitrarily in any execution, so the total order of such a chosen execution may in fact be more concrete/prescriptive than necessary e.g. there may really only be a partial ordering between some transactions.
 
 
+\subsubsection{Various Isolation Formalisms}
+
+Another modern formalization of transaction isolation levels is that of \cite{2018cerone}, which is based on \textit{arbitration} and \textit{visibility} relations between committed transactions. Essentially, in their model, they only consider isolation levels as weak as \textit{read atomic} i.e. models where either \textit{all} or \textit{none} of the writes of a transaction are visible to another transaction. This means they cannot express things like \textit{read committed} in their model, since this requires expressing cases where different reads in a transactino essentially see views of the database state that differ with respect to who wrote the values of those keys (e.g. akin to two reads reading from different snapshots).
+In this sense Crooks's state-based model is more general, since it allows for definition of isolation levels where different read operations within a transaction observe different prior read states.
+
+Note that it is worth considering how these different models of transaction isolation define their conditions. In all models, it seems we ultimately care about definiing corretness conditions over \textit{a set of committed transactions}, $\mathcal{S}$ since we don't really care about correctness conditions on transactions that abort or are in-progress. Furthermore, how do we think about the relationship between reads and writes? Really, reads are the only way we can ever observe the state of the database, and so really our corretness conditions should ultimately say something about how reads are correct w.r.t previous writes. For example, if we have a set of transactions that only do writes, or a set of transactions that only do reads, there are really no nontrivial conditions for correctness (e.g. for read only transactions we would assume all transactions always read the same, empty state). So, correctness conditions on isolation really need to be conditions on reads to the extent that they observe something that could be consistent with some execution of the writes in the set of committed transactions. 
+
+As a basic condition, we should presumably always want the read of a key $k$ to always return a value that reflects the value written by \textit{some} transaction in the committed set $\mathcal{S}$. Moreover, we probably want our database to behave \textit{as if} it executed the set of committed transactions in some consistent order. This doesn't necessarily imply serializability, since we are only saying that we expect what we read to be consistent with \textit{some} state the database could have passed through in the past (assuming it behaves as if there is some sequential order of transaction execution).
+
+% \quote{Basically, if you are ever going to do a read of a key, it makes sense that the value you read should correspond to \textit{some} previously written value to that key.}
+
+Part of transaction isolation conditions are about determining 
+\begin{enumerate}
+    \item What are the valid set of states of a transaction could possible read from?
+    \item From these possible states, which are the ones I could be valid to read from under some isolation conditions?
+\end{enumerate}
+If your answer to (1) involves defining valid states in terms of some sequential execution of committed transactions, then this seems to naturally imply you need some way of (1) ordering transactions and (2) ensuring that the values observed by transaction reads reflect this sequential ordering accurately.
+
 
 \section{Consensus}
 

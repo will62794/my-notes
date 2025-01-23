@@ -85,6 +85,10 @@ class="toc-section-number">4.3</span> Isolation</a>
 <ul>
 <li><a href="#state-based-model" id="toc-state-based-model"><span
 class="toc-section-number">4.3.1</span> State-Based Model</a></li>
+<li><a href="#various-isolation-formalisms"
+id="toc-various-isolation-formalisms"><span
+class="toc-section-number">4.3.2</span> Various Isolation
+Formalisms</a></li>
 </ul></li>
 </ul></li>
 <li><a href="#consensus" id="toc-consensus"><span
@@ -505,6 +509,67 @@ sets of keys), we could order them arbitrarily in any execution, so the
 total order of such a chosen execution may in fact be more
 concrete/prescriptive than necessary e.g. there may really only be a
 partial ordering between some transactions.</p>
+</section>
+<section id="various-isolation-formalisms" class="level3"
+data-number="4.3.2">
+<h3 data-number="4.3.2"><span class="header-section-number">4.3.2</span>
+Various Isolation Formalisms</h3>
+<p>Another modern formalization of transaction isolation levels is that
+of <span class="citation" data-cites="2018cerone">(<a
+href="#ref-2018cerone" role="doc-biblioref">Cerone, Bernardi, and
+Gotsman 2015</a>)</span>, which is based on <em>arbitration</em> and
+<em>visibility</em> relations between committed transactions.
+Essentially, in their model, they only consider isolation levels as weak
+as <em>read atomic</em> i.e. models where either <em>all</em> or
+<em>none</em> of the writes of a transaction are visible to another
+transaction. This means they cannot express things like <em>read
+committed</em> in their model, since this requires expressing cases
+where different reads in a transactino essentially see views of the
+database state that differ with respect to who wrote the values of those
+keys (e.g. akin to two reads reading from different snapshots). In this
+sense Crooks’s state-based model is more general, since it allows for
+definition of isolation levels where different read operations within a
+transaction observe different prior read states.</p>
+<p>Note that it is worth considering how these different models of
+transaction isolation define their conditions. In all models, it seems
+we ultimately care about definiing corretness conditions over <em>a set
+of committed transactions</em>, <span
+class="math inline">\(\mathcal{S}\)</span> since we don’t really care
+about correctness conditions on transactions that abort or are
+in-progress. Furthermore, how do we think about the relationship between
+reads and writes? Really, reads are the only way we can ever observe the
+state of the database, and so really our corretness conditions should
+ultimately say something about how reads are correct w.r.t previous
+writes. For example, if we have a set of transactions that only do
+writes, or a set of transactions that only do reads, there are really no
+nontrivial conditions for correctness (e.g. for read only transactions
+we would assume all transactions always read the same, empty state). So,
+correctness conditions on isolation really need to be conditions on
+reads to the extent that they observe something that could be consistent
+with some execution of the writes in the set of committed
+transactions.</p>
+<p>As a basic condition, we should presumably always want the read of a
+key <span class="math inline">\(k\)</span> to always return a value that
+reflects the value written by <em>some</em> transaction in the committed
+set <span class="math inline">\(\mathcal{S}\)</span>. Moreover, we
+probably want our database to behave <em>as if</em> it executed the set
+of committed transactions in some consistent order. This doesn’t
+necessarily imply serializability, since we are only saying that we
+expect what we read to be consistent with <em>some</em> state the
+database could have passed through in the past (assuming it behaves as
+if there is some sequential order of transaction execution).</p>
+<p>Part of transaction isolation conditions are about determining</p>
+<ol>
+<li><p>What are the valid set of states of a transaction could possible
+read from?</p></li>
+<li><p>From these possible states, which are the ones I could be valid
+to read from under some isolation conditions?</p></li>
+</ol>
+<p>If your answer to (1) involves defining valid states in terms of some
+sequential execution of committed transactions, then this seems to
+naturally imply you need some way of (1) ordering transactions and (2)
+ensuring that the values observed by transaction reads reflect this
+sequential ordering accurately.</p>
 </section>
 </section>
 </section>
@@ -1384,6 +1449,16 @@ Castro, Miguel, and Barbara Liskov. 1999. <span>“Practical Byzantine
 Fault Tolerance.”</span> In <em>Proceedings of the Third Symposium on
 Operating Systems Design and Implementation</em>, 173–86. OSDI ’99. USA:
 USENIX Association.
+</div>
+<div id="ref-2018cerone" class="csl-entry" role="listitem">
+Cerone, Andrea, Giovanni Bernardi, and Alexey Gotsman. 2015.
+<span>“<span class="nocase">A Framework for Transactional Consistency
+Models with Atomic Visibility</span>.”</span> In <em>26th International
+Conference on Concurrency Theory (CONCUR 2015)</em>, edited by Luca
+Aceto and David de Frutos Escrig, 42:58–71. Leibniz International
+Proceedings in Informatics (LIPIcs). Dagstuhl, Germany: Schloss Dagstuhl
+– Leibniz-Zentrum f<span>ü</span>r Informatik. <a
+href="https://doi.org/10.4230/LIPIcs.CONCUR.2015.58">https://doi.org/10.4230/LIPIcs.CONCUR.2015.58</a>.
 </div>
 <div id="ref-2012spanner" class="csl-entry" role="listitem">
 Corbett, James C, Jeffrey Dean, Michael Epstein, Andrew Fikes,

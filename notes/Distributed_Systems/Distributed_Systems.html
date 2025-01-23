@@ -570,6 +570,13 @@ sequential execution of committed transactions, then this seems to
 naturally imply you need some way of (1) ordering transactions and (2)
 ensuring that the values observed by transaction reads reflect this
 sequential ordering accurately.</p>
+<p>Note about parallel snapshot isolation (PSI) which seems really about
+relaxing isolation in <em>replicated</em> systems i.e. could a secondary
+apply transactions in a different order than a primary. Question is
+whether database truly commits to a sequential execution of all
+transactions. This seems like a notable example of where it may not e.g.
+if two transactions are concurrent, their ordering across
+primaries/secondaries is allowed to be different?</p>
 </section>
 </section>
 </section>

@@ -530,7 +530,7 @@ as <em>read atomic</em> i.e. models where either <em>all</em> or
 <em>none</em> of the writes of a transaction are visible to another
 transaction. This means they cannot express things like <em>read
 committed</em> in their model, since this requires expressing cases
-where different reads in a transactino essentially see views of the
+where different reads in a transaction essentially see views of the
 database state that differ with respect to who wrote the values of those
 keys (e.g. akin to two reads reading from different snapshots). In this
 sense Crooks’s state-based model is more general, since it allows for
@@ -591,7 +591,7 @@ non-concurrently as <span class="math display">\[\begin{aligned}
 them in order <span class="math display">\[\begin{aligned}
     T_2 \rightarrow T_1 \textit{ (database execution order)}
 \end{aligned}\]</span> Within an isolation level, we may also choose to
-include restrictions on real time order, which is reasonalbe and we
+include restrictions on real time order, which is reasonable and we
 expect many implementations to obey this e.g. two non-concurrent
 transactions executed in some real time order should be expected to
 execute by the database in that order.</p>

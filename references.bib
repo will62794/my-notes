@@ -1330,3 +1330,29 @@ series = {PODC '17}
   doi =		{10.4230/LIPIcs.CONCUR.2015.58},
   annote =	{Keywords: Replication, Consistency models, Transactions}
 }
+@inproceedings{2025multigrained,
+author = {Ouyang, Lingzhi and Sun, Xudong and Tang, Ruize and Huang, Yu and Jivrajani, Madhav and Ma, Xiaoxing and Xu, Tianyin},
+title = {Multi-Grained Specifications for Distributed System Model Checking and Verification},
+year = {2025},
+isbn = {9798400711961},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3689031.3696069},
+doi = {10.1145/3689031.3696069},
+abstract = {This paper presents our experience specifying and verifying the correctness of ZooKeeper, a complex and evolving distributed coordination system. We use TLA+ to model finegrained behaviors of ZooKeeper and use the TLC model checker to verify its correctness properties; we also check conformance between the model and code. The fundamental challenge is to balance the granularity of specifications and the scalability of model checking---fine-grained specifications lead to state-space explosion, while coarse-grained specifications introduce model-code gaps. To address this challenge, we write specifications with different granularities for composable modules, and compose them into mixed-grained specifications based on specific scenarios. For example, to verify code changes, we compose fine-grained specifications of changed modules and coarse-grained specifications that abstract away details of unchanged code with preserved interactions. We show that writing multi-grained specifications is a viable practice and can cope with model-code gaps without untenable state space, especially for evolving software where changes are typically local and incremental. We detected six severe bugs that violate five types of invariants and verified their code fixes; the fixes have been merged to ZooKeeper. We also improve the protocol design to make it easy to implement correctly.},
+booktitle = {Proceedings of the Twentieth European Conference on Computer Systems},
+pages = {379–395},
+numpages = {17},
+keywords = {Distributed systems, model checking, reliability},
+location = {Rotterdam, Netherlands},
+series = {EuroSys '25}
+}
+@misc{gu2022compositionalmodelcheckingconsensus,
+      title={Compositional Model Checking of Consensus Protocols Specified in TLA+ via Interaction-Preserving Abstraction}, 
+      author={Xiaosong Gu and Wei Cao and Yicong Zhu and Xuan Song and Yu Huang and Xiaoxing Ma},
+      year={2022},
+      eprint={2202.11385},
+      archivePrefix={arXiv},
+      primaryClass={cs.DC},
+      url={https://arxiv.org/abs/2202.11385}, 
+}

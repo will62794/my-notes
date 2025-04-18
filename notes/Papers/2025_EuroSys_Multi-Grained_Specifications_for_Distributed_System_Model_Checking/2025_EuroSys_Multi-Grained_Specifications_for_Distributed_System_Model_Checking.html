@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <title>Multi-Grained Specifications for Distributed System Model Checking and Verification (EuroSys 2025)</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../../style.css" />
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Multi-Grained Specifications for Distributed System
+Model Checking and Verification (EuroSys 2025)</h1>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#multi-grained-specifications"
+id="toc-multi-grained-specifications">Multi-Grained
+Specifications</a></li>
+<li><a href="#conformance-checking-and-tooling"
+id="toc-conformance-checking-and-tooling">Conformance Checking and
+Tooling</a></li>
+<li><a href="#evaluation-results" id="toc-evaluation-results">Evaluation
+Results</a></li>
+<li><a href="#thoughtsquestions"
+id="toc-thoughtsquestions">Thoughts/Questions</a></li>
+<li><a href="#bibliography" id="toc-bibliography">References</a></li>
+</ul>
+</nav>
+<p><a
+href="https://dl.acm.org/doi/10.1145/3689031.3696069"><em>Multi-Grained
+Specifications for Distributed System Model Checking and
+Verification</em></a> <span class="citation"
+data-cites="2025multigrained">(<a href="#ref-2025multigrained"
+role="doc-biblioref">Ouyang et al. 2025</a>)</span> describes an
+approach for specifying and verifying ZooKeeper. They write abstract
+TLA+ models of the ZooKeeper protocol, while also checking conformance
+between the model and code. To tackle state space explosion of models,
+they decompose the specs into modules which are then written at
+different "granularities", and composed together for checking
+properties.</p>
+<section id="multi-grained-specifications" class="level1 unnumbered">
+<h1 class="unnumbered">Multi-Grained Specifications</h1>
+<p>The basic idea if multi-grained specifications is based around the
+ability to decompose an overall system specification into separate
+logical modulues, which can independently be specified at different
+"granularities" (e.g. levels of atomicity) ,and then composed together
+in a semantics preserving way. This enables efficient model checking by
+reliance on <em>interaction preservation</em> idea, which was introduced
+in prior work <span class="citation"
+data-cites="gu2022compositionalmodelcheckingconsensus">(<a
+href="#ref-gu2022compositionalmodelcheckingconsensus"
+role="doc-biblioref">Gu et al. 2022</a>)</span>. The idea is that, for a
+given module, its behavior can be defined in terms of its
+<em>interactions</em> with other modules. Its "internal" behavior is
+irrelevant to the operation of the overall, composed system, so can be
+abstracted away as long as high level correctness properties don’t
+depend on any of this internal state.</p>
+<p>In TLA+, they define global state of a system with <em>variables</em>
+and states are updated with <em>actions</em>. They define <em>dependency
+variables</em> of an action as the variables in the enabling condition
+of the action. A <em>module</em> is defined as a set of actions, and the
+dependency variables of a module are then defined as the union of
+dependency variables for all actions in the module.</p>
+<p>They claim that coarsening of a module preserves interaction if</p>
+<ol type="1">
+<li><p>All dependency variables of the target module, as well as all
+interaction variables, remain unchanged after the coarsening.</p></li>
+<li><p>All the updates of the dependency variables and interaction
+variables remain unchanged after the coarsening.</p></li>
+</ol>
+<p>So, overall, if you can describe a specification <span
+class="math inline">\(S\)</span> as composed of <span
+class="math inline">\(n\)</span> modules as <span
+class="math display">\[\begin{aligned}
+    S = \bigcup_{1 \leq i \leq n} M_i
+\end{aligned}\]</span> and <span
+class="math inline">\(\overset{\sim}{M_i}\)</span> represents the
+coarsened version of module <span class="math inline">\(M_i\)</span>,
+then if the above hold, then <span class="math inline">\(S_i\)</span> is
+denoted as the specification by coarsening <span
+class="math inline">\(S\)</span> with every other module except <span
+class="math inline">\(M_i\)</span> i.e. <span
+class="math display">\[\begin{aligned}
+    S_i = \left(\bigcup_{j \neq i} \overset{\sim}{M_j}\right) \cup M_i
+\end{aligned}\]</span></p>
+<p>They claim the main theorem, the <strong>Interaction Preservation
+Theorem</strong>, which says essentially that:</p>
+<div class="theorem">
+<p><strong>Theorem 1</strong>. <em>Given <span class="math inline">\(S =
+\bigcup_{1 \leq i \leq n} M_i\)</span> and <span
+class="math inline">\(S_i = \left(\bigcup_{j \neq i}
+\overset{\sim}{M_j}\right) \cup M_i\)</span>, we have <span
+class="math inline">\(T_S \overset{M_i}{\sim} T_{S_i}\)</span>.</em></p>
+</div>
+<p>where <span class="math inline">\(T_S \overset{M_i}{\sim}
+T_{S_i}\)</span> is defined as trace <span
+class="math inline">\(T_S\)</span> and <span
+class="math inline">\(T_{S_i}\)</span> being equal when projected to
+<span class="math inline">\(M_i\)</span></p>
+</section>
+<section id="conformance-checking-and-tooling"
+class="level1 unnumbered">
+<h1 class="unnumbered">Conformance Checking and Tooling</h1>
+<p>They built a tool called <span class="smallcaps">Remix</span>, which
+includes a conformance checking framework for checking ZooKeeper
+implementation against their specifications. The conformance checker
+explores random traces of the model-level state space under some budet,
+and then runs these model traces checking for discrepancies between
+implementation and model. As they describe it, apparently developers
+still need to manually provide a mapping from each model-level action to
+the events in the code that represent the beginning and end of the
+corresponding code-level action. They use some Java specific
+instrumentation tools (AspectJ) to achieve all of this, but it seems the
+manual burden of defining these conformance mappings is still
+high/nontrivial</p>
+<div class="center">
+<p><img src="grained-specs.png" style="width:70.0%" alt="image" /></p>
+</div>
+</section>
+<section id="evaluation-results" class="level1 unnumbered">
+<h1 class="unnumbered">Evaluation Results</h1>
+<p>Basically, they find a bunch of bugs. They also note the significant
+efficiency gains from checking multi-grained specifications. They note
+in some cases over 1000x speedups in exploration costs, as illustrated
+in Table 5.</p>
+<div class="center">
+<p><img src="efficiencies.png" style="width:70.0%" alt="image" /></p>
+</div>
+</section>
+<section id="thoughtsquestions" class="level1 unnumbered">
+<h1 class="unnumbered">Thoughts/Questions</h1>
+<ul>
+<li><p>Are their interaction-preserving coarsenings guaranteed to be
+formally correct in any way, or are they just eyeballing it? For
+bug-finding, eyeballing is arguably ok, since you’re not as worried
+about completeness, and if you find a candidate bug, you can check it
+manually for veracity. But for completeness, I feel sketchy about their
+approach being formally correct.</p></li>
+<li><p>Conformance checking still seems laborious, as with many other
+papers on the topic. Not really sure if there’s much to take away from
+that aspect i.e. it seems there was a lot of manual effort involved and
+is not clear it would be be easy to do in general for many systems.
+Multi-grained specification aspect seems the main value here.</p></li>
+</ul>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-gu2022compositionalmodelcheckingconsensus"
+class="csl-entry" role="listitem">
+Gu, Xiaosong, Wei Cao, Yicong Zhu, Xuan Song, Yu Huang, and Xiaoxing Ma.
+2022. <span>“Compositional Model Checking of Consensus Protocols
+Specified in TLA+ via Interaction-Preserving Abstraction.”</span> <a
+href="https://arxiv.org/abs/2202.11385">https://arxiv.org/abs/2202.11385</a>.
+</div>
+<div id="ref-2025multigrained" class="csl-entry" role="listitem">
+Ouyang, Lingzhi, Xudong Sun, Ruize Tang, Yu Huang, Madhav Jivrajani,
+Xiaoxing Ma, and Tianyin Xu. 2025. <span>“Multi-Grained Specifications
+for Distributed System Model Checking and Verification.”</span> In
+<em>Proceedings of the Twentieth European Conference on Computer
+Systems</em>, 379–95. EuroSys ’25. New York, NY, USA: Association for
+Computing Machinery. <a
+href="https://doi.org/10.1145/3689031.3696069">https://doi.org/10.1145/3689031.3696069</a>.
+</div>
+</div>
+</section>
+</body>
+</html>

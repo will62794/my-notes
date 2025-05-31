@@ -1,33 +1,39 @@
 ---- MODULE bfs ----
 EXTENDS TLC
 
-CONSTANT Vertex
+CONSTANT Node
 
 VARIABLES edges
 VARIABLES nodes
 
-VARIABLES explored
-
 VARIABLES frontier
+VARIABLES visited
 
 Init == 
-    /\ nodes \in SUBSET Vertex
+    /\ nodes \in SUBSET Node
     /\ edges \in SUBSET (nodes \X nodes)
-    /\ explored = {}
+    /\ visited = {}
     /\ \E v \in nodes : frontier = {v}
 
 Neighbors(n) == {x \in nodes : <<n,x>> \in edges}
 
+Explore(n) == 
+    /\ n \notin visited
+    /\ n \in frontier
+    /\ visited' = visited \cup {n}
+    /\ frontier' = (frontier \ {n}) \cup Neighbors(n)
+    /\ UNCHANGED <<nodes, edges>>    
+
+Terminate ==
+    /\ frontier = {}
+    /\ visited = nodes
+
 Next ==
-    \E n \in frontier :
-        /\ n \notin explored
-        /\ frontier # {}
-        /\ explored' = explored \cup {n}
-        /\ frontier' = (frontier \ {n}) \cup Neighbors(n)
-        /\ UNCHANGED <<nodes, edges>>
+    \/ \E n \in Node : Explore(n)
+    \/ Terminate
 
-Symmetry == Permutations(Vertex)
+Symmetry == Permutations(Node)
 
-L == ~(explored = Vertex)
+L == ~(visited = Node)
 
 ====

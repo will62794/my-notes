@@ -179,6 +179,13 @@ not hold, since some nodes may be reachable via lower-weight edges. So,
 to generalize this behavior to full Dijkstra, we maintain a priority
 queue for the frontier set, which is maintained in order of next
 shortest depth from source.</p>
+<p>We can also think about each “level" in BFS vs. each “level" in
+Dijkstra. In BFS each level has the same depth from source, so can be
+interchanged, and will all have depth greater than other nodes in lower
+levels in the queue. In Dijkstra, nodes within the same “level" may not
+all have the same depth from source, but all nodes within the same level
+should have greater depth from source than earlier levels in the
+queue.</p>
 </section>
 </section>
 <section id="dynamic-programming" class="level1" data-number="2">

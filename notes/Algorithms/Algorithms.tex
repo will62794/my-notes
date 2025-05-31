@@ -58,6 +58,8 @@ Dijkstra's algorithm is a way to find the shortest path between a \textit{source
 
 Note first that in the special case of unweighted graph edges, Dijstra's algorithm behaves equivalently to breadth first search. That is, when we add newly discovered nodes to the frontier, we add them all to the end of a standard queue, since they all have equal distance (weight 1) from the current node. In weighted graphs, though, this does not hold, since some nodes may be reachable via lower-weight edges. So, to generalize this behavior to full Dijkstra, we maintain a priority queue for the frontier set, which is maintained in order of next shortest depth from source.
 
+We can also think about each ``level" in BFS vs. each ``level" in Dijkstra. In BFS each level has the same depth from source, so can be interchanged, and will all have depth greater than other nodes in lower levels in the queue. In Dijkstra, nodes within the same ``level" may not all have the same depth from source, but all nodes within the same level should have greater depth from source than earlier levels in the queue.
+
 \section{Dynamic Programming}
 
 There are 2 main components of a problem that make it amenable to a so-called ``dynamic programming'' (badly named) approach:

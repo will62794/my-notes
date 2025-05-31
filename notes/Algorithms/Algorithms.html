@@ -43,6 +43,8 @@ class="toc-section-number">1</span> Graph Search</a>
 class="toc-section-number">1.1</span> Depth-first search</a></li>
 <li><a href="#breadth-first-search" id="toc-breadth-first-search"><span
 class="toc-section-number">1.2</span> Breadth-first search</a></li>
+<li><a href="#dijkstras-algorithm" id="toc-dijkstras-algorithm"><span
+class="toc-section-number">1.3</span> Dijkstra’s Algorithm</a></li>
 </ul></li>
 <li><a href="#dynamic-programming" id="toc-dynamic-programming"><span
 class="toc-section-number">2</span> Dynamic Programming</a>
@@ -157,6 +159,25 @@ Breadth-first search</h2>
 farther nodes i.e. it progresses in “levels" of depth. Not a standard
 way to implement it recursively, but can use a queue to keep track of
 the frontier nodes.</p>
+</section>
+<section id="dijkstras-algorithm" class="level2" data-number="1.3">
+<h2 data-number="1.3"><span class="header-section-number">1.3</span>
+Dijkstra’s Algorithm</h2>
+<p>Dijkstra’s algorithm is a way to find the shortest path between a
+<em>source</em> node and a <em>target</em> node in a graph. One way is
+to view this kind of shortest path algorithm is as a generalization of
+other search algorithms, particularly breadth first search. Essentially,
+we can augment the set of visited nodes with some auxiliary information
+to track the shortest path to these nodes as we go.</p>
+<p>Note first that in the special case of unweighted graph edges,
+Dijstra’s algorithm behaves equivalently to breadth first search. That
+is, when we add newly discovered nodes to the frontier, we add them all
+to the end of a standard queue, since they all have equal distance
+(weight 1) from the current node. In weighted graphs, though, this does
+not hold, since some nodes may be reachable via lower-weight edges. So,
+to generalize this behavior to full Dijkstra, we maintain a priority
+queue for the frontier set, which is maintained in order of next
+shortest depth from source.</p>
 </section>
 </section>
 <section id="dynamic-programming" class="level1" data-number="2">

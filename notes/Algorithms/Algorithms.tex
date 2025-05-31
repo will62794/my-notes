@@ -52,6 +52,12 @@ Note that if we want to explore a \textit{tree}, or, more generally, any acyclic
 \subsection{Breadth-first search}
 Breadth-first search searches all closer nodes before searching farther nodes i.e. it progresses in ``levels" of depth. Not a standard way to implement it recursively, but can use a queue to keep track of the frontier nodes.
 
+\subsection{Dijkstra's Algorithm}
+
+Dijkstra's algorithm is a way to find the shortest path between a \textit{source} node and a \textit{target} node in a graph. One way is to view this kind of shortest path algorithm is as a generalization of other search algorithms, particularly breadth first search. Essentially, we can augment the set of visited nodes with some auxiliary information to track the shortest path to these nodes as we go. 
+
+Note first that in the special case of unweighted graph edges, Dijstra's algorithm behaves equivalently to breadth first search. That is, when we add newly discovered nodes to the frontier, we add them all to the end of a standard queue, since they all have equal distance (weight 1) from the current node. In weighted graphs, though, this does not hold, since some nodes may be reachable via lower-weight edges. So, to generalize this behavior to full Dijkstra, we maintain a priority queue for the frontier set, which is maintained in order of next shortest depth from source.
+
 \section{Dynamic Programming}
 
 There are 2 main components of a problem that make it amenable to a so-called ``dynamic programming'' (badly named) approach:

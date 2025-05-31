@@ -1,0 +1,36 @@
+digraph {
+	Z
+	G
+	K
+	Y
+	L
+	C
+	D
+	A
+	E
+	B
+	Q
+	Z [fillcolor=white style=filled]
+	G [fillcolor=white style=filled]
+	K [fillcolor=white style=filled]
+	Y [fillcolor=white style=filled]
+	L [fillcolor=white style=filled]
+	C [fillcolor=white style=filled]
+	D [fillcolor=white style=filled]
+	A [fillcolor=lightgray style=filled]
+	E [fillcolor=white style=filled]
+	B [fillcolor=white style=filled]
+	Q [fillcolor=white style=filled]
+	A -> B
+	A -> C
+	B -> D
+	B -> E
+	B -> K
+	B -> A
+	K -> Z
+	D -> G
+	E -> Y
+	G -> Q
+	G -> Y
+	Q -> L
+}

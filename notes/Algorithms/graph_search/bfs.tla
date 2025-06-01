@@ -48,8 +48,10 @@ Neighbors(n) == {x \in nodes : <<n,x>> \in edges}
 Explore(n) == 
     /\ ~\E x \in visited : x[1] = n[1]
     /\ ~\E x \in frontier : x[1] = n
-    \* Smallest element in frontier based on depth (exploration order condition).
+    \* Smallest element in frontier based on depth (exploration order condition). (DIJSKTRA/BFS/UCS)
     /\ \A other \in frontier : other[2] >= n[2]
+    \* Largest element in frontier based on depth (DFS).
+    \* /\ \A other \in frontier : other[2] <= n[2]
     /\ visited' = visited \cup {<<n[1], n[2]>>}
     /\  LET newNeighbors == {x \in Neighbors(n[1]) : ~\E c \in visited' : c[1] = x} IN
         frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in newNeighbors}

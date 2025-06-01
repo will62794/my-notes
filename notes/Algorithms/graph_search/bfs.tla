@@ -15,6 +15,26 @@ VARIABLE startNode
 V1 == {1,2,3,4}
 E1 == {<<1,2>>, <<1,3>>, <<2,4>>, <<3,4>>}
 
+
+SeqOf(set, n) == UNION {[1..m -> set] : m \in 0..n}
+
+SimplePath(V, E) ==
+    \* A simple path is a path with no repeated nodes.
+    {p \in SeqOf(V, Cardinality(V)) :
+             /\ p # << >>
+             /\ Cardinality({ p[i] : i \in DOMAIN p }) = Len(p)
+             /\ \A i \in 1..(Len(p)-1) : <<p[i], p[i+1]>> \in E}
+
+SimplePathsFrom(V, E, start, target) ==
+    {p \in SimplePath(V, E) : p[1] = start /\ p[Len(p)] = target}
+
+ShortestPath(start, target) == 
+    IF SimplePathsFrom(nodes, edges, start, target) # {} THEN
+        Len(CHOOSE p \in SimplePathsFrom(nodes, edges, start, target) : 
+                \A p1 \in SimplePathsFrom(nodes, edges, start, target) : Len(p) <= Len(p1)) - 1
+    ELSE -1
+    
+
 Init == 
     /\ nodes = Node
     /\ edges \in SUBSET (nodes \X nodes)

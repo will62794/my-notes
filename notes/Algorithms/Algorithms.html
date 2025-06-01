@@ -186,6 +186,17 @@ levels in the queue. In Dijkstra, nodes within the same “level" may not
 all have the same depth from source, but all nodes within the same level
 should have greater depth from source than earlier levels in the
 queue.</p>
+<p>Also, note that there are a bunch of standard explanations of
+Dijkstra’s algorithm where you assume you know all nodes upfront, and
+initialize a "visited" distance array for every node. In practice, this
+is less realistic since you might not know all nodes of a graph you are
+exploring dynamically upfront, and, in general, there is no specific
+need for you to have to know all nodes upfront. You can easily just keep
+track of nodes distances as you add them into the frontier (priority
+queue) set. I find some standard explanations of Dijkstra’s algorithm
+more confusing for this reason, since updating nodes as you go helps
+make it clearer the basic underlying similarities between this approach
+and all other graph traversal algorithms.</p>
 </section>
 </section>
 <section id="dynamic-programming" class="level1" data-number="2">

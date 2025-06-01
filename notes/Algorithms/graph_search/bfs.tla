@@ -100,47 +100,6 @@ Injective(f) == \A x, y \in DOMAIN f : f[x] = f[y] => x = y
 \* RMId == SetToSeq(Server)
 \* CHOOSE f \in [1..Cardinality(Server) -> Server] : Injective(f)
 
-
-
-\* \* Animation view definition.
-\* c1 == Circle(10, 10, 5, [fill |-> "red"])
-\* c2 == Circle(20, 10, 5, [fill |-> "red"])
-\* \* ServerIdDomain == 1..Cardinality(Server)
-\* RMIdDomain == 1..Cardinality(Server)
-\* Spacing == 40
-\* XBase == 10
-\* logEntryStroke(i,ind) == IF \E c \in committed : c[1] = ind /\ c[2] = log[i][ind] THEN "orange" ELSE "black"
-\* logEntry(i, ybase, ind) == Group(<<Rect(20 * ind + 100, ybase, 18, 18, [fill |-> "lightgray", stroke |-> logEntryStroke(i,ind)]), 
-\*                                    Text(20 * ind + 105, ybase + 15, ToString(log[i][ind]), ("text-anchor" :>  "start"))>>, [h \in {} |-> {}])
-\* logElem(i, ybase) == Group([ind \in DOMAIN log[i] |-> logEntry(i, ybase, ind)], [h \in {} |-> {}])
-\* logElems ==  [i \in RMIdDomain |-> logElem(RMId[i], i * Spacing - 5)]
-
-
-\* CrownIcon == "https://www.svgrepo.com/download/274106/crown.svg"
-
-\* CrownElem(rmid, i) == Image(0, i * Spacing - 6, 15, 15, CrownIcon, IF state[rmid] # Primary THEN [hidden |-> "true"] ELSE <<>>)
-
-\* cs == [i \in RMIdDomain |-> 
-\*         LET rmid == ToString(RMId[i]) IN
-\*         Group(<<
-\*             Circle(XBase + 20, i * Spacing, 10, 
-\*             [stroke |-> "black", fill |-> 
-\*                 IF state[rmid] = Primary 
-\*                     THEN "gold" 
-\*                 ELSE IF state[rmid] = Secondary THEN "gray" 
-\*                 ELSE IF state[rmid] = Secondary THEN "red" ELSE "gray"]), 
-\*             CrownElem(rmid,i)>>, [a \in {} |-> {}])]
-\* labels == [i \in RMIdDomain |-> 
-\*         LET rmid == RMId[i] IN 
-\*             Text(XBase + 40, i * Spacing + 5, 
-\*             ToString(rmid) \o ", t=" \o ToString(currentTerm[rmid]), \*\o ", " \o ToString(log[rmid]), 
-\*             [fill |-> 
-\*             IF state[rmid] = Primary 
-\*                 THEN "black" 
-\*             ELSE IF state[RMId[i]] = Secondary THEN "black" 
-\*             ELSE IF state[RMId[i]] = Secondary THEN "red" ELSE "gray"])]
-\* AnimView == Group(<<>>, [i \in {} |-> {}])
-
 \* Graphviz attributes
 nodeAttrsFn(n) == [label |-> IF n \in visited THEN ToString(n) ELSE ToString(n), style |-> "filled", fillcolor |-> IF n \in visited THEN "lightblue" ELSE "white"]
 AnimView == Group(<<DiGraph(nodes,edges,[n \in Node |-> nodeAttrsFn(n)])>>, [i \in {} |-> {}])

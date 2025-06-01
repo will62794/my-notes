@@ -1,5 +1,5 @@
 ---- MODULE bfs ----
-EXTENDS TLC, Naturals
+EXTENDS TLC, Naturals, FiniteSets, Sequences, Integers
 
 CONSTANT Node
 
@@ -46,10 +46,12 @@ Init ==
 Neighbors(n) == {x \in nodes : <<n,x>> \in edges}
 
 Explore(n) == 
-    /\ n \notin visited
+    /\ ~\E x \in visited : x[1] = n[1]
     /\ ~\E x \in frontier : x[1] = n
-    /\ visited' = visited \cup {n[1]}
-    /\  LET newNeighbors == {x \in Neighbors(n[1]) : x \notin visited'} IN
+    \* Smallest element in frontier based on depth (exploration order condition).
+    /\ \A other \in frontier : other[2] >= n[2]
+    /\ visited' = visited \cup {<<n[1], n[2]>>}
+    /\  LET newNeighbors == {x \in Neighbors(n[1]) : ~\E c \in visited' : c[1] = x} IN
         frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in newNeighbors}
     /\ UNCHANGED <<nodes, edges, startNode>>    
 
@@ -66,7 +68,7 @@ Symmetry == Permutations(Node)
 
 L == ~(visited = Node)
 
-
+FindShortestPathInv == \A v \in visited : ShortestPath(startNode, v[1]) = v[2]
 
 
 -------------------------------------------------
@@ -135,7 +137,7 @@ nodeAttrsFn(n) == [
     label |-> IF n \in visited THEN ToString(n) ELSE ToString(n), 
     style |-> "filled", 
     fillcolor |-> 
-        IF n \in visited THEN "lightblue" 
+        IF \E v \in visited : v[1] = n THEN "lightblue" 
         ELSE IF \E v \in frontier : v[1] = n THEN "lightgray"
         ELSE "white"
 ]

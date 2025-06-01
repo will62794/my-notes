@@ -26,7 +26,8 @@ Explore(n) ==
     /\ n \notin visited
     /\ ~\E x \in frontier : x[1] = n
     /\ visited' = visited \cup {n[1]}
-    /\ frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in Neighbors(n[1])}
+    /\  LET newNeighbors == {x \in Neighbors(n[1]) : x \notin visited'} IN
+        frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in newNeighbors}
     /\ UNCHANGED <<nodes, edges>>    
 
 Terminate ==

@@ -10,9 +10,10 @@ VARIABLES frontier
 VARIABLES visited
 
 Init == 
-    /\ nodes \in SUBSET Node
+    /\ nodes = Node
     /\ edges \in SUBSET (nodes \X nodes)
     /\ visited = {}
+    \* Choose some node as the initial frontier/source.
     /\ \E v \in nodes : frontier = {v}
 
 Neighbors(n) == {x \in nodes : <<n,x>> \in edges}

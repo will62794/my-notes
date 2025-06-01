@@ -140,7 +140,7 @@ Injective(f) == \A x, y \in DOMAIN f : f[x] = f[y] => x = y
 \*             ELSE IF state[RMId[i]] = Secondary THEN "black" 
 \*             ELSE IF state[RMId[i]] = Secondary THEN "red" ELSE "gray"])]
 \* AnimView == Group(<<>>, [i \in {} |-> {}])
-AnimView == Group(<<DiGraph({3,4},{<<3,4>>},<<>>)>>, [i \in {} |-> {}])
+AnimView == Group(<<DiGraph(nodes,edges,<<>>)>>, [i \in {} |-> {}])
 
 
 

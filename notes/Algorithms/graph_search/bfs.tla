@@ -9,6 +9,8 @@ VARIABLES nodes
 VARIABLES frontier
 VARIABLES visited
 
+VARIABLE startNode
+
 \* Sample graph.
 V1 == {1,2,3,4}
 E1 == {<<1,2>>, <<1,3>>, <<2,4>>, <<3,4>>}
@@ -16,9 +18,10 @@ E1 == {<<1,2>>, <<1,3>>, <<2,4>>, <<3,4>>}
 Init == 
     /\ nodes = Node
     /\ edges \in SUBSET (nodes \X nodes)
+    /\ startNode \in nodes
     /\ visited = {}
     \* Choose some node as the initial frontier/source.
-    /\ \E v \in nodes : frontier = {<<v,0>>}
+    /\ frontier = {<<startNode,0>>}
 
 Neighbors(n) == {x \in nodes : <<n,x>> \in edges}
 
@@ -28,12 +31,12 @@ Explore(n) ==
     /\ visited' = visited \cup {n[1]}
     /\  LET newNeighbors == {x \in Neighbors(n[1]) : x \notin visited'} IN
         frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in newNeighbors}
-    /\ UNCHANGED <<nodes, edges>>    
+    /\ UNCHANGED <<nodes, edges, startNode>>    
 
 Terminate ==
     /\ frontier = {}
     /\ visited = nodes
-    /\ UNCHANGED <<nodes, edges, visited, frontier>>
+    /\ UNCHANGED <<nodes, edges, visited, frontier, startNode>>
 
 Next ==
     \/ \E n \in frontier : Explore(n)

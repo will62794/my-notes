@@ -89,7 +89,7 @@ Image(x, y, width, height, href, attrs) ==
 \* Group element. 'children' is as a sequence of elements that will be contained in this group.
 Group(children, attrs) == SVGElem("g", attrs, children, "")
 
-DiGraph(V, E, labelFn) == TRUE
+DiGraph(V, E, labelFn) == SVGElem("digraph", [V |-> V, E |-> E, labelFn |-> labelFn], <<>>, "")
 
 Injective(f) == \A x, y \in DOMAIN f : f[x] = f[y] => x = y
 
@@ -139,7 +139,9 @@ Injective(f) == \A x, y \in DOMAIN f : f[x] = f[y] => x = y
 \*                 THEN "black" 
 \*             ELSE IF state[RMId[i]] = Secondary THEN "black" 
 \*             ELSE IF state[RMId[i]] = Secondary THEN "red" ELSE "gray"])]
-AnimView == Group(<<>>, [i \in {} |-> {}])
+\* AnimView == Group(<<>>, [i \in {} |-> {}])
+AnimView == Group(<<DiGraph({3,4},{<<3,4>>},<<>>)>>, [i \in {} |-> {}])
+
 
 
 

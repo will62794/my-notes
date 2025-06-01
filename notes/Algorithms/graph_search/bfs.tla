@@ -101,7 +101,14 @@ Injective(f) == \A x, y \in DOMAIN f : f[x] = f[y] => x = y
 \* CHOOSE f \in [1..Cardinality(Server) -> Server] : Injective(f)
 
 \* Graphviz attributes
-nodeAttrsFn(n) == [label |-> IF n \in visited THEN ToString(n) ELSE ToString(n), style |-> "filled", fillcolor |-> IF n \in visited THEN "lightblue" ELSE "white"]
+nodeAttrsFn(n) == [
+    label |-> IF n \in visited THEN ToString(n) ELSE ToString(n), 
+    style |-> "filled", 
+    fillcolor |-> 
+        IF n \in visited THEN "lightblue" 
+        ELSE IF n \in frontier THEN "gray"
+        ELSE "white"
+]
 AnimView == Group(<<DiGraph(nodes,edges,[n \in Node |-> nodeAttrsFn(n)])>>, [i \in {} |-> {}])
 
 

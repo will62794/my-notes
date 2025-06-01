@@ -1,5 +1,5 @@
 ---- MODULE bfs ----
-EXTENDS TLC
+EXTENDS TLC, Naturals
 
 CONSTANT Node
 
@@ -9,20 +9,24 @@ VARIABLES nodes
 VARIABLES frontier
 VARIABLES visited
 
+\* Sample graph.
+V1 == {1,2,3,4}
+E1 == {<<1,2>>, <<1,3>>, <<2,4>>, <<3,4>>}
+
 Init == 
     /\ nodes = Node
     /\ edges \in SUBSET (nodes \X nodes)
     /\ visited = {}
     \* Choose some node as the initial frontier/source.
-    /\ \E v \in nodes : frontier = {v}
+    /\ \E v \in nodes : frontier = {<<v,0>>}
 
 Neighbors(n) == {x \in nodes : <<n,x>> \in edges}
 
 Explore(n) == 
     /\ n \notin visited
-    /\ n \in frontier
-    /\ visited' = visited \cup {n}
-    /\ frontier' = (frontier \ {n}) \cup Neighbors(n)
+    /\ ~\E x \in frontier : x[1] = n
+    /\ visited' = visited \cup {n[1]}
+    /\ frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in Neighbors(n[1])}
     /\ UNCHANGED <<nodes, edges>>    
 
 Terminate ==
@@ -31,7 +35,7 @@ Terminate ==
     /\ UNCHANGED <<nodes, edges, visited, frontier>>
 
 Next ==
-    \/ \E n \in Node : Explore(n)
+    \/ \E n \in frontier : Explore(n)
     \/ Terminate
 
 Symmetry == Permutations(Node)
@@ -108,7 +112,7 @@ nodeAttrsFn(n) == [
     style |-> "filled", 
     fillcolor |-> 
         IF n \in visited THEN "lightblue" 
-        ELSE IF n \in frontier THEN "gray"
+        ELSE IF \E v \in frontier : v[1] = n THEN "lightgray"
         ELSE "white"
 ]
 AnimView == Group(<<DiGraph(nodes,edges,[n \in Node |-> nodeAttrsFn(n)])>>, [i \in {} |-> {}])

@@ -28,6 +28,7 @@ Explore(n) ==
 Terminate ==
     /\ frontier = {}
     /\ visited = nodes
+    /\ UNCHANGED <<nodes, edges, visited, frontier>>
 
 Next ==
     \/ \E n \in Node : Explore(n)

@@ -37,8 +37,8 @@
 </header>
 <nav id="TOC" role="doc-toc">
 <ul>
-<li><a href="#graph-search" id="toc-graph-search"><span
-class="toc-section-number">1</span> Graph Search</a>
+<li><a href="#graph-traversal" id="toc-graph-traversal"><span
+class="toc-section-number">1</span> Graph Traversal</a>
 <ul>
 <li><a href="#depth-first-search" id="toc-depth-first-search"><span
 class="toc-section-number">1.1</span> Depth-first search</a></li>
@@ -46,6 +46,8 @@ class="toc-section-number">1.1</span> Depth-first search</a></li>
 class="toc-section-number">1.2</span> Breadth-first search</a></li>
 <li><a href="#dijkstras-algorithm" id="toc-dijkstras-algorithm"><span
 class="toc-section-number">1.3</span> Dijkstra’s Algorithm</a></li>
+<li><a href="#unified-perspective" id="toc-unified-perspective"><span
+class="toc-section-number">1.4</span> Unified Perspective</a></li>
 </ul></li>
 <li><a href="#dynamic-programming" id="toc-dynamic-programming"><span
 class="toc-section-number">2</span> Dynamic Programming</a>
@@ -106,19 +108,19 @@ list</a></li>
 </ul></li>
 </ul>
 </nav>
-<section id="graph-search" class="level1" data-number="1">
+<section id="graph-traversal" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Graph
-Search</h1>
-<p>We can think about a general graph search algorithm as consisting of
-an <em>visited</em> set of nodes and a <em>frontier</em> set of nodes.
-The goal is to eventually have the visited set equal to all nodes in the
-graph. The frontier is a set of nodes that we maintain along the way.
-Initially, we set the frontier to the starting node of the graph. It is
-unexplored but currently on our list of nodes that need to be explored
-i.e. it is on the frontier. We then pick a new node from the frontier
-set, mark it as explored, and do any other work we might need to do, and
-then take all of its neighbors and add them to the frontier set. In
-summary, our model is as follows:</p>
+Traversal</h1>
+<p>We can think about a general graph search/traversal algorithm as
+consisting of an <em>visited</em> set of nodes and a <em>frontier</em>
+set of nodes. The goal is to eventually have the visited set equal to
+all nodes in the graph. The frontier is a set of nodes that we maintain
+along the way. Initially, we set the frontier to the starting node of
+the graph. It is unexplored but currently on our list of nodes that need
+to be explored i.e. it is on the frontier. We then pick a new node from
+the frontier set, mark it as explored, and do any other work we might
+need to do, and then take all of its neighbors and add them to the
+frontier set. In summary, our model is as follows:</p>
 <ul>
 <li><p><em>visited</em>: Set of nodes we have seen i.e., marked as
 visitied.</p></li>
@@ -164,12 +166,12 @@ the frontier nodes.</p>
 <section id="dijkstras-algorithm" class="level2" data-number="1.3">
 <h2 data-number="1.3"><span class="header-section-number">1.3</span>
 Dijkstra’s Algorithm</h2>
-<p>Dijkstra’s algorithm is a way to find the shortest path between a
-<em>source</em> node and a <em>target</em> node in a graph. One way is
-to view this kind of shortest path algorithm is as a generalization of
-other search algorithms, particularly breadth first search. Essentially,
-we can augment the set of visited nodes with some auxiliary information
-to track the shortest path to these nodes as we go.</p>
+<p>Dijkstra’s algorithm is a way to find the shortest path from a
+<em>source</em> node and other nodes in a graph. One way is to view this
+kind of shortest path algorithm is as a generalization of other search
+algorithms, particularly breadth first search. Essentially, we can
+augment the set of visited nodes with some auxiliary information to
+track the shortest path to these nodes as we go.</p>
 <p>Note first that in the special case of unweighted graph edges,
 Dijstra’s algorithm behaves equivalently to breadth first search. That
 is, when we add newly discovered nodes to the frontier, we add them all
@@ -197,6 +199,37 @@ queue) set. I find some standard explanations of Dijkstra’s algorithm
 more confusing for this reason, since updating nodes as you go helps
 make it clearer the basic underlying similarities between this approach
 and all other graph traversal algorithms.</p>
+</section>
+<section id="unified-perspective" class="level2" data-number="1.4">
+<h2 data-number="1.4"><span class="header-section-number">1.4</span>
+Unified Perspective</h2>
+<p>Overall, we can ultimately see all of DFS, BFS, and algorithms like
+Dijkstra’s shortest path as all falling into the same unified graph
+traversal framework, except for different conditions on how they choose
+to explore nodes in the frontier set. Most generally, we can think about
+the <em>fronter</em> set as containing a set of nodes along with their
+depth/distance from the starting source node. This depth/distance in
+DFS/BFS is used to determine ordering of which nodes are selected next
+from the frontier, choosing highest depth first in DFS and lowest depth
+first in BFS. Note also that in basic DFS/BFS, these values may
+correspond directly to “depth” in the graph from the source, but can be
+naturally viewed more generally as “distance", which then allows this
+framework to work nicely with weighted graphs. In Dijkstra’s algorithm,
+the approach is basically the same as BFS, except that the “depths” of
+each node in the frontier set now store “distance”, which may be
+computed based on specified edge weights in the graph. Similarly, for
+other search algorithm variants like A* search, we can also choose
+different selection criterion for how we choose nodes from the frontier
+set. Also, we could imagine a basic "random" search criterion, where we
+just select nodes from the frontier set arbitrarily. This would still
+allow us to adequately explore the graph, but with no strict properties
+on how we visit nodes.</p>
+<p>In practice, we can use various data structures to store and access
+this <em>frontier</em> set more efficiently, but these are all simply
+optimizations over the underlying selection conditions. That is, in DFS
+we can use a stack, in BFS a queue, and in Dijkstra’s a priority queue,
+which is basically behaving the same as a queue in BFS but generalized
+to the weighted edge case.</p>
 </section>
 </section>
 <section id="dynamic-programming" class="level1" data-number="2">

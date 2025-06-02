@@ -26,9 +26,9 @@
 
 \newcommand{\concept}[1]{\textcolor{blue}{\textit{\textbf{#1}}}}
 
-\section{Graph Search}
+\section{Graph Traversal}
 
-We can think about a general graph search algorithm as consisting of an \textit{visited} set of nodes and a \textit{frontier} set of nodes. The goal is to eventually have the visited set equal to all nodes in the graph. The frontier is a set of nodes that we maintain along the way. Initially, we set the frontier to the starting node of the graph. It is unexplored but currently on our list of nodes that need to be explored i.e. it is on the frontier. We then pick a new node from the frontier set, mark it as explored, and do any other work we might need to do, and then take all of its neighbors and add them to the frontier set. In summary, our model is as follows:
+We can think about a general graph search/traversal algorithm as consisting of an \textit{visited} set of nodes and a \textit{frontier} set of nodes. The goal is to eventually have the visited set equal to all nodes in the graph. The frontier is a set of nodes that we maintain along the way. Initially, we set the frontier to the starting node of the graph. It is unexplored but currently on our list of nodes that need to be explored i.e. it is on the frontier. We then pick a new node from the frontier set, mark it as explored, and do any other work we might need to do, and then take all of its neighbors and add them to the frontier set. In summary, our model is as follows:
 
 \begin{itemize}
     \item \textit{visited}: Set of nodes we have seen i.e., marked as visitied.
@@ -54,13 +54,20 @@ Breadth-first search searches all closer nodes before searching farther nodes i.
 
 \subsection{Dijkstra's Algorithm}
 
-Dijkstra's algorithm is a way to find the shortest path between a \textit{source} node and a \textit{target} node in a graph. One way is to view this kind of shortest path algorithm is as a generalization of other search algorithms, particularly breadth first search. Essentially, we can augment the set of visited nodes with some auxiliary information to track the shortest path to these nodes as we go. 
+Dijkstra's algorithm is a way to find the shortest path from a \textit{source} node and other nodes in a graph. One way is to view this kind of shortest path algorithm is as a generalization of other search algorithms, particularly breadth first search. Essentially, we can augment the set of visited nodes with some auxiliary information to track the shortest path to these nodes as we go. 
 
 Note first that in the special case of unweighted graph edges, Dijstra's algorithm behaves equivalently to breadth first search. That is, when we add newly discovered nodes to the frontier, we add them all to the end of a standard queue, since they all have equal distance (weight 1) from the current node. In weighted graphs, though, this does not hold, since some nodes may be reachable via lower-weight edges. So, to generalize this behavior to full Dijkstra, we maintain a priority queue for the frontier set, which is maintained in order of next shortest depth from source.
 
 We can also think about each ``level" in BFS vs. each ``level" in Dijkstra. In BFS each level has the same depth from source, so can be interchanged, and will all have depth greater than other nodes in lower levels in the queue. In Dijkstra, nodes within the same ``level" may not all have the same depth from source, but all nodes within the same level should have greater depth from source than earlier levels in the queue.
 
 Also, note that there are a bunch of standard explanations of Dijkstra's algorithm where you assume you know all nodes upfront, and initialize a "visited" distance array for every node. In practice, this is less realistic since you might not know all nodes of a graph you are exploring dynamically upfront, and, in general, there is no specific need for you to have to know all nodes upfront. You can easily just keep track of nodes distances as you add them into the frontier (priority queue) set. I find some standard explanations of Dijkstra's algorithm more confusing for this reason, since updating nodes as you go helps make it clearer the basic underlying similarities between this approach and all other graph traversal algorithms.
+
+\subsection{Unified Perspective}
+
+Overall, we can ultimately see all of DFS, BFS, and algorithms like Dijkstra's shortest path as all falling into the same unified graph traversal framework, except for different conditions on how they choose to explore nodes in the frontier set. Most generally, we can think about the \textit{fronter} set as containing a set of nodes along with their depth/distance from the starting source node. This depth/distance in DFS/BFS is used to determine ordering of which nodes are selected next from the frontier, choosing highest depth first in DFS and lowest depth first in BFS. Note also that in basic DFS/BFS, these values may correspond directly to ``depth'' in the graph from the source, but can be naturally viewed more generally as ``distance", which then allows this framework to work nicely with weighted graphs. In Dijkstra's algorithm, the approach is basically the same as BFS, except that the ``depths'' of each node in the frontier set now store ``distance'', which may be computed based on specified edge weights in the graph. Similarly, for other search algorithm variants like A* search, we can also choose different selection criterion for how we choose nodes from the frontier set. Also, we could imagine a basic "random" search criterion, where we just select nodes from the frontier set arbitrarily. This would still allow us to adequately explore the graph, but with no strict properties on how we visit nodes.
+
+In practice, we can use various data structures to store and access this \textit{frontier} set more efficiently, but these are all simply optimizations over the underlying selection conditions. That is, in DFS we can use a stack, in BFS a queue, and in Dijkstra's a priority queue, which is basically behaving the same as a queue in BFS but generalized to the weighted edge case.
+
 
 \section{Dynamic Programming}
 

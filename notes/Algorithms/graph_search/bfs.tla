@@ -1,5 +1,5 @@
 ---- MODULE bfs ----
-EXTENDS TLC, Naturals, FiniteSets, Sequences, Integers
+EXTENDS TLC, Naturals, FiniteSets, Sequences, Integers, Randomization
 
 CONSTANT Node
 
@@ -42,6 +42,13 @@ Init ==
     /\ visited = {}
     \* Choose some node as the initial frontier/source.
     /\ frontier = {<<startNode,0>>}
+
+InitRandom == 
+    /\ nodes = Node
+    /\ edges \in RandomSetOfSubsets(1000, 15, nodes \X nodes)
+    /\ startNode \in nodes
+    /\ visited = {}
+    /\ frontier = {<<startNode,0>>}    
 
 Neighbors(n) == {x \in nodes : <<n,x>> \in edges}
 

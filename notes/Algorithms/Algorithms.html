@@ -207,23 +207,23 @@ Unified Perspective</h2>
 Dijkstra’s shortest path as all falling into the same unified graph
 traversal framework, except for different conditions on how they choose
 to explore nodes in the frontier set. Most generally, we can think about
-the <em>fronter</em> set as containing a set of nodes along with their
+the <em>frontier</em> set as containing a set of nodes along with their
 depth/distance from the starting source node. This depth/distance in
 DFS/BFS is used to determine ordering of which nodes are selected next
 from the frontier, choosing highest depth first in DFS and lowest depth
 first in BFS. Note also that in basic DFS/BFS, these values may
 correspond directly to “depth” in the graph from the source, but can be
 naturally viewed more generally as “distance", which then allows this
-framework to work nicely with weighted graphs. In Dijkstra’s algorithm,
-the approach is basically the same as BFS, except that the “depths” of
-each node in the frontier set now store “distance”, which may be
-computed based on specified edge weights in the graph. Similarly, for
-other search algorithm variants like A* search, we can also choose
-different selection criterion for how we choose nodes from the frontier
-set. Also, we could imagine a basic "random" search criterion, where we
-just select nodes from the frontier set arbitrarily. This would still
-allow us to adequately explore the graph, but with no strict properties
-on how we visit nodes.</p>
+framework to work nicely with weighted graphs.</p>
+<p>In Dijkstra’s algorithm, the approach is basically the same as BFS,
+except that the “depths” of each node in the frontier set now store
+“distance”, which may be computed based on specified edge weights in the
+graph. Similarly, for other search algorithm variants like A* search, we
+can also choose different selection criterion for how we choose nodes
+from the frontier set. Also, we could imagine a basic "random" search
+criterion, where we just select nodes from the frontier set arbitrarily.
+This would still allow us to adequately explore the graph, but with no
+strict properties on how we visit nodes.</p>
 <p>In practice, we can use various data structures to store and access
 this <em>frontier</em> set more efficiently, but these are all simply
 optimizations over the underlying selection conditions. That is, in DFS

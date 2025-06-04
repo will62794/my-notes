@@ -1,10 +1,11 @@
 ---- MODULE bfs ----
 EXTENDS TLC, Naturals, FiniteSets, Sequences, Integers, Randomization
 
-CONSTANT Node
+CONSTANT Node, Weight
 
 VARIABLES edges
 VARIABLES nodes
+VARIABLES edgeWeights
 
 VARIABLES frontier
 VARIABLES visited
@@ -28,16 +29,28 @@ SimplePath(V, E) ==
 SimplePathsFrom(V, E, start, target) ==
     {p \in SimplePath(V, E) : p[1] = start /\ p[Len(p)] = target}
 
+RECURSIVE Sum(_,_)
+Sum(f,S) == IF S = {} THEN 0
+                      ELSE LET x == CHOOSE x \in S : TRUE
+                           IN  f[x] + Sum(f, S \ {x})
+
+SeqSum(seq) == Sum(seq, DOMAIN seq)
+
+PathWeight(p) == 
+    LET fweights == [i \in 1..(Len(p)-1) |-> edgeWeights[<<p[i], p[i+1]>>]] IN 
+        SeqSum(fweights)
+
 ShortestPath(start, target) == 
     IF SimplePathsFrom(nodes, edges, start, target) # {} THEN
         Len(CHOOSE p \in SimplePathsFrom(nodes, edges, start, target) : 
-                \A p1 \in SimplePathsFrom(nodes, edges, start, target) : Len(p) <= Len(p1)) - 1
+                \A p1 \in SimplePathsFrom(nodes, edges, start, target) : PathWeight(p) <= PathWeight(p1)) - 1
     ELSE -1
     
 
 Init == 
     /\ nodes = Node
     /\ edges \in SUBSET (nodes \X nodes)
+    /\ edgeWeights \in [edges -> Weight]
     /\ startNode \in nodes
     /\ visited = {}
     \* Choose some node as the initial frontier/source.
@@ -45,7 +58,8 @@ Init ==
 
 InitRandom == 
     /\ nodes = Node
-    /\ edges \in RandomSetOfSubsets(1000, 15, nodes \X nodes)
+    /\ edges \in RandomSetOfSubsets(80, 15, nodes \X nodes)
+    /\ edgeWeights \in [edges -> Weight]
     /\ startNode \in nodes
     /\ visited = {}
     /\ frontier = {<<startNode,0>>}    
@@ -62,12 +76,12 @@ Explore(n) ==
     /\ visited' = visited \cup {<<n[1], n[2]>>}
     /\  LET newNeighbors == {x \in Neighbors(n[1]) : ~\E c \in visited' : c[1] = x} IN
         frontier' = (frontier \ {n}) \cup {<<b, n[2]+1>> : b \in newNeighbors}
-    /\ UNCHANGED <<nodes, edges, startNode>>    
+    /\ UNCHANGED <<nodes, edges, startNode, edgeWeights>>    
 
 Terminate ==
     /\ frontier = {}
     /\ visited = nodes
-    /\ UNCHANGED <<nodes, edges, visited, frontier, startNode>>
+    /\ UNCHANGED <<nodes, edges, visited, frontier, startNode, edgeWeights>>
 
 Next ==
     \/ \E n \in frontier : Explore(n)

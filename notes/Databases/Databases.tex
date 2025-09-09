@@ -9,6 +9,7 @@
 \usepackage{fancyvrb}
 \usepackage{graphicx}
 \usepackage{tikz}
+\usepackage{color,soul}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes,snakes}
 \usepackage[english]{babel}
@@ -20,6 +21,8 @@
 \title{Databases}
 \author{William Schultz}
 \maketitle
+
+\newcommand{\NULL}{\colorbox{lightgray}{\texttt{NULL}}}
 
 \section*{Joins}
 
@@ -81,7 +84,7 @@ There are other variations of joins that are not symmetric in the same way as in
     \begin{tabular}{| l | l | l | l | l |}
         \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
         Alice & 31 & 6 & 6 & 1904\\  
-        Bob & 32 & 3 & \texttt{NULL} & \texttt{NULL} \\    
+        Bob & 32 & 3 & \NULL & \NULL \\    
         Jane & 25 & 4 & 4 & 1965   
 \end{tabular}
 \end{center}
@@ -97,7 +100,7 @@ Similarly, a right outer join (\texttt{RIGHT OUTER JOIN}) would give us:
 \end{center}
 where every row in the right table found a matching row based on the join predicate, so no columns needed to be filled in with \texttt{NULL}. If, however, table $H$ contained a row with no match in $P$ e.g. if $H$ was instead
 \begin{center}
-    \begin{tabular}{| l | l | l | l | l |}
+    \begin{tabular}{| l | l |}
         \textbf{Id} & \textbf{Year} \\ 
         6 & 1904 \\ 
         4 & 1965 \\
@@ -110,7 +113,7 @@ then a right outer join would give us:
         \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
         Alice & 31 & 6 & 6 & 1904\\  
         Jane & 25 & 4 & 4 & 1965 \\
-        \texttt{NULL} & \texttt{NULL} & \texttt{NULL} & 1 & 1965   
+        \NULL & \NULL & \NULL & 1 & 1965   
 \end{tabular}
 \end{center}
 where \texttt{NULL} will fill in the columns in the left table for the row with no match in $P$.
@@ -143,7 +146,9 @@ and
 \end{align*}
 then we may want to consider the tradeoff in cardinalities between $(A \Join_p B)$ and $(B \Join_q C)$. 
 
-For example, if we imagine that all tables $A,B,C$ are roughly the same cardinality, if $|A \Join_p B| \gg |B \Join_q C|$, then it would seem that executing the second ordering may be much more efficient, since the ``intermediate table" produced as part of this query plan is much smaller, and so its cross product with the third table will be small, leaving fewer rows to filter out for the final join result. This is the basic idea behind \textit{cost-based optimization} in modern relational database systems. Note that query optimizations has a long history, dating back at least to System R in the 1970s \cite{queryopt79}. This paper also provides a good modern treatment of the basic architecture of query optimizers \cite{2015queryopthowgoodleis}. Also, note that join ordering considerations are very similar to the problem of matrix chain multiplication, a similar cost-based optimization problem related to order of matrix multiplication operations \cite{1984matrixchain}.
+For example, if we imagine that all tables $A,B,C$ are roughly the same cardinality, if $|A \Join_p B| \gg |B \Join_q C|$, then it would seem that executing the second ordering may be much more efficient, since the ``intermediate table" produced as part of this query plan is much smaller, and so its cross product with the third table will be small, leaving fewer rows to filter out for the final join result. This is the basic idea behind \textit{cost-based optimization} in modern relational database systems. 
+
+Note that this type of query optimization has a long history, dating back at least to System R in the 1970s \cite{queryopt79}. This paper also provides a good modern treatment of the basic architecture of query optimizers \cite{2015queryopthowgoodleis}. Also, note that join ordering considerations are very similar to the problem of matrix chain multiplication, a similar cost-based optimization problem related to order of matrix multiplication operations \cite{1984matrixchain}.
 
 
 % \bibliographystyle{plain}

@@ -273,8 +273,10 @@ class="math inline">\(P.HouseId = H.Id\)</span> would give us:</p>
 <td style="text-align: left;">Bob</td>
 <td style="text-align: left;">32</td>
 <td style="text-align: left;">3</td>
-<td style="text-align: left;"><code>NULL</code></td>
-<td style="text-align: left;"><code>NULL</code></td>
+<td style="text-align: left;"><span
+style="background-color: lightgray"><code>NULL</code></span></td>
+<td style="text-align: left;"><span
+style="background-color: lightgray"><code>NULL</code></span></td>
 </tr>
 <tr>
 <td style="text-align: left;">Jane</td>
@@ -330,30 +332,18 @@ class="math inline">\(H\)</span> was instead</p>
 <tr>
 <td style="text-align: left;"><strong>Id</strong></td>
 <td style="text-align: left;"><strong>Year</strong></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
 </tr>
 <tr>
 <td style="text-align: left;">6</td>
 <td style="text-align: left;">1904</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
 </tr>
 <tr>
 <td style="text-align: left;">4</td>
 <td style="text-align: left;">1965</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
 </tr>
 <tr>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1965</td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
-<td style="text-align: left;"></td>
 </tr>
 </tbody>
 </table>
@@ -384,9 +374,12 @@ class="math inline">\(H\)</span> was instead</p>
 <td style="text-align: left;">1965</td>
 </tr>
 <tr>
-<td style="text-align: left;"><code>NULL</code></td>
-<td style="text-align: left;"><code>NULL</code></td>
-<td style="text-align: left;"><code>NULL</code></td>
+<td style="text-align: left;"><span
+style="background-color: lightgray"><code>NULL</code></span></td>
+<td style="text-align: left;"><span
+style="background-color: lightgray"><code>NULL</code></span></td>
+<td style="text-align: left;"><span
+style="background-color: lightgray"><code>NULL</code></span></td>
 <td style="text-align: left;">1</td>
 <td style="text-align: left;">1965</td>
 </tr>
@@ -443,9 +436,10 @@ efficient, since the “intermediate table" produced as part of this query
 plan is much smaller, and so its cross product with the third table will
 be small, leaving fewer rows to filter out for the final join result.
 This is the basic idea behind <em>cost-based optimization</em> in modern
-relational database systems. Note that query optimizations has a long
-history, dating back at least to System R in the 1970s <span
-class="citation" data-cites="queryopt79">(<a href="#ref-queryopt79"
+relational database systems.</p>
+<p>Note that this type of query optimization has a long history, dating
+back at least to System R in the 1970s <span class="citation"
+data-cites="queryopt79">(<a href="#ref-queryopt79"
 role="doc-biblioref">Selinger et al. 1979</a>)</span>. This paper also
 provides a good modern treatment of the basic architecture of query
 optimizers <span class="citation"

@@ -1,0 +1,153 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{verbatim}
+\usepackage{enumerate}
+\usepackage{fancyvrb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes,snakes}
+\usepackage[english]{babel}
+
+\geometry{legalpaper, margin=1.5in}
+
+\author{William Schultz}
+\begin{document}
+\title{Databases}
+\author{William Schultz}
+\maketitle
+
+\section*{Joins}
+
+At a high level, database (i.e. SQL) tables can be viewed as $n$-ary relations (or, more plainly, as ``spreadsheets"). For example, consider the following relation $P$ (representing a set of homeowners)
+\begin{center}
+\begin{tabular}{| l | l | l |}
+     \textbf{Name} & \textbf{Age} & \textbf{HouseId} \\ 
+     Alice & 31 & 6 \\  
+     Bob & 32 & 3 \\    
+     Jane & 25 & 4    
+\end{tabular}
+\end{center}
+and another relation $H$ (representing a set of houses)
+\begin{center}
+    \begin{tabular}{| l | l |}
+         \textbf{Id} & \textbf{Year} \\ 
+         6 & 1904 \\ 
+         4 & 1965 
+\end{tabular}
+\end{center}
+We can consider the \textit{cross product} of these two relations $P \times H$, which is simply the Cartesian product of all rows (i.e. tuples) in $P$ and all rows in $H$, giving relation $P \times H$ as
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Alice & 31 & 6 & 4 & 1965 \\  
+        Bob & 32 & 3 & 6 & 1904 \\    
+        Bob & 32 & 3 & 4 & 1965  \\    
+        Jane & 25 & 4 & 6 & 1904  \\
+        Jane & 25 & 4 & 4 & 1965   
+\end{tabular}
+\end{center}
+with a total tuple count of $|P \times H| = |P| \times |H| = 6$. On its own, the full cross product of two tables may be quite large and in standard SQL terminology is referred to as a \textit{cross join} (\texttt{CROSS JOIN}). 
+
+\subsection*{Inner Joins}
+
+It is more commonly useful to apply some filter (e.g. via some predicate) to the tuples that are generated as a result of this cross product operation, which is commonly referred to as the \textit{inner join} (\texttt{INNER JOIN}). That is, if we filter the result $P \times H$ based on the predicate $P.HouseId = H.Id$, then we say we're ``joining'' the two tables, $P$ and $H$, on the predicate $P.HouseId = H.Id$, which gives as a result:
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Jane & 25 & 4 & 4 & 1965   
+\end{tabular}
+\end{center}
+which is basically the set of people in $P$ associated with the house in $H$ they own. More compactly, we typically notate a join on predicate $p$ between two relations $A$ and $B$ as
+\begin{align*}
+    A \Join_p B
+\end{align*}
+and we can also just think of this as a composition of cross product and filtering operations i.e.
+\begin{align*}
+    A \Join_p B = \sigma_p(A \times B)
+\end{align*}
+where $\sigma_p$ represents the filtering operation for a given predicate $p$ on tuples.
+
+\subsection*{Outer Joins}
+
+There are other variations of joins that are not symmetric in the same way as inner joins. Outer joins may allow you to, for example, return all rows from the ``left'' table of the join, matched on some predicate with rows of the ``right" table, filling in NULL entries for the right table columns for rows where the predicate is unmatched (\texttt{LEFT OUTER JOIN}). For example, for the above table $P$ and $H$, a left outer join on $P.HouseId = H.Id$ would give us:
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Bob & 32 & 3 & \texttt{NULL} & \texttt{NULL} \\    
+        Jane & 25 & 4 & 4 & 1965   
+\end{tabular}
+\end{center}
+where the ``Bob'' row in the left table has NULL entries for the columns in the right table, since no rows matched the join predicate. 
+
+Similarly, a right outer join (\texttt{RIGHT OUTER JOIN}) would give us:
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Jane & 25 & 4 & 4 & 1965   
+\end{tabular}
+\end{center}
+where every row in the right table found a matching row based on the join predicate, so no columns needed to be filled in with \texttt{NULL}. If, however, table $H$ contained a row with no match in $P$ e.g. if $H$ was instead
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Id} & \textbf{Year} \\ 
+        6 & 1904 \\ 
+        4 & 1965 \\
+        1 & 1965   
+\end{tabular}
+\end{center}
+then a right outer join would give us:
+\begin{center}
+    \begin{tabular}{| l | l | l | l | l |}
+        \textbf{Name} & \textbf{Age}& \textbf{HouseId} & \textbf{Id} & \textbf{Year} \\
+        Alice & 31 & 6 & 6 & 1904\\  
+        Jane & 25 & 4 & 4 & 1965 \\
+        \texttt{NULL} & \texttt{NULL} & \texttt{NULL} & 1 & 1965   
+\end{tabular}
+\end{center}
+where \texttt{NULL} will fill in the columns in the left table for the row with no match in $P$.
+
+\subsection*{Properties of Joins}
+
+Note that inner joins are \textit{commutative} i.e. $A \Join_p B = B \Join_p A$. This can be easily seen from examining the decomposed form of joins in terms of cross products and filtering i.e. since $A \times B = B \times A$ (if we ignore ordering of columns in the output tuples). Note also that we can view a sequence of joins as a big cross product followed by a filtering operation at the end i.e.
+\begin{align*}
+    (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) = \sigma_{p \wedge q}(A \times B \times C)
+\end{align*}
+Furthermore, joins are \textit{associative}. This means that we can re-order joins as we please (since they are both \textit{associative} and \textit{commutative}), so there may be many different join executing orderings that produce the same final result. That is,
+\begin{align*}
+    (A \Join_p B) \Join_q C \\ 
+    A \Join_p (B \Join_q C) \\
+    A \Join_p (C \Join_q B) \\
+    (A \Join_p C) \Join_q B \\
+    (C \Join_p A) \Join_q B
+\end{align*}
+are all equivalent. 
+
+\subsection*{Join Order Optimization}
+
+Though joins are commutative and associative, some join orderings may be much more efficient to execute. More generally, we can think of a particular join ordering as a binary tree, that essentially maps to the syntactic parse tree of the relational expressions above. More specifically, if we consider a basic example like considering the tradeoff of two different orderings:
+\begin{align*}
+    (A \Join_p B) \Join_q C
+\end{align*}
+and 
+\begin{align*}
+    A \Join_p (B \Join_q C)
+\end{align*}
+then we may want to consider the tradeoff in cardinalities between $(A \Join_p B)$ and $(B \Join_q C)$. 
+
+For example, if we imagine that all tables $A,B,C$ are roughly the same cardinality, if $|A \Join_p B| \gg |B \Join_q C|$, then it would seem that executing the second ordering may be much more efficient, since the ``intermediate table" produced as part of this query plan is much smaller, and so its cross product with the third table will be small, leaving fewer rows to filter out for the final join result. This is the basic idea behind \textit{cost-based optimization} in modern relational database systems. Note that query optimizations has a long history, dating back at least to System R in the 1970s \cite{queryopt79}. This paper also provides a good modern treatment of the basic architecture of query optimizers \cite{2015queryopthowgoodleis}. Also, note that join ordering considerations are very similar to the problem of matrix chain multiplication, a similar cost-based optimization problem related to order of matrix multiplication operations \cite{1984matrixchain}.
+
+
+% \bibliographystyle{plain}
+\bibliographystyle{alpha} 
+\bibliography{../../references.bib}
+
+\end{document}

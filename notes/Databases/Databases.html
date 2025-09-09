@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="William Schultz" />
+  <meta name="author" content="William Schultz" />
+  <title>Databases</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    /* CSS for citations */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+      margin-bottom: 0em;
+    }
+    .hanging-indent div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }  </style>
+  <link rel="stylesheet" href="../../style.css" />
+  <script
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
+  type="text/javascript"></script>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Databases</h1>
+<p class="author">William Schultz</p>
+<p class="author">William Schultz</p>
+</header>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#joins" id="toc-joins">Joins</a>
+<ul>
+<li><a href="#inner-joins" id="toc-inner-joins">Inner Joins</a></li>
+<li><a href="#outer-joins" id="toc-outer-joins">Outer Joins</a></li>
+<li><a href="#properties-of-joins"
+id="toc-properties-of-joins">Properties of Joins</a></li>
+<li><a href="#join-order-optimization"
+id="toc-join-order-optimization">Join Order Optimization</a></li>
+</ul></li>
+<li><a href="#bibliography" id="toc-bibliography">References</a></li>
+</ul>
+</nav>
+<section id="joins" class="level1 unnumbered">
+<h1 class="unnumbered">Joins</h1>
+<p>At a high level, database (i.e. SQL) tables can be viewed as <span
+class="math inline">\(n\)</span>-ary relations (or, more plainly, as
+“spreadsheets"). For example, consider the following relation <span
+class="math inline">\(P\)</span> (representing a set of homeowners)</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>and another relation <span class="math inline">\(H\)</span>
+(representing a set of houses)</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We can consider the <em>cross product</em> of these two relations
+<span class="math inline">\(P \times H\)</span>, which is simply the
+Cartesian product of all rows (i.e. tuples) in <span
+class="math inline">\(P\)</span> and all rows in <span
+class="math inline">\(H\)</span>, giving relation <span
+class="math inline">\(P \times H\)</span> as</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>with a total tuple count of <span class="math inline">\(|P \times H|
+= |P| \times |H| = 6\)</span>. On its own, the full cross product of two
+tables may be quite large and in standard SQL terminology is referred to
+as a <em>cross join</em> (<code>CROSS JOIN</code>).</p>
+<section id="inner-joins" class="level2 unnumbered">
+<h2 class="unnumbered">Inner Joins</h2>
+<p>It is more commonly useful to apply some filter (e.g. via some
+predicate) to the tuples that are generated as a result of this cross
+product operation, which is commonly referred to as the <em>inner
+join</em> (<code>INNER JOIN</code>). That is, if we filter the result
+<span class="math inline">\(P \times H\)</span> based on the predicate
+<span class="math inline">\(P.HouseId = H.Id\)</span>, then we say we’re
+“joining” the two tables, <span class="math inline">\(P\)</span> and
+<span class="math inline">\(H\)</span>, on the predicate <span
+class="math inline">\(P.HouseId = H.Id\)</span>, which gives as a
+result:</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>which is basically the set of people in <span
+class="math inline">\(P\)</span> associated with the house in <span
+class="math inline">\(H\)</span> they own. More compactly, we typically
+notate a join on predicate <span class="math inline">\(p\)</span>
+between two relations <span class="math inline">\(A\)</span> and <span
+class="math inline">\(B\)</span> as <span
+class="math display">\[\begin{aligned}
+    A \Join_p B
+\end{aligned}\]</span> and we can also just think of this as a
+composition of cross product and filtering operations i.e. <span
+class="math display">\[\begin{aligned}
+    A \Join_p B = \sigma_p(A \times B)
+\end{aligned}\]</span> where <span
+class="math inline">\(\sigma_p\)</span> represents the filtering
+operation for a given predicate <span class="math inline">\(p\)</span>
+on tuples.</p>
+</section>
+<section id="outer-joins" class="level2 unnumbered">
+<h2 class="unnumbered">Outer Joins</h2>
+<p>There are other variations of joins that are not symmetric in the
+same way as inner joins. Outer joins may allow you to, for example,
+return all rows from the “left” table of the join, matched on some
+predicate with rows of the “right" table, filling in NULL entries for
+the right table columns for rows where the predicate is unmatched
+(<code>LEFT OUTER JOIN</code>). For example, for the above table <span
+class="math inline">\(P\)</span> and <span
+class="math inline">\(H\)</span>, a left outer join on <span
+class="math inline">\(P.HouseId = H.Id\)</span> would give us:</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Bob</td>
+<td style="text-align: left;">32</td>
+<td style="text-align: left;">3</td>
+<td style="text-align: left;"><code>NULL</code></td>
+<td style="text-align: left;"><code>NULL</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>where the “Bob” row in the left table has NULL entries for the
+columns in the right table, since no rows matched the join
+predicate.</p>
+<p>Similarly, a right outer join (<code>RIGHT OUTER JOIN</code>) would
+give us:</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>where every row in the right table found a matching row based on the
+join predicate, so no columns needed to be filled in with
+<code>NULL</code>. If, however, table <span
+class="math inline">\(H\)</span> contained a row with no match in <span
+class="math inline">\(P\)</span> e.g. if <span
+class="math inline">\(H\)</span> was instead</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1965</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>then a right outer join would give us:</p>
+<div class="center">
+<table>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Name</strong></td>
+<td style="text-align: left;"><strong>Age</strong></td>
+<td style="text-align: left;"><strong>HouseId</strong></td>
+<td style="text-align: left;"><strong>Id</strong></td>
+<td style="text-align: left;"><strong>Year</strong></td>
+</tr>
+<tr>
+<td style="text-align: left;">Alice</td>
+<td style="text-align: left;">31</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">6</td>
+<td style="text-align: left;">1904</td>
+</tr>
+<tr>
+<td style="text-align: left;">Jane</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">1965</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>NULL</code></td>
+<td style="text-align: left;"><code>NULL</code></td>
+<td style="text-align: left;"><code>NULL</code></td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1965</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>where <code>NULL</code> will fill in the columns in the left table
+for the row with no match in <span class="math inline">\(P\)</span>.</p>
+</section>
+<section id="properties-of-joins" class="level2 unnumbered">
+<h2 class="unnumbered">Properties of Joins</h2>
+<p>Note that inner joins are <em>commutative</em> i.e. <span
+class="math inline">\(A \Join_p B = B \Join_p A\)</span>. This can be
+easily seen from examining the decomposed form of joins in terms of
+cross products and filtering i.e. since <span class="math inline">\(A
+\times B = B \times A\)</span> (if we ignore ordering of columns in the
+output tuples). Note also that we can view a sequence of joins as a big
+cross product followed by a filtering operation at the end i.e. <span
+class="math display">\[\begin{aligned}
+    (A \Join_p B) \Join_q C = \sigma_q(\sigma_p(A \times B) \times C) =
+\sigma_{p \wedge q}(A \times B \times C)
+\end{aligned}\]</span> Furthermore, joins are <em>associative</em>. This
+means that we can re-order joins as we please (since they are both
+<em>associative</em> and <em>commutative</em>), so there may be many
+different join executing orderings that produce the same final result.
+That is, <span class="math display">\[\begin{aligned}
+    (A \Join_p B) \Join_q C \\
+    A \Join_p (B \Join_q C) \\
+    A \Join_p (C \Join_q B) \\
+    (A \Join_p C) \Join_q B \\
+    (C \Join_p A) \Join_q B
+\end{aligned}\]</span> are all equivalent.</p>
+</section>
+<section id="join-order-optimization" class="level2 unnumbered">
+<h2 class="unnumbered">Join Order Optimization</h2>
+<p>Though joins are commutative and associative, some join orderings may
+be much more efficient to execute. More generally, we can think of a
+particular join ordering as a binary tree, that essentially maps to the
+syntactic parse tree of the relational expressions above. More
+specifically, if we consider a basic example like considering the
+tradeoff of two different orderings: <span
+class="math display">\[\begin{aligned}
+    (A \Join_p B) \Join_q C
+\end{aligned}\]</span> and <span class="math display">\[\begin{aligned}
+    A \Join_p (B \Join_q C)
+\end{aligned}\]</span> then we may want to consider the tradeoff in
+cardinalities between <span class="math inline">\((A \Join_p B)\)</span>
+and <span class="math inline">\((B \Join_q C)\)</span>.</p>
+<p>For example, if we imagine that all tables <span
+class="math inline">\(A,B,C\)</span> are roughly the same cardinality,
+if <span class="math inline">\(|A \Join_p B| \gg |B \Join_q C|\)</span>,
+then it would seem that executing the second ordering may be much more
+efficient, since the “intermediate table" produced as part of this query
+plan is much smaller, and so its cross product with the third table will
+be small, leaving fewer rows to filter out for the final join result.
+This is the basic idea behind <em>cost-based optimization</em> in modern
+relational database systems. Note that query optimizations has a long
+history, dating back at least to System R in the 1970s <span
+class="citation" data-cites="queryopt79">(<a href="#ref-queryopt79"
+role="doc-biblioref">Selinger et al. 1979</a>)</span>. This paper also
+provides a good modern treatment of the basic architecture of query
+optimizers <span class="citation"
+data-cites="2015queryopthowgoodleis">(<a
+href="#ref-2015queryopthowgoodleis" role="doc-biblioref">Leis et al.
+2015</a>)</span>. Also, note that join ordering considerations are very
+similar to the problem of matrix chain multiplication, a similar
+cost-based optimization problem related to order of matrix
+multiplication operations <span class="citation"
+data-cites="1984matrixchain">(<a href="#ref-1984matrixchain"
+role="doc-biblioref">Hu and Shing 1984</a>)</span>.</p>
+</section>
+</section>
+<section id="bibliography" class="level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent"
+data-entry-spacing="0" role="list">
+<div id="ref-1984matrixchain" class="csl-entry" role="listitem">
+Hu, T. C., and M. T. Shing. 1984. <span>“Computation of Matrix Chain
+Products. Part II.”</span> <em>SIAM Journal on Computing</em> 13 (2):
+228–51. <a
+href="https://doi.org/10.1137/0213017">https://doi.org/10.1137/0213017</a>.
+</div>
+<div id="ref-2015queryopthowgoodleis" class="csl-entry" role="listitem">
+Leis, Viktor, Andrey Gubichev, Atanas Mirchev, Peter Boncz, Alfons
+Kemper, and Thomas Neumann. 2015. <span>“How Good Are Query Optimizers,
+Really?”</span> <em>Proc. VLDB Endow.</em> 9 (3): 204–15. <a
+href="https://doi.org/10.14778/2850583.2850594">https://doi.org/10.14778/2850583.2850594</a>.
+</div>
+<div id="ref-queryopt79" class="csl-entry" role="listitem">
+Selinger, P. Griffiths, M. M. Astrahan, D. D. Chamberlin, R. A. Lorie,
+and T. G. Price. 1979. <span>“Access Path Selection in a Relational
+Database Management System.”</span> In <em>Proceedings of the 1979 ACM
+SIGMOD International Conference on Management of Data</em>, 23–34.
+SIGMOD ’79. New York, NY, USA: Association for Computing Machinery. <a
+href="https://doi.org/10.1145/582095.582099">https://doi.org/10.1145/582095.582099</a>.
+</div>
+</div>
+</section>
+</body>
+</html>

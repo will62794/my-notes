@@ -69,6 +69,17 @@ MongoDB</a></li>
 <li><a href="#join-order-optimization"
 id="toc-join-order-optimization">Join Order Optimization</a></li>
 </ul></li>
+<li><a href="#transactions-and-isolation"
+id="toc-transactions-and-isolation">Transactions and Isolation</a>
+<ul>
+<li><a href="#serializable-snapshot-isolation"
+id="toc-serializable-snapshot-isolation">Serializable Snapshot
+Isolation</a>
+<ul>
+<li><a href="#predicate-reads" id="toc-predicate-reads">Predicate
+Reads</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
 </nav>
@@ -432,6 +443,7 @@ collections</p>
     {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 32, &quot;house_id&quot;: 3},
     {&quot;name&quot;: &quot;Jane&quot;, &quot;age&quot;: 25, &quot;house_id&quot;: 4}
 ]
+
 houses = [
     {&quot;_id&quot;: 6, &quot;year&quot;: 1904},
     {&quot;_id&quot;: 4, &quot;year&quot;: 1965},
@@ -510,10 +522,67 @@ data-cites="1984matrixchain">(<a href="#ref-1984matrixchain"
 role="doc-biblioref">Hu and Shing 1984</a>)</span>.</p>
 </section>
 </section>
+<section id="transactions-and-isolation" class="level1 unnumbered">
+<h1 class="unnumbered">Transactions and Isolation</h1>
+<p>Standard model of Adya defines transaction isolation in terms of
+adbsence of various anomalies/cycles with a serialization graph, which
+consists of committed transactions as nodes and edges between them
+representing certain types of data dependencies between
+transactions.</p>
+<ul>
+<li><p><span class="math inline">\(T_i
+\overset{ww}{\rightarrow}  T_j\)</span>: Transaction <span
+class="math inline">\(T_j\)</span> writes the version of a key <span
+class="math inline">\(k\)</span> immediately following the version
+written by transaction <span
+class="math inline">\(T_i\)</span>.</p></li>
+<li><p><span class="math inline">\(T_i
+\overset{rw}{\rightarrow}  T_j\)</span>: Transaction <span
+class="math inline">\(T_j\)</span> writes the next version of a key
+<span class="math inline">\(k\)</span> that was read by <span
+class="math inline">\(T_i\)</span>.</p></li>
+<li><p><span class="math inline">\(T_i
+\overset{wr}{\rightarrow}  T_j\)</span>: Transaction <span
+class="math inline">\(T_j\)</span> reads the version of key <span
+class="math inline">\(k\)</span> that was written by <span
+class="math inline">\(T_i\)</span>.</p></li>
+</ul>
+<section id="serializable-snapshot-isolation" class="level2 unnumbered">
+<h2 class="unnumbered">Serializable Snapshot Isolation</h2>
+<p>Cahill and Fekete laid down the foundations for making snapshot
+isolation serializable <span class="citation"
+data-cites="2005feketeserializable 2009cahillserializable">(<a
+href="#ref-2005feketeserializable" role="doc-biblioref">Fekete et al.
+2005</a>; <a href="#ref-2009cahillserializable"
+role="doc-biblioref">Cahill, Röhm, and Fekete 2009</a>)</span>, by
+showing that under snapshot isolation, remaining anomalies will consist
+specifically of cycles that contain 2 adjacent <span
+class="math inline">\(rw\)</span> edges, which are referred to as
+“dangerous structures”, and Cahill proposed concrete algorithm for
+detecting and aborting when these dangerous structures are detected.</p>
+<section id="predicate-reads" class="level3 unnumbered">
+<h3 class="unnumbered">Predicate Reads</h3>
+<p>TODO.</p>
+</section>
+</section>
+</section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent"
 data-entry-spacing="0" role="list">
+<div id="ref-2009cahillserializable" class="csl-entry" role="listitem">
+Cahill, Michael J., Uwe Röhm, and Alan D. Fekete. 2009.
+<span>“Serializable Isolation for Snapshot Databases.”</span> <em>ACM
+Trans. Database Syst.</em> 34 (4). <a
+href="https://doi.org/10.1145/1620585.1620587">https://doi.org/10.1145/1620585.1620587</a>.
+</div>
+<div id="ref-2005feketeserializable" class="csl-entry" role="listitem">
+Fekete, Alan, Dimitrios Liarokapis, Elizabeth O’Neil, Patrick O’Neil,
+and Dennis Shasha. 2005. <span>“Making Snapshot Isolation
+Serializable.”</span> <em>ACM Trans. Database Syst.</em> 30 (2):
+492–528. <a
+href="https://doi.org/10.1145/1071610.1071615">https://doi.org/10.1145/1071610.1071615</a>.
+</div>
 <div id="ref-1984matrixchain" class="csl-entry" role="listitem">
 Hu, T. C., and M. T. Shing. 1984. <span>“Computation of Matrix Chain
 Products. Part II.”</span> <em>SIAM Journal on Computing</em> 13 (2):

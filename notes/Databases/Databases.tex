@@ -209,8 +209,29 @@ For example, if we imagine that all tables $A,B,C$ are roughly the same cardinal
 Note that this type of query optimization has a long history, dating back at least to System R in the 1970s \cite{queryopt79}. This paper also provides a good modern treatment of the basic architecture of query optimizers \cite{2015queryopthowgoodleis}. Also, note that join ordering considerations are very similar to the problem of matrix chain multiplication, a similar cost-based optimization problem related to order of matrix multiplication operations \cite{1984matrixchain}.
 
 
+
+\section*{Transactions and Isolation}
+
+Standard model of Adya defines transaction isolation in terms of adbsence of various anomalies/cycles with a serialization graph, which consists of committed transactions as nodes and edges between them representing certain types of data dependencies between transactions.
+\begin{itemize}
+    \item $T_i \overset{ww}{\rightarrow}  T_j$: Transaction $T_j$ writes the version of a key $k$ immediately following the version written by transaction $T_i$.
+    \item $T_i \overset{rw}{\rightarrow}  T_j$: Transaction $T_j$ writes the next version of a key $k$ that was read by $T_i$.
+    \item $T_i \overset{wr}{\rightarrow}  T_j$: Transaction $T_j$ reads the version of key $k$ that was written by $T_i$.
+\end{itemize}
+
+\subsection*{Serializable Snapshot Isolation}
+
+Cahill and Fekete laid down the foundations for making snapshot isolation serializable \cite{2005feketeserializable,2009cahillserializable}, by showing that under snapshot isolation, remaining anomalies will consist specifically of cycles that contain 2 adjacent $rw$ edges, which are referred to as ``dangerous structures'', and Cahill proposed concrete algorithm for detecting and aborting when these dangerous structures are detected.
+
+\subsubsection*{Predicate Reads}
+
+TODO.
+
+
 % \bibliographystyle{plain}
 \bibliographystyle{alpha} 
 \bibliography{../../references.bib}
+
+
 
 \end{document}

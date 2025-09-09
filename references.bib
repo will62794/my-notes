@@ -1419,5 +1419,42 @@ eprint = {
 ,
     abstract = { This paper considers the computation of matrix chain products of the form \$M\_1 \times M\_2 \times \cdots \times M\_{n - 1} \$. If the matrices are of different dimensions, the order in which the matrices are computed affects the number of operations. An optimum order is an order which minimizes the total number of operations. Some theorems about an optimum order of computing the matrices have been presented in Part I [SIAM J. Comput., 11 (1982), pp. 362–373]. Based on those theorems, an \$O(n\log n)\$ algorithm for finding the optimum order is presented here. }
 }
+@article{2005feketeserializable,
+author = {Fekete, Alan and Liarokapis, Dimitrios and O'Neil, Elizabeth and O'Neil, Patrick and Shasha, Dennis},
+title = {Making snapshot isolation serializable},
+year = {2005},
+issue_date = {June 2005},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {30},
+number = {2},
+issn = {0362-5915},
+url = {https://doi.org/10.1145/1071610.1071615},
+doi = {10.1145/1071610.1071615},
+abstract = {Snapshot Isolation (SI) is a multiversion concurrency control algorithm, first described in Berenson et al. [1995]. SI is attractive because it provides an isolation level that avoids many of the common concurrency anomalies, and has been implemented by Oracle and Microsoft SQL Server (with certain minor variations). SI does not guarantee serializability in all cases, but the TPC-C benchmark application [TPC-C], for example, executes under SI without serialization anomalies. All major database system products are delivered with default nonserializable isolation levels, often ones that encounter serialization anomalies more commonly than SI, and we suspect that numerous isolation errors occur each day at many large sites because of this, leading to corrupt data sometimes noted in data warehouse applications. The classical justification for lower isolation levels is that applications can be run under such levels to improve efficiency when they can be shown not to result in serious errors, but little or no guidance has been offered to application programmers and DBAs by vendors as to how to avoid such errors. This article develops a theory that characterizes when nonserializable executions of applications can occur under SI. Near the end of the article, we apply this theory to demonstrate that the TPC-C benchmark application has no serialization anomalies under SI, and then discuss how this demonstration can be generalized to other applications. We also present a discussion on how to modify the program logic of applications that are nonserializable under SI so that serializability will be guaranteed.},
+journal = {ACM Trans. Database Syst.},
+month = jun,
+pages = {492–528},
+numpages = {37},
+keywords = {weak isolation, snapshot isolation, serializability, multiversion concurrency, consistency, anomaly, Concurrency control}
+}
 
-
+@article{2009cahillserializable,
+author = {Cahill, Michael J. and R\"{o}hm, Uwe and Fekete, Alan D.},
+title = {Serializable isolation for snapshot databases},
+year = {2009},
+issue_date = {December 2009},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+volume = {34},
+number = {4},
+issn = {0362-5915},
+url = {https://doi.org/10.1145/1620585.1620587},
+doi = {10.1145/1620585.1620587},
+abstract = {Many popular database management systems implement a multiversion concurrency control algorithm called snapshot isolation rather than providing full serializability based on locking. There are well-known anomalies permitted by snapshot isolation that can lead to violations of data consistency by interleaving transactions that would maintain consistency if run serially. Until now, the only way to prevent these anomalies was to modify the applications by introducing explicit locking or artificial update conflicts, following careful analysis of conflicts between all pairs of transactions.This article describes a modification to the concurrency control algorithm of a database management system that automatically detects and prevents snapshot isolation anomalies at runtime for arbitrary applications, thus providing serializable isolation. The new algorithm preserves the properties that make snapshot isolation attractive, including that readers do not block writers and vice versa. An implementation of the algorithm in a relational DBMS is described, along with a benchmark and performance study, showing that the throughput approaches that of snapshot isolation in most cases.},
+journal = {ACM Trans. Database Syst.},
+month = dec,
+articleno = {20},
+numpages = {42},
+keywords = {snapshot isolation, serializability, Multiversion concurrency control}
+}

@@ -61,7 +61,11 @@
 <li><a href="#inner-joins" id="toc-inner-joins">Inner Joins</a></li>
 <li><a href="#outer-joins" id="toc-outer-joins">Outer Joins</a></li>
 <li><a href="#properties-of-joins"
-id="toc-properties-of-joins">Properties of Joins</a></li>
+id="toc-properties-of-joins">Properties of Joins</a>
+<ul>
+<li><a href="#joins-in-mongodb" id="toc-joins-in-mongodb">Joins in
+MongoDB</a></li>
+</ul></li>
 <li><a href="#join-order-optimization"
 id="toc-join-order-optimization">Join Order Optimization</a></li>
 </ul></li>
@@ -412,6 +416,59 @@ That is, <span class="math display">\[\begin{aligned}
     (A \Join_p C) \Join_q B \\
     (C \Join_p A) \Join_q B
 \end{aligned}\]</span> are all equivalent.</p>
+<section id="joins-in-mongodb" class="level3 unnumbered">
+<h3 class="unnumbered">Joins in MongoDB</h3>
+<p>Note that the type of left outer join described above is similarly
+implemented as the <code>$lookup</code> <a
+href="https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/">stage</a>
+in MongoDB aggregation pipelines. That is, you can take a set of input
+documents and execute a left outer join on another collection by
+specifying some field to join on, and the matching documents will be
+embedded as a sub-object with a specified field name in the original set
+of input documents. For example, if you have the following two
+collections</p>
+<pre><code>homeowners = [
+    {&quot;name&quot;: &quot;Alice&quot;, &quot;age&quot;: 31, &quot;house_id&quot;: 6},
+    {&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 32, &quot;house_id&quot;: 3},
+    {&quot;name&quot;: &quot;Jane&quot;, &quot;age&quot;: 25, &quot;house_id&quot;: 4}
+]
+houses = [
+    {&quot;_id&quot;: 6, &quot;year&quot;: 1904},
+    {&quot;_id&quot;: 4, &quot;year&quot;: 1965},
+    {&quot;_id&quot;: 1, &quot;year&quot;: 1965}
+]</code></pre>
+<p>you can execute the following aggregation pipeline stage:</p>
+<pre><code>pipeline = [
+    {
+        &quot;$lookup&quot;: {
+            &quot;from&quot;: &quot;houses&quot;,           # collection to join with
+            &quot;localField&quot;: &quot;house_id&quot;,   # field from homeowners collection
+            &quot;foreignField&quot;: &quot;_id&quot;,      # field from houses collection
+            &quot;as&quot;: &quot;house_info&quot;          # array field to store the joined data
+        }
+    }
+]</code></pre>
+<p>which will produce a result like the following:</p>
+<pre><code>{
+  &#39;_id&#39;: ..., &#39;name&#39;:
+  &#39;Alice&#39;, &#39;age&#39;: 31, 
+  &#39;house_id&#39;: 6, 
+  &#39;house_info&#39;: [{&#39;_id&#39;: 6, &#39;year&#39;: 1904}]
+}
+{
+  &#39;_id&#39;: ..., &#39;name&#39;: 
+  &#39;Bob&#39;, &#39;age&#39;: 32,
+  &#39;house_id&#39;: 3, 
+  &#39;house_info&#39;: []
+}
+{
+  &#39;_id&#39;: ..., 
+  &#39;name&#39;: &#39;Jane&#39;, 
+  &#39;age&#39;: 25, 
+  &#39;house_id&#39;: 4, 
+  &#39;house_info&#39;: [{&#39;_id&#39;: 4, &#39;year&#39;: 1965}]
+}</code></pre>
+</section>
 </section>
 <section id="join-order-optimization" class="level2 unnumbered">
 <h2 class="unnumbered">Join Order Optimization</h2>

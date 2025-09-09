@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{color,soul}
+\usepackage{hyperref}
 \usetikzlibrary{positioning}
 \usetikzlibrary{shapes,snakes}
 \usepackage[english]{babel}
@@ -90,6 +91,9 @@ There are other variations of joins that are not symmetric in the same way as in
 \end{center}
 where the ``Bob'' row in the left table has NULL entries for the columns in the right table, since no rows matched the join predicate. 
 
+
+
+
 Similarly, a right outer join (\texttt{RIGHT OUTER JOIN}) would give us:
 \begin{center}
     \begin{tabular}{| l | l | l | l | l |}
@@ -133,6 +137,60 @@ Furthermore, joins are \textit{associative}. This means that we can re-order joi
     (C \Join_p A) \Join_q B
 \end{align*}
 are all equivalent. 
+
+\subsubsection*{Joins in MongoDB}
+
+Note that the type of left outer join described above is similarly implemented as the \texttt{\$lookup} \href{https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/}{stage} in MongoDB aggregation pipelines. That is, you can take a set of input documents and execute a left outer join on another collection by specifying some field to join on, and the matching documents will be embedded as a sub-object with a specified field name in the original set of input documents. For example, if you have the following two collections
+
+\begin{verbatim}
+homeowners = [
+    {"name": "Alice", "age": 31, "house_id": 6},
+    {"name": "Bob", "age": 32, "house_id": 3},
+    {"name": "Jane", "age": 25, "house_id": 4}
+]
+
+houses = [
+    {"_id": 6, "year": 1904},
+    {"_id": 4, "year": 1965},
+    {"_id": 1, "year": 1965}
+]
+\end{verbatim}
+you can execute the following aggregation pipeline stage:
+\begin{verbatim}
+pipeline = [
+    {
+        "$lookup": {
+            "from": "houses",           # collection to join with
+            "localField": "house_id",   # field from homeowners collection
+            "foreignField": "_id",      # field from houses collection
+            "as": "house_info"          # array field to store the joined data
+        }
+    }
+]
+\end{verbatim}
+which will produce a result like the following:
+\begin{verbatim}
+{
+  '_id': ..., 'name':
+  'Alice', 'age': 31, 
+  'house_id': 6, 
+  'house_info': [{'_id': 6, 'year': 1904}]
+}
+{
+  '_id': ..., 'name': 
+  'Bob', 'age': 32,
+  'house_id': 3, 
+  'house_info': []
+}
+{
+  '_id': ..., 
+  'name': 'Jane', 
+  'age': 25, 
+  'house_id': 4, 
+  'house_info': [{'_id': 4, 'year': 1965}]
+}
+\end{verbatim}
+
 
 \subsection*{Join Order Optimization}
 

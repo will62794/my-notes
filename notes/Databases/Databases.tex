@@ -25,7 +25,7 @@
 
 \newcommand{\NULL}{\colorbox{lightgray}{\texttt{NULL}}}
 
-\section*{Joins}
+\section{Joins}
 
 At a high level, database (i.e. SQL) tables can be viewed as $n$-ary relations (or, more plainly, as ``spreadsheets"). For example, consider the following relation $P$ (representing a set of homeowners)
 \begin{center}
@@ -138,7 +138,7 @@ Furthermore, joins are \textit{associative}. This means that we can re-order joi
 \end{align*}
 are all equivalent. 
 
-\subsubsection*{Joins in MongoDB}
+\subsection*{Joins in MongoDB}
 
 Note that the type of left outer join described above is similarly implemented as the \texttt{\$lookup} \href{https://www.mongodb.com/docs/manual/reference/operator/aggregation/lookup/}{stage} in MongoDB aggregation pipelines. That is, you can take a set of input documents and execute a left outer join on another collection by specifying some field to join on, and the matching documents will be embedded as a sub-object with a specified field name in the original set of input documents. For example, if you have the following two collections
 
@@ -210,7 +210,7 @@ Note that this type of query optimization has a long history, dating back at lea
 
 
 
-\section*{Transactions and Isolation}
+\section{Transactions and Isolation}
 
 Standard model of Adya defines transaction isolation in terms of adbsence of various anomalies/cycles with a serialization graph, which consists of committed transactions as nodes and edges between them representing certain types of data dependencies between transactions.
 \begin{itemize}

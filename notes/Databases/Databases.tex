@@ -219,13 +219,18 @@ Standard model of Adya defines transaction isolation in terms of adbsence of var
     \item $T_i \overset{wr}{\rightarrow}  T_j$: Transaction $T_j$ reads the version of key $k$ that was written by $T_i$.
 \end{itemize}
 
+\subsection*{Snapshot Isolation}
+
+Originally defined operationally in \cite{1995ansisqlcritique}, but also given a more declarative definition in Adya's thesis \cite{1999adyaweakconsistency}.
+
+
 \subsection*{Serializable Snapshot Isolation}
 
 Cahill and Fekete laid down the foundations for making snapshot isolation serializable \cite{2005feketeserializable,2009cahillserializable}, by showing that under snapshot isolation, remaining anomalies will consist specifically of cycles that contain 2 adjacent $rw$ edges, which are referred to as ``dangerous structures'', and Cahill proposed concrete algorithm for detecting and aborting when these dangerous structures are detected.
 
 \subsubsection*{Predicate Reads}
 
-TODO.
+Next-key locking \cite{mohan1990arieskvl}, SILO \cite{2013silo}.
 
 
 % \bibliographystyle{plain}

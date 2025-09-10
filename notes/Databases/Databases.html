@@ -72,6 +72,8 @@ id="toc-join-order-optimization">Join Order Optimization</a></li>
 <li><a href="#transactions-and-isolation"
 id="toc-transactions-and-isolation">Transactions and Isolation</a>
 <ul>
+<li><a href="#snapshot-isolation" id="toc-snapshot-isolation">Snapshot
+Isolation</a></li>
 <li><a href="#serializable-snapshot-isolation"
 id="toc-serializable-snapshot-isolation">Serializable Snapshot
 Isolation</a>
@@ -547,6 +549,16 @@ class="math inline">\(T_j\)</span> reads the version of key <span
 class="math inline">\(k\)</span> that was written by <span
 class="math inline">\(T_i\)</span>.</p></li>
 </ul>
+<section id="snapshot-isolation" class="level2 unnumbered">
+<h2 class="unnumbered">Snapshot Isolation</h2>
+<p>Originally defined operationally in <span class="citation"
+data-cites="1995ansisqlcritique">(<a href="#ref-1995ansisqlcritique"
+role="doc-biblioref">Berenson et al. 1995</a>)</span>, but also given a
+more declarative definition in Adya’s thesis <span class="citation"
+data-cites="1999adyaweakconsistency">(<a
+href="#ref-1999adyaweakconsistency" role="doc-biblioref">Adya
+1999</a>)</span>.</p>
+</section>
 <section id="serializable-snapshot-isolation" class="level2 unnumbered">
 <h2 class="unnumbered">Serializable Snapshot Isolation</h2>
 <p>Cahill and Fekete laid down the foundations for making snapshot
@@ -562,7 +574,11 @@ class="math inline">\(rw\)</span> edges, which are referred to as
 detecting and aborting when these dangerous structures are detected.</p>
 <section id="predicate-reads" class="level3 unnumbered">
 <h3 class="unnumbered">Predicate Reads</h3>
-<p>TODO.</p>
+<p>Next-key locking <span class="citation"
+data-cites="mohan1990arieskvl">(<a href="#ref-mohan1990arieskvl"
+role="doc-biblioref">Mohan 1990</a>)</span>, SILO <span class="citation"
+data-cites="2013silo">(<a href="#ref-2013silo" role="doc-biblioref">Tu
+et al. 2013</a>)</span>.</p>
 </section>
 </section>
 </section>
@@ -570,6 +586,17 @@ detecting and aborting when these dangerous structures are detected.</p>
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent"
 data-entry-spacing="0" role="list">
+<div id="ref-1999adyaweakconsistency" class="csl-entry" role="listitem">
+Adya, A. 1999. <span>“Weak Consistency: A Generalized Theory and
+Optimistic Implementations for Distributed Transactions.”</span> USA:
+Massachusetts Institute of Technology.
+</div>
+<div id="ref-1995ansisqlcritique" class="csl-entry" role="listitem">
+Berenson, Hal, Phil Bernstein, Jim Gray, Jim Melton, Elizabeth O’Neil,
+and Patrick O’Neil. 1995. <span>“A Critique of ANSI SQL Isolation
+Levels.”</span> <em>SIGMOD Rec.</em> 24 (2): 1–10. <a
+href="https://doi.org/10.1145/568271.223785">https://doi.org/10.1145/568271.223785</a>.
+</div>
 <div id="ref-2009cahillserializable" class="csl-entry" role="listitem">
 Cahill, Michael J., Uwe Röhm, and Alan D. Fekete. 2009.
 <span>“Serializable Isolation for Snapshot Databases.”</span> <em>ACM
@@ -595,6 +622,13 @@ Kemper, and Thomas Neumann. 2015. <span>“How Good Are Query Optimizers,
 Really?”</span> <em>Proc. VLDB Endow.</em> 9 (3): 204–15. <a
 href="https://doi.org/10.14778/2850583.2850594">https://doi.org/10.14778/2850583.2850594</a>.
 </div>
+<div id="ref-mohan1990arieskvl" class="csl-entry" role="listitem">
+Mohan, C. 1990. <span>“ARIES/KVL: A Key-Value Locking Method for
+Concurrency Control of Multiaction Transactions Operating on b-Tree
+Indexes.”</span> In <em>Proceedings of the Sixteenth International
+Conference on Very Large Databases</em>, 392–405. San Francisco, CA,
+USA: Morgan Kaufmann Publishers Inc.
+</div>
 <div id="ref-queryopt79" class="csl-entry" role="listitem">
 Selinger, P. Griffiths, M. M. Astrahan, D. D. Chamberlin, R. A. Lorie,
 and T. G. Price. 1979. <span>“Access Path Selection in a Relational
@@ -602,6 +636,14 @@ Database Management System.”</span> In <em>Proceedings of the 1979 ACM
 SIGMOD International Conference on Management of Data</em>, 23–34.
 SIGMOD ’79. New York, NY, USA: Association for Computing Machinery. <a
 href="https://doi.org/10.1145/582095.582099">https://doi.org/10.1145/582095.582099</a>.
+</div>
+<div id="ref-2013silo" class="csl-entry" role="listitem">
+Tu, Stephen, Wenting Zheng, Eddie Kohler, Barbara Liskov, and Samuel
+Madden. 2013. <span>“Speedy Transactions in Multicore in-Memory
+Databases.”</span> In <em>Proceedings of the Twenty-Fourth ACM Symposium
+on Operating Systems Principles</em>, 18–32. SOSP ’13. New York, NY,
+USA: Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2517349.2522713">https://doi.org/10.1145/2517349.2522713</a>.
 </div>
 </div>
 </section>

@@ -208,6 +208,48 @@ For example, if we imagine that all tables $A,B,C$ are roughly the same cardinal
 
 Note that this type of query optimization has a long history, dating back at least to System R in the 1970s \cite{queryopt79}. This paper also provides a good modern treatment of the basic architecture of query optimizers \cite{2015queryopthowgoodleis}. Also, note that join ordering considerations are very similar to the problem of matrix chain multiplication, a similar cost-based optimization problem related to order of matrix multiplication operations \cite{1984matrixchain}.
 
+\section{Data Modeling}
+
+In relational database design, there are two main approaches to data modeling (1) normalization theory and (2) entity-relationship (ER) modeling followed by ER-to-relational translation.
+
+
+\subsection{Normalization Theory}
+
+We may have, for example, a database that needs to store \textit{customers}, \textit{products}, and the \textit{orders} placed by customers. One natural approach may be to store each entity in a separate table e.g. one table for customers, products, and orders, respectively. There are various tradeoffs, but which is a ``good design''? One goal is to avoid redundancy i.e. avoid storing the same fact multiple times in different locations.
+
+\textit{Functional dependencies} (FDs) provide a formal notation for capturing such facts. The FD $custid \rightarrow name$ captrues the fact that a given customer id should only have one name assciated with it in the database, so whereever those fields appear together, the name associated with that customer should be the same. Given a set of FDs and a proposed database design, normalization theory provides a way to arrive at a design that minimizes redundancy.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{diagrams/normal_forms.png}
+    \caption{Normalization Theory}
+    \label{fig:normalization_theory}
+\end{figure}
+
+Table \ref{fig:normalization_theory} shows standard ``normal forms'' along with the kinds of FD-related problems that they avoid. 1NF is unique in that it is simply the relational models rule that each field in a table must be atomic (a scalar value). 2NF avoids situtations where a table has a composite key, like a primary key (PK) of $(custid, itemno)$ and has non-key fiels that are involved in facts (FDs) that depend on some but not all of the PK fields.
+
+
+
+\subsection{Entity Relationship Modeling}
+
+Entity-Relationship model from the 1970s offers an alternative path to arriving at a ``good'' relational database design \cite{1976ermodel}. It involves capturing the conceptual data model for an application and then translating this into a logical (i.e. relational) one. The ER model for an app expresses the needed information in terms of \textit{entities} and \textit{relationships}, and \textit{attributes}. Figure \ref{fig:er_model} shows a simple ER model for a basic commerce app, with \textit{customers}, \textit{orders}, and \textit{products} entity sets.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{diagrams/er_model.png}
+    \caption{Entity Relationship Modeling}
+    \label{fig:er_model}
+\end{figure}
+
+The basic idea then is that you can take an ER model and translate it into a relational schema using basic rules as shown in Figure \ref{fig:er_translation}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{diagrams/er_translation.png}
+    \caption{ER-to-relational translation}
+    \label{fig:er_translation}
+\end{figure}
+
 
 
 \section{Transactions and Isolation}

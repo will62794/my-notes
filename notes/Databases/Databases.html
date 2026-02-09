@@ -68,9 +68,19 @@ MongoDB</a></li>
 <li><a href="#join-order-optimization"
 id="toc-join-order-optimization">Join Order Optimization</a></li>
 </ul></li>
+<li><a href="#data-modeling" id="toc-data-modeling"><span
+class="toc-section-number">2</span> Data Modeling</a>
+<ul>
+<li><a href="#normalization-theory" id="toc-normalization-theory"><span
+class="toc-section-number">2.1</span> Normalization Theory</a></li>
+<li><a href="#entity-relationship-modeling"
+id="toc-entity-relationship-modeling"><span
+class="toc-section-number">2.2</span> Entity Relationship
+Modeling</a></li>
+</ul></li>
 <li><a href="#transactions-and-isolation"
 id="toc-transactions-and-isolation"><span
-class="toc-section-number">2</span> Transactions and Isolation</a>
+class="toc-section-number">3</span> Transactions and Isolation</a>
 <ul>
 <li><a href="#snapshot-isolation" id="toc-snapshot-isolation">Snapshot
 Isolation</a></li>
@@ -525,8 +535,76 @@ data-cites="1984matrixchain">(<a href="#ref-1984matrixchain"
 role="doc-biblioref">Hu and Shing 1984</a>)</span>.</p>
 </section>
 </section>
-<section id="transactions-and-isolation" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span>
+<section id="data-modeling" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Data
+Modeling</h1>
+<p>In relational database design, there are two main approaches to data
+modeling (1) normalization theory and (2) entity-relationship (ER)
+modeling followed by ER-to-relational translation.</p>
+<section id="normalization-theory" class="level2" data-number="2.1">
+<h2 data-number="2.1"><span class="header-section-number">2.1</span>
+Normalization Theory</h2>
+<p>We may have, for example, a database that needs to store
+<em>customers</em>, <em>products</em>, and the <em>orders</em> placed by
+customers. One natural approach may be to store each entity in a
+separate table e.g. one table for customers, products, and orders,
+respectively. There are various tradeoffs, but which is a “good design”?
+One goal is to avoid redundancy i.e. avoid storing the same fact
+multiple times in different locations.</p>
+<p><em>Functional dependencies</em> (FDs) provide a formal notation for
+capturing such facts. The FD <span class="math inline">\(custid
+\rightarrow name\)</span> captrues the fact that a given customer id
+should only have one name assciated with it in the database, so
+whereever those fields appear together, the name associated with that
+customer should be the same. Given a set of FDs and a proposed database
+design, normalization theory provides a way to arrive at a design that
+minimizes redundancy.</p>
+<figure id="fig:normalization_theory">
+<img src="diagrams/normal_forms.png" style="width:65.0%" />
+<figcaption>Normalization Theory</figcaption>
+</figure>
+<p>Table <a href="#fig:normalization_theory" data-reference-type="ref"
+data-reference="fig:normalization_theory">1</a> shows standard “normal
+forms” along with the kinds of FD-related problems that they avoid. 1NF
+is unique in that it is simply the relational models rule that each
+field in a table must be atomic (a scalar value). 2NF avoids situtations
+where a table has a composite key, like a primary key (PK) of <span
+class="math inline">\((custid, itemno)\)</span> and has non-key fiels
+that are involved in facts (FDs) that depend on some but not all of the
+PK fields.</p>
+</section>
+<section id="entity-relationship-modeling" class="level2"
+data-number="2.2">
+<h2 data-number="2.2"><span class="header-section-number">2.2</span>
+Entity Relationship Modeling</h2>
+<p>Entity-Relationship model from the 1970s offers an alternative path
+to arriving at a “good” relational database design <span
+class="citation" data-cites="1976ermodel">(<a href="#ref-1976ermodel"
+role="doc-biblioref">Chen 1976</a>)</span>. It involves capturing the
+conceptual data model for an application and then translating this into
+a logical (i.e. relational) one. The ER model for an app expresses the
+needed information in terms of <em>entities</em> and
+<em>relationships</em>, and <em>attributes</em>. Figure <a
+href="#fig:er_model" data-reference-type="ref"
+data-reference="fig:er_model">2</a> shows a simple ER model for a basic
+commerce app, with <em>customers</em>, <em>orders</em>, and
+<em>products</em> entity sets.</p>
+<figure id="fig:er_model">
+<img src="diagrams/er_model.png" style="width:65.0%" />
+<figcaption>Entity Relationship Modeling</figcaption>
+</figure>
+<p>The basic idea then is that you can take an ER model and translate it
+into a relational schema using basic rules as shown in Figure <a
+href="#fig:er_translation" data-reference-type="ref"
+data-reference="fig:er_translation">3</a>.</p>
+<figure id="fig:er_translation">
+<img src="diagrams/er_translation.png" style="width:65.0%" />
+<figcaption>ER-to-relational translation</figcaption>
+</figure>
+</section>
+</section>
+<section id="transactions-and-isolation" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span>
 Transactions and Isolation</h1>
 <p>Standard model of Adya defines transaction isolation in terms of
 adbsence of various anomalies/cycles with a serialization graph, which
@@ -604,6 +682,12 @@ Cahill, Michael J., Uwe Röhm, and Alan D. Fekete. 2009.
 <span>“Serializable Isolation for Snapshot Databases.”</span> <em>ACM
 Trans. Database Syst.</em> 34 (4). <a
 href="https://doi.org/10.1145/1620585.1620587">https://doi.org/10.1145/1620585.1620587</a>.
+</div>
+<div id="ref-1976ermodel" class="csl-entry" role="listitem">
+Chen, Peter Pin-Shan. 1976. <span>“The Entity-Relationship Model—Toward
+a Unified View of Data.”</span> <em>ACM Trans. Database Syst.</em> 1
+(1): 9–36. <a
+href="https://doi.org/10.1145/320434.320440">https://doi.org/10.1145/320434.320440</a>.
 </div>
 <div id="ref-2005feketeserializable" class="csl-entry" role="listitem">
 Fekete, Alan, Dimitrios Liarokapis, Elizabeth O’Neil, Patrick O’Neil,

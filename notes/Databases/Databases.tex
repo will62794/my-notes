@@ -229,6 +229,7 @@ We may have, for example, a database that needs to store \textit{customers}, \te
 Table \ref{fig:normalization_theory} shows standard ``normal forms'' along with the kinds of FD-related problems that they avoid. 1NF is unique in that it is simply the relational models rule that each field in a table must be atomic (a scalar value). 2NF avoids situtations where a table has a composite key, like a primary key (PK) of $(custid, itemno)$ and has non-key fiels that are involved in facts (FDs) that depend on some but not all of the PK fields.
 
 
+In general, the process of \textit{normalization} is about structuring data in accordance with a variety of these normal forms in order to reduce data redundancy. \textit{Denormalization}, then, is generally the process of adding redundant copies of data e.g. by grouping data, perhaps for increasing (e.g. read) performance.
 
 \subsection{Entity Relationship Modeling}
 

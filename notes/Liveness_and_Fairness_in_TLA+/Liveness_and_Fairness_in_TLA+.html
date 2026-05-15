@@ -217,15 +217,15 @@ then the “receive" action is enabled. If the channel is reliable, then
 once a message is sent, we can be sure that it will stay in the inbox
 until the receiver processes it. In other words, the receipt action will
 be continuously enabled. So, in this case, weak fairness on the actions
-of the receiver would be enough to ensure progress. The channel between
-sender and receiver, however, may be lossy. In this case, every time a
-message gets placed into the inbox it may subsequently get lost. So, it
-means that after sending, a message may not exist continuously in the
-inbox of the receiver. If the sender continuously resends a failed
-message, though, then the inbox of the receiver should be filled
-infinitely often, even though it is not filled continuously. In this
-case, we would need strong fairness on the actions of the receiver to
-guarantee progress.</p>
+of the receiver would be enough to ensure progress.</p>
+<p>The channel between sender and receiver, however, may be lossy. In
+this case, every time a message gets placed into the inbox it may
+subsequently get lost. So, it means that after sending, a message may
+not exist continuously in the inbox of the receiver. If the sender
+continuously resends a failed message, though, then the inbox of the
+receiver should be filled infinitely often, even though it is not filled
+continuously. In this case, we would need strong fairness on the actions
+of the receiver to guarantee progress.</p>
 </section>
 <section id="machine-closure" class="level1 unnumbered">
 <h1 class="unnumbered">Machine Closure</h1>

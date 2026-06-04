@@ -281,5 +281,37 @@ Next-key locking \cite{mohan1990arieskvl}, SILO \cite{2013silo}.
 \bibliography{../../references.bib}
 
 
+\section{Storage}
+
+\subsection{LSM Trees}
+
+LSM Trees \cite{1996lsmtree} is a persistent data structure that is optimized for writes. Essentially, it is serving the same purpose as a B-tree or hash map i.e. storing a key-value map, but is designed to optimize for write performance.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{lsm-tree-diagram.png}
+    \caption{Log-Structured Merge Tree (LSM Tree) structure}
+    \label{fig:lsm_tree}
+\end{figure}
+
+In the simplest setup, the quickest way to insert a key-value pair into a data structure is to basically just append it to some file or log, without any extra indexing work. In the most naive approach, when you go back to search for this key, you then just do a full scan through all existing keys to see if you can find it. This is inefficient for reads but makes writes extremely simple and efficient. 
+
+In the simplest LSM tree configuration, we can imagine it being composed of two levels, $C_0$ and $C_1$, where we can imagine $C_0$ lives entirely in memory and $C_1$ is a disk-based component. When new records are inserted, they are added to level 0 component, and if an insertion causes this component to exceed some threshold size, a contiguous segment of entries from this is removed and merged into the disk-based component, $C_1$.The level 0 component is maintained in memory and can be stored using a \href{https://en.wikipedia.org/wiki/Skip_list}{skip list} or even just a B-tree.
+
+Note that each level in an LSM tree might have multiple sorted \textit{runs}. On disk, these are typically referred to as SSTs (Sorted String Tables). All SST files are immutable, and may exist at one of many levels of the LSM tree on disk.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.65\textwidth]{rocksdb-diagram.png}
+    \caption{Log-Structured Merge Tree (LSM Tree) structure}
+    \label{fig:lsm_tree}
+\end{figure}
+
+\subsubsection*{Reads}
+
+When you go to look up a key, you're basically searching for a key by looking through either runs in the memtable or SST files at each level, working your way down the levels until you find the desired key. This can be optimized at each layer with other auxiliary data structures e.g Bloom filters, etc.
+
+
+
 
 \end{document}

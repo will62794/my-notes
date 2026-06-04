@@ -92,6 +92,15 @@ Isolation</a>
 Reads</a></li>
 </ul></li>
 </ul></li>
+<li><a href="#storage" id="toc-storage"><span
+class="toc-section-number">4</span> Storage</a>
+<ul>
+<li><a href="#lsm-trees" id="toc-lsm-trees"><span
+class="toc-section-number">4.1</span> LSM Trees</a>
+<ul>
+<li><a href="#reads" id="toc-reads">Reads</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#bibliography" id="toc-bibliography">References</a></li>
 </ul>
 </nav>
@@ -667,6 +676,58 @@ et al. 2013</a>)</span>.</p>
 </section>
 </section>
 </section>
+<section id="storage" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span>
+Storage</h1>
+<section id="lsm-trees" class="level2" data-number="4.1">
+<h2 data-number="4.1"><span class="header-section-number">4.1</span> LSM
+Trees</h2>
+<p>LSM Trees <span class="citation" data-cites="1996lsmtree">(<a
+href="#ref-1996lsmtree" role="doc-biblioref">O’Neil et al.
+1996</a>)</span> is a persistent data structure that is optimized for
+writes. Essentially, it is serving the same purpose as a B-tree or hash
+map i.e. storing a key-value map, but is designed to optimize for write
+performance.</p>
+<figure id="fig:lsm_tree">
+<img src="lsm-tree-diagram.png" style="width:65.0%" />
+<figcaption>Log-Structured Merge Tree (LSM Tree) structure</figcaption>
+</figure>
+<p>In the simplest setup, the quickest way to insert a key-value pair
+into a data structure is to basically just append it to some file or
+log, without any extra indexing work. In the most naive approach, when
+you go back to search for this key, you then just do a full scan through
+all existing keys to see if you can find it. This is inefficient for
+reads but makes writes extremely simple and efficient.</p>
+<p>In the simplest LSM tree configuration, we can imagine it being
+composed of two levels, <span class="math inline">\(C_0\)</span> and
+<span class="math inline">\(C_1\)</span>, where we can imagine <span
+class="math inline">\(C_0\)</span> lives entirely in memory and <span
+class="math inline">\(C_1\)</span> is a disk-based component. When new
+records are inserted, they are added to level 0 component, and if an
+insertion causes this component to exceed some threshold size, a
+contiguous segment of entries from this is removed and merged into the
+disk-based component, <span class="math inline">\(C_1\)</span>.The level
+0 component is maintained in memory and can be stored using a <a
+href="https://en.wikipedia.org/wiki/Skip_list">skip list</a> or even
+just a B-tree.</p>
+<p>Note that each level in an LSM tree might have multiple sorted
+<em>runs</em>. On disk, these are typically referred to as SSTs (Sorted
+String Tables). All SST files are immutable, and may exist at one of
+many levels of the LSM tree on disk.</p>
+<figure id="fig:lsm_tree">
+<img src="rocksdb-diagram.png" style="width:65.0%" />
+<figcaption>Log-Structured Merge Tree (LSM Tree) structure</figcaption>
+</figure>
+<section id="reads" class="level3 unnumbered">
+<h3 class="unnumbered">Reads</h3>
+<p>When you go to look up a key, you’re basically searching for a key by
+looking through either runs in the memtable or SST files at each level,
+working your way down the levels until you find the desired key. This
+can be optimized at each layer with other auxiliary data structures e.g
+Bloom filters, etc.</p>
+</section>
+</section>
+</section>
 <section id="bibliography" class="level1 unnumbered">
 <h1 class="unnumbered">References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent"
@@ -719,6 +780,12 @@ Concurrency Control of Multiaction Transactions Operating on b-Tree
 Indexes.”</span> In <em>Proceedings of the Sixteenth International
 Conference on Very Large Databases</em>, 392–405. San Francisco, CA,
 USA: Morgan Kaufmann Publishers Inc.
+</div>
+<div id="ref-1996lsmtree" class="csl-entry" role="listitem">
+O’Neil, Patrick, Edward Cheng, Dieter Gawlick, and Elizabeth O’Neil.
+1996. <span>“The Log-Structured Merge-Tree (LSM-Tree).”</span> <em>Acta
+Inf.</em> 33 (4): 351–85. <a
+href="https://doi.org/10.1007/s002360050048">https://doi.org/10.1007/s002360050048</a>.
 </div>
 <div id="ref-queryopt79" class="csl-entry" role="listitem">
 Selinger, P. Griffiths, M. M. Astrahan, D. D. Chamberlin, R. A. Lorie,

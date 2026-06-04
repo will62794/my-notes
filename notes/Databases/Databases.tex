@@ -285,7 +285,7 @@ Next-key locking \cite{mohan1990arieskvl}, SILO \cite{2013silo}.
 
 \subsection{LSM Trees}
 
-LSM Trees \cite{1996lsmtree} is a persistent data structure that is optimized for writes. Essentially, it is serving the same purpose as a B-tree or hash map i.e. storing a key-value map, but is designed to optimize for write performance.
+LSM Trees \cite{1996lsmtree} is a persistent data structure that is optimized for writes. Essentially, it is serving the same purpose as a B-tree or hash map i.e. storing a key-value pairs of data, but is designed to be optimized for write performance.
 
 \begin{figure}[h]
     \centering
@@ -294,7 +294,7 @@ LSM Trees \cite{1996lsmtree} is a persistent data structure that is optimized fo
     \label{fig:lsm_tree}
 \end{figure}
 
-In the simplest setup, the quickest way to insert a key-value pair into a data structure is to basically just append it to some file or log, without any extra indexing work. In the most naive approach, when you go back to search for this key, you then just do a full scan through all existing keys to see if you can find it. This is inefficient for reads but makes writes extremely simple and efficient. 
+LSM trees are kind of inspired by this basic concept with a bit of extra structure. In the simplest setup, the quickest way to insert a key-value pair into a data structure is to basically just append it to some file or log, without any extra indexing work. In the most naive approach, when you go back to search for this key, you then just do a full scan through all existing keys to see if you can find it. This is inefficient for reads but makes writes extremely simple and efficient. 
 
 In the simplest LSM tree configuration, we can imagine it being composed of two levels, $C_0$ and $C_1$, where we can imagine $C_0$ lives entirely in memory and $C_1$ is a disk-based component. When new records are inserted, they are added to level 0 component, and if an insertion causes this component to exceed some threshold size, a contiguous segment of entries from this is removed and merged into the disk-based component, $C_1$.The level 0 component is maintained in memory and can be stored using a \href{https://en.wikipedia.org/wiki/Skip_list}{skip list} or even just a B-tree.
 

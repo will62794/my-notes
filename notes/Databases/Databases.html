@@ -686,18 +686,20 @@ Trees</h2>
 href="#ref-1996lsmtree" role="doc-biblioref">O’Neil et al.
 1996</a>)</span> is a persistent data structure that is optimized for
 writes. Essentially, it is serving the same purpose as a B-tree or hash
-map i.e. storing a key-value map, but is designed to optimize for write
-performance.</p>
+map i.e. storing a key-value pairs of data, but is designed to be
+optimized for write performance.</p>
 <figure id="fig:lsm_tree">
 <img src="lsm-tree-diagram.png" style="width:65.0%" />
 <figcaption>Log-Structured Merge Tree (LSM Tree) structure</figcaption>
 </figure>
-<p>In the simplest setup, the quickest way to insert a key-value pair
-into a data structure is to basically just append it to some file or
-log, without any extra indexing work. In the most naive approach, when
-you go back to search for this key, you then just do a full scan through
-all existing keys to see if you can find it. This is inefficient for
-reads but makes writes extremely simple and efficient.</p>
+<p>LSM trees are kind of inspired by this basic concept with a bit of
+extra structure. In the simplest setup, the quickest way to insert a
+key-value pair into a data structure is to basically just append it to
+some file or log, without any extra indexing work. In the most naive
+approach, when you go back to search for this key, you then just do a
+full scan through all existing keys to see if you can find it. This is
+inefficient for reads but makes writes extremely simple and
+efficient.</p>
 <p>In the simplest LSM tree configuration, we can imagine it being
 composed of two levels, <span class="math inline">\(C_0\)</span> and
 <span class="math inline">\(C_1\)</span>, where we can imagine <span

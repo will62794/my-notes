@@ -294,9 +294,9 @@ LSM Trees \cite{1996lsmtree} is a persistent data structure that is optimized fo
     \label{fig:lsm_tree}
 \end{figure}
 
-LSM trees are kind of inspired by this basic concept with a bit of extra structure. In the simplest setup, the quickest way to insert a key-value pair into a data structure is to basically just append it to some file or log, without any extra indexing work. In the most naive approach, when you go back to search for this key, you then just do a full scan through all existing keys to see if you can find it. This is inefficient for reads but makes writes extremely simple and efficient. 
+In the simplest setup, the quickest way to insert a key-value pair into a data structure is to basically just append it to some file or log, without any extra indexing work. In the most naive approach, when you go back to search for this key, you then just do a full scan through all existing keys to see if you can find it. This is inefficient for reads but makes writes extremely simple and efficient. LSM trees are kind of inspired by this basic concept with a bit of extra structure. 
 
-In the simplest LSM tree configuration, we can imagine it being composed of two levels, $C_0$ and $C_1$, where we can imagine $C_0$ lives entirely in memory and $C_1$ is a disk-based component. When new records are inserted, they are added to level 0 component, and if an insertion causes this component to exceed some threshold size, a contiguous segment of entries from this is removed and merged into the disk-based component, $C_1$.The level 0 component is maintained in memory and can be stored using a \href{https://en.wikipedia.org/wiki/Skip_list}{skip list} or even just a B-tree.
+In the simplest LSM tree configuration, we can imagine it being composed of two levels, $C_0$ and $C_1$, where we can imagine $C_0$ lives entirely in memory and $C_1$ is a disk-based component. When new records are inserted, they are added to level 0 component, and if an insertion causes this component to exceed some threshold size, a contiguous segment of entries from this is removed and merged into the disk-based component, $C_1$. The level 0 component is maintained in memory and can be stored using a \href{https://en.wikipedia.org/wiki/Skip_list}{skip list} or even just a B-tree.
 
 Note that each level in an LSM tree might have multiple sorted \textit{runs}. On disk, these are typically referred to as SSTs (Sorted String Tables). All SST files are immutable, and may exist at one of many levels of the LSM tree on disk.
 
@@ -310,6 +310,21 @@ Note that each level in an LSM tree might have multiple sorted \textit{runs}. On
 \subsubsection*{Reads}
 
 When you go to look up a key, you're basically searching for a key by looking through either runs in the memtable or SST files at each level, working your way down the levels until you find the desired key. This can be optimized at each layer with other auxiliary data structures e.g Bloom filters, etc.
+
+
+\subsubsection*{Compaction}
+
+Without any extra work, when you flush a memtable to disk to an L0 SST, you might end up having a lot of SSTs, each of which is potentially non-overlapping set of keys, though they are all sorted within each SST. And recall that, most commonly, memtables in-memory already store a set of keys in sorted order. So, we can execute a \textit{compaction} operation on a whole bunch of SSTs to reduce this amplification over time. This is basically just a merge sort you execute on the ranges within a whole set of SSTs, to produce a new set of SSTs with non-overlapping ranges.
+
+\subsubsection*{Broader Context}
+
+There is also a perspective on LSMs as a data structure that lets you kind of interpolate between two other data structures at the extreme of read and write amplification, which is discussed in the Monkey paper \cite{2017monkey}. Basically, with a pure append-only log at the one extreme (write optimized), and a sorted array at the other extreme (read optimized).
+
+\begin{center}
+    \includegraphics[width=0.65\textwidth]{monkey-lsm.png}
+    % \caption{Monkey: Optimal Navigable Key-Value Store}
+    \label{fig:monkey_lsm}
+\end{center}
 
 
 

@@ -309,7 +309,14 @@ Note that each level in an LSM tree might have multiple sorted \textit{runs}. On
 
 \subsubsection*{Compaction}
 
-Without any extra work, when you flush a memtable to disk to an L0 SST, you might end up having a lot of SSTs, each of which is potentially non-overlapping set of keys, though they are all sorted within each SST. And recall that, most commonly, memtables in-memory already store a set of keys in sorted order. So, we can execute a \textit{compaction} operation on a whole bunch of SSTs to reduce this amplification over time. This is basically just a merge sort you execute on the ranges within a whole set of SSTs, to produce a new set of SSTs with non-overlapping ranges.
+Without any extra work, when you flush a memtable to disk to an L0 SST, you might end up having a lot of SSTs, each of which is potentially non-overlapping set of keys, though they are all sorted within each SST. That is, each SST basically stores a chunk of the log over time, but there is obviously no guarantee that the keys updated in that chunk are sequential in the keyspace. They could be in arbitrary sub-ranges.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{lsml0sstranges.png}
+    \caption{Visualization of SST file key ranges at L0 in an LSM tree. Each rectangle represents an SST file range; note that in L0, these may overlap in keyspace, unlike lower levels.}
+    \label{fig:lsm_l0_sst_ranges}
+\end{figure}
+And recall that, most commonly, memtables in-memory already store a set of keys in sorted order. So, we can execute a \textit{compaction} operation on a whole bunch of SSTs to reduce this amplification over time. This is basically just a merge sort you execute on the ranges within a whole set of SSTs, to produce a new set of SSTs with non-overlapping ranges.
 
 \subsubsection*{Reads}
 
@@ -326,7 +333,6 @@ There is another useful perspective on LSMs as a data structure that lets you ki
     \label{fig:monkey_lsm}
 \end{center}
 Note that a sorted array is like an LSM tree where you always do compaction immediately, and an append-only log is like an LSM tree without compaction.
-
 
 
 

@@ -98,8 +98,8 @@ class="toc-section-number">4</span> Storage</a>
 <li><a href="#lsm-trees" id="toc-lsm-trees"><span
 class="toc-section-number">4.1</span> LSM Trees</a>
 <ul>
-<li><a href="#reads" id="toc-reads">Reads</a></li>
 <li><a href="#compaction" id="toc-compaction">Compaction</a></li>
+<li><a href="#reads" id="toc-reads">Reads</a></li>
 <li><a href="#broader-context" id="toc-broader-context">Broader
 Context</a></li>
 </ul></li>
@@ -723,14 +723,6 @@ many levels of the LSM tree on disk.</p>
 <img src="rocksdb-diagram.png" style="width:65.0%" />
 <figcaption>Log-Structured Merge Tree (LSM Tree) structure</figcaption>
 </figure>
-<section id="reads" class="level3 unnumbered">
-<h3 class="unnumbered">Reads</h3>
-<p>When you go to look up a key, you’re basically searching for a key by
-looking through either runs in the memtable or SST files at each level,
-working your way down the levels until you find the desired key. This
-can be optimized at each layer with other auxiliary data structures e.g
-Bloom filters, etc.</p>
-</section>
 <section id="compaction" class="level3 unnumbered">
 <h3 class="unnumbered">Compaction</h3>
 <p>Without any extra work, when you flush a memtable to disk to an L0
@@ -743,20 +735,31 @@ time. This is basically just a merge sort you execute on the ranges
 within a whole set of SSTs, to produce a new set of SSTs with
 non-overlapping ranges.</p>
 </section>
+<section id="reads" class="level3 unnumbered">
+<h3 class="unnumbered">Reads</h3>
+<p>When you go to look up a key, you’re basically searching for a key by
+looking through either runs in the memtable or SST files at each level,
+working your way down the levels until you find the desired key. This
+can be optimized at each layer with other auxiliary data structures e.g
+Bloom filters, etc.</p>
+</section>
 <section id="broader-context" class="level3 unnumbered">
 <h3 class="unnumbered">Broader Context</h3>
-<p>There is also a perspective on LSMs as a data structure that lets you
-kind of interpolate between two other data structures at the extreme of
-read and write amplification, which is discussed in the Monkey paper
-<span class="citation" data-cites="2017monkey">(<a
+<p>There is another useful perspective on LSMs as a data structure that
+lets you kind of interpolate between two other data structures at the
+extremes of read and write amplification, which is discussed in the
+Monkey paper <span class="citation" data-cites="2017monkey">(<a
 href="#ref-2017monkey" role="doc-biblioref">Dayan, Athanassoulis, and
-Idreos 2017</a>)</span>. Basically, with a pure append-only log at the
-one extreme (write optimized), and a sorted array at the other extreme
-(read optimized).</p>
+Idreos 2017</a>)</span>. Basically, with an append-only <em>log</em> at
+the one extreme (write optimized), and a <em>sorted array</em> at the
+other extreme (read optimized).</p>
 <div class="center">
 <p><img src="monkey-lsm.png" style="width:65.0%" alt="image" /> <span
 id="fig:monkey_lsm" data-label="fig:monkey_lsm"></span></p>
 </div>
+<p>Note that a sorted array is like an LSM tree where you always do
+compaction immediately, and an append-only log is like an LSM tree
+without compaction.</p>
 </section>
 </section>
 </section>

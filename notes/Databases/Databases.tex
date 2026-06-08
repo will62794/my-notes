@@ -307,24 +307,25 @@ Note that each level in an LSM tree might have multiple sorted \textit{runs}. On
     \label{fig:lsm_tree}
 \end{figure}
 
+\subsubsection*{Compaction}
+
+Without any extra work, when you flush a memtable to disk to an L0 SST, you might end up having a lot of SSTs, each of which is potentially non-overlapping set of keys, though they are all sorted within each SST. And recall that, most commonly, memtables in-memory already store a set of keys in sorted order. So, we can execute a \textit{compaction} operation on a whole bunch of SSTs to reduce this amplification over time. This is basically just a merge sort you execute on the ranges within a whole set of SSTs, to produce a new set of SSTs with non-overlapping ranges.
+
 \subsubsection*{Reads}
 
 When you go to look up a key, you're basically searching for a key by looking through either runs in the memtable or SST files at each level, working your way down the levels until you find the desired key. This can be optimized at each layer with other auxiliary data structures e.g Bloom filters, etc.
 
 
-\subsubsection*{Compaction}
-
-Without any extra work, when you flush a memtable to disk to an L0 SST, you might end up having a lot of SSTs, each of which is potentially non-overlapping set of keys, though they are all sorted within each SST. And recall that, most commonly, memtables in-memory already store a set of keys in sorted order. So, we can execute a \textit{compaction} operation on a whole bunch of SSTs to reduce this amplification over time. This is basically just a merge sort you execute on the ranges within a whole set of SSTs, to produce a new set of SSTs with non-overlapping ranges.
-
 \subsubsection*{Broader Context}
 
-There is also a perspective on LSMs as a data structure that lets you kind of interpolate between two other data structures at the extreme of read and write amplification, which is discussed in the Monkey paper \cite{2017monkey}. Basically, with a pure append-only log at the one extreme (write optimized), and a sorted array at the other extreme (read optimized).
+There is another useful perspective on LSMs as a data structure that lets you kind of interpolate between two other data structures at the extremes of read and write amplification, which is discussed in the Monkey paper \cite{2017monkey}. Basically, with an append-only \textit{log} at the one extreme (write optimized), and a \textit{sorted array} at the other extreme (read optimized).
 
 \begin{center}
     \includegraphics[width=0.65\textwidth]{monkey-lsm.png}
     % \caption{Monkey: Optimal Navigable Key-Value Store}
     \label{fig:monkey_lsm}
 \end{center}
+Note that a sorted array is like an LSM tree where you always do compaction immediately, and an append-only log is like an LSM tree without compaction.
 
 
 

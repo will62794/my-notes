@@ -34,7 +34,13 @@
 <nav id="TOC" role="doc-toc">
 <ul>
 <li><a href="#concurrency" id="toc-concurrency"><span
-class="toc-section-number">1</span> Concurrency</a></li>
+class="toc-section-number">1</span> Concurrency</a>
+<ul>
+<li><a href="#hierarchy-of-mutexes-and-condition-variables"
+id="toc-hierarchy-of-mutexes-and-condition-variables"><span
+class="toc-section-number">1.1</span> Hierarchy of Mutexes and Condition
+Variables</a></li>
+</ul></li>
 </ul>
 </nav>
 <section id="concurrency" class="level1" data-number="1">
@@ -44,17 +50,20 @@ Concurrency</h1>
 <em>mutexes</em> and <em>condition variables</em> are often seen as the
 two core, fundamental concurrency primitives needed to safely manage and
 coordinate shared state between threads.</p>
-<p>In C++, for example, we have <code>std::mutex</code> and
-<code>std::condition_variable</code> classes that provide a way to
-manage and coordinate shared state between threads. A mutex is simply a
-lock that can be acquired and released by a thread, and can only be held
-atomically by one thread at a time. A condition variable is always
-associated with some mutex, and in general there can be multiple
-condition variables (each corresponding to different waiting predicates)
-associated with the same mutex. This provides a fundamental way to
-ensure (1) safe concurrent access to shared state and (2) an efficient
-way for threads to correctly wait on some condition to become true of
-the concurrent object before proceeding.</p>
+<p>In C++, for example, we have <a
+href="https://en.cppreference.com/cpp/thread/mutex"><code>std::mutex</code></a>
+and <a
+href="https://en.cppreference.com/cpp/thread/condition_variable"><code>std::condition_variable</code></a>
+classes that provide a way to manage and coordinate shared state between
+threads. A mutex is simply a lock that can be acquired and released by a
+thread, and can only be held atomically by one thread at a time. A
+condition variable is always associated with some mutex, and in general
+there can be multiple condition variables (each corresponding to
+different waiting predicates) associated with the same mutex. This
+provides a fundamental way to ensure (1) safe concurrent access to
+shared state and (2) an efficient way for threads to correctly wait on
+some condition to become true of the concurrent object before
+proceeding.</p>
 <p>For example, if you want to implement a <em>bounded concurrent
 queue</em> from scratch in a low level language like C++, you start with
 a basic queue object and protect its accesses by a mutex. This is fine
@@ -70,9 +79,43 @@ all threads waiting on this condition.</p>
 condition check becomes true. In essence, a condition variable is really
 just a queue of waiting threads associated with (1) some mutex and (2) a
 common predicate/condition they are waiting on. When the condition
-variable is “signaled", it goes to either one or all of the threads on
-this queue and wakes them up, so they can re-acquire the mutex and check
-their condition before proceeding.</p>
+variable is “signaled", it goes to either one (<code>notify_one</code>)
+or all (<code>notify_all</code>) of the threads on this queue and wakes
+them up, so they can re-acquire the mutex and check their condition
+before proceeding.</p>
+<section id="hierarchy-of-mutexes-and-condition-variables"
+class="level2" data-number="1.1">
+<h2 data-number="1.1"><span class="header-section-number">1.1</span>
+Hierarchy of Mutexes and Condition Variables</h2>
+<p>In some ways, we can view a mutex itself as a kind of specialized
+condition variable, where the condition is not split out explicitly into
+a separate object, but it implicitly exists as the “mutex is locked"
+condition. And there is, similarly, a natural set/queue of waiters that
+exist associated with any mutex which are currently blocked trying to
+acquire the mutex. A key point here, though, is that when one of these
+waiters is woken up, similar to the condition varaible mechanics, they
+can’t acquire a mutex to re-check this underlying condition, as that
+would be circular (we’re implementing the mutex itself!). Instead, they
+just rely on some lower level, fundamental atomic primitive like
+compare-and-swap (CAS), which essentially implements that same idea but
+in a core hardware primitive i.e. update the state to locked only of the
+condition that mutex is not currently locked holds. The idea is the same
+as what you do with condition variables in general, though i.e.
+atomically re-check some condition holds and if so update the core piece
+of state you care about.</p>
+<p>So, implementing something like a <em>bounded concurrent queue</em>
+requires you to atomically check full or empty status of queue before
+updating, and get signalled on appropriate changes, and
+<em>reader-writer</em> lock similarly requires you to maintain some
+pieces of state around the number of readers or writers currently
+holding the lock, so you can check this atomically before modifying its
+state. A basic <em>mutex</em> itself can similarly be viewed as a single
+piece of “locked” boolean state which you must atomically check and
+update when trying to acquire the lock for yourself. Condition variables
+then just extend this a bit by making the notion of a waiting queue/set
+explicit, and with ability to slice up threads based on the specific
+condition they are waiting on, for efficiency purposes.</p>
+</section>
 </section>
 </body>
 </html>

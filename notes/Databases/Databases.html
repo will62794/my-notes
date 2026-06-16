@@ -44,6 +44,7 @@
       margin-left: 2em;
     }  </style>
   <link rel="stylesheet" href="../../style.css" />
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script
   src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js"
   type="text/javascript"></script>
@@ -764,7 +765,7 @@ the one extreme (write optimized), and a <em>sorted array</em> at the
 other extreme (read optimized).</p>
 <div class="center">
 <p><img src="monkey-lsm.png" style="width:65.0%" alt="image" /> <span
-id="fig:monkey_lsm" data-label="fig:monkey_lsm"></span></p>
+id="fig:monkey_lsm" label="fig:monkey_lsm"></span></p>
 </div>
 <p>Note that a sorted array is like an LSM tree where you always do
 compaction immediately, and an append-only log is like an LSM tree

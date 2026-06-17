@@ -39,8 +39,17 @@ In some ways, we can view a mutex itself as a kind of specialized condition vari
 
 A key point here, though, is that when one of these waiters is woken up, similar to the condition variable mechanics, they can't acquire a mutex to re-check this underlying condition, as that would be circular (we're implementing the mutex itself!). Instead, they just rely on some lower level, fundamental atomic primitive like compare-and-swap (CAS), which essentially implements that same idea but in a core hardware primitive i.e. update the state to locked only of the condition that mutex is not currently locked holds. The idea is the same as what you do with condition variables in general, though i.e. atomically re-check some condition holds and if so update the core piece of state you care about.
 
-
 So, implementing something like a \textit{bounded concurrent queue} requires you to atomically check full or empty status of queue before updating, and get signalled on appropriate changes, and \textit{reader-writer} lock similarly requires you to maintain some pieces of state around the number of readers or writers currently holding the lock, so you can check this atomically before modifying its state. A basic \textit{mutex} itself can similarly be viewed as a single piece of ``locked'' boolean state which you must atomically check and update when trying to acquire the lock for yourself. Condition variables then just extend this a bit by making the notion of a waiting queue/set explicit, and with ability to slice up threads based on the specific condition they are waiting on, for efficiency purposes.
+
+\begin{verbatim}
+    atomically {
+        check condition P
+        if P holds, update state accordingly
+        exit atomic block and go to sleep.
+    }
+\end{verbatim}
+
+In a basic mutex, we can simply have a \textit{locked} variable state that we check for being locked or unlocked. For a reader-write lock, we can maintain the number of readers and writers holding the lock, and/or the number of writers waiting. Readers trying to acquire the lock have a certain condition to check (e.g can acquire lock if there are no other writers holding it), and writers trying to acquire the lock have a slightly different condition to check (can acquire lock only if no other readers or writers holding it). All of these basically share the same pattern, though, where you need to atomically check some condition, and then modify state atomically based on that condition check. This is then coupled with appropriate signalling/waking up of a sleeping when the condition they are waiting on may have changed status.
 
 
 \bibliographystyle{plain}

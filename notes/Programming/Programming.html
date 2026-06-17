@@ -92,17 +92,18 @@ condition variable, where the condition is not split out explicitly into
 a separate object, but it implicitly exists as the “mutex is locked"
 condition. And there is, similarly, a natural set/queue of waiters that
 exist associated with any mutex which are currently blocked trying to
-acquire the mutex. A key point here, though, is that when one of these
-waiters is woken up, similar to the condition varaible mechanics, they
-can’t acquire a mutex to re-check this underlying condition, as that
-would be circular (we’re implementing the mutex itself!). Instead, they
-just rely on some lower level, fundamental atomic primitive like
-compare-and-swap (CAS), which essentially implements that same idea but
-in a core hardware primitive i.e. update the state to locked only of the
-condition that mutex is not currently locked holds. The idea is the same
-as what you do with condition variables in general, though i.e.
-atomically re-check some condition holds and if so update the core piece
-of state you care about.</p>
+acquire the mutex.</p>
+<p>A key point here, though, is that when one of these waiters is woken
+up, similar to the condition variable mechanics, they can’t acquire a
+mutex to re-check this underlying condition, as that would be circular
+(we’re implementing the mutex itself!). Instead, they just rely on some
+lower level, fundamental atomic primitive like compare-and-swap (CAS),
+which essentially implements that same idea but in a core hardware
+primitive i.e. update the state to locked only of the condition that
+mutex is not currently locked holds. The idea is the same as what you do
+with condition variables in general, though i.e. atomically re-check
+some condition holds and if so update the core piece of state you care
+about.</p>
 <p>So, implementing something like a <em>bounded concurrent queue</em>
 requires you to atomically check full or empty status of queue before
 updating, and get signalled on appropriate changes, and

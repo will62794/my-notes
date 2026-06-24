@@ -51,6 +51,15 @@ So, implementing something like a \textit{bounded concurrent queue} requires you
 
 In a basic mutex, we can simply have a \textit{locked} variable state that we check for being locked or unlocked. For a reader-write lock, we can maintain the number of readers and writers holding the lock, and/or the number of writers waiting. Readers trying to acquire the lock have a certain condition to check (e.g can acquire lock if there are no other writers holding it), and writers trying to acquire the lock have a slightly different condition to check (can acquire lock only if no other readers or writers holding it). All of these basically share the same pattern, though, where you need to atomically check some condition, and then modify state atomically based on that condition check. This is then coupled with appropriate signalling/waking up of a sleeping when the condition they are waiting on may have changed status.
 
+\subsection{Reader-Writer Locks}
+
+In cases of data structures that require concurrent read/write access patterns (hash maps, databases, etc.), using a single global mutex is often not the most efficient approach. Allowing clients to acquire either a \textit{read lock} (shared) or a \textit{write lock} (exclusive) is more efficient, as many readers can concurrently be holding the lock while reading. Only a single writer may be holding the lock at any time, which blocks out readers from acquiring. From an implementation standpoint, we can build this internally by simply using a standard mutex that protects additional internal state to track the number of readers and/or writers. Basically, we can track the number of readers currently holding the lock, and whether a writer is holding the lock. If we want to decide on a particular fairness policy, we can also choose a \textit{writer preferred} policy, where we track an additional piece of ``writer waiting'' state and so a reader waiting on the lock is not allowed to acquire until there are no writers waiting.
+
+\subsection{Hash Map}
+
+Implementing a concurrent hash map can similarly take advantage of read/write access pattersn for locking. More generally, for scalable concurrent access, we can utilize some kind of striping/bucketing/sharding of keys that are each protected by their own locks. \href{https://preshing.com/20130605/the-worlds-simplest-lock-free-hash-table/}{Lock-free hash tables} built on CAS ops are also possible. 
+
+
 
 \bibliographystyle{plain}
 \bibliography{../../references.bib}

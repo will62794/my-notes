@@ -40,6 +40,10 @@ class="toc-section-number">1</span> Concurrency</a>
 id="toc-hierarchy-of-mutexes-and-condition-variables"><span
 class="toc-section-number">1.1</span> Hierarchy of Mutexes and Condition
 Variables</a></li>
+<li><a href="#reader-writer-locks" id="toc-reader-writer-locks"><span
+class="toc-section-number">1.2</span> Reader-Writer Locks</a></li>
+<li><a href="#hash-map" id="toc-hash-map"><span
+class="toc-section-number">1.3</span> Hash Map</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -133,6 +137,36 @@ pattern, though, where you need to atomically check some condition, and
 then modify state atomically based on that condition check. This is then
 coupled with appropriate signalling/waking up of a sleeping when the
 condition they are waiting on may have changed status.</p>
+</section>
+<section id="reader-writer-locks" class="level2" data-number="1.2">
+<h2 data-number="1.2"><span class="header-section-number">1.2</span>
+Reader-Writer Locks</h2>
+<p>In cases of data structures that require concurrent read/write access
+patterns (hash maps, databases, etc.), using a single global mutex is
+often not the most efficient approach. Allowing clients to acquire
+either a <em>read lock</em> (shared) or a <em>write lock</em>
+(exclusive) is more efficient, as many readers can concurrently be
+holding the lock while reading. Only a single writer may be holding the
+lock at any time, which blocks out readers from acquiring. From an
+implementation standpoint, we can build this internally by simply using
+a standard mutex that protects additional internal state to track the
+number of readers and/or writers. Basically, we can track the number of
+readers currently holding the lock, and whether a writer is holding the
+lock. If we want to decide on a particular fairness policy, we can also
+choose a <em>writer preferred</em> policy, where we track an additional
+piece of “writer waiting” state and so a reader waiting on the lock is
+not allowed to acquire until there are no writers waiting.</p>
+</section>
+<section id="hash-map" class="level2" data-number="1.3">
+<h2 data-number="1.3"><span class="header-section-number">1.3</span>
+Hash Map</h2>
+<p>Implementing a concurrent hash map can similarly take advantage of
+read/write access pattersn for locking. More generally, for scalable
+concurrent access, we can utilize some kind of
+striping/bucketing/sharding of keys that are each protected by their own
+locks. <a
+href="https://preshing.com/20130605/the-worlds-simplest-lock-free-hash-table/">Lock-free
+hash tables</a> built on CAS ops are also possible.</p>
 </section>
 </section>
 </body>

@@ -296,6 +296,25 @@ In the above, ``horizontal'' Paxos approach, configurations change across Paxos 
 
 Classic Paxos takes 2 round trips to get a value committed (1 for the $Prepare$ phase and 1 for the $Commit$ phase). How could we do better than this? Fast Paxos \cite{lamport2006fast} makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.
 
+
+Essentially, one way to think about the optimizations of Fast Paxos is to have clients sent their accept messages directly to acceptors, rather than going through a proposer/leader node. This can theoretically allow for 1RTT commits rather than 2RTT when proxied through a leader that has to also replicate the message to acceptors (1RTT) and then respond back to client.
+
+If we allow potentially multiple concurrent clients to send accept messages to acceptors, we break a subtle property of classic Paxos which is that proposals are uniquely identifier by their proposal/ballot/epoch number. So, two proposals with the same ballot number in Classic Paxos are guaranteed to have the same value. This is typically achieved by pre-allocating ballot numbers to proposers in a disjoint way. In Fast Paxos, naively, this property doesn't hold, and so two different clients may try to send proposals with the same ballot number with differing values. This complicates how we do the classic notion of \textit{recovery}
+ in Paxos. In Classic Paxos, reovery (e.g. Phase 1) can be done by basically checking a majority of acceptors, and seeing the accepted proposal in that quorum with the highest ballot number. If such a value was accepted, choosing the highest value proposal here will reflect that. 
+ 
+ When you break the ballot uniqueness, though, this doesn't quite work anymore, and so it means you could be in a situation where a value was previously chosen but you can't really figure out which one. For example, consider the case of 5 acceptor nodes and 3 have accepted proposal in ballot 1 with value $v_1$ and 2 have accepted proposal in ballot 1 with value $v_2$. In this case, you can't really figure out which value to choose for recovery.
+ \begin{center}
+    \includegraphics[scale=0.6]{diagrams/fastpaxos1.pdf}
+ \end{center}
+
+In this case, contacting a quorum of acceptors may give you an indeterminate answer i.e. if you contact $A_3, A_4, A_5$, what proposal would you choose to determine if the value that has potentially been chosen? There is not ballot ordering you can rely on here since all values have the same ballot number.
+
+One way to fix this is by expanding quorum sizes. If you make the quorum size a supermajority (3/4) then any supermajority quorum you contact will always have a previously chosen value dominate by cardinality. 
+\begin{center}
+    \includegraphics[scale=0.6]{diagrams/fastpaxos2.pdf}
+ \end{center}
+This means that recovery is able to work around this problematic scenario and can work acceptably well even in the face of conflicting/colliding proposal like this.
+
 \subsection{Egalitarian Paxos}
 
 Egalitarian Paxos (EPaxos) \cite{2013epaxosmoraru} goes further by trying to achieve a leaderless scheme while also allowing for fast path commits. It relaxes notion of strict ordering between command slots by tracking only dependency between commands explicitly, and executing commands only when they are commmitted, and in accordance with this dependency order.

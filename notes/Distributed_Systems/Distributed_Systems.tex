@@ -294,7 +294,7 @@ In the above, ``horizontal'' Paxos approach, configurations change across Paxos 
 
 \subsection{Fast Paxos}
 
-Classic Paxos takes 2 round trips to get a value committed (1 for the $Prepare$ phase and 1 for the $Commit$ phase). How could we do better than this? Fast Paxos \cite{lamport2006fast} makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though. TODO.
+Classic Paxos takes 2 round trips to get a value committed (1 for the $Prepare$ phase and 1 for the $Commit$ phase). How could we do better than this? Fast Paxos \cite{lamport2006fast} makes this improvement by having clients send their proposals directly to acceptors, rather than going through proposers first. This also changes quorum requirements, though.
 
 
 Essentially, one way to think about the optimizations of Fast Paxos is to have clients sent their accept messages directly to acceptors, rather than going through a proposer/leader node. This can theoretically allow for 1RTT commits rather than 2RTT when proxied through a leader that has to also replicate the message to acceptors (1RTT) and then respond back to client.

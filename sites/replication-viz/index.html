@@ -474,10 +474,10 @@ input.rate-slider { flex: 1; width: auto; }
   </div>
 
   <div class="panel-wrap">
-    <div class="panel-label">Replication Log</div>
+    <div class="panel-label">Log Store</div>
     <div class="panel">
       <div class="log-header">
-        <span class="log-title">Write-Ahead Log</span>
+        <span class="log-title">Log Store</span>
         <span class="log-stat">n = <span id="total-entries">0</span></span>
       </div>
       <div id="log-lanes"></div>
@@ -555,6 +555,7 @@ const shards = Array.from({ length: NUM_SHARDS }, (_, i) => ({
   destRate:  DEFAULT_DEST[i],
   tone: SHARD_TONES[i],
   cls:  SHARD_CLASSES[i],
+  srcEntries: [],
   logEntries: [],
   particles: [],
   _pAcc: { src: 0, dst: 0 },
@@ -587,8 +588,12 @@ shards.forEach(s => {
         <div class="shard-name">${s.name}</div>
         <div class="rate-badge normal" id="src-badge-${s.id}">normal</div>
       </div>
+      <div class="log-lane-entries" id="src-entries-${s.id}" style="margin-bottom:4px"></div>
+      <div class="replicated-bar-wrap" style="margin-bottom:6px">
+        <div class="replicated-bar" id="src-bar-${s.id}" style="width:0%"></div>
+      </div>
       <div class="shard-lsn">LSN: <span class="lsn-val" id="src-lsn-${s.id}">0</span></div>
-      <div class="rate-block">
+      <div class="rate-block" style="margin-top:5px">
         <div class="rate-slider-row">
           <span class="rate-slider-label">write rate</span>
           <input type="range" class="rate-slider" id="wr-slider-${s.id}" min="0" max="5" step="0.1" value="${s.writeRate}">
@@ -663,6 +668,7 @@ function takeSnapshot() {
       sourceLSN: s.sourceLSN, logLSN: s.logLSN, destLSN: s.destLSN,
       _srcAcc: s._srcAcc, _logAcc: s._logAcc, _dstAcc: s._dstAcc,
       _pAcc: { src: s._pAcc.src, dst: s._pAcc.dst },
+      srcEntries: s.srcEntries.slice(),
       logEntries: s.logEntries.slice(),
     })),
   };
@@ -676,8 +682,10 @@ function restoreSnapshot(snap) {
     s.sourceLSN = ss.sourceLSN; s.logLSN = ss.logLSN; s.destLSN = ss.destLSN;
     s._srcAcc = ss._srcAcc; s._logAcc = ss._logAcc; s._dstAcc = ss._dstAcc;
     s._pAcc = { src: ss._pAcc.src, dst: ss._pAcc.dst };
+    s.srcEntries = ss.srcEntries.slice();
     s.logEntries = ss.logEntries.slice();
     s.particles = [];
+    document.getElementById(`src-entries-${s.id}`).innerHTML = '';
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
   });
 }
@@ -690,11 +698,25 @@ function pauseForManualStep() {
   }
 }
 
+function nextEventSimDt() {
+  // find the sim-seconds until the very next single entry is written anywhere
+  let minDt = Infinity;
+  shards.forEach(s => {
+    if (s.writeRate > 0)
+      minDt = Math.min(minDt, (1 - s._srcAcc) / s.writeRate);
+    if (s.logRate > 0 && s.sourceLSN > s.logLSN)
+      minDt = Math.min(minDt, (1 - s._logAcc) / s.logRate);
+    if (s.destRate > 0 && s.logLSN > s.destLSN)
+      minDt = Math.min(minDt, (1 - s._dstAcc) / s.destRate);
+  });
+  return minDt === Infinity ? 0.1 : minDt + 1e-9; // +epsilon to actually cross threshold
+}
+
 function stepForward() {
   pauseForManualStep();
   history.push(takeSnapshot());
   if (history.length > MAX_HISTORY) history.shift();
-  simStep(0.5 / globalSpeed);
+  simStep(nextEventSimDt() / globalSpeed);
   updateDOM();
 }
 
@@ -727,9 +749,11 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   shards.forEach(s => {
     s.sourceLSN = s.logLSN = s.destLSN = 0;
     s._srcAcc = s._logAcc = s._dstAcc = 0;
-    s.logEntries = []; s.particles = [];
+    s.srcEntries = []; s.logEntries = []; s.particles = [];
     s._pAcc = { src: 0, dst: 0 };
+    document.getElementById(`src-entries-${s.id}`).innerHTML = '';
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
+    document.getElementById(`src-bar-${s.id}`).style.width = '0%';
     document.getElementById(`rep-bar-${s.id}`).style.width = '0%';
   });
   totalEntries = 0; simTime = 0;
@@ -799,7 +823,13 @@ function simStep(dtReal) {
   shards.forEach(s => {
     s._srcAcc += s.writeRate * dt;
     const ns = Math.floor(s._srcAcc);
-    if (ns > 0) { s._srcAcc -= ns; s.sourceLSN += ns; s._pAcc.src += ns; }
+    if (ns > 0) {
+      s._srcAcc -= ns;
+      for (let e = 0; e < ns; e++) s.srcEntries.push({ lsn: s.sourceLSN + e + 1 });
+      if (s.srcEntries.length > 150) s.srcEntries = s.srcEntries.slice(-150);
+      s.sourceLSN += ns;
+      s._pAcc.src += ns;
+    }
 
     const lb = s.sourceLSN - s.logLSN;
     s._logAcc += Math.min(lb, s.logRate * dt);
@@ -837,6 +867,26 @@ function updateDOM() {
     if (lag > maxLag) maxLag = lag;
 
     document.getElementById(`src-lsn-${s.id}`).textContent = s.sourceLSN.toLocaleString();
+
+    // Source entry strip
+    const srcLaneEl = document.getElementById(`src-entries-${s.id}`);
+    const srcVisible = s.srcEntries.slice(-MAX_LOG_VISIBLE);
+    const srcExisting = new Set([...srcLaneEl.querySelectorAll('.log-entry')].map(e => e.dataset.lsn));
+    srcVisible.forEach(entry => {
+      if (!srcExisting.has(String(entry.lsn))) {
+        const el = document.createElement('div');
+        el.className = `log-entry ${s.cls} new`;
+        el.dataset.lsn = entry.lsn;
+        el.textContent = entry.lsn.toLocaleString();
+        srcLaneEl.appendChild(el);
+        setTimeout(() => el.classList.remove('new'), 200);
+      }
+    });
+    while (srcLaneEl.children.length > MAX_LOG_VISIBLE) srcLaneEl.removeChild(srcLaneEl.firstChild);
+
+    // Source progress bar (how much of source has been ingested into log)
+    const srcBar = document.getElementById(`src-bar-${s.id}`);
+    if (s.sourceLSN > 0) srcBar.style.width = Math.min(100, (s.logLSN / s.sourceLSN) * 100) + '%';
 
     const cls = classifyRate(s.writeRate);
     const badge = document.getElementById(`src-badge-${s.id}`);

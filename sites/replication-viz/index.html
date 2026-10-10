@@ -4,30 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Shard Replication Flow</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap">
 <style>
-/* ─── Design tokens — light only ────────────────────────────────────────────
-   Layout: three-column pipeline: Source → Log Store → Destination
-   ─────────────────────────────────────────────────────────────────────────── */
+/* ─── Tokens — strict black/white, mathematical ─────────────────────────── */
 :root {
-  --bg:          #f4f6f9;
-  --surface:     #ffffff;
-  --surface-2:   #f0f2f6;
-  --border:      #dde1ea;
-  --border-hi:   #c5cbdb;
-  --fg:          #1e2433;
-  --fg-muted:    #6b7491;
-  --fg-dim:      #a8b0c8;
-  --green:       #1a9e50;
-  --green-dim:   rgba(26,158,80,0.10);
-  --blue:        #2669cc;
-  --blue-dim:    rgba(38,105,204,0.10);
-  --amber:       #c07010;
-  --amber-dim:   rgba(192,112,16,0.10);
-  --red:         #c03030;
-  --red-dim:     rgba(192,48,48,0.10);
-  --font-mono:   'JetBrains Mono', 'Courier New', monospace;
-  --font-ui:     'Inter', system-ui, sans-serif;
+  --bg:       #ffffff;
+  --fg:       #000000;
+  --fg-mid:   #444444;
+  --fg-dim:   #888888;
+  --fg-faint: #bbbbbb;
+  --rule:     #000000;
+  --rule-lt:  #cccccc;
+  --s0:       #000000;   /* shard 0 */
+  --s1:       #555555;   /* shard 1 */
+  --s2:       #aaaaaa;   /* shard 2 */
+  --font-body: 'EB Garamond', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   color-scheme: light;
 }
 
@@ -36,207 +28,188 @@
 body {
   background: var(--bg);
   color: var(--fg);
-  font-family: var(--font-ui);
-  font-size: 14px;
-  line-height: 1.5;
-  min-height: 100vh;
-  padding: 0 20px;
-  padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 20px);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  padding: 0 28px;
+  padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 32px);
   overflow-x: hidden;
 }
 
 /* ─── Header ─────────────────────────────────────────────────────────────── */
 .header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 22px 0 16px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
+  padding: 28px 0 12px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 22px;
 }
 
-.header-left { display: flex; flex-direction: column; gap: 3px; }
+.header-left { display: flex; flex-direction: column; gap: 1px; }
 
 .header h1 {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 500;
+  font-style: italic;
   color: var(--fg);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  letter-spacing: 0;
 }
 
 .header-sub {
-  font-size: 11px;
-  color: var(--fg-muted);
   font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  letter-spacing: 0.04em;
 }
 
 .controls {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  align-items: baseline;
+  gap: 14px;
   flex-wrap: wrap;
 }
 
 .btn {
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+  font-size: 10px;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 6px 14px;
-  border-radius: 5px;
-  border: 1px solid var(--border-hi);
-  background: var(--surface);
+  padding: 3px 10px;
+  border: 1px solid var(--fg);
+  background: var(--bg);
   color: var(--fg);
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  border-radius: 0;
+  transition: background 0.1s, color 0.1s;
 }
-.btn:hover { background: var(--surface-2); border-color: var(--blue); }
-.btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+.btn:hover  { background: var(--fg); color: var(--bg); }
+.btn.active { background: var(--fg); color: var(--bg); }
 
 .speed-control {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 7px;
 }
 .speed-label {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--fg-muted);
-  text-transform: uppercase;
+  font-size: 10px;
+  color: var(--fg-dim);
   letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 .speed-val {
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--blue);
+  font-size: 10px;
+  color: var(--fg);
   min-width: 28px;
-  text-align: right;
 }
 
 input[type=range] {
   -webkit-appearance: none;
-  height: 3px;
-  background: var(--border-hi);
-  border-radius: 2px;
+  width: 72px;
+  height: 2px;
+  background: var(--fg-faint);
+  border-radius: 0;
   cursor: pointer;
-  width: 80px;
 }
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--blue);
+  width: 10px;
+  height: 10px;
+  border-radius: 0;
+  background: var(--fg);
   cursor: pointer;
-  border: 2px solid #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-/* ─── Pipeline layout ─────────────────────────────────────────────────────── */
+/* ─── Pipeline ───────────────────────────────────────────────────────────── */
 .pipeline {
   display: grid;
-  grid-template-columns: 1fr 52px 1fr 52px 1fr;
-  gap: 0;
+  grid-template-columns: 1fr 40px 1fr 40px 1fr;
   align-items: start;
   margin-bottom: 24px;
 }
 
-@media (max-width: 680px) {
-  .pipeline { grid-template-columns: 1fr; gap: 8px; }
+@media (max-width: 640px) {
+  .pipeline { grid-template-columns: 1fr; }
   .connector { display: none; }
 }
 
 .panel-wrap { display: flex; flex-direction: column; }
 
 .panel-label {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
-  margin-bottom: 7px;
-  padding: 0 2px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  color: var(--fg-mid);
+  margin-bottom: 6px;
+  padding: 0 1px;
 }
 
 .panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  border: 1px solid var(--rule);
+  background: var(--bg);
 }
 
-/* ─── Source shards ───────────────────────────────────────────────────────── */
+/* ─── Source rows ─────────────────────────────────────────────────────────── */
 .shard-row {
   display: grid;
-  grid-template-columns: 30px 1fr;
-  align-items: start;
+  grid-template-columns: 22px 1fr;
   gap: 10px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--rule-lt);
 }
 .shard-row:last-child { border-bottom: none; }
 
-.shard-dot {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.shard-index {
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
-  flex-shrink: 0;
-  margin-top: 2px;
+  color: var(--fg-dim);
+  padding-top: 1px;
 }
 
-.shard-info { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.shard-info { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+
+.shard-name-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
 
 .shard-name {
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--fg);
-}
-
-.shard-lsn {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--fg-muted);
-  font-variant-numeric: tabular-nums;
-}
-.lsn-val { color: var(--fg); font-weight: 600; }
-
-/* Rate control block inside source row */
-.rate-block {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.rate-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
 }
 
 .rate-badge {
   font-family: var(--font-mono);
   font-size: 9px;
-  font-weight: 700;
   letter-spacing: 0.04em;
-  padding: 2px 7px;
-  border-radius: 3px;
+  color: var(--fg-dim);
   text-transform: uppercase;
 }
+.rate-badge.stalled { color: var(--fg);     font-weight: 700; }
+.rate-badge.lagging { color: var(--fg-mid); font-weight: 500; }
+.rate-badge.normal  { color: var(--fg-dim);                   }
+.rate-badge.fast    { color: var(--fg-dim);                   }
+
+.shard-lsn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+.lsn-val { color: var(--fg); font-weight: 500; }
+
+.rate-block { display: flex; flex-direction: column; gap: 4px; }
 
 .rate-slider-row {
   display: flex;
@@ -246,64 +219,56 @@ input[type=range]::-webkit-slider-thumb {
 .rate-slider-label {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--fg-muted);
+  color: var(--fg-faint);
   white-space: nowrap;
+  min-width: 58px;
 }
-input.rate-slider {
-  width: 100%;
-  flex: 1;
-  height: 2px;
-}
-input.rate-slider::-webkit-slider-thumb {
-  width: 11px;
-  height: 11px;
-}
+input.rate-slider { flex: 1; width: auto; }
 .rate-slider-val {
   font-family: var(--font-mono);
   font-size: 9px;
-  color: var(--fg);
-  min-width: 26px;
+  color: var(--fg-mid);
+  min-width: 24px;
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-/* ─── Connector arrows ────────────────────────────────────────────────────── */
+/* ─── Connector ───────────────────────────────────────────────────────────── */
 .connector {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 36px;
+  padding-top: 30px;
 }
 
 /* ─── Log Store ───────────────────────────────────────────────────────────── */
 .log-header {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
-  padding: 9px 13px 8px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  padding: 7px 12px 6px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
 }
 .log-title {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-variant: small-caps;
   letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--fg-muted);
+  color: var(--fg-mid);
 }
 .log-stat {
   font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--fg-muted);
+  font-size: 9px;
+  color: var(--fg-dim);
   font-variant-numeric: tabular-nums;
 }
-.log-stat span { color: var(--fg); font-weight: 600; }
+.log-stat span { color: var(--fg); }
 
 .log-lane {
   display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--border);
+  align-items: stretch;
+  border-bottom: 1px solid var(--rule-lt);
   min-height: 42px;
   overflow: hidden;
 }
@@ -311,19 +276,20 @@ input.rate-slider::-webkit-slider-thumb {
 
 .log-lane-tag {
   flex-shrink: 0;
-  width: 20px;
+  width: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
-  align-self: stretch;
+  border-right: 1px solid var(--rule-lt);
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 7px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   writing-mode: vertical-rl;
   text-orientation: mixed;
   transform: rotate(180deg);
+  color: var(--fg-dim);
 }
 
 .log-lane-body {
@@ -331,135 +297,130 @@ input.rate-slider::-webkit-slider-thumb {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  padding: 5px 8px 5px 8px;
+  justify-content: center;
+  padding: 5px 8px 6px;
 }
 
 .log-lane-entries {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   overflow: hidden;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 }
 
 .log-entry {
   flex-shrink: 0;
-  height: 22px;
+  height: 20px;
   min-width: 40px;
-  padding: 0 7px;
-  border-radius: 3px;
+  padding: 0 6px;
   display: flex;
   align-items: center;
   font-family: var(--font-mono);
   font-size: 9px;
-  font-weight: 500;
   font-variant-numeric: tabular-nums;
-  border: 1px solid transparent;
+  border: 1px solid var(--rule-lt);
+  color: var(--fg-mid);
   white-space: nowrap;
 }
+/* shard-specific tones for entries */
+.log-entry.s0 { border-color: #000; color: #000; }
+.log-entry.s1 { border-color: #666; color: #555; }
+.log-entry.s2 { border-color: #aaa; color: #888; }
 
 @keyframes entry-in {
-  from { opacity: 0; transform: translateX(-6px); }
+  from { opacity: 0; transform: translateX(-5px); }
   to   { opacity: 1; transform: translateX(0); }
 }
-.log-entry.new { animation: entry-in 0.2s ease-out; }
+.log-entry.new { animation: entry-in 0.18s ease-out; }
 
 .replicated-bar-wrap {
-  height: 3px;
-  background: var(--border);
-  border-radius: 2px;
-  overflow: hidden;
+  height: 2px;
+  background: var(--rule-lt);
 }
 .replicated-bar {
   height: 100%;
-  border-radius: 2px;
+  background: var(--fg);
   transition: width 0.4s ease;
 }
 
-/* ─── Destination shards ─────────────────────────────────────────────────── */
+/* ─── Destination rows ────────────────────────────────────────────────────── */
 .dest-shard-row {
   display: grid;
-  grid-template-columns: 30px 1fr auto;
+  grid-template-columns: 22px 1fr auto;
   align-items: center;
   gap: 10px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--rule-lt);
 }
 .dest-shard-row:last-child { border-bottom: none; }
 
-.dest-info { min-width: 0; }
-.dest-lsn-line {
+.dest-index {
   font-family: var(--font-mono);
   font-size: 10px;
-  color: var(--fg-muted);
-  font-variant-numeric: tabular-nums;
-  margin-bottom: 4px;
+  font-weight: 700;
+  color: var(--fg-dim);
 }
 
-.lag-bar {
-  height: 3px;
-  border-radius: 2px;
-  max-width: 80px;
-  transition: width 0.4s ease, background 0.4s;
+.dest-info { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+
+.dest-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fg);
 }
+
+.dest-lsn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.lag-bar-wrap { height: 2px; background: var(--rule-lt); margin-top: 2px; max-width: 70px; }
+.lag-bar      { height: 100%; background: var(--fg); transition: width 0.4s ease; }
 
 .lag-pill {
   font-family: var(--font-mono);
   font-size: 9px;
-  font-weight: 700;
-  padding: 3px 8px;
-  border-radius: 10px;
+  padding: 2px 6px;
+  border: 1px solid var(--fg-faint);
+  color: var(--fg-dim);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   align-self: flex-start;
 }
+.lag-pill.zero   { border-color: var(--fg-faint); color: var(--fg-faint); }
+.lag-pill.low    { border-color: var(--fg-dim);   color: var(--fg-dim);   }
+.lag-pill.medium { border-color: var(--fg-mid);   color: var(--fg-mid);   }
+.lag-pill.high   { border-color: var(--fg);       color: var(--fg);       font-weight: 700; }
 
-/* ─── Stats bar ──────────────────────────────────────────────────────────── */
+/* ─── Stats bar ───────────────────────────────────────────────────────────── */
 .stats-bar {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 28px;
   padding: 14px 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--rule);
 }
-.stat-item { display: flex; flex-direction: column; gap: 2px; }
+.stat-item { display: flex; flex-direction: column; gap: 1px; }
 .stat-key {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-variant: small-caps;
+  letter-spacing: 0.07em;
   color: var(--fg-dim);
 }
 .stat-val {
   font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
   color: var(--fg);
 }
-.stat-val.green { color: var(--green); }
-.stat-val.amber { color: var(--amber); }
-.stat-val.blue  { color: var(--blue); }
 
-/* ─── Legend ─────────────────────────────────────────────────────────────── */
-.legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 6px 0 18px;
-}
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--fg-muted);
-}
-.legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
-
-/* ─── Particle canvas ────────────────────────────────────────────────────── */
+/* ─── Particle canvas ─────────────────────────────────────────────────────── */
 #particle-layer {
   position: fixed;
   top: 0; left: 0;
@@ -467,7 +428,7 @@ input.rate-slider::-webkit-slider-thumb {
   pointer-events: none;
   z-index: 0;
 }
-.pipeline, .header, .legend, .stats-bar { position: relative; z-index: 1; }
+.pipeline, .header, .stats-bar { position: relative; z-index: 1; }
 </style>
 </head>
 <body>
@@ -491,13 +452,6 @@ input.rate-slider::-webkit-slider-thumb {
   </div>
 </div>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Fast</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Normal</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Lagging</div>
-  <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Stalled</div>
-</div>
-
 <div class="pipeline" id="pipeline">
 
   <div class="panel-wrap">
@@ -508,35 +462,35 @@ input.rate-slider::-webkit-slider-thumb {
   </div>
 
   <div class="connector">
-    <svg width="52" height="200" viewBox="0 0 52 200" style="width:52px;overflow:visible">
+    <svg width="40" height="200" viewBox="0 0 40 200" style="width:40px;overflow:visible">
       <defs>
-        <marker id="ah1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="#c5cbdb"/>
+        <marker id="ah1" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L5,2.5 L0,5 Z" fill="#000"/>
         </marker>
       </defs>
-      <line x1="26" y1="10" x2="26" y2="190" stroke="#c5cbdb" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ah1)"/>
+      <line x1="20" y1="8" x2="20" y2="188" stroke="#000" stroke-width="1" marker-end="url(#ah1)"/>
     </svg>
   </div>
 
   <div class="panel-wrap">
-    <div class="panel-label">Replication Log Store</div>
+    <div class="panel-label">Replication Log</div>
     <div class="panel">
       <div class="log-header">
-        <span class="log-title">WAL / Log</span>
-        <span class="log-stat">total: <span id="total-entries">0</span></span>
+        <span class="log-title">Write-Ahead Log</span>
+        <span class="log-stat">n = <span id="total-entries">0</span></span>
       </div>
       <div id="log-lanes"></div>
     </div>
   </div>
 
   <div class="connector">
-    <svg width="52" height="200" viewBox="0 0 52 200" style="width:52px;overflow:visible">
+    <svg width="40" height="200" viewBox="0 0 40 200" style="width:40px;overflow:visible">
       <defs>
-        <marker id="ah2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-          <path d="M0,0 L6,3 L0,6 Z" fill="#c5cbdb"/>
+        <marker id="ah2" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto">
+          <path d="M0,0 L5,2.5 L0,5 Z" fill="#000"/>
         </marker>
       </defs>
-      <line x1="26" y1="10" x2="26" y2="190" stroke="#c5cbdb" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ah2)"/>
+      <line x1="20" y1="8" x2="20" y2="188" stroke="#000" stroke-width="1" marker-end="url(#ah2)"/>
     </svg>
   </div>
 
@@ -552,15 +506,15 @@ input.rate-slider::-webkit-slider-thumb {
 <div class="stats-bar">
   <div class="stat-item">
     <div class="stat-key">Log entries</div>
-    <div class="stat-val blue" id="stat-total">0</div>
+    <div class="stat-val" id="stat-total">0</div>
   </div>
   <div class="stat-item">
     <div class="stat-key">Shards caught up</div>
-    <div class="stat-val green" id="stat-caught">0 / 3</div>
+    <div class="stat-val" id="stat-caught">0 / 3</div>
   </div>
   <div class="stat-item">
     <div class="stat-key">Max lag</div>
-    <div class="stat-val amber" id="stat-maxlag">0</div>
+    <div class="stat-val" id="stat-maxlag">0</div>
   </div>
   <div class="stat-item">
     <div class="stat-key">Sim time</div>
@@ -573,11 +527,9 @@ input.rate-slider::-webkit-slider-thumb {
 const NUM_SHARDS = 3;
 const MAX_LOG_VISIBLE = 6;
 
-const SHARD_COLORS = [
-  { color: '#2669cc', dim: 'rgba(38,105,204,0.10)' },
-  { color: '#1a9e50', dim: 'rgba(26,158,80,0.10)'  },
-  { color: '#9040c0', dim: 'rgba(144,64,192,0.10)' },
-];
+// Per-shard grayscale tones for particles
+const SHARD_TONES = ['#000000', '#555555', '#aaaaaa'];
+const SHARD_CLASSES = ['s0', 's1', 's2'];
 
 // ─── State ────────────────────────────────────────────────────────────────
 let running = true;
@@ -586,10 +538,6 @@ let simTime = 0;
 let lastFrame = performance.now();
 let totalEntries = 0;
 
-// Each shard has independent rates, all start slow
-// writeRate: source entries/sim-sec
-// logRate:   log-store ingestion entries/sim-sec
-// destRate:  destination apply entries/sim-sec
 const DEFAULT_WRITE = [1.5, 1.0, 2.0];
 const DEFAULT_LOG   = [2.5, 2.0, 3.5];
 const DEFAULT_DEST  = [0.8, 1.5, 0.5];
@@ -597,16 +545,13 @@ const DEFAULT_DEST  = [0.8, 1.5, 0.5];
 const shards = Array.from({ length: NUM_SHARDS }, (_, i) => ({
   id: i,
   name: `shard-0${i}`,
-  sourceLSN: 0,
-  logLSN: 0,
-  destLSN: 0,
-  _srcAcc: 0,
-  _logAcc: 0,
-  _dstAcc: 0,
+  sourceLSN: 0, logLSN: 0, destLSN: 0,
+  _srcAcc: 0, _logAcc: 0, _dstAcc: 0,
   writeRate: DEFAULT_WRITE[i],
   logRate:   DEFAULT_LOG[i],
   destRate:  DEFAULT_DEST[i],
-  color: SHARD_COLORS[i],
+  tone: SHARD_TONES[i],
+  cls:  SHARD_CLASSES[i],
   logEntries: [],
   particles: [],
   _pAcc: { src: 0, dst: 0 },
@@ -621,27 +566,25 @@ const ctx        = canvas.getContext('2d');
 
 // ─── Build DOM ────────────────────────────────────────────────────────────
 function classifyRate(r) {
-  if (r < 0.6)  return { label: 'stalled', bg: 'var(--red-dim)',   fg: 'var(--red)'   };
-  if (r < 1.2)  return { label: 'lagging', bg: 'var(--amber-dim)', fg: 'var(--amber)' };
-  if (r < 2.5)  return { label: 'normal',  bg: 'var(--blue-dim)',  fg: 'var(--blue)'  };
-  return              { label: 'fast',    bg: 'var(--green-dim)', fg: 'var(--green)' };
+  if (r < 0.6)  return 'stalled';
+  if (r < 1.2)  return 'lagging';
+  if (r < 2.5)  return 'normal';
+  return 'fast';
 }
 
 shards.forEach(s => {
-  const c = s.color;
-
-  // Source row — includes three rate sliders (write, log ingest, dest apply)
+  // Source row
   const srcRow = document.createElement('div');
   srcRow.className = 'shard-row';
   srcRow.id = `src-row-${s.id}`;
   srcRow.innerHTML = `
-    <div class="shard-dot" style="background:${c.dim};color:${c.color};border:1px solid ${c.color}30">S${s.id}</div>
+    <div class="shard-index">${s.id}</div>
     <div class="shard-info">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+      <div class="shard-name-row">
         <div class="shard-name">${s.name}</div>
-        <div class="rate-badge" id="src-badge-${s.id}" style="background:var(--blue-dim);color:var(--blue)">normal</div>
+        <div class="rate-badge normal" id="src-badge-${s.id}">normal</div>
       </div>
-      <div class="shard-lsn">Source LSN: <span class="lsn-val" id="src-lsn-${s.id}">0</span></div>
+      <div class="shard-lsn">LSN: <span class="lsn-val" id="src-lsn-${s.id}">0</span></div>
       <div class="rate-block">
         <div class="rate-slider-row">
           <span class="rate-slider-label">write rate</span>
@@ -681,11 +624,11 @@ shards.forEach(s => {
   lane.className = 'log-lane';
   lane.id = `log-lane-${s.id}`;
   lane.innerHTML = `
-    <div class="log-lane-tag" style="background:${c.dim};color:${c.color}">${s.name.slice(-3)}</div>
+    <div class="log-lane-tag">${s.name.slice(-3)}</div>
     <div class="log-lane-body">
       <div class="log-lane-entries" id="log-entries-${s.id}"></div>
       <div class="replicated-bar-wrap">
-        <div class="replicated-bar" id="rep-bar-${s.id}" style="background:${c.color};width:0%"></div>
+        <div class="replicated-bar" id="rep-bar-${s.id}" style="width:0%"></div>
       </div>
     </div>
   `;
@@ -696,13 +639,13 @@ shards.forEach(s => {
   dstRow.className = 'dest-shard-row';
   dstRow.id = `dst-row-${s.id}`;
   dstRow.innerHTML = `
-    <div class="shard-dot" style="background:${c.dim};color:${c.color};border:1px solid ${c.color}30">D${s.id}</div>
+    <div class="dest-index">${s.id}</div>
     <div class="dest-info">
-      <div class="shard-name">${s.name}</div>
-      <div class="dest-lsn-line">Applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></div>
-      <div class="lag-bar" id="lag-bar-${s.id}" style="background:${c.color};width:0px"></div>
+      <div class="dest-name">${s.name}</div>
+      <div class="dest-lsn">applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></div>
+      <div class="lag-bar-wrap"><div class="lag-bar" id="lag-bar-${s.id}" style="width:0px"></div></div>
     </div>
-    <div class="lag-pill" id="lag-pill-${s.id}" style="background:var(--green-dim);color:var(--green)">+0</div>
+    <div class="lag-pill zero" id="lag-pill-${s.id}">+0</div>
   `;
   destCont.appendChild(dstRow);
 });
@@ -716,14 +659,13 @@ document.getElementById('play-btn').addEventListener('click', function() {
 });
 
 document.getElementById('step-btn').addEventListener('click', () => {
-  // Pause if running, then advance by one step (0.5 sim-seconds)
   if (running) {
     running = false;
     document.getElementById('play-btn').textContent = '▶ Play';
     document.getElementById('play-btn').classList.remove('active');
   }
-  const STEP_DT = 0.5; // sim-seconds per manual step
-  simStep(STEP_DT / globalSpeed); // convert back to "real dt" so simStep scales it
+  const STEP_SIM = 0.5;
+  simStep(STEP_SIM / globalSpeed);
   updateDOM();
 });
 
@@ -731,20 +673,19 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   shards.forEach(s => {
     s.sourceLSN = s.logLSN = s.destLSN = 0;
     s._srcAcc = s._logAcc = s._dstAcc = 0;
-    s.logEntries = [];
-    s.particles = [];
+    s.logEntries = []; s.particles = [];
     s._pAcc = { src: 0, dst: 0 };
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
+    document.getElementById(`rep-bar-${s.id}`).style.width = '0%';
   });
-  totalEntries = 0;
-  simTime = 0;
+  totalEntries = 0; simTime = 0;
 });
 
 const speedInput = document.getElementById('global-speed');
 const speedDisp  = document.getElementById('speed-disp');
 speedInput.addEventListener('input', function() {
   globalSpeed = parseFloat(this.value);
-  speedDisp.textContent = globalSpeed.toFixed(2).replace(/\.?0+$/,'') + '×';
+  speedDisp.textContent = globalSpeed.toFixed(2).replace(/0+$/, '').replace(/\.$/, '') + '×';
 });
 
 // ─── Canvas ───────────────────────────────────────────────────────────────
@@ -764,19 +705,14 @@ function spawnParticle(shard, phase) {
   const logEl = document.getElementById(`log-lane-${shard.id}`);
   const dstEl = document.getElementById(`dst-row-${shard.id}`);
   if (!srcEl || !logEl || !dstEl) return;
-
   const start = phase === 'src-to-log' ? getCenter(srcEl) : getCenter(logEl);
   const end   = phase === 'src-to-log' ? getCenter(logEl) : getCenter(dstEl);
-  const cx = (start.x + end.x) / 2 + (Math.random() - 0.5) * 20;
-  const cy = (start.y + end.y) / 2 - 15;
-
+  const cx = (start.x + end.x) / 2 + (Math.random() - 0.5) * 16;
+  const cy = (start.y + end.y) / 2 - 12;
   shard.particles.push({
-    t: 0, dur: 0.7 + Math.random() * 0.4,
-    sx: start.x, sy: start.y,
-    cx, cy,
-    ex: end.x, ey: end.y,
-    color: shard.color.color,
-    r: 3 + Math.random() * 1.5,
+    t: 0, dur: 0.65 + Math.random() * 0.35,
+    sx: start.x, sy: start.y, cx, cy, ex: end.x, ey: end.y,
+    tone: shard.tone, r: 2.5,
   });
 }
 
@@ -790,11 +726,9 @@ function drawParticles(dt) {
       const x = (1-t)*(1-t)*p.sx + 2*(1-t)*t*p.cx + t*t*p.ex;
       const y = (1-t)*(1-t)*p.sy + 2*(1-t)*t*p.cy + t*t*p.ey;
       const fade = t < 0.75 ? 1 : (1 - t) / 0.25;
-      const a = Math.round(fade * 200).toString(16).padStart(2,'0');
+      const alpha = Math.round(fade * 180).toString(16).padStart(2,'0');
       ctx.beginPath(); ctx.arc(x, y, p.r, 0, Math.PI*2);
-      ctx.fillStyle = p.color + a; ctx.fill();
-      ctx.beginPath(); ctx.arc(x, y, p.r + 3, 0, Math.PI*2);
-      ctx.fillStyle = p.color + Math.round(fade * 35).toString(16).padStart(2,'0');
+      ctx.fillStyle = p.tone + alpha;
       ctx.fill();
       return true;
     });
@@ -802,20 +736,18 @@ function drawParticles(dt) {
 }
 
 // ─── Simulation ───────────────────────────────────────────────────────────
-const PARTICLE_EVERY = 3; // spawn a particle every N new entries
+const PARTICLE_EVERY = 3;
 
 function simStep(dtReal) {
-  if (!running) return;
-  const dt = dtReal * globalSpeed;
+  if (!running && dtReal === undefined) return;
+  const dt = (dtReal ?? 0) * globalSpeed;
   simTime += dt;
 
   shards.forEach(s => {
-    // Source writes
     s._srcAcc += s.writeRate * dt;
     const ns = Math.floor(s._srcAcc);
     if (ns > 0) { s._srcAcc -= ns; s.sourceLSN += ns; s._pAcc.src += ns; }
 
-    // Log store ingestion
     const lb = s.sourceLSN - s.logLSN;
     s._logAcc += Math.min(lb, s.logRate * dt);
     const nl = Math.floor(s._logAcc);
@@ -825,13 +757,11 @@ function simStep(dtReal) {
       if (s.logEntries.length > 150) s.logEntries = s.logEntries.slice(-150);
     }
 
-    // Destination apply
     const db = s.logLSN - s.destLSN;
     s._dstAcc += Math.min(db, s.destRate * dt);
     const nd = Math.floor(s._dstAcc);
     if (nd > 0) { s._dstAcc -= nd; s.destLSN += nd; s._pAcc.dst += nd; }
 
-    // Particles
     if (s._pAcc.src >= PARTICLE_EVERY) {
       s._pAcc.src -= PARTICLE_EVERY;
       if (Math.random() < 0.7) spawnParticle(s, 'src-to-log');
@@ -848,7 +778,6 @@ let domAcc = 0;
 
 function updateDOM() {
   let caughtUp = 0, maxLag = 0;
-
   shards.forEach(s => {
     const lag = s.sourceLSN - s.destLSN;
     if (lag === 0) caughtUp++;
@@ -858,47 +787,35 @@ function updateDOM() {
 
     const cls = classifyRate(s.writeRate);
     const badge = document.getElementById(`src-badge-${s.id}`);
-    badge.textContent = cls.label;
-    badge.style.background = cls.bg;
-    badge.style.color = cls.fg;
+    badge.textContent = cls;
+    badge.className = `rate-badge ${cls}`;
 
-    // Log entries
     const laneEl = document.getElementById(`log-entries-${s.id}`);
     const visible = s.logEntries.slice(-MAX_LOG_VISIBLE);
     const existing = new Set([...laneEl.querySelectorAll('.log-entry')].map(e => e.dataset.lsn));
     visible.forEach(entry => {
       if (!existing.has(String(entry.lsn))) {
         const el = document.createElement('div');
-        el.className = 'log-entry new';
+        el.className = `log-entry ${s.cls} new`;
         el.dataset.lsn = entry.lsn;
-        el.style.background = s.color.dim;
-        el.style.color = s.color.color;
-        el.style.borderColor = s.color.color + '25';
         el.textContent = entry.lsn.toLocaleString();
         laneEl.appendChild(el);
-        setTimeout(() => el.classList.remove('new'), 250);
+        setTimeout(() => el.classList.remove('new'), 200);
       }
     });
     while (laneEl.children.length > MAX_LOG_VISIBLE) laneEl.removeChild(laneEl.firstChild);
 
-    // Progress bar
     const repBar = document.getElementById(`rep-bar-${s.id}`);
     if (s.logLSN > 0) repBar.style.width = Math.min(100, (s.destLSN / s.logLSN) * 100) + '%';
 
     document.getElementById(`dst-lsn-${s.id}`).textContent = s.destLSN.toLocaleString();
 
-    // Lag pill
     const lagPill = document.getElementById(`lag-pill-${s.id}`);
     lagPill.textContent = '+' + lag.toLocaleString();
-    if (lag === 0)     { lagPill.style.background = 'var(--green-dim)'; lagPill.style.color = 'var(--green)'; }
-    else if (lag < 10) { lagPill.style.background = 'var(--blue-dim)';  lagPill.style.color = 'var(--blue)';  }
-    else if (lag < 30) { lagPill.style.background = 'var(--amber-dim)'; lagPill.style.color = 'var(--amber)'; }
-    else               { lagPill.style.background = 'var(--red-dim)';   lagPill.style.color = 'var(--red)';   }
+    lagPill.className = 'lag-pill ' + (lag === 0 ? 'zero' : lag < 10 ? 'low' : lag < 30 ? 'medium' : 'high');
 
-    // Lag bar
     const lagBar = document.getElementById(`lag-bar-${s.id}`);
-    lagBar.style.width = Math.min(80, lag * 1.5) + 'px';
-    lagBar.style.background = lag === 0 ? 'var(--green)' : lag < 10 ? 'var(--blue)' : lag < 30 ? 'var(--amber)' : 'var(--red)';
+    lagBar.style.width = Math.min(70, lag * 1.4) + 'px';
   });
 
   document.getElementById('total-entries').textContent = totalEntries.toLocaleString();
@@ -912,7 +829,7 @@ function updateDOM() {
 function frame(now) {
   const dtReal = Math.min((now - lastFrame) / 1000, 0.1);
   lastFrame = now;
-  simStep(dtReal);
+  if (running) simStep(dtReal);
   drawParticles(dtReal);
   domAcc += dtReal;
   if (domAcc >= 0.06) { updateDOM(); domAcc = 0; }

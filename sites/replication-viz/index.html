@@ -486,6 +486,7 @@ input.rate-slider::-webkit-slider-thumb {
       <span class="speed-val" id="speed-disp">0.4×</span>
     </div>
     <button class="btn active" id="play-btn">⏸ Pause</button>
+    <button class="btn" id="step-btn">→ Step</button>
     <button class="btn" id="reset-btn">↺ Reset</button>
   </div>
 </div>
@@ -712,6 +713,18 @@ document.getElementById('play-btn').addEventListener('click', function() {
   this.textContent = running ? '⏸ Pause' : '▶ Play';
   this.classList.toggle('active', running);
   if (running) lastFrame = performance.now();
+});
+
+document.getElementById('step-btn').addEventListener('click', () => {
+  // Pause if running, then advance by one step (0.5 sim-seconds)
+  if (running) {
+    running = false;
+    document.getElementById('play-btn').textContent = '▶ Play';
+    document.getElementById('play-btn').classList.remove('active');
+  }
+  const STEP_DT = 0.5; // sim-seconds per manual step
+  simStep(STEP_DT / globalSpeed); // convert back to "real dt" so simStep scales it
+  updateDOM();
 });
 
 document.getElementById('reset-btn').addEventListener('click', () => {

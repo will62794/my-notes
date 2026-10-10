@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Welcome to My Personal Sites</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f3f6f9;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background: #22223b;
+      color: #fff;
+      padding: 2rem 1rem 1.5rem 1rem;
+      text-align: center;
+    }
+    h1 {
+      margin-bottom: 0.2em;
+      font-size: 2.5em;
+      letter-spacing: 1px;
+    }
+    p {
+      margin-top: 0.2em;
+    }
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 3rem 0;
+    }
+    .site-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      width: 90%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .site-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(40,44,52,0.10);
+      padding: 1.5rem 1.2rem;
+      text-align: center;
+      transition: box-shadow 0.2s;
+    }
+    .site-card:hover {
+      box-shadow: 0 6px 24px rgba(34,34,59,.15);
+    }
+    .site-card h2 {
+      margin: 0.5em 0 0.2em 0;
+      font-size: 1.35em;
+      color: #22223b;
+    }
+    .site-card p {
+      color: #4a4e69;
+      font-size: 1em;
+      margin-bottom: 1em;
+    }
+    .site-card a {
+      display: inline-block;
+      margin-top: 0.7em;
+      padding: 0.5em 1.3em;
+      background: #4a4e69;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .site-card a:hover {
+      background: #22223b;
+    }
+    @media (max-width: 600px) {
+      header {
+        padding: 1.2rem 0.2rem;
+      }
+      h1 {
+        font-size: 1.5em;
+      }
+      .site-list {
+        width: 99%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Welcome to My Personal Site Hub</h1>
+    <p>Explore my collection of personal pages below</p>
+  </header>
+  <main>
+    <section class="site-list">
+      <!-- Example personal site cards; replace hrefs/titles/descriptions as needed -->
+      <div class="site-card">
+        <h2><a href="/blog/">Blog</a></h2>
+        <p>Read my latest articles, musings, and deep dives on tech and life.</p>
+        <a href="/blog/">Visit Blog</a>
+      </div>
+      <div class="site-card">
+        <h2><a href="/portfolio/">Portfolio</a></h2>
+        <p>See a showcase of my favorite and recent projects.</p>
+        <a href="/portfolio/">View Portfolio</a>
+      </div>
+      <div class="site-card">
+        <h2><a href="/about/">About Me</a></h2>
+        <p>Learn more about my background, interests, and journey.</p>
+        <a href="/about/">Get to Know Me</a>
+      </div>
+      <div class="site-card">
+        <h2><a href="/contact/">Contact</a></h2>
+        <p>Reach out for project inquiries, collaborations, or just to connect.</p>
+        <a href="/contact/">Contact Me</a>
+      </div>
+      <!-- Add more personal site pages here -->
+    </section>
+  </main>
+</body>
+</html>

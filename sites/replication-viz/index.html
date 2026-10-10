@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Shard Replication Flow</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap">
+<style>
+/* ─── Design tokens — light only ────────────────────────────────────────────
+   Layout: three-column pipeline: Source → Log Store → Destination
+   ─────────────────────────────────────────────────────────────────────────── */
+:root {
+  --bg:          #f4f6f9;
+  --surface:     #ffffff;
+  --surface-2:   #f0f2f6;
+  --border:      #dde1ea;
+  --border-hi:   #c5cbdb;
+  --fg:          #1e2433;
+  --fg-muted:    #6b7491;
+  --fg-dim:      #a8b0c8;
+  --green:       #1a9e50;
+  --green-dim:   rgba(26,158,80,0.10);
+  --blue:        #2669cc;
+  --blue-dim:    rgba(38,105,204,0.10);
+  --amber:       #c07010;
+  --amber-dim:   rgba(192,112,16,0.10);
+  --red:         #c03030;
+  --red-dim:     rgba(192,48,48,0.10);
+  --font-mono:   'JetBrains Mono', 'Courier New', monospace;
+  --font-ui:     'Inter', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+  padding: 0 20px;
+  padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 20px);
+  overflow-x: hidden;
+}
+
+/* ─── Header ─────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 22px 0 16px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 20px;
+}
+
+.header-left { display: flex; flex-direction: column; gap: 3px; }
+
+.header h1 {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fg);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.header-sub {
+  font-size: 11px;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 5px;
+  border: 1px solid var(--border-hi);
+  background: var(--surface);
+  color: var(--fg);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover { background: var(--surface-2); border-color: var(--blue); }
+.btn.active { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.speed-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.speed-val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--blue);
+  min-width: 28px;
+  text-align: right;
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  height: 3px;
+  background: var(--border-hi);
+  border-radius: 2px;
+  cursor: pointer;
+  width: 80px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--blue);
+  cursor: pointer;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* ─── Pipeline layout ─────────────────────────────────────────────────────── */
+.pipeline {
+  display: grid;
+  grid-template-columns: 1fr 52px 1fr 52px 1fr;
+  gap: 0;
+  align-items: start;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 680px) {
+  .pipeline { grid-template-columns: 1fr; gap: 8px; }
+  .connector { display: none; }
+}
+
+.panel-wrap { display: flex; flex-direction: column; }
+
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  margin-bottom: 7px;
+  padding: 0 2px;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+/* ─── Source shards ───────────────────────────────────────────────────────── */
+.shard-row {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-items: start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.shard-row:last-child { border-bottom: none; }
+
+.shard-dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.shard-info { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+
+.shard-name {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg);
+}
+
+.shard-lsn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.lsn-val { color: var(--fg); font-weight: 600; }
+
+/* Rate control block inside source row */
+.rate-block {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.rate-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.rate-badge {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.rate-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.rate-slider-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--fg-muted);
+  white-space: nowrap;
+}
+input.rate-slider {
+  width: 100%;
+  flex: 1;
+  height: 2px;
+}
+input.rate-slider::-webkit-slider-thumb {
+  width: 11px;
+  height: 11px;
+}
+.rate-slider-val {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--fg);
+  min-width: 26px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Connector arrows ────────────────────────────────────────────────────── */
+.connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 36px;
+}
+
+/* ─── Log Store ───────────────────────────────────────────────────────────── */
+.log-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 13px 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+}
+.log-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.log-stat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+}
+.log-stat span { color: var(--fg); font-weight: 600; }
+
+.log-lane {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  min-height: 42px;
+  overflow: hidden;
+}
+.log-lane:last-child { border-bottom: none; }
+
+.log-lane-tag {
+  flex-shrink: 0;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+}
+
+.log-lane-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 5px 8px 5px 8px;
+}
+
+.log-lane-entries {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.log-entry {
+  flex-shrink: 0;
+  height: 22px;
+  min-width: 40px;
+  padding: 0 7px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+@keyframes entry-in {
+  from { opacity: 0; transform: translateX(-6px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.log-entry.new { animation: entry-in 0.2s ease-out; }
+
+.replicated-bar-wrap {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.replicated-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+/* ─── Destination shards ─────────────────────────────────────────────────── */
+.dest-shard-row {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.dest-shard-row:last-child { border-bottom: none; }
+
+.dest-info { min-width: 0; }
+.dest-lsn-line {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 4px;
+}
+
+.lag-bar {
+  height: 3px;
+  border-radius: 2px;
+  max-width: 80px;
+  transition: width 0.4s ease, background 0.4s;
+}
+
+.lag-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  align-self: flex-start;
+}
+
+/* ─── Stats bar ──────────────────────────────────────────────────────────── */
+.stats-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.stat-item { display: flex; flex-direction: column; gap: 2px; }
+.stat-key {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+.stat-val {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+}
+.stat-val.green { color: var(--green); }
+.stat-val.amber { color: var(--amber); }
+.stat-val.blue  { color: var(--blue); }
+
+/* ─── Legend ─────────────────────────────────────────────────────────────── */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 6px 0 18px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-muted);
+}
+.legend-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* ─── Particle canvas ────────────────────────────────────────────────────── */
+#particle-layer {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+.pipeline, .header, .legend, .stats-bar { position: relative; z-index: 1; }
+</style>
+</head>
+<body>
+
+<canvas id="particle-layer"></canvas>
+
+<div class="header">
+  <div class="header-left">
+    <h1>Shard Replication Flow</h1>
+    <div class="header-sub">source shards → log store → standby cluster</div>
+  </div>
+  <div class="controls">
+    <div class="speed-control">
+      <span class="speed-label">Speed</span>
+      <input type="range" id="global-speed" min="0.1" max="2" step="0.05" value="0.4">
+      <span class="speed-val" id="speed-disp">0.4×</span>
+    </div>
+    <button class="btn active" id="play-btn">⏸ Pause</button>
+    <button class="btn" id="reset-btn">↺ Reset</button>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Fast</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Normal</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Lagging</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--red)"></div>Stalled</div>
+</div>
+
+<div class="pipeline" id="pipeline">
+
+  <div class="panel-wrap">
+    <div class="panel-label">Source Cluster</div>
+    <div class="panel">
+      <div id="source-shards"></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg width="52" height="200" viewBox="0 0 52 200" style="width:52px;overflow:visible">
+      <defs>
+        <marker id="ah1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#c5cbdb"/>
+        </marker>
+      </defs>
+      <line x1="26" y1="10" x2="26" y2="190" stroke="#c5cbdb" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ah1)"/>
+    </svg>
+  </div>
+
+  <div class="panel-wrap">
+    <div class="panel-label">Replication Log Store</div>
+    <div class="panel">
+      <div class="log-header">
+        <span class="log-title">WAL / Log</span>
+        <span class="log-stat">total: <span id="total-entries">0</span></span>
+      </div>
+      <div id="log-lanes"></div>
+    </div>
+  </div>
+
+  <div class="connector">
+    <svg width="52" height="200" viewBox="0 0 52 200" style="width:52px;overflow:visible">
+      <defs>
+        <marker id="ah2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#c5cbdb"/>
+        </marker>
+      </defs>
+      <line x1="26" y1="10" x2="26" y2="190" stroke="#c5cbdb" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#ah2)"/>
+    </svg>
+  </div>
+
+  <div class="panel-wrap">
+    <div class="panel-label">Standby Cluster</div>
+    <div class="panel">
+      <div id="dest-shards"></div>
+    </div>
+  </div>
+
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <div class="stat-key">Log entries</div>
+    <div class="stat-val blue" id="stat-total">0</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-key">Shards caught up</div>
+    <div class="stat-val green" id="stat-caught">0 / 3</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-key">Max lag</div>
+    <div class="stat-val amber" id="stat-maxlag">0</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-key">Sim time</div>
+    <div class="stat-val" id="stat-time">0.0s</div>
+  </div>
+</div>
+
+<script>
+// ─── Config ───────────────────────────────────────────────────────────────
+const NUM_SHARDS = 3;
+const MAX_LOG_VISIBLE = 6;
+
+const SHARD_COLORS = [
+  { color: '#2669cc', dim: 'rgba(38,105,204,0.10)' },
+  { color: '#1a9e50', dim: 'rgba(26,158,80,0.10)'  },
+  { color: '#9040c0', dim: 'rgba(144,64,192,0.10)' },
+];
+
+// ─── State ────────────────────────────────────────────────────────────────
+let running = true;
+let globalSpeed = 0.4;
+let simTime = 0;
+let lastFrame = performance.now();
+let totalEntries = 0;
+
+// Each shard has independent rates, all start slow
+// writeRate: source entries/sim-sec
+// logRate:   log-store ingestion entries/sim-sec
+// destRate:  destination apply entries/sim-sec
+const DEFAULT_WRITE = [1.5, 1.0, 2.0];
+const DEFAULT_LOG   = [2.5, 2.0, 3.5];
+const DEFAULT_DEST  = [0.8, 1.5, 0.5];
+
+const shards = Array.from({ length: NUM_SHARDS }, (_, i) => ({
+  id: i,
+  name: `shard-0${i}`,
+  sourceLSN: 0,
+  logLSN: 0,
+  destLSN: 0,
+  _srcAcc: 0,
+  _logAcc: 0,
+  _dstAcc: 0,
+  writeRate: DEFAULT_WRITE[i],
+  logRate:   DEFAULT_LOG[i],
+  destRate:  DEFAULT_DEST[i],
+  color: SHARD_COLORS[i],
+  logEntries: [],
+  particles: [],
+  _pAcc: { src: 0, dst: 0 },
+}));
+
+// ─── DOM refs ─────────────────────────────────────────────────────────────
+const sourceCont = document.getElementById('source-shards');
+const logLanesEl = document.getElementById('log-lanes');
+const destCont   = document.getElementById('dest-shards');
+const canvas     = document.getElementById('particle-layer');
+const ctx        = canvas.getContext('2d');
+
+// ─── Build DOM ────────────────────────────────────────────────────────────
+function classifyRate(r) {
+  if (r < 0.6)  return { label: 'stalled', bg: 'var(--red-dim)',   fg: 'var(--red)'   };
+  if (r < 1.2)  return { label: 'lagging', bg: 'var(--amber-dim)', fg: 'var(--amber)' };
+  if (r < 2.5)  return { label: 'normal',  bg: 'var(--blue-dim)',  fg: 'var(--blue)'  };
+  return              { label: 'fast',    bg: 'var(--green-dim)', fg: 'var(--green)' };
+}
+
+shards.forEach(s => {
+  const c = s.color;
+
+  // Source row — includes three rate sliders (write, log ingest, dest apply)
+  const srcRow = document.createElement('div');
+  srcRow.className = 'shard-row';
+  srcRow.id = `src-row-${s.id}`;
+  srcRow.innerHTML = `
+    <div class="shard-dot" style="background:${c.dim};color:${c.color};border:1px solid ${c.color}30">S${s.id}</div>
+    <div class="shard-info">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <div class="shard-name">${s.name}</div>
+        <div class="rate-badge" id="src-badge-${s.id}" style="background:var(--blue-dim);color:var(--blue)">normal</div>
+      </div>
+      <div class="shard-lsn">Source LSN: <span class="lsn-val" id="src-lsn-${s.id}">0</span></div>
+      <div class="rate-block">
+        <div class="rate-slider-row">
+          <span class="rate-slider-label">write rate</span>
+          <input type="range" class="rate-slider" id="wr-slider-${s.id}" min="0" max="5" step="0.1" value="${s.writeRate}">
+          <span class="rate-slider-val" id="wr-val-${s.id}">${s.writeRate.toFixed(1)}</span>
+        </div>
+        <div class="rate-slider-row">
+          <span class="rate-slider-label">log ingest</span>
+          <input type="range" class="rate-slider" id="lr-slider-${s.id}" min="0" max="6" step="0.1" value="${s.logRate}">
+          <span class="rate-slider-val" id="lr-val-${s.id}">${s.logRate.toFixed(1)}</span>
+        </div>
+        <div class="rate-slider-row">
+          <span class="rate-slider-label">dest apply</span>
+          <input type="range" class="rate-slider" id="dr-slider-${s.id}" min="0" max="5" step="0.1" value="${s.destRate}">
+          <span class="rate-slider-val" id="dr-val-${s.id}">${s.destRate.toFixed(1)}</span>
+        </div>
+      </div>
+    </div>
+  `;
+  sourceCont.appendChild(srcRow);
+
+  document.getElementById(`wr-slider-${s.id}`).addEventListener('input', function() {
+    s.writeRate = parseFloat(this.value);
+    document.getElementById(`wr-val-${s.id}`).textContent = s.writeRate.toFixed(1);
+  });
+  document.getElementById(`lr-slider-${s.id}`).addEventListener('input', function() {
+    s.logRate = parseFloat(this.value);
+    document.getElementById(`lr-val-${s.id}`).textContent = s.logRate.toFixed(1);
+  });
+  document.getElementById(`dr-slider-${s.id}`).addEventListener('input', function() {
+    s.destRate = parseFloat(this.value);
+    document.getElementById(`dr-val-${s.id}`).textContent = s.destRate.toFixed(1);
+  });
+
+  // Log lane
+  const lane = document.createElement('div');
+  lane.className = 'log-lane';
+  lane.id = `log-lane-${s.id}`;
+  lane.innerHTML = `
+    <div class="log-lane-tag" style="background:${c.dim};color:${c.color}">${s.name.slice(-3)}</div>
+    <div class="log-lane-body">
+      <div class="log-lane-entries" id="log-entries-${s.id}"></div>
+      <div class="replicated-bar-wrap">
+        <div class="replicated-bar" id="rep-bar-${s.id}" style="background:${c.color};width:0%"></div>
+      </div>
+    </div>
+  `;
+  logLanesEl.appendChild(lane);
+
+  // Destination row
+  const dstRow = document.createElement('div');
+  dstRow.className = 'dest-shard-row';
+  dstRow.id = `dst-row-${s.id}`;
+  dstRow.innerHTML = `
+    <div class="shard-dot" style="background:${c.dim};color:${c.color};border:1px solid ${c.color}30">D${s.id}</div>
+    <div class="dest-info">
+      <div class="shard-name">${s.name}</div>
+      <div class="dest-lsn-line">Applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></div>
+      <div class="lag-bar" id="lag-bar-${s.id}" style="background:${c.color};width:0px"></div>
+    </div>
+    <div class="lag-pill" id="lag-pill-${s.id}" style="background:var(--green-dim);color:var(--green)">+0</div>
+  `;
+  destCont.appendChild(dstRow);
+});
+
+// ─── Controls ─────────────────────────────────────────────────────────────
+document.getElementById('play-btn').addEventListener('click', function() {
+  running = !running;
+  this.textContent = running ? '⏸ Pause' : '▶ Play';
+  this.classList.toggle('active', running);
+  if (running) lastFrame = performance.now();
+});
+
+document.getElementById('reset-btn').addEventListener('click', () => {
+  shards.forEach(s => {
+    s.sourceLSN = s.logLSN = s.destLSN = 0;
+    s._srcAcc = s._logAcc = s._dstAcc = 0;
+    s.logEntries = [];
+    s.particles = [];
+    s._pAcc = { src: 0, dst: 0 };
+    document.getElementById(`log-entries-${s.id}`).innerHTML = '';
+  });
+  totalEntries = 0;
+  simTime = 0;
+});
+
+const speedInput = document.getElementById('global-speed');
+const speedDisp  = document.getElementById('speed-disp');
+speedInput.addEventListener('input', function() {
+  globalSpeed = parseFloat(this.value);
+  speedDisp.textContent = globalSpeed.toFixed(2).replace(/\.?0+$/,'') + '×';
+});
+
+// ─── Canvas ───────────────────────────────────────────────────────────────
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ─── Particles ────────────────────────────────────────────────────────────
+function getCenter(el) {
+  if (!el) return { x: 0, y: 0 };
+  const r = el.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+}
+
+function spawnParticle(shard, phase) {
+  const srcEl = document.getElementById(`src-row-${shard.id}`);
+  const logEl = document.getElementById(`log-lane-${shard.id}`);
+  const dstEl = document.getElementById(`dst-row-${shard.id}`);
+  if (!srcEl || !logEl || !dstEl) return;
+
+  const start = phase === 'src-to-log' ? getCenter(srcEl) : getCenter(logEl);
+  const end   = phase === 'src-to-log' ? getCenter(logEl) : getCenter(dstEl);
+  const cx = (start.x + end.x) / 2 + (Math.random() - 0.5) * 20;
+  const cy = (start.y + end.y) / 2 - 15;
+
+  shard.particles.push({
+    t: 0, dur: 0.7 + Math.random() * 0.4,
+    sx: start.x, sy: start.y,
+    cx, cy,
+    ex: end.x, ey: end.y,
+    color: shard.color.color,
+    r: 3 + Math.random() * 1.5,
+  });
+}
+
+function drawParticles(dt) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  shards.forEach(s => {
+    s.particles = s.particles.filter(p => {
+      p.t += dt / p.dur;
+      if (p.t >= 1) return false;
+      const t = p.t;
+      const x = (1-t)*(1-t)*p.sx + 2*(1-t)*t*p.cx + t*t*p.ex;
+      const y = (1-t)*(1-t)*p.sy + 2*(1-t)*t*p.cy + t*t*p.ey;
+      const fade = t < 0.75 ? 1 : (1 - t) / 0.25;
+      const a = Math.round(fade * 200).toString(16).padStart(2,'0');
+      ctx.beginPath(); ctx.arc(x, y, p.r, 0, Math.PI*2);
+      ctx.fillStyle = p.color + a; ctx.fill();
+      ctx.beginPath(); ctx.arc(x, y, p.r + 3, 0, Math.PI*2);
+      ctx.fillStyle = p.color + Math.round(fade * 35).toString(16).padStart(2,'0');
+      ctx.fill();
+      return true;
+    });
+  });
+}
+
+// ─── Simulation ───────────────────────────────────────────────────────────
+const PARTICLE_EVERY = 3; // spawn a particle every N new entries
+
+function simStep(dtReal) {
+  if (!running) return;
+  const dt = dtReal * globalSpeed;
+  simTime += dt;
+
+  shards.forEach(s => {
+    // Source writes
+    s._srcAcc += s.writeRate * dt;
+    const ns = Math.floor(s._srcAcc);
+    if (ns > 0) { s._srcAcc -= ns; s.sourceLSN += ns; s._pAcc.src += ns; }
+
+    // Log store ingestion
+    const lb = s.sourceLSN - s.logLSN;
+    s._logAcc += Math.min(lb, s.logRate * dt);
+    const nl = Math.floor(s._logAcc);
+    if (nl > 0) {
+      s._logAcc -= nl; s.logLSN += nl; totalEntries += nl;
+      for (let e = 0; e < nl; e++) s.logEntries.push({ lsn: s.logLSN - nl + e + 1 });
+      if (s.logEntries.length > 150) s.logEntries = s.logEntries.slice(-150);
+    }
+
+    // Destination apply
+    const db = s.logLSN - s.destLSN;
+    s._dstAcc += Math.min(db, s.destRate * dt);
+    const nd = Math.floor(s._dstAcc);
+    if (nd > 0) { s._dstAcc -= nd; s.destLSN += nd; s._pAcc.dst += nd; }
+
+    // Particles
+    if (s._pAcc.src >= PARTICLE_EVERY) {
+      s._pAcc.src -= PARTICLE_EVERY;
+      if (Math.random() < 0.7) spawnParticle(s, 'src-to-log');
+    }
+    if (s._pAcc.dst >= PARTICLE_EVERY) {
+      s._pAcc.dst -= PARTICLE_EVERY;
+      if (Math.random() < 0.6) spawnParticle(s, 'log-to-dst');
+    }
+  });
+}
+
+// ─── DOM update ───────────────────────────────────────────────────────────
+let domAcc = 0;
+
+function updateDOM() {
+  let caughtUp = 0, maxLag = 0;
+
+  shards.forEach(s => {
+    const lag = s.sourceLSN - s.destLSN;
+    if (lag === 0) caughtUp++;
+    if (lag > maxLag) maxLag = lag;
+
+    document.getElementById(`src-lsn-${s.id}`).textContent = s.sourceLSN.toLocaleString();
+
+    const cls = classifyRate(s.writeRate);
+    const badge = document.getElementById(`src-badge-${s.id}`);
+    badge.textContent = cls.label;
+    badge.style.background = cls.bg;
+    badge.style.color = cls.fg;
+
+    // Log entries
+    const laneEl = document.getElementById(`log-entries-${s.id}`);
+    const visible = s.logEntries.slice(-MAX_LOG_VISIBLE);
+    const existing = new Set([...laneEl.querySelectorAll('.log-entry')].map(e => e.dataset.lsn));
+    visible.forEach(entry => {
+      if (!existing.has(String(entry.lsn))) {
+        const el = document.createElement('div');
+        el.className = 'log-entry new';
+        el.dataset.lsn = entry.lsn;
+        el.style.background = s.color.dim;
+        el.style.color = s.color.color;
+        el.style.borderColor = s.color.color + '25';
+        el.textContent = entry.lsn.toLocaleString();
+        laneEl.appendChild(el);
+        setTimeout(() => el.classList.remove('new'), 250);
+      }
+    });
+    while (laneEl.children.length > MAX_LOG_VISIBLE) laneEl.removeChild(laneEl.firstChild);
+
+    // Progress bar
+    const repBar = document.getElementById(`rep-bar-${s.id}`);
+    if (s.logLSN > 0) repBar.style.width = Math.min(100, (s.destLSN / s.logLSN) * 100) + '%';
+
+    document.getElementById(`dst-lsn-${s.id}`).textContent = s.destLSN.toLocaleString();
+
+    // Lag pill
+    const lagPill = document.getElementById(`lag-pill-${s.id}`);
+    lagPill.textContent = '+' + lag.toLocaleString();
+    if (lag === 0)     { lagPill.style.background = 'var(--green-dim)'; lagPill.style.color = 'var(--green)'; }
+    else if (lag < 10) { lagPill.style.background = 'var(--blue-dim)';  lagPill.style.color = 'var(--blue)';  }
+    else if (lag < 30) { lagPill.style.background = 'var(--amber-dim)'; lagPill.style.color = 'var(--amber)'; }
+    else               { lagPill.style.background = 'var(--red-dim)';   lagPill.style.color = 'var(--red)';   }
+
+    // Lag bar
+    const lagBar = document.getElementById(`lag-bar-${s.id}`);
+    lagBar.style.width = Math.min(80, lag * 1.5) + 'px';
+    lagBar.style.background = lag === 0 ? 'var(--green)' : lag < 10 ? 'var(--blue)' : lag < 30 ? 'var(--amber)' : 'var(--red)';
+  });
+
+  document.getElementById('total-entries').textContent = totalEntries.toLocaleString();
+  document.getElementById('stat-total').textContent    = totalEntries.toLocaleString();
+  document.getElementById('stat-caught').textContent   = `${caughtUp} / ${NUM_SHARDS}`;
+  document.getElementById('stat-maxlag').textContent   = maxLag.toLocaleString();
+  document.getElementById('stat-time').textContent     = simTime.toFixed(1) + 's';
+}
+
+// ─── Loop ─────────────────────────────────────────────────────────────────
+function frame(now) {
+  const dtReal = Math.min((now - lastFrame) / 1000, 0.1);
+  lastFrame = now;
+  simStep(dtReal);
+  drawParticles(dtReal);
+  domAcc += dtReal;
+  if (domAcc >= 0.06) { updateDOM(); domAcc = 0; }
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

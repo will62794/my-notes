@@ -447,6 +447,7 @@ input.rate-slider { flex: 1; width: auto; }
       <span class="speed-val" id="speed-disp">0.4×</span>
     </div>
     <button class="btn active" id="play-btn">⏸ Pause</button>
+    <button class="btn" id="back-btn">← Back</button>
     <button class="btn" id="step-btn">→ Step</button>
     <button class="btn" id="reset-btn">↺ Reset</button>
   </div>
@@ -526,6 +527,7 @@ input.rate-slider { flex: 1; width: auto; }
 // ─── Config ───────────────────────────────────────────────────────────────
 const NUM_SHARDS = 3;
 const MAX_LOG_VISIBLE = 6;
+const MAX_HISTORY = 80;
 
 // Per-shard grayscale tones for particles
 const SHARD_TONES = ['#000000', '#555555', '#aaaaaa'];
@@ -537,6 +539,7 @@ let globalSpeed = 0.4;
 let simTime = 0;
 let lastFrame = performance.now();
 let totalEntries = 0;
+let history = []; // stack of snapshots for reverse stepping
 
 const DEFAULT_WRITE = [1.5, 1.0, 2.0];
 const DEFAULT_LOG   = [2.5, 2.0, 3.5];
@@ -651,6 +654,58 @@ shards.forEach(s => {
 });
 
 // ─── Controls ─────────────────────────────────────────────────────────────
+// ─── Snapshot helpers ─────────────────────────────────────────────────────
+function takeSnapshot() {
+  return {
+    simTime,
+    totalEntries,
+    shards: shards.map(s => ({
+      sourceLSN: s.sourceLSN, logLSN: s.logLSN, destLSN: s.destLSN,
+      _srcAcc: s._srcAcc, _logAcc: s._logAcc, _dstAcc: s._dstAcc,
+      _pAcc: { src: s._pAcc.src, dst: s._pAcc.dst },
+      logEntries: s.logEntries.slice(),
+    })),
+  };
+}
+
+function restoreSnapshot(snap) {
+  simTime = snap.simTime;
+  totalEntries = snap.totalEntries;
+  snap.shards.forEach((ss, i) => {
+    const s = shards[i];
+    s.sourceLSN = ss.sourceLSN; s.logLSN = ss.logLSN; s.destLSN = ss.destLSN;
+    s._srcAcc = ss._srcAcc; s._logAcc = ss._logAcc; s._dstAcc = ss._dstAcc;
+    s._pAcc = { src: ss._pAcc.src, dst: ss._pAcc.dst };
+    s.logEntries = ss.logEntries.slice();
+    s.particles = [];
+    document.getElementById(`log-entries-${s.id}`).innerHTML = '';
+  });
+}
+
+function pauseForManualStep() {
+  if (running) {
+    running = false;
+    document.getElementById('play-btn').textContent = '▶ Play';
+    document.getElementById('play-btn').classList.remove('active');
+  }
+}
+
+function stepForward() {
+  pauseForManualStep();
+  history.push(takeSnapshot());
+  if (history.length > MAX_HISTORY) history.shift();
+  simStep(0.5 / globalSpeed);
+  updateDOM();
+}
+
+function stepBack() {
+  pauseForManualStep();
+  if (history.length === 0) return;
+  restoreSnapshot(history.pop());
+  updateDOM();
+}
+
+// ─── Controls ─────────────────────────────────────────────────────────────
 document.getElementById('play-btn').addEventListener('click', function() {
   running = !running;
   this.textContent = running ? '⏸ Pause' : '▶ Play';
@@ -658,18 +713,17 @@ document.getElementById('play-btn').addEventListener('click', function() {
   if (running) lastFrame = performance.now();
 });
 
-document.getElementById('step-btn').addEventListener('click', () => {
-  if (running) {
-    running = false;
-    document.getElementById('play-btn').textContent = '▶ Play';
-    document.getElementById('play-btn').classList.remove('active');
-  }
-  const STEP_SIM = 0.5;
-  simStep(STEP_SIM / globalSpeed);
-  updateDOM();
+document.getElementById('back-btn').addEventListener('click', stepBack);
+document.getElementById('step-btn').addEventListener('click', stepForward);
+
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'INPUT') return; // don't intercept slider focus
+  if (e.key === 'ArrowRight') { e.preventDefault(); stepForward(); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); stepBack(); }
 });
 
 document.getElementById('reset-btn').addEventListener('click', () => {
+  history = [];
   shards.forEach(s => {
     s.sourceLSN = s.logLSN = s.destLSN = 0;
     s._srcAcc = s._logAcc = s._dstAcc = 0;
@@ -739,8 +793,7 @@ function drawParticles(dt) {
 const PARTICLE_EVERY = 3;
 
 function simStep(dtReal) {
-  if (!running && dtReal === undefined) return;
-  const dt = (dtReal ?? 0) * globalSpeed;
+  const dt = dtReal * globalSpeed;
   simTime += dt;
 
   shards.forEach(s => {

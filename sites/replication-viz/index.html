@@ -347,8 +347,8 @@ input.rate-slider { flex: 1; width: auto; }
 /* ─── Destination rows ────────────────────────────────────────────────────── */
 .dest-shard-row {
   display: grid;
-  grid-template-columns: 22px 1fr auto;
-  align-items: center;
+  grid-template-columns: 22px 1fr;
+  align-items: start;
   gap: 10px;
   padding: 11px 12px;
   border-bottom: 1px solid var(--rule-lt);
@@ -378,9 +378,6 @@ input.rate-slider { flex: 1; width: auto; }
   font-variant-numeric: tabular-nums;
 }
 
-.lag-bar-wrap { height: 2px; background: var(--rule-lt); margin-top: 2px; max-width: 70px; }
-.lag-bar      { height: 100%; background: var(--fg); transition: width 0.4s ease; }
-
 .lag-pill {
   font-family: var(--font-mono);
   font-size: 9px;
@@ -395,6 +392,87 @@ input.rate-slider { flex: 1; width: auto; }
 .lag-pill.low    { border-color: var(--fg-dim);   color: var(--fg-dim);   }
 .lag-pill.medium { border-color: var(--fg-mid);   color: var(--fg-mid);   }
 .lag-pill.high   { border-color: var(--fg);       color: var(--fg);       font-weight: 700; }
+
+/* ─── Log position timeline ──────────────────────────────────────────────── */
+.timeline-section {
+  margin-bottom: 20px;
+}
+
+.timeline-row {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--rule-lt);
+}
+.timeline-row:last-child { border-bottom: none; }
+
+.timeline-shard-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--fg-dim);
+  white-space: nowrap;
+}
+
+.timeline-ruler-wrap {
+  position: relative;
+  height: 52px; /* room for ticks + labels above and below */
+}
+
+.timeline-baseline {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--rule-lt);
+}
+
+.tm-marker {
+  position: absolute;
+  top: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: left 0.35s ease;
+}
+
+/* tick lines of different lengths per marker type */
+.tm-marker.tm-dst .tm-tick  { width: 1px; height: 10px; background: var(--fg-dim); margin-bottom: 2px; }
+.tm-marker.tm-log .tm-tick  { width: 1px; height: 16px; background: var(--fg-mid); margin-bottom: 2px; }
+.tm-marker.tm-src .tm-tick  { width: 1px; height: 22px; background: var(--fg);     margin-bottom: 2px; }
+
+.tm-marker .tm-label {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.tm-marker.tm-dst .tm-label { color: var(--fg-dim); }
+.tm-marker.tm-log .tm-label { color: var(--fg-mid); }
+.tm-marker.tm-src .tm-label { color: var(--fg);     }
+
+.tm-marker .tm-lsn {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* lag span between dst and src */
+.tm-lag-span {
+  position: absolute;
+  top: calc(50% - 1px);
+  height: 1px;
+  background: var(--fg-faint);
+  pointer-events: none;
+  transition: left 0.35s ease, width 0.35s ease;
+}
 
 /* ─── Stats bar ───────────────────────────────────────────────────────────── */
 .stats-bar {
@@ -428,7 +506,7 @@ input.rate-slider { flex: 1; width: auto; }
   pointer-events: none;
   z-index: 0;
 }
-.pipeline, .header, .stats-bar { position: relative; z-index: 1; }
+.pipeline, .header, .timeline-section, .stats-bar { position: relative; z-index: 1; }
 </style>
 </head>
 <body>
@@ -504,6 +582,11 @@ input.rate-slider { flex: 1; width: auto; }
 
 </div>
 
+<div class="timeline-section">
+  <div class="panel-label">Log Position Overview</div>
+  <div class="panel" id="timeline-panel"></div>
+</div>
+
 <div class="stats-bar">
   <div class="stat-item">
     <div class="stat-key">Log entries</div>
@@ -557,16 +640,18 @@ const shards = Array.from({ length: NUM_SHARDS }, (_, i) => ({
   cls:  SHARD_CLASSES[i],
   srcEntries: [],
   logEntries: [],
+  dstEntries: [],
   particles: [],
   _pAcc: { src: 0, dst: 0 },
 }));
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────
-const sourceCont = document.getElementById('source-shards');
-const logLanesEl = document.getElementById('log-lanes');
-const destCont   = document.getElementById('dest-shards');
-const canvas     = document.getElementById('particle-layer');
-const ctx        = canvas.getContext('2d');
+const sourceCont   = document.getElementById('source-shards');
+const logLanesEl   = document.getElementById('log-lanes');
+const destCont     = document.getElementById('dest-shards');
+const timelinePanel = document.getElementById('timeline-panel');
+const canvas       = document.getElementById('particle-layer');
+const ctx          = canvas.getContext('2d');
 
 // ─── Build DOM ────────────────────────────────────────────────────────────
 function classifyRate(r) {
@@ -649,16 +734,50 @@ shards.forEach(s => {
   dstRow.innerHTML = `
     <div class="dest-index">${s.id}</div>
     <div class="dest-info">
-      <div class="dest-name">${s.name}</div>
-      <div class="dest-lsn">applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></div>
-      <div class="lag-bar-wrap"><div class="lag-bar" id="lag-bar-${s.id}" style="width:0px"></div></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+        <div class="dest-name">${s.name}</div>
+        <div class="lag-pill zero" id="lag-pill-${s.id}">lag +0</div>
+      </div>
+      <div class="log-lane-entries" id="dst-entries-${s.id}" style="margin-bottom:4px"></div>
+      <div class="replicated-bar-wrap">
+        <div class="replicated-bar" id="dst-bar-${s.id}" style="width:0%"></div>
+      </div>
+      <div class="dest-lsn" style="margin-top:4px">applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></div>
     </div>
-    <div class="lag-pill zero" id="lag-pill-${s.id}">+0</div>
   `;
   destCont.appendChild(dstRow);
 });
 
 // ─── Controls ─────────────────────────────────────────────────────────────
+// ─── Build timeline rows ──────────────────────────────────────────────────
+shards.forEach(s => {
+  const row = document.createElement('div');
+  row.className = 'timeline-row';
+  row.innerHTML = `
+    <div class="timeline-shard-name">${s.name}</div>
+    <div class="timeline-ruler-wrap" id="tl-wrap-${s.id}">
+      <div class="timeline-baseline"></div>
+      <div class="tm-lag-span" id="tl-lag-${s.id}"></div>
+      <div class="tm-marker tm-dst" id="tl-dst-${s.id}" style="left:0%">
+        <div class="tm-tick"></div>
+        <div class="tm-label">dst</div>
+        <div class="tm-lsn" id="tl-dst-lsn-${s.id}">0</div>
+      </div>
+      <div class="tm-marker tm-log" id="tl-log-${s.id}" style="left:0%">
+        <div class="tm-tick"></div>
+        <div class="tm-label">log</div>
+        <div class="tm-lsn" id="tl-log-lsn-${s.id}">0</div>
+      </div>
+      <div class="tm-marker tm-src" id="tl-src-${s.id}" style="left:0%">
+        <div class="tm-tick"></div>
+        <div class="tm-label">src</div>
+        <div class="tm-lsn" id="tl-src-lsn-${s.id}">0</div>
+      </div>
+    </div>
+  `;
+  timelinePanel.appendChild(row);
+});
+
 // ─── Snapshot helpers ─────────────────────────────────────────────────────
 function takeSnapshot() {
   return {
@@ -670,6 +789,7 @@ function takeSnapshot() {
       _pAcc: { src: s._pAcc.src, dst: s._pAcc.dst },
       srcEntries: s.srcEntries.slice(),
       logEntries: s.logEntries.slice(),
+      dstEntries: s.dstEntries.slice(),
     })),
   };
 }
@@ -684,9 +804,11 @@ function restoreSnapshot(snap) {
     s._pAcc = { src: ss._pAcc.src, dst: ss._pAcc.dst };
     s.srcEntries = ss.srcEntries.slice();
     s.logEntries = ss.logEntries.slice();
+    s.dstEntries = ss.dstEntries.slice();
     s.particles = [];
     document.getElementById(`src-entries-${s.id}`).innerHTML = '';
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
+    document.getElementById(`dst-entries-${s.id}`).innerHTML = '';
   });
 }
 
@@ -749,10 +871,11 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   shards.forEach(s => {
     s.sourceLSN = s.logLSN = s.destLSN = 0;
     s._srcAcc = s._logAcc = s._dstAcc = 0;
-    s.srcEntries = []; s.logEntries = []; s.particles = [];
+    s.srcEntries = []; s.logEntries = []; s.dstEntries = []; s.particles = [];
     s._pAcc = { src: 0, dst: 0 };
     document.getElementById(`src-entries-${s.id}`).innerHTML = '';
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
+    document.getElementById(`dst-entries-${s.id}`).innerHTML = '';
     document.getElementById(`src-bar-${s.id}`).style.width = '0%';
     document.getElementById(`rep-bar-${s.id}`).style.width = '0%';
   });
@@ -843,7 +966,13 @@ function simStep(dtReal) {
     const db = s.logLSN - s.destLSN;
     s._dstAcc += Math.min(db, s.destRate * dt);
     const nd = Math.floor(s._dstAcc);
-    if (nd > 0) { s._dstAcc -= nd; s.destLSN += nd; s._pAcc.dst += nd; }
+    if (nd > 0) {
+      s._dstAcc -= nd;
+      for (let e = 0; e < nd; e++) s.dstEntries.push({ lsn: s.destLSN + e + 1 });
+      if (s.dstEntries.length > 150) s.dstEntries = s.dstEntries.slice(-150);
+      s.destLSN += nd;
+      s._pAcc.dst += nd;
+    }
 
     if (s._pAcc.src >= PARTICLE_EVERY) {
       s._pAcc.src -= PARTICLE_EVERY;
@@ -913,12 +1042,45 @@ function updateDOM() {
 
     document.getElementById(`dst-lsn-${s.id}`).textContent = s.destLSN.toLocaleString();
 
-    const lagPill = document.getElementById(`lag-pill-${s.id}`);
-    lagPill.textContent = '+' + lag.toLocaleString();
-    lagPill.className = 'lag-pill ' + (lag === 0 ? 'zero' : lag < 10 ? 'low' : lag < 30 ? 'medium' : 'high');
+    // Dest entry strip
+    const dstLaneEl = document.getElementById(`dst-entries-${s.id}`);
+    const dstVisible = s.dstEntries.slice(-MAX_LOG_VISIBLE);
+    const dstExisting = new Set([...dstLaneEl.querySelectorAll('.log-entry')].map(e => e.dataset.lsn));
+    dstVisible.forEach(entry => {
+      if (!dstExisting.has(String(entry.lsn))) {
+        const el = document.createElement('div');
+        el.className = `log-entry ${s.cls} new`;
+        el.dataset.lsn = entry.lsn;
+        el.textContent = entry.lsn.toLocaleString();
+        dstLaneEl.appendChild(el);
+        setTimeout(() => el.classList.remove('new'), 200);
+      }
+    });
+    while (dstLaneEl.children.length > MAX_LOG_VISIBLE) dstLaneEl.removeChild(dstLaneEl.firstChild);
 
-    const lagBar = document.getElementById(`lag-bar-${s.id}`);
-    lagBar.style.width = Math.min(70, lag * 1.4) + 'px';
+    // Dest progress bar (applied vs log store)
+    const dstBar = document.getElementById(`dst-bar-${s.id}`);
+    if (s.logLSN > 0) dstBar.style.width = Math.min(100, (s.destLSN / s.logLSN) * 100) + '%';
+
+    const lagPill = document.getElementById(`lag-pill-${s.id}`);
+    lagPill.textContent = 'lag +' + lag.toLocaleString();
+    lagPill.className = 'lag-pill ' + (lag === 0 ? 'zero' : lag < 10 ? 'low' : lag < 30 ? 'medium' : 'high');
+  });
+
+  // ── Timeline update
+  const maxLSN = Math.max(1, ...shards.map(s => s.sourceLSN));
+  shards.forEach(s => {
+    const pct = v => Math.min(100, (v / maxLSN) * 100).toFixed(2) + '%';
+    document.getElementById(`tl-src-${s.id}`).style.left     = pct(s.sourceLSN);
+    document.getElementById(`tl-log-${s.id}`).style.left     = pct(s.logLSN);
+    document.getElementById(`tl-dst-${s.id}`).style.left     = pct(s.destLSN);
+    document.getElementById(`tl-src-lsn-${s.id}`).textContent = s.sourceLSN;
+    document.getElementById(`tl-log-lsn-${s.id}`).textContent = s.logLSN;
+    document.getElementById(`tl-dst-lsn-${s.id}`).textContent = s.destLSN;
+    // lag span from dst to src
+    const lagEl = document.getElementById(`tl-lag-${s.id}`);
+    lagEl.style.left  = pct(s.destLSN);
+    lagEl.style.width = pct(s.sourceLSN - s.destLSN);
   });
 
   document.getElementById('total-entries').textContent = totalEntries.toLocaleString();

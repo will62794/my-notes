@@ -393,6 +393,30 @@ input.rate-slider { flex: 1; width: auto; }
 .lag-pill.medium { border-color: var(--fg-mid);   color: var(--fg-mid);   }
 .lag-pill.high   { border-color: var(--fg);       color: var(--fg);       font-weight: 700; }
 
+/* ─── Log Store footer ───────────────────────────────────────────────────── */
+.log-footer {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 5px 12px;
+  border-top: 1px solid var(--rule);
+}
+.log-footer-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #1a6b3c;
+}
+.log-footer-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: #1a6b3c;
+}
+
 /* ─── Log position timeline ──────────────────────────────────────────────── */
 .timeline-section { margin-bottom: 12px; }
 
@@ -436,7 +460,7 @@ input.rate-slider { flex: 1; width: auto; }
 
 .tl-markers {
   position: relative;
-  height: 68px;
+  height: 52px;
   /* width set by JS to match chips row exactly */
 }
 
@@ -476,11 +500,7 @@ input.rate-slider { flex: 1; width: auto; }
 .tl-mark.tl-mark-log .tl-mark-tick    { height: 7px; background: #2255aa; }
 .tl-mark.tl-mark-log .tl-mark-arrow   { border-bottom-color: #2255aa; }
 .tl-mark.tl-mark-log .tl-mark-label   { color: #2255aa; }
-.tl-mark.tl-mark-lst                  { top: 18px; }
-.tl-mark.tl-mark-lst .tl-mark-tick    { height: 6px; background: #1a6b3c; }
-.tl-mark.tl-mark-lst .tl-mark-arrow   { border-bottom-color: #1a6b3c; }
-.tl-mark.tl-mark-lst .tl-mark-label   { color: #1a6b3c; }
-.tl-mark.tl-mark-dst                  { top: 44px; }
+.tl-mark.tl-mark-dst                  { top: 26px; }
 .tl-mark.tl-mark-dst .tl-mark-tick    { height: 6px; background: #b03000; }
 .tl-mark.tl-mark-dst .tl-mark-arrow   { border-bottom-color: #b03000; }
 .tl-mark.tl-mark-dst .tl-mark-label   { color: #b03000; }
@@ -570,6 +590,10 @@ input.rate-slider { flex: 1; width: auto; }
         <span class="log-stat">n = <span id="total-entries">0</span></span>
       </div>
       <div id="log-lanes"></div>
+      <div class="log-footer">
+        <span class="log-footer-label">LST</span>
+        <span class="log-footer-val" id="lst-footer">0</span>
+      </div>
     </div>
   </div>
 
@@ -779,11 +803,6 @@ shards.forEach(s => {
           <div class="tl-mark-arrow"></div>
           <div class="tl-mark-tick"></div>
           <div class="tl-mark-label">LS</div>
-        </div>
-        <div class="tl-mark tl-mark-lst" id="tl-mark-lst-${s.id}" style="left:-999px">
-          <div class="tl-mark-arrow"></div>
-          <div class="tl-mark-tick"></div>
-          <div class="tl-mark-label">LST</div>
         </div>
         <div class="tl-mark tl-mark-dst" id="tl-mark-dst-${s.id}" style="left:-999px">
           <div class="tl-mark-arrow"></div>
@@ -1109,16 +1128,13 @@ function updateDOM() {
 
     const logMark = document.getElementById(`tl-mark-log-${s.id}`);
     const dstMark = document.getElementById(`tl-mark-dst-${s.id}`);
-    const lstMark = document.getElementById(`tl-mark-lst-${s.id}`);
 
     if (s.sourceLSN === 0) {
       logMark.style.left = '-999px';
       dstMark.style.left = '-999px';
-      lstMark.style.left = '-999px';
     } else {
       logMark.style.left = markerLeft(s.logLSN) + 'px';
       dstMark.style.left = markerLeft(s.destLSN) + 'px';
-      lstMark.style.left = lst > 0 ? markerLeft(lst) + 'px' : '-999px';
     }
   });
 
@@ -1127,6 +1143,7 @@ function updateDOM() {
   document.getElementById('stat-caught').textContent   = `${caughtUp} / ${NUM_SHARDS}`;
   document.getElementById('stat-maxlag').textContent   = maxLag.toLocaleString();
   document.getElementById('stat-lst').textContent      = lst.toLocaleString();
+  document.getElementById('lst-footer').textContent    = lst.toLocaleString();
   document.getElementById('stat-time').textContent     = simTime.toFixed(1) + 's';
 }
 

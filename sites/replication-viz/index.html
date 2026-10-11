@@ -636,6 +636,14 @@ input.rate-slider { flex: 1; width: auto; }
     <div class="panel-label" style="color:#b03000">Standby Cluster</div>
     <div class="panel">
       <div id="dest-shards"></div>
+      <div class="log-footer" id="dest-footer">
+        <div class="lst-marker" id="hst-marker">
+          <div class="lst-marker-arrow"></div>
+          <div class="lst-marker-tick"></div>
+          <div class="lst-marker-label">HSTS</div>
+          <div class="lst-marker-val" id="hsts-footer">0</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -662,6 +670,10 @@ input.rate-slider { flex: 1; width: auto; }
   <div class="stat-item">
     <div class="stat-key">LSTS</div>
     <div class="stat-val" id="stat-lst" style="color:#1a6b3c">0</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-key">HSTS</div>
+    <div class="stat-val" id="stat-hsts" style="color:#1a6b3c">0</div>
   </div>
   <div class="stat-item">
     <div class="stat-key">Sim time</div>
@@ -1170,7 +1182,7 @@ function updateDOM() {
   document.getElementById('lst-footer').textContent    = lst.toLocaleString();
   document.getElementById('stat-time').textContent     = simTime.toFixed(1) + 's';
 
-  // Position LST marker under the chip for lst in the slowest shard's log lane
+  // Position LSTS marker under the chip for lst in the slowest log-store shard's lane
   const lstMarkerEl = document.getElementById('lst-marker');
   const footerEl    = document.getElementById('log-footer');
   const slowShard   = shards.find(s => s.logLSN === lst);
@@ -1183,6 +1195,24 @@ function updateDOM() {
     }
   } else {
     lstMarkerEl.style.left = '-999px';
+  }
+
+  // Position HSTS marker under the chip for hst in the slowest dest shard's lane
+  const hst         = Math.min(...shards.map(s => s.destLSN));
+  const hstMarkerEl = document.getElementById('hst-marker');
+  const destFooterEl = document.getElementById('dest-footer');
+  const slowDestShard = shards.find(s => s.destLSN === hst);
+  document.getElementById('stat-hsts').textContent  = hst.toLocaleString();
+  document.getElementById('hsts-footer').textContent = hst.toLocaleString();
+  if (slowDestShard && hst > 0) {
+    const chip = document.querySelector(`#dst-entries-${slowDestShard.id} [data-lsn="${hst}"]`);
+    if (chip && destFooterEl) {
+      const chipRect   = chip.getBoundingClientRect();
+      const footerRect = destFooterEl.getBoundingClientRect();
+      hstMarkerEl.style.left = (chipRect.left + chipRect.width / 2 - footerRect.left) + 'px';
+    }
+  } else {
+    hstMarkerEl.style.left = '-999px';
   }
 }
 

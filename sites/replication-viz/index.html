@@ -393,13 +393,30 @@ input.rate-slider { flex: 1; width: auto; }
 .lag-pill.medium { border-color: var(--fg-mid);   color: var(--fg-mid);   }
 .lag-pill.high   { border-color: var(--fg);       color: var(--fg);       font-weight: 700; }
 
-/* ─── Log Store footer ───────────────────────────────────────────────────── */
+/* ─── Log Store footer (LST marker) ─────────────────────────────────────── */
 .log-footer {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
-  padding: 5px 12px;
+  padding: 4px 12px 5px;
   border-top: 1px solid var(--rule);
+}
+.lst-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.lst-marker-arrow {
+  width: 0; height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-bottom: 5px solid #1a6b3c;
+}
+.lst-marker-tick {
+  width: 1px;
+  height: 6px;
+  background: #1a6b3c;
 }
 .log-footer-label {
   font-family: var(--font-mono);
@@ -591,6 +608,10 @@ input.rate-slider { flex: 1; width: auto; }
       </div>
       <div id="log-lanes"></div>
       <div class="log-footer">
+        <div class="lst-marker">
+          <div class="lst-marker-arrow"></div>
+          <div class="lst-marker-tick"></div>
+        </div>
         <span class="log-footer-label">LST</span>
         <span class="log-footer-val" id="lst-footer">0</span>
       </div>

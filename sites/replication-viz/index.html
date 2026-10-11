@@ -436,7 +436,7 @@ input.rate-slider { flex: 1; width: auto; }
 
 .tl-markers {
   position: relative;
-  height: 58px;
+  height: 80px;
   /* width set by JS to match chips row exactly */
 }
 
@@ -480,6 +480,10 @@ input.rate-slider { flex: 1; width: auto; }
 .tl-mark.tl-mark-dst .tl-mark-tick    { height: 6px; background: #b03000; }
 .tl-mark.tl-mark-dst .tl-mark-arrow   { border-bottom-color: #b03000; }
 .tl-mark.tl-mark-dst .tl-mark-label   { color: #b03000; }
+.tl-mark.tl-mark-lst                  { top: 58px; }
+.tl-mark.tl-mark-lst .tl-mark-tick    { height: 6px; background: #1a6b3c; }
+.tl-mark.tl-mark-lst .tl-mark-arrow   { border-bottom-color: #1a6b3c; }
+.tl-mark.tl-mark-lst .tl-mark-label   { color: #1a6b3c; }
 
 /* ─── Stats bar ───────────────────────────────────────────────────────────── */
 .stats-bar {
@@ -606,6 +610,10 @@ input.rate-slider { flex: 1; width: auto; }
   <div class="stat-item">
     <div class="stat-key">Max lag</div>
     <div class="stat-val" id="stat-maxlag">0</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-key">Safe log pos</div>
+    <div class="stat-val" id="stat-lst" style="color:#1a6b3c">0</div>
   </div>
   <div class="stat-item">
     <div class="stat-key">Sim time</div>
@@ -776,6 +784,11 @@ shards.forEach(s => {
           <div class="tl-mark-arrow"></div>
           <div class="tl-mark-tick"></div>
           <div class="tl-mark-label">dst</div>
+        </div>
+        <div class="tl-mark tl-mark-lst" id="tl-mark-lst-${s.id}" style="left:-999px">
+          <div class="tl-mark-arrow"></div>
+          <div class="tl-mark-tick"></div>
+          <div class="tl-mark-label">LST</div>
         </div>
       </div>
     </div>
@@ -1065,6 +1078,7 @@ function updateDOM() {
   });
 
   // ── Timeline update
+  const lst = Math.min(...shards.map(s => s.logLSN));
   shards.forEach(s => {
     const windowStart = Math.max(1, s.sourceLSN - TL_WINDOW + 1);
     const windowEnd   = s.sourceLSN;
@@ -1095,13 +1109,16 @@ function updateDOM() {
 
     const logMark = document.getElementById(`tl-mark-log-${s.id}`);
     const dstMark = document.getElementById(`tl-mark-dst-${s.id}`);
+    const lstMark = document.getElementById(`tl-mark-lst-${s.id}`);
 
     if (s.sourceLSN === 0) {
       logMark.style.left = '-999px';
       dstMark.style.left = '-999px';
+      lstMark.style.left = '-999px';
     } else {
       logMark.style.left = markerLeft(s.logLSN) + 'px';
       dstMark.style.left = markerLeft(s.destLSN) + 'px';
+      lstMark.style.left = lst > 0 ? markerLeft(lst) + 'px' : '-999px';
     }
   });
 
@@ -1109,6 +1126,7 @@ function updateDOM() {
   document.getElementById('stat-total').textContent    = totalEntries.toLocaleString();
   document.getElementById('stat-caught').textContent   = `${caughtUp} / ${NUM_SHARDS}`;
   document.getElementById('stat-maxlag').textContent   = maxLag.toLocaleString();
+  document.getElementById('stat-lst').textContent      = lst.toLocaleString();
   document.getElementById('stat-time').textContent     = simTime.toFixed(1) + 's';
 }
 

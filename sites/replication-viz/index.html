@@ -475,10 +475,10 @@ input.rate-slider { flex: 1; width: auto; }
   white-space: nowrap;
   color: var(--fg-dim);
 }
-.tl-mark.tl-mark-log .tl-mark-tick  { height: 14px; background: var(--fg-mid); }
-.tl-mark.tl-mark-log .tl-mark-label { color: var(--fg-mid); }
-.tl-mark.tl-mark-dst .tl-mark-tick  { height: 10px; background: var(--fg-faint); }
-.tl-mark.tl-mark-dst .tl-mark-label { color: var(--fg-faint); }
+.tl-mark.tl-mark-log .tl-mark-tick  { height: 14px; background: #2255aa; }
+.tl-mark.tl-mark-log .tl-mark-label { color: #2255aa; }
+.tl-mark.tl-mark-dst .tl-mark-tick  { height: 10px; background: #b03000; }
+.tl-mark.tl-mark-dst .tl-mark-label { color: #b03000; }
 
 /* ─── Stats bar ───────────────────────────────────────────────────────────── */
 .stats-bar {
@@ -779,7 +779,7 @@ shards.forEach(s => {
       <div class="tl-markers" id="tl-markers-${s.id}" style="width:${TL_TOTAL_W}px">
         <div class="tl-mark tl-mark-log" id="tl-mark-log-${s.id}" style="left:-999px">
           <div class="tl-mark-tick"></div>
-          <div class="tl-mark-label">log</div>
+          <div class="tl-mark-label">LS</div>
         </div>
         <div class="tl-mark tl-mark-dst" id="tl-mark-dst-${s.id}" style="left:-999px">
           <div class="tl-mark-tick"></div>

@@ -1197,22 +1197,29 @@ function updateDOM() {
     lstMarkerEl.style.left = '-999px';
   }
 
-  // Position HSTS marker under the chip for hst in the slowest dest shard's lane
-  const hst         = Math.min(...shards.map(s => s.destLSN));
-  const hstMarkerEl = document.getElementById('hst-marker');
+  // HSTS = max(destLSN), but only valid when ≤ LSTS; else recovery is impossible
+  const hstCandidate = Math.max(...shards.map(s => s.destLSN));
+  const hst          = (hstCandidate > 0 && hstCandidate <= lst) ? hstCandidate : null;
+  const hstMarkerEl  = document.getElementById('hst-marker');
   const destFooterEl = document.getElementById('dest-footer');
-  const slowDestShard = shards.find(s => s.destLSN === hst);
-  document.getElementById('stat-hsts').textContent  = hst.toLocaleString();
-  document.getElementById('hsts-footer').textContent = hst.toLocaleString();
-  if (slowDestShard && hst > 0) {
-    const chip = document.querySelector(`#dst-entries-${slowDestShard.id} [data-lsn="${hst}"]`);
+  const hstStatEl    = document.getElementById('stat-hsts');
+  const hstFooterEl  = document.getElementById('hsts-footer');
+  if (hst !== null) {
+    hstStatEl.textContent   = hst.toLocaleString();
+    hstFooterEl.textContent = hst.toLocaleString();
+    hstStatEl.style.color   = '#1a6b3c';
+    const fastDestShard = shards.find(s => s.destLSN === hstCandidate);
+    const chip = document.querySelector(`#dst-entries-${fastDestShard.id} [data-lsn="${hst}"]`);
     if (chip && destFooterEl) {
       const chipRect   = chip.getBoundingClientRect();
       const footerRect = destFooterEl.getBoundingClientRect();
       hstMarkerEl.style.left = (chipRect.left + chipRect.width / 2 - footerRect.left) + 'px';
     }
   } else {
-    hstMarkerEl.style.left = '-999px';
+    hstStatEl.textContent   = hstCandidate > 0 ? '—' : '0';
+    hstFooterEl.textContent = hstCandidate > 0 ? '—' : '0';
+    hstStatEl.style.color   = hstCandidate > 0 ? '#b03000' : '#1a6b3c';
+    hstMarkerEl.style.left  = '-999px';
   }
 }
 

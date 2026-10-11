@@ -851,6 +851,17 @@ shards.forEach(s => {
   timelinePanel.appendChild(row);
 });
 
+// Safe recovery window row at the bottom of the timeline
+const recoveryRow = document.createElement('div');
+recoveryRow.style.cssText = 'display:flex;align-items:center;gap:12px;padding:6px 12px 8px;border-top:1px solid var(--rule-lt)';
+recoveryRow.innerHTML = `
+  <div style="font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#1a6b3c;white-space:nowrap;min-width:68px">safe window</div>
+  <div style="position:relative;width:${TL_TOTAL_W}px;height:14px">
+    <div id="tl-recovery-span" style="position:absolute;top:2px;height:10px;display:none;background:rgba(26,107,60,0.13);border-left:2px solid #1a6b3c;border-right:2px solid #1a6b3c;box-sizing:border-box"></div>
+  </div>
+`;
+timelinePanel.appendChild(recoveryRow);
+
 // ─── Snapshot helpers ─────────────────────────────────────────────────────
 function takeSnapshot() {
   return {
@@ -1133,7 +1144,9 @@ function updateDOM() {
   });
 
   // ── Timeline update
-  const lst = Math.min(...shards.map(s => s.logLSN));
+  const lst          = Math.min(...shards.map(s => s.logLSN));
+  const hstCandidate = Math.max(...shards.map(s => s.destLSN));
+  const hst          = (hstCandidate > 0 && hstCandidate <= lst) ? hstCandidate : null;
   shards.forEach(s => {
     const windowStart = Math.max(1, s.sourceLSN - TL_WINDOW + 1);
     const windowEnd   = s.sourceLSN;
@@ -1174,6 +1187,26 @@ function updateDOM() {
     }
   });
 
+  // Recovery window span — x-axis from the slowest log-store shard's chip window
+  const refShard    = shards.find(s => s.logLSN === lst) || shards[0];
+  const refWinStart = Math.max(1, refShard.sourceLSN - TL_WINDOW + 1);
+  const refWinEnd   = refShard.sourceLSN;
+  function refLeft(lsn) {
+    if (lsn < refWinStart) return 0;
+    if (lsn > refWinEnd)   return (refWinEnd - refWinStart) * TL_STEP + TL_CHIP_W / 2;
+    return (lsn - refWinStart) * TL_STEP + TL_CHIP_W / 2;
+  }
+  const recoverySpan = document.getElementById('tl-recovery-span');
+  if (hst !== null && lst > 0 && refShard.sourceLSN > 0) {
+    const x1 = refLeft(hst);
+    const x2 = refLeft(lst);
+    recoverySpan.style.left    = x1 + 'px';
+    recoverySpan.style.width   = Math.max(2, x2 - x1) + 'px';
+    recoverySpan.style.display = '';
+  } else {
+    recoverySpan.style.display = 'none';
+  }
+
   document.getElementById('total-entries').textContent = totalEntries.toLocaleString();
   document.getElementById('stat-total').textContent    = totalEntries.toLocaleString();
   document.getElementById('stat-caught').textContent   = `${caughtUp} / ${NUM_SHARDS}`;
@@ -1198,8 +1231,6 @@ function updateDOM() {
   }
 
   // HSTS = max(destLSN), but only valid when ≤ LSTS; else recovery is impossible
-  const hstCandidate = Math.max(...shards.map(s => s.destLSN));
-  const hst          = (hstCandidate > 0 && hstCandidate <= lst) ? hstCandidate : null;
   const hstMarkerEl  = document.getElementById('hst-marker');
   const destFooterEl = document.getElementById('dest-footer');
   const hstStatEl    = document.getElementById('stat-hsts');

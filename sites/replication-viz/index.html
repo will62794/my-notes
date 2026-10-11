@@ -345,11 +345,7 @@ input.rate-slider { flex: 1; width: auto; }
 .log-entry.s1 { border-color: #666; color: #555; }
 .log-entry.s2 { border-color: #aaa; color: #888; }
 
-@keyframes entry-in {
-  from { opacity: 0; transform: translateX(-5px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-.log-entry.new { animation: entry-in 0.18s ease-out; }
+.log-entry.new {}
 
 .replicated-bar-wrap {
   height: 2px;
@@ -358,7 +354,6 @@ input.rate-slider { flex: 1; width: auto; }
 .replicated-bar {
   height: 100%;
   background: var(--fg);
-  transition: width 0.4s ease;
 }
 
 /* ─── Destination rows ────────────────────────────────────────────────────── */
@@ -464,7 +459,6 @@ input.rate-slider { flex: 1; width: auto; }
   flex-direction: column;
   align-items: center;
   transform: translateX(-50%);
-  transition: left 0.3s ease;
 }
 .tl-mark-tick {
   width: 1px;

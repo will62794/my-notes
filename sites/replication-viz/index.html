@@ -43,9 +43,9 @@ body {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  padding: 14px 0 10px;
+  padding: 8px 0 6px;
   border-bottom: 1px solid var(--rule);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .header-left { display: flex; flex-direction: column; gap: 1px; }
@@ -130,7 +130,7 @@ input[type=range]::-webkit-slider-thumb {
   display: grid;
   grid-template-columns: 1fr 40px 1fr 40px 1fr;
   align-items: start;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 @media (max-width: 640px) {
@@ -160,7 +160,7 @@ input[type=range]::-webkit-slider-thumb {
   display: grid;
   grid-template-columns: 22px 1fr;
   gap: 10px;
-  padding: 11px 12px;
+  padding: 7px 12px;
   border-bottom: 1px solid var(--rule-lt);
 }
 .shard-row:last-child { border-bottom: none; }
@@ -286,7 +286,7 @@ input.rate-slider { flex: 1; width: auto; }
   display: flex;
   align-items: stretch;
   border-bottom: 1px solid var(--rule-lt);
-  min-height: 42px;
+  min-height: 34px;
   overflow: hidden;
 }
 .log-lane:last-child { border-bottom: none; }
@@ -315,7 +315,7 @@ input.rate-slider { flex: 1; width: auto; }
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 5px 8px 6px;
+  padding: 3px 8px 4px;
 }
 
 .log-lane-entries {
@@ -364,7 +364,7 @@ input.rate-slider { flex: 1; width: auto; }
   grid-template-columns: 22px 1fr;
   align-items: start;
   gap: 10px;
-  padding: 11px 12px;
+  padding: 7px 12px;
   border-bottom: 1px solid var(--rule-lt);
 }
 .dest-shard-row:last-child { border-bottom: none; }
@@ -402,13 +402,13 @@ input.rate-slider { flex: 1; width: auto; }
 .lag-pill.high   { border-color: var(--fg);       color: var(--fg);       font-weight: 700; }
 
 /* ─── Log position timeline ──────────────────────────────────────────────── */
-.timeline-section { margin-bottom: 20px; }
+.timeline-section { margin-bottom: 12px; }
 
 .tl-row {
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  padding: 10px 12px;
+  padding: 6px 12px;
   border-bottom: 1px solid var(--rule-lt);
 }
 .tl-row:last-child { border-bottom: none; }
@@ -494,7 +494,7 @@ input.rate-slider { flex: 1; width: auto; }
   display: flex;
   flex-wrap: wrap;
   gap: 28px;
-  padding: 14px 0;
+  padding: 10px 0;
   border-top: 1px solid var(--rule);
 }
 .stat-item { display: flex; flex-direction: column; gap: 1px; }
@@ -689,9 +689,6 @@ shards.forEach(s => {
         <div class="rate-badge normal" id="src-badge-${s.id}">normal</div>
       </div>
       <div class="log-lane-entries" id="src-entries-${s.id}" style="margin-bottom:4px"></div>
-      <div class="replicated-bar-wrap" style="margin-bottom:4px">
-        <div class="replicated-bar" id="src-bar-${s.id}" style="width:0%"></div>
-      </div>
       <button class="rate-toggle" id="rate-toggle-${s.id}">rates ▸</button>
       <div class="rate-block hidden" id="rate-block-${s.id}" style="margin-top:4px">
         <div class="rate-slider-row">
@@ -842,25 +839,11 @@ function pauseForManualStep() {
   }
 }
 
-function nextEventSimDt() {
-  // find the sim-seconds until the very next single entry is written anywhere
-  let minDt = Infinity;
-  shards.forEach(s => {
-    if (s.writeRate > 0)
-      minDt = Math.min(minDt, (1 - s._srcAcc) / s.writeRate);
-    if (s.logRate > 0 && s.sourceLSN > s.logLSN)
-      minDt = Math.min(minDt, (1 - s._logAcc) / s.logRate);
-    if (s.destRate > 0 && s.logLSN > s.destLSN)
-      minDt = Math.min(minDt, (1 - s._dstAcc) / s.destRate);
-  });
-  return minDt === Infinity ? 0.1 : minDt + 1e-9; // +epsilon to actually cross threshold
-}
-
 function stepForward() {
   pauseForManualStep();
   history.push(takeSnapshot());
   if (history.length > MAX_HISTORY) history.shift();
-  simStep(nextEventSimDt() / globalSpeed);
+  fireOneEvent();
   updateDOM();
 }
 
@@ -898,7 +881,6 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     document.getElementById(`src-entries-${s.id}`).innerHTML = '';
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
     document.getElementById(`dst-entries-${s.id}`).innerHTML = '';
-    document.getElementById(`src-bar-${s.id}`).style.width = '0%';
     document.getElementById(`rep-bar-${s.id}`).style.width = '0%';
   });
   totalEntries = 0; simTime = 0;
@@ -961,41 +943,62 @@ function drawParticles(dt) {
 // ─── Simulation ───────────────────────────────────────────────────────────
 const PARTICLE_EVERY = 3;
 
-function simStep(dtReal) {
-  const dt = dtReal * globalSpeed;
-  simTime += dt;
+// Advance time to the next single event and fire exactly that one.
+// Math guarantees no non-winner accumulator can cross 1 in minDt,
+// so at most one entry is created anywhere per call.
+function fireOneEvent() {
+  let minDt = Infinity;
+  let winShard = null, winStage = null;
 
   shards.forEach(s => {
-    s._srcAcc += s.writeRate * dt;
-    const ns = Math.floor(s._srcAcc);
-    if (ns > 0) {
-      s._srcAcc -= ns;
-      for (let e = 0; e < ns; e++) s.srcEntries.push({ lsn: s.sourceLSN + e + 1 });
-      if (s.srcEntries.length > 150) s.srcEntries = s.srcEntries.slice(-150);
-      s.sourceLSN += ns;
-      s._pAcc.src += ns;
+    let dt;
+    if (s.writeRate > 0) {
+      dt = (1 - s._srcAcc) / s.writeRate;
+      if (dt < minDt) { minDt = dt; winShard = s; winStage = 'src'; }
     }
-
-    const lb = s.sourceLSN - s.logLSN;
-    s._logAcc += Math.min(lb, s.logRate * dt);
-    const nl = Math.floor(s._logAcc);
-    if (nl > 0) {
-      s._logAcc -= nl; s.logLSN += nl; totalEntries += nl;
-      for (let e = 0; e < nl; e++) s.logEntries.push({ lsn: s.logLSN - nl + e + 1 });
-      if (s.logEntries.length > 150) s.logEntries = s.logEntries.slice(-150);
+    if (s.logRate > 0 && s.sourceLSN > s.logLSN) {
+      dt = (1 - s._logAcc) / s.logRate;
+      if (dt < minDt) { minDt = dt; winShard = s; winStage = 'log'; }
     }
-
-    const db = s.logLSN - s.destLSN;
-    s._dstAcc += Math.min(db, s.destRate * dt);
-    const nd = Math.floor(s._dstAcc);
-    if (nd > 0) {
-      s._dstAcc -= nd;
-      for (let e = 0; e < nd; e++) s.dstEntries.push({ lsn: s.destLSN + e + 1 });
-      if (s.dstEntries.length > 150) s.dstEntries = s.dstEntries.slice(-150);
-      s.destLSN += nd;
-      s._pAcc.dst += nd;
+    if (s.destRate > 0 && s.logLSN > s.destLSN) {
+      dt = (1 - s._dstAcc) / s.destRate;
+      if (dt < minDt) { minDt = dt; winShard = s; winStage = 'dst'; }
     }
+  });
 
+  if (!winShard) { simTime += 0.1; return; }
+
+  // Advance all accumulators — guaranteed no non-winner crosses 1
+  shards.forEach(s => {
+    s._srcAcc += s.writeRate * minDt;
+    if (s.sourceLSN > s.logLSN) s._logAcc += s.logRate * minDt;
+    if (s.logLSN   > s.destLSN) s._dstAcc += s.destRate * minDt;
+  });
+  simTime += minDt;
+
+  // Fire exactly the winning event
+  const w = winShard;
+  if (winStage === 'src') {
+    w._srcAcc -= 1;
+    w.srcEntries.push({ lsn: w.sourceLSN + 1 });
+    if (w.srcEntries.length > 150) w.srcEntries = w.srcEntries.slice(-150);
+    w.sourceLSN++;
+    w._pAcc.src++;
+  } else if (winStage === 'log') {
+    w._logAcc -= 1;
+    w.logEntries.push({ lsn: w.logLSN + 1 });
+    if (w.logEntries.length > 150) w.logEntries = w.logEntries.slice(-150);
+    w.logLSN++;
+    totalEntries++;
+  } else {
+    w._dstAcc -= 1;
+    w.dstEntries.push({ lsn: w.destLSN + 1 });
+    if (w.dstEntries.length > 150) w.dstEntries = w.dstEntries.slice(-150);
+    w.destLSN++;
+    w._pAcc.dst++;
+  }
+
+  shards.forEach(s => {
     if (s._pAcc.src >= PARTICLE_EVERY) {
       s._pAcc.src -= PARTICLE_EVERY;
       if (Math.random() < 0.7) spawnParticle(s, 'src-to-log');
@@ -1032,10 +1035,6 @@ function updateDOM() {
       }
     });
     while (srcLaneEl.children.length > MAX_LOG_VISIBLE) srcLaneEl.removeChild(srcLaneEl.firstChild);
-
-    // Source progress bar (how much of source has been ingested into log)
-    const srcBar = document.getElementById(`src-bar-${s.id}`);
-    if (s.sourceLSN > 0) srcBar.style.width = Math.min(100, (s.logLSN / s.sourceLSN) * 100) + '%';
 
     const cls = classifyRate(s.writeRate);
     const badge = document.getElementById(`src-badge-${s.id}`);
@@ -1148,7 +1147,7 @@ function frame(now) {
     const interval = 1 / (8 * globalSpeed);
     if (playAcc >= interval) {
       playAcc -= interval;
-      simStep(nextEventSimDt() / globalSpeed);
+      fireOneEvent();
       updateDOM();
     }
   }

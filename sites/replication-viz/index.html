@@ -201,11 +201,13 @@ input[type=range]::-webkit-slider-thumb {
 .rate-badge.normal  { color: var(--fg-dim);                   }
 .rate-badge.fast    { color: var(--fg-dim);                   }
 
-.shard-lsn {
+.lsn-inline {
   font-family: var(--font-mono);
   font-size: 10px;
+  font-weight: 400;
   color: var(--fg-dim);
   font-variant-numeric: tabular-nums;
+  margin-left: 6px;
 }
 .lsn-val { color: var(--fg); font-weight: 500; }
 
@@ -383,12 +385,6 @@ input.rate-slider { flex: 1; width: auto; }
   color: var(--fg);
 }
 
-.dest-lsn {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--fg-dim);
-  font-variant-numeric: tabular-nums;
-}
 
 .lag-pill {
   font-family: var(--font-mono);
@@ -466,6 +462,14 @@ input.rate-slider { flex: 1; width: auto; }
   height: 10px;
   flex-shrink: 0;
 }
+/* downward arrowhead at bottom of tick */
+.tl-mark-arrow {
+  width: 0; height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 5px solid var(--fg-dim);
+  flex-shrink: 0;
+}
 .tl-mark-label {
   font-family: var(--font-mono);
   font-size: 8px;
@@ -474,13 +478,16 @@ input.rate-slider { flex: 1; width: auto; }
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--fg-dim);
+  margin-top: 1px;
 }
-.tl-mark.tl-mark-log                 { top: 0; }
-.tl-mark.tl-mark-log .tl-mark-tick  { height: 12px; background: #2255aa; }
-.tl-mark.tl-mark-log .tl-mark-label { color: #2255aa; }
-.tl-mark.tl-mark-dst                 { top: 10px; }
-.tl-mark.tl-mark-dst .tl-mark-tick  { height: 8px; background: #b03000; }
-.tl-mark.tl-mark-dst .tl-mark-label { color: #b03000; }
+.tl-mark.tl-mark-log                  { top: 0; }
+.tl-mark.tl-mark-log .tl-mark-tick    { height: 12px; background: #2255aa; }
+.tl-mark.tl-mark-log .tl-mark-arrow   { border-top-color: #2255aa; }
+.tl-mark.tl-mark-log .tl-mark-label   { color: #2255aa; }
+.tl-mark.tl-mark-dst                  { top: 10px; }
+.tl-mark.tl-mark-dst .tl-mark-tick    { height: 8px; background: #b03000; }
+.tl-mark.tl-mark-dst .tl-mark-arrow   { border-top-color: #b03000; }
+.tl-mark.tl-mark-dst .tl-mark-label   { color: #b03000; }
 
 /* ─── Stats bar ───────────────────────────────────────────────────────────── */
 .stats-bar {
@@ -678,14 +685,13 @@ shards.forEach(s => {
     <div class="shard-index">${s.id}</div>
     <div class="shard-info">
       <div class="shard-name-row">
-        <div class="shard-name">${s.name}</div>
+        <div class="shard-name">${s.name}<span class="lsn-inline">LSN: <span class="lsn-val" id="src-lsn-${s.id}">0</span></span></div>
         <div class="rate-badge normal" id="src-badge-${s.id}">normal</div>
       </div>
       <div class="log-lane-entries" id="src-entries-${s.id}" style="margin-bottom:4px"></div>
-      <div class="replicated-bar-wrap" style="margin-bottom:6px">
+      <div class="replicated-bar-wrap" style="margin-bottom:4px">
         <div class="replicated-bar" id="src-bar-${s.id}" style="width:0%"></div>
       </div>
-      <div class="shard-lsn">LSN: <span class="lsn-val" id="src-lsn-${s.id}">0</span></div>
       <button class="rate-toggle" id="rate-toggle-${s.id}">rates ▸</button>
       <div class="rate-block hidden" id="rate-block-${s.id}" style="margin-top:4px">
         <div class="rate-slider-row">
@@ -750,14 +756,13 @@ shards.forEach(s => {
     <div class="dest-index">${s.id}</div>
     <div class="dest-info">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-        <div class="dest-name">${s.name}</div>
+        <div class="dest-name">${s.name}<span class="lsn-inline">applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></span></div>
         <div class="lag-pill zero" id="lag-pill-${s.id}">lag +0</div>
       </div>
       <div class="log-lane-entries" id="dst-entries-${s.id}" style="margin-bottom:4px"></div>
       <div class="replicated-bar-wrap">
         <div class="replicated-bar" id="dst-bar-${s.id}" style="width:0%"></div>
       </div>
-      <div class="dest-lsn" style="margin-top:4px">applied: <span class="lsn-val" id="dst-lsn-${s.id}">0</span></div>
     </div>
   `;
   destCont.appendChild(dstRow);
@@ -781,10 +786,12 @@ shards.forEach(s => {
       <div class="tl-markers" id="tl-markers-${s.id}" style="width:${TL_TOTAL_W}px">
         <div class="tl-mark tl-mark-log" id="tl-mark-log-${s.id}" style="left:-999px">
           <div class="tl-mark-tick"></div>
+          <div class="tl-mark-arrow"></div>
           <div class="tl-mark-label">LS</div>
         </div>
         <div class="tl-mark tl-mark-dst" id="tl-mark-dst-${s.id}" style="left:-999px">
           <div class="tl-mark-tick"></div>
+          <div class="tl-mark-arrow"></div>
           <div class="tl-mark-label">dst</div>
         </div>
       </div>
@@ -1001,8 +1008,6 @@ function simStep(dtReal) {
 }
 
 // ─── DOM update ───────────────────────────────────────────────────────────
-let domAcc = 0;
-
 function updateDOM() {
   let caughtUp = 0, maxLag = 0;
   shards.forEach(s => {
@@ -1131,13 +1136,24 @@ function updateDOM() {
 }
 
 // ─── Loop ─────────────────────────────────────────────────────────────────
+let playAcc = 0;
+
 function frame(now) {
   const dtReal = Math.min((now - lastFrame) / 1000, 0.1);
   lastFrame = now;
-  if (running) simStep(dtReal);
+
+  if (running) {
+    playAcc += dtReal;
+    // step interval: at speed 1x → ~8 events/sec; speed scales linearly
+    const interval = 1 / (8 * globalSpeed);
+    if (playAcc >= interval) {
+      playAcc -= interval;
+      simStep(nextEventSimDt() / globalSpeed);
+      updateDOM();
+    }
+  }
+
   drawParticles(dtReal);
-  domAcc += dtReal;
-  if (domAcc >= 0.06) { updateDOM(); domAcc = 0; }
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);

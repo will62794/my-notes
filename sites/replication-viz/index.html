@@ -395,17 +395,19 @@ input.rate-slider { flex: 1; width: auto; }
 
 /* ─── Log Store footer (LST marker) ─────────────────────────────────────── */
 .log-footer {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px 5px;
+  position: relative;
+  height: 38px;
   border-top: 1px solid var(--rule);
+  overflow: visible;
 }
 .lst-marker {
+  position: absolute;
+  top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-shrink: 0;
+  transform: translateX(-50%);
+  left: -999px;
 }
 .lst-marker-arrow {
   width: 0; height: 0;
@@ -418,17 +420,18 @@ input.rate-slider { flex: 1; width: auto; }
   height: 6px;
   background: #1a6b3c;
 }
-.log-footer-label {
+.lst-marker-label {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: #1a6b3c;
+  margin-top: 1px;
 }
-.log-footer-val {
+.lst-marker-val {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 9px;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   color: #1a6b3c;
@@ -607,13 +610,13 @@ input.rate-slider { flex: 1; width: auto; }
         <span class="log-stat">n = <span id="total-entries">0</span></span>
       </div>
       <div id="log-lanes"></div>
-      <div class="log-footer">
-        <div class="lst-marker">
+      <div class="log-footer" id="log-footer">
+        <div class="lst-marker" id="lst-marker">
           <div class="lst-marker-arrow"></div>
           <div class="lst-marker-tick"></div>
+          <div class="lst-marker-label">LST</div>
+          <div class="lst-marker-val" id="lst-footer">0</div>
         </div>
-        <span class="log-footer-label">LST</span>
-        <span class="log-footer-val" id="lst-footer">0</span>
       </div>
     </div>
   </div>
@@ -1166,6 +1169,21 @@ function updateDOM() {
   document.getElementById('stat-lst').textContent      = lst.toLocaleString();
   document.getElementById('lst-footer').textContent    = lst.toLocaleString();
   document.getElementById('stat-time').textContent     = simTime.toFixed(1) + 's';
+
+  // Position LST marker under the chip for lst in the slowest shard's log lane
+  const lstMarkerEl = document.getElementById('lst-marker');
+  const footerEl    = document.getElementById('log-footer');
+  const slowShard   = shards.find(s => s.logLSN === lst);
+  if (slowShard && lst > 0) {
+    const chip = document.querySelector(`#log-entries-${slowShard.id} [data-lsn="${lst}"]`);
+    if (chip && footerEl) {
+      const chipRect   = chip.getBoundingClientRect();
+      const footerRect = footerEl.getBoundingClientRect();
+      lstMarkerEl.style.left = (chipRect.left + chipRect.width / 2 - footerRect.left) + 'px';
+    }
+  } else {
+    lstMarkerEl.style.left = '-999px';
+  }
 }
 
 // ─── Loop ─────────────────────────────────────────────────────────────────

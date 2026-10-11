@@ -349,14 +349,6 @@ input.rate-slider { flex: 1; width: auto; }
 
 .log-entry.new {}
 
-.replicated-bar-wrap {
-  height: 2px;
-  background: var(--rule-lt);
-}
-.replicated-bar {
-  height: 100%;
-  background: var(--fg);
-}
 
 /* ─── Destination rows ────────────────────────────────────────────────────── */
 .dest-shard-row {
@@ -738,9 +730,6 @@ shards.forEach(s => {
     <div class="log-lane-tag">${s.name.slice(-3)}</div>
     <div class="log-lane-body">
       <div class="log-lane-entries" id="log-entries-${s.id}"></div>
-      <div class="replicated-bar-wrap">
-        <div class="replicated-bar" id="rep-bar-${s.id}" style="width:0%"></div>
-      </div>
     </div>
   `;
   logLanesEl.appendChild(lane);
@@ -757,9 +746,6 @@ shards.forEach(s => {
         <div class="lag-pill zero" id="lag-pill-${s.id}">lag +0</div>
       </div>
       <div class="log-lane-entries" id="dst-entries-${s.id}" style="margin-bottom:4px"></div>
-      <div class="replicated-bar-wrap">
-        <div class="replicated-bar" id="dst-bar-${s.id}" style="width:0%"></div>
-      </div>
     </div>
   `;
   destCont.appendChild(dstRow);
@@ -881,7 +867,6 @@ document.getElementById('reset-btn').addEventListener('click', () => {
     document.getElementById(`src-entries-${s.id}`).innerHTML = '';
     document.getElementById(`log-entries-${s.id}`).innerHTML = '';
     document.getElementById(`dst-entries-${s.id}`).innerHTML = '';
-    document.getElementById(`rep-bar-${s.id}`).style.width = '0%';
   });
   totalEntries = 0; simTime = 0;
 });
@@ -1056,9 +1041,6 @@ function updateDOM() {
     });
     while (laneEl.children.length > MAX_LOG_VISIBLE) laneEl.removeChild(laneEl.firstChild);
 
-    const repBar = document.getElementById(`rep-bar-${s.id}`);
-    if (s.logLSN > 0) repBar.style.width = Math.min(100, (s.destLSN / s.logLSN) * 100) + '%';
-
     document.getElementById(`dst-lsn-${s.id}`).textContent = s.destLSN.toLocaleString();
 
     // Dest entry strip
@@ -1076,10 +1058,6 @@ function updateDOM() {
       }
     });
     while (dstLaneEl.children.length > MAX_LOG_VISIBLE) dstLaneEl.removeChild(dstLaneEl.firstChild);
-
-    // Dest progress bar (applied vs log store)
-    const dstBar = document.getElementById(`dst-bar-${s.id}`);
-    if (s.logLSN > 0) dstBar.style.width = Math.min(100, (s.destLSN / s.logLSN) * 100) + '%';
 
     const lagPill = document.getElementById(`lag-pill-${s.id}`);
     lagPill.textContent = 'lag +' + lag.toLocaleString();

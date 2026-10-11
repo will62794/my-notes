@@ -448,7 +448,7 @@ input.rate-slider { flex: 1; width: auto; }
 
 .tl-markers {
   position: relative;
-  height: 28px;
+  height: 36px;
   /* width set by JS to match chips row exactly */
 }
 
@@ -475,9 +475,11 @@ input.rate-slider { flex: 1; width: auto; }
   white-space: nowrap;
   color: var(--fg-dim);
 }
-.tl-mark.tl-mark-log .tl-mark-tick  { height: 14px; background: #2255aa; }
+.tl-mark.tl-mark-log                 { top: 0; }
+.tl-mark.tl-mark-log .tl-mark-tick  { height: 12px; background: #2255aa; }
 .tl-mark.tl-mark-log .tl-mark-label { color: #2255aa; }
-.tl-mark.tl-mark-dst .tl-mark-tick  { height: 10px; background: #b03000; }
+.tl-mark.tl-mark-dst                 { top: 10px; }
+.tl-mark.tl-mark-dst .tl-mark-tick  { height: 8px; background: #b03000; }
 .tl-mark.tl-mark-dst .tl-mark-label { color: #b03000; }
 
 /* ─── Stats bar ───────────────────────────────────────────────────────────── */
@@ -558,7 +560,7 @@ input.rate-slider { flex: 1; width: auto; }
   </div>
 
   <div class="panel-wrap">
-    <div class="panel-label">Log Store</div>
+    <div class="panel-label" style="color:#2255aa">Log Store</div>
     <div class="panel">
       <div class="log-header">
         <span class="log-title">Log Store</span>
@@ -580,7 +582,7 @@ input.rate-slider { flex: 1; width: auto; }
   </div>
 
   <div class="panel-wrap">
-    <div class="panel-label">Standby Cluster</div>
+    <div class="panel-label" style="color:#b03000">Standby Cluster</div>
     <div class="panel">
       <div id="dest-shards"></div>
     </div>

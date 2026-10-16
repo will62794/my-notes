@@ -437,6 +437,12 @@ input.rate-slider { flex: 1; width: auto; }
   color: #1a6b3c;
 }
 
+/* MCTS marker — standby-cluster tone */
+.lst-marker.mcts .lst-marker-arrow { border-bottom-color: #b03000; }
+.lst-marker.mcts .lst-marker-tick  { background: #b03000; }
+.lst-marker.mcts .lst-marker-label { color: #b03000; }
+.lst-marker.mcts .lst-marker-val   { color: #b03000; }
+
 /* ─── Log position timeline ──────────────────────────────────────────────── */
 .timeline-section { margin-bottom: 12px; }
 
@@ -644,6 +650,14 @@ input.rate-slider { flex: 1; width: auto; }
           <div class="lst-marker-val" id="hsts-footer">0</div>
         </div>
       </div>
+      <div class="log-footer" id="dest-footer-mcts">
+        <div class="lst-marker mcts" id="mcts-marker">
+          <div class="lst-marker-arrow"></div>
+          <div class="lst-marker-tick"></div>
+          <div class="lst-marker-label">MCTS</div>
+          <div class="lst-marker-val" id="mcts-footer">0</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -674,6 +688,10 @@ input.rate-slider { flex: 1; width: auto; }
   <div class="stat-item">
     <div class="stat-key">HSTS / ESTS</div>
     <div class="stat-val" id="stat-hsts" style="color:#1a6b3c">0</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-key">MCTS</div>
+    <div class="stat-val" id="stat-mcts" style="color:#b03000">0</div>
   </div>
   <div class="stat-item">
     <div class="stat-key">Sim time</div>
@@ -856,7 +874,10 @@ const recoveryRow = document.createElement('div');
 recoveryRow.style.cssText = 'display:flex;align-items:center;gap:12px;padding:6px 12px 8px;border-top:1px solid var(--rule-lt)';
 recoveryRow.innerHTML = `
   <div style="font-family:var(--font-mono);font-size:9px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#1a6b3c;white-space:nowrap;min-width:68px">safe window</div>
-  <div style="position:relative;width:${TL_TOTAL_W}px;height:30px">
+  <div style="position:relative;width:${TL_TOTAL_W}px;height:44px">
+    <div id="tl-mcts-span" style="position:absolute;top:2px;height:16px;display:none;background:rgba(176,48,0,0.10);border-left:2px solid #b03000;box-sizing:border-box;overflow:visible">
+      <span style="position:absolute;left:-1px;top:29px;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;color:#b03000;letter-spacing:0.04em;white-space:nowrap;line-height:1">MCTS</span>
+    </div>
     <div id="tl-recovery-span" style="position:absolute;top:2px;height:16px;display:none;background:rgba(26,107,60,0.13);border-left:2px solid #1a6b3c;border-right:2px solid #1a6b3c;box-sizing:border-box;overflow:visible">
       <span id="tl-ests-label" style="position:absolute;left:-1px;top:18px;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;color:#1a6b3c;letter-spacing:0.04em;white-space:nowrap;line-height:1">ESTS</span>
       <span id="tl-lsts-label" style="position:absolute;right:-1px;top:18px;transform:translateX(50%);font-family:'JetBrains Mono',monospace;font-size:7px;font-weight:700;color:#1a6b3c;letter-spacing:0.04em;white-space:nowrap;line-height:1">LSTS</span>
@@ -1150,6 +1171,8 @@ function updateDOM() {
   const lst          = Math.min(...shards.map(s => s.logLSN));
   const hstCandidate = Math.max(...shards.map(s => s.destLSN));
   const hst          = (hstCandidate > 0 && hstCandidate <= lst) ? hstCandidate : null;
+  // MCTS = the smallest position any standby shard has applied to
+  const mcts         = Math.min(...shards.map(s => s.destLSN));
   shards.forEach(s => {
     const windowStart = Math.max(1, s.sourceLSN - TL_WINDOW + 1);
     const windowEnd   = s.sourceLSN;
@@ -1210,6 +1233,20 @@ function updateDOM() {
     recoverySpan.style.display = 'none';
   }
 
+  // MCTS span — from the floor every standby shard has reached up to HSTS
+  // (or LSTS when HSTS is undefined). Left of the safe window it marks the
+  // region where only some shards have applied.
+  const mctsSpan = document.getElementById('tl-mcts-span');
+  if (lst > 0 && refShard.sourceLSN > 0) {
+    const x1 = refLeft(mcts);
+    const x2 = refLeft(hst !== null ? hst : lst);
+    mctsSpan.style.left    = x1 + 'px';
+    mctsSpan.style.width   = Math.max(2, x2 - x1) + 'px';
+    mctsSpan.style.display = '';
+  } else {
+    mctsSpan.style.display = 'none';
+  }
+
   document.getElementById('total-entries').textContent = totalEntries.toLocaleString();
   document.getElementById('stat-total').textContent    = totalEntries.toLocaleString();
   document.getElementById('stat-caught').textContent   = `${caughtUp} / ${NUM_SHARDS}`;
@@ -1254,6 +1291,23 @@ function updateDOM() {
     hstFooterEl.textContent = hstCandidate > 0 ? '—' : '0';
     hstStatEl.style.color   = hstCandidate > 0 ? '#b03000' : '#1a6b3c';
     hstMarkerEl.style.left  = '-999px';
+  }
+
+  // MCTS = min(destLSN); marker sits under the slowest standby shard's chip
+  const mctsMarkerEl = document.getElementById('mcts-marker');
+  const mctsFooterEl = document.getElementById('dest-footer-mcts');
+  document.getElementById('stat-mcts').textContent   = mcts.toLocaleString();
+  document.getElementById('mcts-footer').textContent = mcts.toLocaleString();
+  const slowDestShard = shards.find(s => s.destLSN === mcts);
+  const mctsChip = (slowDestShard && mcts > 0)
+    ? document.querySelector(`#dst-entries-${slowDestShard.id} [data-lsn="${mcts}"]`)
+    : null;
+  if (mctsChip && mctsFooterEl) {
+    const chipRect = mctsChip.getBoundingClientRect();
+    const footRect = mctsFooterEl.getBoundingClientRect();
+    mctsMarkerEl.style.left = (chipRect.left + chipRect.width / 2 - footRect.left) + 'px';
+  } else {
+    mctsMarkerEl.style.left = '-999px';
   }
 }
 
